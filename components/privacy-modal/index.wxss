@@ -1,0 +1,45 @@
+.mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+.modal {
+  width: 80%;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+.title {
+  font-size: 32rpx;
+  font-weight: 500;
+  text-align: center;
+}
+.desc {
+  margin-top: 16rpx;
+  color: #666;
+  font-size: 26rpx;
+  text-align: center;
+}
+.links {
+  margin-top: 12rpx;
+  text-align: center;
+}
+.link {
+  color: #10b981;
+  margin: 0 10rpx;
+}
+.agree-btn {
+  margin-top: 24rpx;
+  background: #10b981;
+  color: #fff;
+}
+.deny-btn {
+  margin-top: 16rpx;
+}

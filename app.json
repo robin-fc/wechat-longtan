@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/home/index",
+    "pages/agreement/service",
+    "pages/agreement/privacy"
+  ],
+  "window": {
+    "navigationBarTitleText": "登录",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundTextStyle": "light"
+  }
+}

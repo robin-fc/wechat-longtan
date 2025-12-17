@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48rpx 32rpx;
+}
+.logo {
+  width: 160rpx;
+  height: 160rpx;
+  background: #0aa37f;
+  border-radius: 16rpx;
+  margin-top: 80rpx;
+}
+.title {
+  margin-top: 24rpx;
+  font-size: 32rpx;
+  color: #333;
+}
+.login-btn {
+  width: 80%;
+  margin-top: 64rpx;
+  background: #10b981;
+  color: #fff;
+}
+.agree-row {
+  margin-top: 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.link {
+  color: #10b981;
+}

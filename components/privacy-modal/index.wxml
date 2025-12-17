@@ -1,0 +1,20 @@
+<view wx:if="{{show}}" class="mask">
+  <view class="modal">
+    <view class="title">用户隐私保护提示</view>
+    <view class="desc">
+      先阅读并同意《服务协议》《隐私政策》方可继续使用
+    </view>
+    <view class="links">
+      <text class="link" bindtap="toService">《服务协议》</text>
+      <text class="link" bindtap="toPrivacy">《隐私政策》</text>
+    </view>
+    <button
+      class="agree-btn"
+      open-type="getPhoneNumber"
+      bindgetphonenumber="onAgreeGetPhoneNumber"
+    >
+      同意并继续使用
+    </button>
+    <button class="deny-btn" bindtap="onDeny">不同意</button>
+  </view>
+</view>

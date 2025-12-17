@@ -1,0 +1,31 @@
+<view class="container">
+  <view class="logo" />
+  <view class="title">DAO龙潭</view>
+
+  <button wx:if="{{!checked}}" class="login-btn" bindtap="onLoginTap">
+    微信授权登录
+  </button>
+  <button
+    wx:else
+    class="login-btn"
+    open-type="getPhoneNumber"
+    bindgetphonenumber="onGetPhoneNumber"
+  >
+    微信授权登录
+  </button>
+
+  <view class="agree-row">
+    <checkbox checked="{{checked}}" bindchange="onCheckChange" />
+    <text>我已阅读并同意</text>
+    <text class="link" bindtap="goService">《服务协议》</text>
+    <text class="link" bindtap="goPrivacy">《隐私政策》</text>
+  </view>
+
+  <privacy-modal
+    show="{{showModal}}"
+    bindagree="onModalAgree"
+    binddeny="onModalDeny"
+    bindtoservice="goService"
+    bindtoprivacy="goPrivacy"
+  />
+</view>

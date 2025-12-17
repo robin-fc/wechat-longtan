@@ -1,0 +1,5 @@
+<view class="container">
+  <view class="title">服务协议</view>
+  <view class="content">尊敬的用户：……</view>
+  <button class="agree-btn" bindtap="onAgree">同意</button>
+</view>
