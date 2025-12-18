@@ -6,7 +6,7 @@ interface CollectionListState {
   collections: ActivityCollection[]
 }
 
-Page<CollectionListState>({
+Page<CollectionListState, WechatMiniprogram.IAnyObject>({
   data: {
     collections: [],
   },
@@ -28,4 +28,3 @@ Page<CollectionListState>({
     )
   },
 })
-

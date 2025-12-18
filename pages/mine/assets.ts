@@ -10,6 +10,7 @@ interface FilterOption {
 interface RecordGroup {
   month: string
   items: WalletRecord[]
+}
 
 interface AssetsState {
   filters: FilterOption[]
@@ -17,7 +18,7 @@ interface AssetsState {
   groups: RecordGroup[]
 }
 
-Page<AssetsState>({
+Page<AssetsState, WechatMiniprogram.IAnyObject>({
   data: {
     filters: [
       { label: '全部', value: 'all' },

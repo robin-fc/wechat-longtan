@@ -6,7 +6,7 @@ interface SpaceDetailState {
   activeTab: SpaceTab
 }
 
-Page<SpaceDetailState>({
+Page<SpaceDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     activeTab: 'activity',
   },
@@ -22,4 +22,4 @@ Page<SpaceDetailState>({
       activeTab: tab,
     })
   },
-})\n\n*** End Patch" } ***!
+})

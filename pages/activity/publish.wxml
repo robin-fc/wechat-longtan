@@ -48,13 +48,9 @@
         />
       </view>
       <view class="inline-right">
-        <checkbox
-          value="free"
-          checked="{{form.free}}"
-          bindchange="onFreeChange"
-        >
-          免费
-        </checkbox>
+        <checkbox-group bindchange="onFreeChange">
+          <checkbox value="free" checked="{{form.free}}">免费</checkbox>
+        </checkbox-group>
       </view>
     </view>
 
@@ -162,4 +158,3 @@
     </view>
   </view>
 </view>
-

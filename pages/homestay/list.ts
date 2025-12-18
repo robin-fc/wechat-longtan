@@ -16,7 +16,7 @@ interface HomestayListState {
   homestays: Homestay[]
 }
 
-Page<HomestayListState>({
+Page<HomestayListState, WechatMiniprogram.IAnyObject>({
   data: {
     startDate: '',
     duration: 'week',
@@ -79,4 +79,3 @@ Page<HomestayListState>({
     )
   },
 })
-

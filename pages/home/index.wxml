@@ -1,1 +1,136 @@
-<view class="home">首页</view>
+<view class="home-page">
+  <view class="top-bar" style="padding-top: {{navPaddingTop}}px;">
+    <view class="top-bar-left" bindtap="onSearchTap">
+      <text class="search-icon">🔍</text>
+    </view>
+    <text class="top-title">DAO 龙潭</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <view wx:else class="content">
+    <swiper
+      class="hero-swiper"
+      indicator-dots="true"
+      autoplay="false"
+      previous-margin="40rpx"
+      next-margin="40rpx"
+    >
+      <block wx:for="{{pageData.carousel}}" wx:key="id">
+        <swiper-item>
+          <view class="hero-card">
+            <image
+              class="hero-poster"
+              src="{{item.poster.url}}"
+              mode="aspectFill"
+            />
+            <view class="hero-info">
+              <text class="hero-title">{{item.title}}</text>
+              <text class="hero-slogan">{{item.slogan}}</text>
+              <view class="hero-bottom">
+                <companions-bar companions="{{item.companions}}" />
+                <text class="hero-price">
+                  ￥{{item.price.amount}}{{item.price.unit}}
+                </text>
+              </view>
+            </view>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
+
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">分类入口</text>
+      </view>
+      <view class="entry-grid">
+        <block wx:for="{{pageData.entries}}" wx:key="id">
+          <view
+            class="entry-item"
+            data-item="{{item}}"
+            bindtap="onEntryTap"
+          >
+            <entry-card
+              title="{{item.name}}"
+              icon-url="{{item.icon.url}}"
+            />
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">热门活动</text>
+        <view class="section-more" bindtap="onMoreHotActivityTap">
+          <text>更多</text>
+        </view>
+      </view>
+      <view class="activity-list">
+        <block wx:for="{{pageData.hotActivities}}" wx:key="id">
+          <view class="activity-item">
+            <activity-card
+              activity="{{item}}"
+              layout="vertical"
+              bindtap="onActivityCardTap"
+            />
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">活动合集</text>
+        <view class="section-more" bindtap="onMoreCollectionsTap">
+          <text>更多</text>
+        </view>
+      </view>
+      <scroll-view scroll-x="true" class="collection-scroll">
+        <block wx:for="{{pageData.collections}}" wx:key="id">
+          <collection-card
+            collection="{{item}}"
+            bindtap="onCollectionCardTap"
+          />
+        </block>
+      </scroll-view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">民宿推荐</text>
+        <view class="section-more" bindtap="onMoreHomestaysTap">
+          <text>更多</text>
+        </view>
+      </view>
+      <view class="homestay-list">
+        <block wx:for="{{pageData.homestays}}" wx:key="id">
+          <view class="homestay-item">
+            <homestay-card
+              homestay="{{item}}"
+              layout="horizontal"
+              bindtap="onHomestayCardTap"
+            />
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-header">
+        <text class="section-title">关于 DAO 龙潭</text>
+      </view>
+      <view class="about-list">
+        <block wx:for="{{pageData.aboutLinks}}" wx:key="id">
+          <view class="about-item">
+            <text class="about-title">{{item.title}}</text>
+            <text class="about-desc">{{item.description}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+</view>

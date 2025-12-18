@@ -14,13 +14,13 @@ interface CompanionsPageState {
   companions: CompanionItemView[]
 }
 
-Page<CompanionsPageState>({
+Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
   data: {
     companions: [],
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const activityId = options.activityId as string
     if (!activityId) {
@@ -83,4 +83,4 @@ Page<CompanionsPageState>({
       companions: list,
     })
   },
-})\n\n*** End Patch"} ***!
+})

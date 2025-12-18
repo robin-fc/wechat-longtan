@@ -29,7 +29,7 @@ Page({
         time: Date.now(),
       });
       wx.setStorageSync("isLoggedIn", true);
-      wx.redirectTo({ url: "/pages/home/index" });
+      wx.switchTab({ url: "/pages/home/index" });
     }
   },
   onModalAgree(
@@ -45,13 +45,13 @@ Page({
         time: Date.now(),
       });
       wx.setStorageSync("isLoggedIn", true);
-      wx.redirectTo({ url: "/pages/home/index" });
+      wx.switchTab({ url: "/pages/home/index" });
     }
   },
   onModalDeny(this: WechatMiniprogram.Page.TrivialInstance) {
     this.setData({ showModal: false });
     wx.setStorageSync("isLoggedIn", false);
-    wx.redirectTo({ url: "/pages/home/index" });
+    wx.switchTab({ url: "/pages/home/index" });
   },
   goService(this: WechatMiniprogram.Page.TrivialInstance) {
     wx.navigateTo({ url: "/pages/agreement/service" });

@@ -6,13 +6,13 @@ interface CollectionDetailState {
   collection: ActivityCollection | null
 }
 
-Page<CollectionDetailState>({
+Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     collection: null,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const id = options.id as string
     if (!id) {
@@ -38,4 +38,3 @@ Page<CollectionDetailState>({
     )
   },
 })
-

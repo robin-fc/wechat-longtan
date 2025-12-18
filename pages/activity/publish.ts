@@ -24,7 +24,7 @@ interface PublishPageState {
   spaceIndex: number
 }
 
-Page<PublishPageState>({
+Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   data: {
     form: {
       title: '',
@@ -82,7 +82,7 @@ Page<PublishPageState>({
   },
   onFreeChange(
     this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.CheckboxChange
+    e: WechatMiniprogram.CheckboxGroupChange
   ) {
     const checked = e.detail.value.indexOf('free') !== -1
     this.setData({
@@ -212,4 +212,4 @@ Page<PublishPageState>({
       goBack()
     }, 800)
   },
-})\n\n*** End Patch"} ***!
+})

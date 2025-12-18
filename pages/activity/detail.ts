@@ -7,14 +7,14 @@ interface ActivityDetailState {
   isCollected: boolean
 }
 
-Page<ActivityDetailState>({
+Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     activity: null,
     isCollected: false,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const id = options.id as string
     if (!id) {
@@ -88,4 +88,3 @@ Page<ActivityDetailState>({
     )
   },
 })
-

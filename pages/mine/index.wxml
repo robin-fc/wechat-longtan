@@ -8,11 +8,11 @@
   <view class="profile-section">
     <image
       class="avatar"
-      src="{{profile?.avatar?.url || ''}}"
+      src="{{profile && profile.avatar ? profile.avatar.url : ''}}"
       mode="aspectFill"
     />
     <view class="info">
-      <text class="name">{{profile?.nickname || '未登录用户'}}</text>
+      <text class="name">{{profile ? profile.nickname : '未登录用户'}}</text>
       <text class="bio">个性签名可在这里编辑</text>
     </view>
     <view class="edit-btn" bindtap="onEditProfileTap">
@@ -55,4 +55,3 @@
     </view>
   </view>
 </view>
-

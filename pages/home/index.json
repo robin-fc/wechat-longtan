@@ -1,3 +1,11 @@
 {
-  "navigationBarTitleText": "首页"
+  "navigationBarTitleText": "DAO 龙潭",
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "entry-card": "/components/entry-card/index",
+    "activity-card": "/components/activity-card/index",
+    "collection-card": "/components/collection-card/index",
+    "homestay-card": "/components/homestay-card/index",
+    "companions-bar": "/components/companions-bar/index"
+  }
 }

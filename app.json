@@ -3,12 +3,63 @@
     "pages/login/index",
     "pages/home/index",
     "pages/agreement/service",
-    "pages/agreement/privacy"
+    "pages/agreement/privacy",
+    "pages/search/index",
+    "pages/activity-collection/list",
+    "pages/activity-collection/detail",
+    "pages/activity/list",
+    "pages/activity/detail",
+    "pages/activity/publish",
+    "pages/activity/companions",
+    "pages/space/detail",
+    "pages/activity-order/confirm",
+    "pages/activity-order/success",
+    "pages/homestay/list",
+    "pages/homestay/detail",
+    "pages/homestay-room/detail",
+    "pages/homestay-apply/form",
+    "pages/homestay-apply/status",
+    "pages/mine/index",
+    "pages/mine/assets",
+    "pages/mine/activities",
+    "pages/mine/stays"
   ],
   "window": {
     "navigationBarTitleText": "登录",
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#333333",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/activity-collection/list",
+        "text": "活动",
+        "iconPath": "assets/icons/live.png",
+        "selectedIconPath": "assets/icons/live-active.png"
+      },
+      {
+        "pagePath": "pages/homestay/list",
+        "text": "民宿",
+        "iconPath": "assets/icons/collection.png",
+        "selectedIconPath": "assets/icons/collection-active.png"
+      },
+      {
+        "pagePath": "pages/mine/index",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
   }
 }

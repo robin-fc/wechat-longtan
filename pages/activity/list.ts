@@ -15,7 +15,7 @@ interface ActivityListState {
   activities: Activity[]
 }
 
-Page<ActivityListState>({
+Page<ActivityListState, WechatMiniprogram.IAnyObject>({
   data: {
     filterGroups: [],
     activeGroupId: '',
@@ -106,4 +106,3 @@ Page<ActivityListState>({
     )
   },
 })
-

@@ -9,7 +9,7 @@ interface RoomDetailState {
   nights: number
 }
 
-Page<RoomDetailState>({
+Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     room: null,
     checkInDate: '',
@@ -18,7 +18,7 @@ Page<RoomDetailState>({
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const id = options.id as string
     if (!id) {
@@ -96,4 +96,3 @@ Page<RoomDetailState>({
     )
   },
 })
-

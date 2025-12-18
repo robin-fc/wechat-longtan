@@ -18,7 +18,7 @@ interface SearchPageState {
   hasSearched: boolean
 }
 
-Page<SearchPageState>({
+Page<SearchPageState, WechatMiniprogram.IAnyObject>({
   data: {
     from: 'home',
     keyword: '',
@@ -29,7 +29,7 @@ Page<SearchPageState>({
   },
   onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const fromParam = options.from === 'activity' ? 'activity' : 'home'
     const config = fetchSearchPageConfig(fromParam)

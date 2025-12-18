@@ -16,7 +16,7 @@ export async function fetchHomestayList(
 
 const roomImage: ImageResource = {
   id: 'room-img-1',
-  url: '/preference/民宿-民宿详情.png',
+  url: '/assets/images/card-placeholder.png',
 }
 
 const baseStayRange: TimeRange = {

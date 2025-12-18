@@ -28,14 +28,14 @@ const emptyOrder: ActivityOrder = {
   },
 }
 
-Page<ConfirmOrderState>({
+Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
   data: {
     activity: null,
     order: emptyOrder,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const activityId = options.activityId as string
     if (!activityId) {
@@ -111,4 +111,3 @@ Page<ConfirmOrderState>({
     }, 800)
   },
 })
-

@@ -17,7 +17,7 @@ interface MyActivitiesState {
   collections: ActivityCollection[]
 }
 
-Page<MyActivitiesState>({
+Page<MyActivitiesState, WechatMiniprogram.IAnyObject>({
   data: {
     filters: [],
     activeFilterId: '',
@@ -78,4 +78,3 @@ Page<MyActivitiesState>({
     })
   },
 })
-

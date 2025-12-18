@@ -20,7 +20,7 @@ interface HomestayDetailState {
   durations: DurationOption[]
 }
 
-Page<HomestayDetailState>({
+Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     homestay: null,
     rooms: [],
@@ -35,7 +35,7 @@ Page<HomestayDetailState>({
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const id = options.id as string
     if (!id) {
@@ -87,4 +87,4 @@ Page<HomestayDetailState>({
       )}&homestayId=${encodeURIComponent(room.homestayId || '')}`
     )
   },
-})\n\n*** End Patch```} ***!
+})

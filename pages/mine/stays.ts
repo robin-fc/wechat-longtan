@@ -36,7 +36,7 @@ function mapStayStatusText(status: HomestayApplication['status']): string {
   return '已取消'
 }
 
-Page<MyStaysState>({
+Page<MyStaysState, WechatMiniprogram.IAnyObject>({
   data: {
     filters: [
       { label: '全部', value: 'all' },

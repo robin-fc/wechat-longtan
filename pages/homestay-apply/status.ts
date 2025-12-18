@@ -31,7 +31,7 @@ function mapStatusText(status: HomestayApplication['status']): string {
   return '已取消'
 }
 
-Page<ApplyStatusState>({
+Page<ApplyStatusState, WechatMiniprogram.IAnyObject>({
   data: {
     applications: [],
   },
@@ -84,4 +84,3 @@ Page<ApplyStatusState>({
     })
   },
 })
-

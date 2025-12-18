@@ -20,7 +20,7 @@ interface ApplyFormState {
   form: ApplyForm
 }
 
-Page<ApplyFormState>({
+Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
   data: {
     room: null,
     roomNameDisplay: '',
@@ -36,7 +36,7 @@ Page<ApplyFormState>({
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
-    options: WechatMiniprogram.Page.Query
+    options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const roomId = options.roomId as string
     if (!roomId) {
@@ -152,4 +152,3 @@ Page<ApplyFormState>({
     }, 800)
   },
 })
-
