@@ -1,0 +1,56 @@
+<view class="activity-list-page">
+  <view class="top-bar">
+    <view class="top-bar-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="top-title">活动</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view class="search-row">
+    <view class="search-input-wrapper" bindtap="onSearchTap">
+      <text class="search-placeholder">搜索活动/活动空间</text>
+    </view>
+    <view class="publish-button" bindtap="onPublishTap">
+      <text>发布</text>
+    </view>
+  </view>
+
+  <view class="filter-bar">
+    <scroll-view class="filter-row" scroll-x="true">
+      <block wx:for="{{filterGroups}}" wx:key="id">
+        <view
+          class="filter-group {{item.id === activeGroupId ? 'active' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onFilterGroupTap"
+        >
+          <text>{{item.name}}</text>
+        </view>
+      </block>
+    </scroll-view>
+    <scroll-view class="filter-row second" scroll-x="true">
+      <block wx:for="{{activeItems}}" wx:key="id">
+        <view
+          class="filter-item {{item.id === activeItemId ? 'active' : ''}}"
+          data-id="{{item.id}}"
+          bindtap="onFilterItemTap"
+        >
+          <text>{{item.name}}</text>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <view class="list-wrapper">
+    <block wx:for="{{activities}}" wx:key="id">
+      <view class="activity-item">
+        <activity-card
+          activity="{{item}}"
+          layout="horizontal"
+          bindtap="onActivityTap"
+        />
+      </view>
+    </block>
+  </view>
+</view>
+

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "活动合集",
+  "usingComponents": {
+    "collection-card": "/components/collection-card/index"
+  }
+}
+

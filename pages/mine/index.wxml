@@ -1,0 +1,58 @@
+<view class="mine-page">
+  <view class="top-bar">
+    <view class="top-bar-left"></view>
+    <text class="top-title">我的</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view class="profile-section">
+    <image
+      class="avatar"
+      src="{{profile?.avatar?.url || ''}}"
+      mode="aspectFill"
+    />
+    <view class="info">
+      <text class="name">{{profile?.nickname || '未登录用户'}}</text>
+      <text class="bio">个性签名可在这里编辑</text>
+    </view>
+    <view class="edit-btn" bindtap="onEditProfileTap">
+      <text>编辑</text>
+    </view>
+  </view>
+
+  <view class="stat-section">
+    <view class="stat-item" bindtap="onFollowersTap">
+      <text class="stat-num">0</text>
+      <text class="stat-label">粉丝</text>
+    </view>
+    <view class="stat-item" bindtap="onFollowingTap">
+      <text class="stat-num">0</text>
+      <text class="stat-label">关注</text>
+    </view>
+  </view>
+
+  <view class="menu-section">
+    <view class="menu-item" bindtap="onWalletTap">
+      <text class="menu-title">我的钱包</text>
+    </view>
+    <view class="menu-item" bindtap="onMyActivitiesTap">
+      <text class="menu-title">我的活动</text>
+    </view>
+    <view class="menu-item" bindtap="onMyStaysTap">
+      <text class="menu-title">我的入住</text>
+    </view>
+    <view class="menu-item" bindtap="onServiceTap">
+      <text class="menu-title">用户协议</text>
+    </view>
+    <view class="menu-item" bindtap="onPrivacyTap">
+      <text class="menu-title">隐私政策</text>
+    </view>
+  </view>
+
+  <view class="logout-section">
+    <view class="logout-btn" bindtap="onLogoutTap">
+      <text>退出登录</text>
+    </view>
+  </view>
+</view>
+

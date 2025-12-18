@@ -1,0 +1,39 @@
+<view class="my-stays-page">
+  <view class="top-bar">
+    <view class="top-bar-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="top-title">我的入住</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view class="filter-row">
+    <block wx:for="{{filters}}" wx:key="value">
+      <view
+        class="filter-item {{item.value === activeFilter ? 'active' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="onFilterTap"
+      >
+        <text>{{item.label}}</text>
+      </view>
+    </block>
+  </view>
+
+  <scroll-view scroll-y="true" class="list-scroll">
+    <block wx:for="{{items}}" wx:key="id">
+      <view class="card">
+        <view class="row">
+          <text class="title">{{item.title}}</text>
+          <text class="status">{{item.statusText}}</text>
+        </view>
+        <view class="row">
+          <text class="time">{{item.timeText}}</text>
+        </view>
+        <view class="row">
+          <text class="space">{{item.address}}</text>
+        </view>
+      </view>
+    </block>
+  </scroll-view>
+</view>
+

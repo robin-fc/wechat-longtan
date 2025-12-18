@@ -1,0 +1,65 @@
+<view class="order-confirm-page">
+  <view class="top-bar">
+    <view class="top-bar-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="top-title">确认订单</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view wx:if="{{activity}}" class="content">
+    <view class="section">
+      <text class="label">活动</text>
+      <text class="value">{{activity.title}}</text>
+    </view>
+    <view class="section">
+      <text class="label">时间</text>
+      <text class="value time">
+        {{activity.timeRange.startTime}} ~ {{activity.timeRange.endTime}}
+      </text>
+    </view>
+    <view class="section">
+      <text class="label">活动空间</text>
+      <text class="value">
+        {{activity.space.name}} {{activity.space.address}}
+      </text>
+    </view>
+    <view class="section">
+      <text class="label">活动须知</text>
+      <text class="value">
+        报名成功后如需取消，请提前与主理人联系确认。
+      </text>
+    </view>
+    <view class="section">
+      <text class="label">参与者</text>
+      <input
+        class="input"
+        placeholder="请输入姓名"
+        value="{{order.participantName}}"
+        bindinput="onNameChange"
+      />
+    </view>
+    <view class="section">
+      <text class="label">联系方式</text>
+      <input
+        class="input"
+        placeholder="请输入手机号"
+        value="{{order.participantPhone}}"
+        bindinput="onPhoneChange"
+      />
+    </view>
+  </view>
+
+  <view wx:if="{{activity}}" class="bottom-bar">
+    <view class="price-info">
+      <text class="price-label">报名费用</text>
+      <text class="price-value">
+        ￥{{activity.price.amount}}{{activity.price.unit}}
+      </text>
+    </view>
+    <view class="submit-button" bindtap="onSubmitTap">
+      <text>立即报名</text>
+    </view>
+  </view>
+</view>
+

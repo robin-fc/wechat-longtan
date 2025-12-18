@@ -1,0 +1,14 @@
+<view class="collection-list-page">
+  <view class="list-wrapper">
+    <block wx:for="{{collections}}" wx:key="id">
+      <view
+        class="collection-item"
+        data-id="{{item.id}}"
+        bindtap="onCollectionTap"
+      >
+        <collection-card collection="{{item}}" />
+      </view>
+    </block>
+  </view>
+</view>
+

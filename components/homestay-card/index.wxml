@@ -1,0 +1,24 @@
+<view class="homestay-card {{layout}}" bindtap="onTap">
+  <image
+    class="poster"
+    src="{{homestay.cover.url}}"
+    mode="aspectFill"
+  />
+  <view class="content">
+    <text class="name">{{homestay.name}}</text>
+    <view class="tags">
+      <block
+        wx:for="{{homestay.featureTags}}"
+        wx:key="id"
+        wx:for-item="item"
+      >
+        <text class="tag">{{item.name}}</text>
+      </block>
+    </view>
+    <text class="address">{{homestay.address}}</text>
+    <text class="price">
+      ￥{{homestay.referencePrice.amount}}{{homestay.referencePrice.unit}}
+    </text>
+  </view>
+</view>
+

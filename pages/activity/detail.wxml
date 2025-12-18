@@ -1,0 +1,90 @@
+<view class="activity-detail-page">
+  <view class="header-bg"></view>
+  <view class="header-bar">
+    <view class="header-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="header-title">{{activity?.title}}</text>
+    <view class="header-right"></view>
+  </view>
+
+  <view wx:if="{{activity}}" class="body">
+    <view class="poster-wrapper">
+      <image
+        class="poster"
+        src="{{activity.poster.url}}"
+        mode="aspectFill"
+      />
+      <view class="poster-info">
+        <text class="activity-tag">{{activity.secondaryTag.name}}</text>
+        <text class="activity-title">{{activity.title}}</text>
+        <text class="activity-price">
+          ￥{{activity.price.amount}}{{activity.price.unit}}
+        </text>
+        <view class="poster-companions" bindtap="onCompanionsTap">
+          <companions-bar companions="{{activity.companions}}" />
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="section-row">
+        <text class="section-label">时间</text>
+        <text class="section-text">
+          {{activity.timeRange.startTime}} ~ {{activity.timeRange.endTime}}
+        </text>
+      </view>
+      <view class="section-row space-row">
+        <text class="section-label">活动空间</text>
+        <view class="space-main">
+          <text class="space-name">{{activity.space.name}}</text>
+          <text class="space-address">{{activity.space.address}}</text>
+        </view>
+        <view class="space-actions">
+          <view class="space-map" bindtap="onOpenMapTap">
+            <text>地图</text>
+          </view>
+          <view
+            class="space-detail"
+            bindtap=\"onSpaceDetailTap\"
+          >
+            <text>查看</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="section">
+      <text class="section-title">活动详情</text>
+      <text class="section-content">
+        这里展示活动的详细介绍、流程和注意事项。
+      </text>
+    </view>
+
+    <view wx:if=\"{{activity.status === 'finished'}}\" class=\"section\">
+      <text class=\"section-title\">活动评价</text>
+      <text class=\"section-content\">活动结束后可在此查看评价。</text>
+    </view>
+  </view>
+
+  <view wx:if=\"{{activity}}\" class=\"bottom-bar\">
+    <view
+      class=\"bottom-item\"
+      bindtap=\"onToggleCollect\"
+    >
+      <text class=\"bottom-label\">
+        {{isCollected ? '已收藏' : '收藏'}}
+      </text>
+    </view>
+    <view class=\"bottom-item\" bindtap=\"onShareTap\">
+      <text class=\"bottom-label\">分享</text>
+    </view>
+    <view
+      class=\"bottom-primary\"
+      bindtap=\"onSignupTap\"
+    >
+      <text class=\"bottom-primary-label\">立即报名</text>
+    </view>
+  </view>
+</view>
+

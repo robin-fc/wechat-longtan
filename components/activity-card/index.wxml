@@ -1,0 +1,26 @@
+<view class="activity-card {{layout}}" bindtap="onTap">
+  <image
+    class="poster"
+    src="{{activity.poster.url}}"
+    mode="aspectFill"
+  />
+  <view class="content">
+    <view class="title-row">
+      <text class="tag">{{activity.secondaryTag.name}}</text>
+      <text class="title">{{activity.title}}</text>
+    </view>
+    <view class="time-row">
+      <text class="time">{{activity.timeRange.startTime}}</text>
+    </view>
+    <view class="space-row">
+      <text class="space-name">{{activity.space.name}}</text>
+    </view>
+    <view class="bottom-row">
+      <companions-bar companions="{{activity.companions}}" />
+      <text class="price">
+        ￥{{activity.price.amount}}{{activity.price.unit}}
+      </text>
+    </view>
+  </view>
+</view>
+

@@ -1,0 +1,22 @@
+<view class="companions-bar" bindtap="onTap">
+  <view class="companions-bar-left">
+    <view class="avatars">
+      <block
+        wx:for="{{companions.companions}}"
+        wx:for-item="item"
+        wx:for-index="index"
+        wx:key="id"
+      >
+        <image
+          wx:if="{{index < 3}}"
+          class="avatar"
+          src="{{item.avatar.url}}"
+          mode="aspectFill"
+        />
+      </block>
+    </view>
+    <text class="label">同行伙伴</text>
+  </view>
+  <text class="count">{{companions.totalCount}}</text>
+</view>
+

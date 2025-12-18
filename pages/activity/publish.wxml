@@ -1,0 +1,165 @@
+<view class="publish-page">
+  <view class="top-bar">
+    <view class="top-bar-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="top-title">发布活动</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <scroll-view scroll-y="true" class="form-scroll">
+    <view class="form-section">
+      <text class="label">活动标题*</text>
+      <input
+        class="input"
+        placeholder="请输入活动标题"
+        value="{{form.title}}"
+        bindinput="onTitleChange"
+      />
+    </view>
+
+    <view class="form-section">
+      <text class="label">关联合集</text>
+      <picker
+        mode="selector"
+        range="{{collectionOptions}}"
+        range-key="name"
+        value="{{collectionIndex}}"
+        bindchange="onCollectionChange"
+      >
+        <view class="picker-value">
+          <text>
+            {{form.collectionId ? collectionOptions[collectionIndex].name : '可选，选择一个合集'}}
+          </text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section inline">
+      <view class="inline-left">
+        <text class="label">报名费*</text>
+        <input
+          class="input"
+          type="number"
+          placeholder="请输入金额"
+          value="{{form.price}}"
+          bindinput="onPriceChange"
+          disabled="{{form.free}}"
+        />
+      </view>
+      <view class="inline-right">
+        <checkbox
+          value="free"
+          checked="{{form.free}}"
+          bindchange="onFreeChange"
+        >
+          免费
+        </checkbox>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <text class="label">活动类型*</text>
+      <picker
+        mode="selector"
+        range="{{typeOptions}}"
+        value="{{typeIndex}}"
+        bindchange="onTypeChange"
+      >
+        <view class="picker-value">
+          <text>{{typeOptions[typeIndex]}}</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">
+      <text class="label">人数限制*</text>
+      <input
+        class="input"
+        type="number"
+        placeholder="请输入人数"
+        value="{{form.limit}}"
+        bindinput="onLimitChange"
+      />
+    </view>
+
+    <view class="form-section">
+      <text class="label">活动时间*</text>
+      <view class="time-row">
+        <picker
+          mode="datetime"
+          value="{{form.startTime}}"
+          bindchange="onStartTimeChange"
+        >
+          <view class="picker-value">
+            <text>
+              {{form.startTime || '选择开始时间'}}
+            </text>
+          </view>
+        </picker>
+        <text class="time-sep">~</text>
+        <picker
+          mode="datetime"
+          value="{{form.endTime}}"
+          bindchange="onEndTimeChange"
+        >
+          <view class="picker-value">
+            <text>
+              {{form.endTime || '选择结束时间'}}
+            </text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <text class="label">活动空间*</text>
+      <picker
+        mode="selector"
+        range="{{spaceOptions}}"
+        value="{{spaceIndex}}"
+        bindchange="onSpaceChange"
+      >
+        <view class="picker-value">
+          <text>{{spaceOptions[spaceIndex]}}</text>
+        </view>
+      </picker>
+    </view>
+
+    <view class="form-section">
+      <text class="label">活动海报*</text>
+      <view class="poster-row">
+        <view
+          wx:if="{{form.posterUrl}}"
+          class="poster-preview"
+        >
+          <image
+            class="poster-image"
+            src="{{form.posterUrl}}"
+            mode="aspectFill"
+          />
+        </view>
+        <view class="poster-upload" bindtap="onChoosePosterTap">
+          <text>上传图片</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="form-section">
+      <text class="label">活动介绍*</text>
+      <textarea
+        class="textarea"
+        placeholder="请填写活动介绍、流程和须知"
+        value="{{form.description}}"
+        bindinput="onDescriptionChange"
+      />
+    </view>
+  </scroll-view>
+
+  <view class="bottom-bar">
+    <view class="submit-button" bindtap="onSubmitTap">
+      <text>提交审核</text>
+    </view>
+  </view>
+</view>
+

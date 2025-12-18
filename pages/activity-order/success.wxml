@@ -1,0 +1,18 @@
+<view class="order-success-page">
+  <view class="top-bar">
+    <view class="top-bar-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="top-title">报名成功</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view class="content">
+    <view class="success-icon">✔</view>
+    <text class="success-title">报名成功</text>
+    <text class="success-desc">
+      您已成功报名活动，可在「我的活动」中查看。
+    </text>
+  </view>
+</view>
+

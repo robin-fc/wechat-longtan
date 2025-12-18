@@ -1,0 +1,87 @@
+<view class="room-detail-page">
+  <view class="header-bg"></view>
+  <view class="header-bar">
+    <view class="header-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="header-title">房间详情</text>
+    <view class="header-right"></view>
+  </view>
+
+  <scroll-view scroll-y="true" class="body">
+    <view wx:if="{{room}}" class="section">
+      <swiper class="poster-swiper">
+        <block wx:for="{{room.images}}" wx:key="id">
+          <swiper-item>
+            <image
+              class="poster"
+              src="{{item.url}}"
+              mode="aspectFill"
+            />
+          </swiper-item>
+        </block>
+      </swiper>
+      <text class="name">{{room.name}}</text>
+      <text class="desc">{{room.description}}</text>
+      <text class="meta">房型：山景大床房</text>
+      <text class="meta">面积：约30㎡</text>
+      <text class="meta">可住人数：{{room.capacity}}人</text>
+      <text class="meta">卫生间：独立卫生间</text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">选择日期</text>
+      <view class="date-row">
+        <picker
+          mode="date"
+          value="{{checkInDate}}"
+          bindchange="onCheckInChange"
+        >
+          <view class="date-picker">
+            <text>
+              {{checkInDate || '入住日期'}}
+            </text>
+          </view>
+        </picker>
+        <text class="date-sep">~</text>
+        <picker
+          mode="date"
+          value="{{checkOutDate}}"
+          bindchange="onCheckOutChange"
+        >
+          <view class="date-picker">
+            <text>
+              {{checkOutDate || '离开日期'}}
+            </text>
+          </view>
+        </picker>
+      </view>
+      <text class="nights">
+        共{{nights}}晚，一周起住，越久越便宜
+      </text>
+    </view>
+
+    <view class="section">
+      <text class="section-title">预定须知</text>
+      <text class="paragraph">
+        这里展示房间简介、预订须知、价格规则、入住流程等内容。
+      </text>
+    </view>
+  </scroll-view>
+
+  <view class="bottom-bar" wx:if="{{room}}">
+    <view class="price-info">
+      <text class="price-label">价格</text>
+      <text class="price-value">
+        ￥{{room.price.amount}}{{room.price.unit}}
+      </text>
+      <text class="price-desc">
+        {{checkInDate}} ~ {{checkOutDate}}
+      </text>
+    </view>
+    <view class="submit-button" bindtap="onApplyTap">
+      <text>申请预订</text>
+    </view>
+  </view>
+</view>
+

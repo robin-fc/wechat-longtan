@@ -1,0 +1,62 @@
+<view class="search-page">
+  <view class="top-bar">
+    <view class="top-bar-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="top-title">搜索</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view class="search-box">
+    <input
+      class="search-input"
+      placeholder="{{placeholder}}"
+      confirm-type="search"
+      value="{{keyword}}"
+      bindinput="onKeywordInput"
+      bindconfirm="onSearchConfirm"
+    />
+    <view class="search-button" bindtap="onSearchTap">
+      <text>搜索</text>
+    </view>
+  </view>
+
+  <view wx:if="{{!hasSearched || results.length === 0}}" class="hot-section">
+    <text class="hot-title">热门搜索</text>
+    <view class="hot-grid">
+      <block wx:for="{{hotKeywords}}" wx:key="id">
+        <view
+          class="hot-item"
+          data-keyword="{{item.keyword}}"
+          bindtap="onHotKeywordTap"
+        >
+          <text>{{item.keyword}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view wx:if="{{hasSearched && results.length > 0}}" class="result-section">
+    <block wx:for="{{results}}" wx:key="id">
+      <view
+        class="result-item"
+        data-item="{{item}}"
+        bindtap="onResultTap"
+      >
+        <view class="result-main">
+          <text class="result-title">{{item.title}}</text>
+          <text class="result-subtitle">{{item.subtitle}}</text>
+        </view>
+        <view class="result-extra">
+          <text class="result-type">
+            {{item.type === 'activity' ? '活动' : ''}}
+            {{item.type === 'homestay' ? '民宿' : ''}}
+            {{item.type === 'user' ? '用户' : ''}}
+          </text>
+          <text class="result-extra-text">{{item.extra}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "民宿",
+  "usingComponents": {
+    "homestay-card": "/components/homestay-card/index"
+  }
+}
+

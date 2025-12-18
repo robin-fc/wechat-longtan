@@ -1,0 +1,28 @@
+<view class="collection-detail-page">
+  <view wx:if="{{collection}}">
+    <image
+      class="cover"
+      src="{{collection.cover.url}}"
+      mode="aspectFill"
+    />
+    <view class="header">
+      <text class="title">{{collection.name}}</text>
+      <text class="desc">{{collection.description}}</text>
+    </view>
+    <view class="section">
+      <text class="section-title">活动列表</text>
+      <view class="activity-list">
+        <block wx:for="{{collection.activities}}" wx:key="id">
+          <view class="activity-item">
+            <activity-card
+              activity="{{item}}"
+              layout="horizontal"
+              bindtap="onActivityTap"
+            />
+          </view>
+        </block>
+      </view>
+    </view>
+  </view>
+</view>
+

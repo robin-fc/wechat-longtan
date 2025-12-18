@@ -1,0 +1,45 @@
+<view class="apply-status-page">
+  <view class="top-bar">
+    <view class="top-bar-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="top-title">我的申请</text>
+    <view class="top-bar-right"></view>
+  </view>
+
+  <view class="list-wrapper">
+    <block wx:for="{{applications}}" wx:key="id">
+      <view class="card">
+        <view class="row">
+          <text class="status {{item.statusClass}}">
+            {{item.statusText}}
+          </text>
+          <text class="amount">
+            ￥{{item.priceText}}
+          </text>
+        </view>
+        <view class="row">
+          <text class="title">{{item.title}}</text>
+        </view>
+        <view class="row">
+          <text class="time">{{item.timeText}}</text>
+        </view>
+        <view class="row">
+          <text class="guest">
+            入住人：{{item.guestName}} {{item.phone}}
+          </text>
+        </view>
+        <view wx:if="{{item.canCancel}}" class="row action-row">
+          <view
+            class="cancel-btn"
+            data-id="{{item.id}}"
+            bindtap="onCancelTap"
+          >
+            <text>取消订单</text>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>
+

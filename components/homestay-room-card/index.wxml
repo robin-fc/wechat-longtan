@@ -1,0 +1,25 @@
+<view class="room-card" bindtap="onTap">
+  <image
+    class="poster"
+    src="{{room.images[0].url}}"
+    mode="aspectFill"
+  />
+  <view class="content">
+    <text class="name">{{room.name}}</text>
+    <text class="duration">{{room.stayDurationText}}</text>
+    <text class="capacity">可住{{room.capacity}}人</text>
+    <view class="facilities">
+      <block
+        wx:for="{{room.facilities}}"
+        wx:key="*this"
+        wx:for-item="item"
+      >
+        <text class="facility">{{item}}</text>
+      </block>
+    </view>
+    <text class="price">
+      ￥{{room.price.amount}}{{room.price.unit}}
+    </text>
+  </view>
+</view>
+

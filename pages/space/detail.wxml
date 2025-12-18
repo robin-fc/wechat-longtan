@@ -1,0 +1,60 @@
+<view class="space-detail-page">
+  <view class="header-bg"></view>
+  <view class="header-bar">
+    <view class="header-left" bindtap="onBackTap">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="header-title">活动空间详情</text>
+    <view class="header-right"></view>
+  </view>
+
+  <view class="tabs">
+    <view
+      class="tab-item {{activeTab === 'activity' ? 'active' : ''}}"
+      data-tab="activity"
+      bindtap="onTabTap"
+    >
+      <text>活动</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'homestay' ? 'active' : ''}}"
+      data-tab="homestay"
+      bindtap="onTabTap"
+    >
+      <text>民宿</text>
+    </view>
+    <view
+      class="tab-item {{activeTab === 'space' ? 'active' : ''}}"
+      data-tab="space"
+      bindtap="onTabTap"
+    >
+      <text>空间</text>
+    </view>
+  </view>
+
+  <scroll-view scroll-y="true" class="body">
+    <view wx:if="{{activeTab === 'activity'}}" class="section">
+      <text class="section-title">空间信息</text>
+      <text class="space-name">龙潭公共空间A</text>
+      <text class="space-desc">
+        这里是龙潭村的公共活动空间，适合开展工作坊、分享会等小型活动。
+      </text>
+      <text class="space-host">主理人：龙潭主理人</text>
+    </view>
+
+    <view wx:if="{{activeTab === 'homestay'}}" class="section">
+      <text class="section-title">关联民宿</text>
+      <text class="space-desc">
+        该空间下的民宿将在这里展示，方便参与者长住体验。
+      </text>
+    </view>
+
+    <view wx:if="{{activeTab === 'space'}}" class="section">
+      <text class="section-title">空间图文详情</text>
+      <text class="space-desc">
+        这里展示空间的图文介绍、使用规则和历史活动记录。
+      </text>
+    </view>
+  </scroll-view>
+</view>
+
