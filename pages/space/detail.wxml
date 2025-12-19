@@ -1,29 +1,33 @@
 <view class="space-detail-page">
+  <view class="header">
+    <image class="header-bg" src="/assets/images/homestay.jpg" mode="aspectFill" />
+    <view class="header-mask"></view>
+    <view class="header-bar">
+      <view class="header-left" bindtap="onBackTap">
+        <text class="back-icon">←</text>
+      </view>
+      <text class="header-title">活动空间详情</text>
+      <view class="header-right"></view>
+    </view>
+    <view class="header-info">
+      <text class="info-title">{{title}}</text>
+      <text class="info-subtitle">{{activityCount}}个在售活动</text>
+      <text class="info-address">{{address}}</text>
+    </view>
+  </view>
   <view class="tabs">
-    <view
-      class="tab-item {{activeTab === 'activity' ? 'active' : ''}}"
-      data-tab="activity"
-      bindtap="onTabTap"
-    >
+    <view class="tab-item {{activeTab === 'activity' ? 'active' : ''}}" data-tab="activity" bindtap="onTabTap">
       <text>活动</text>
     </view>
-    <view
-      class="tab-item {{activeTab === 'homestay' ? 'active' : ''}}"
-      data-tab="homestay"
-      bindtap="onTabTap"
-    >
+    <view class="tab-item {{activeTab === 'homestay' ? 'active' : ''}}" data-tab="homestay" bindtap="onTabTap">
       <text>民宿</text>
     </view>
-    <view
-      class="tab-item {{activeTab === 'space' ? 'active' : ''}}"
-      data-tab="space"
-      bindtap="onTabTap"
-    >
+    <view class="tab-item {{activeTab === 'space' ? 'active' : ''}}" data-tab="space" bindtap="onTabTap">
       <text>空间</text>
     </view>
   </view>
 
-  <scroll-view scroll-y="true" class="body">
+  <scroll-view scroll-y="true" class="body" style="margin: 0;padding: 0;">
     <view wx:if="{{activeTab === 'activity'}}" class="section">
       <text class="section-title">空间信息</text>
       <text class="space-name">龙潭公共空间A</text>
@@ -35,9 +39,13 @@
 
     <view wx:if="{{activeTab === 'homestay'}}" class="section">
       <text class="section-title">关联民宿</text>
-      <text class="space-desc">
-        该空间下的民宿将在这里展示，方便参与者长住体验。
-      </text>
+      <view class="homestay-list">
+        <block wx:for="{{homestays}}" wx:key="id">
+          <view class="homestay-item">
+            <homestay-card homestay="{{item}}" layout="vertical" bindtap="onHomestayTap" />
+          </view>
+        </block>
+      </view>
     </view>
 
     <view wx:if="{{activeTab === 'space'}}" class="section">
@@ -48,4 +56,3 @@
     </view>
   </scroll-view>
 </view>
-
