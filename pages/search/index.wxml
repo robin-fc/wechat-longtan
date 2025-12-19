@@ -1,12 +1,4 @@
 <view class="search-page">
-  <view class="top-bar">
-    <view class="top-bar-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="top-title">搜索</text>
-    <view class="top-bar-right"></view>
-  </view>
-
   <view class="search-box">
     <input
       class="search-input"

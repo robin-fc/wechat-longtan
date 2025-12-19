@@ -1,7 +1,6 @@
-<view class="entry-card" bindtap="onTap">
+<view class="entry-card {{align}}" bindtap="onTap">
   <view class="icon-wrapper">
     <image class="icon" src="{{iconUrl}}" mode="aspectFill" />
   </view>
   <text class="title">{{title}}</text>
 </view>
-

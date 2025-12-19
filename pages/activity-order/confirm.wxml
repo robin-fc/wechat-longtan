@@ -1,12 +1,4 @@
 <view class="order-confirm-page">
-  <view class="top-bar">
-    <view class="top-bar-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="top-title">确认订单</text>
-    <view class="top-bar-right"></view>
-  </view>
-
   <view wx:if="{{activity}}" class="content">
     <view class="section">
       <text class="label">活动</text>

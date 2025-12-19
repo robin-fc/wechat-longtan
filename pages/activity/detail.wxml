@@ -1,12 +1,4 @@
 <view class="activity-detail-page">
-  <view class="header-bg"></view>
-  <view class="header-bar">
-    <view class="header-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="header-title">{{activity ? activity.title : ''}}</text>
-    <view class="header-right"></view>
-  </view>
   <view wx:if="{{activity}}" class="body">
     <view class="poster-wrapper">
       <image class="poster" src="{{activity.poster.url}}" mode="aspectFill" />

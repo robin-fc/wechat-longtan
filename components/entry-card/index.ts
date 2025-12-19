@@ -8,6 +8,10 @@ Component({
       type: String,
       value: '',
     },
+    align: {
+      type: String,
+      value: 'align-center',
+    },
   },
   methods: {
     onTap(this: WechatMiniprogram.Component.TrivialInstance) {
@@ -15,4 +19,3 @@ Component({
     },
   },
 })
-

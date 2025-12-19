@@ -6,6 +6,12 @@ interface HomeState {
   loading: boolean
   pageData: HomePageData | null
   navPaddingTop: number
+  heroCurrent: number
+  heroCardMarginX: number
+  heroPrevMargin: string
+  heroNextMargin: string
+  heroBgUrl: string
+  topBgHeight: number
 }
 
 Page<HomeState, WechatMiniprogram.IAnyObject>({
@@ -13,20 +19,33 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     loading: true,
     pageData: null,
     navPaddingTop: 0,
+    heroCurrent: 1,
+    heroCardMarginX: 40,
+    heroPrevMargin: '60rpx',
+    heroNextMargin: '60rpx',
+    heroBgUrl: '',
+    topBgHeight: 0,
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const sys = wx.getSystemInfoSync()
+    const ratio = 750 / (sys.windowWidth || 750)
+    const halfScreenRpx = Math.round((sys.windowHeight || 1334) * ratio / 2)
     this.setData({
       navPaddingTop: sys.statusBarHeight || 0,
+      topBgHeight: halfScreenRpx,
     })
     await this.loadData()
   },
   async loadData(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
       const data = await fetchHomeData()
+      const idx = this.data.heroCurrent
+      const bg =
+        data.carousel && data.carousel[idx] ? data.carousel[idx].poster.url : ''
       this.setData({
         pageData: data,
         loading: false,
+        heroBgUrl: bg,
       })
     } catch (_err) {
       this.setData({
@@ -65,6 +84,36 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   },
   onMoreHomestaysTap() {
     smartNavigateTo('/pages/homestay/list')
+  },
+  onHeroChange(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.SwiperChange
+  ) {
+    const idx = e.detail.current
+    const data = (this.data as HomeState).pageData
+    const bg =
+      data && data.carousel && data.carousel[idx]
+        ? data.carousel[idx].poster.url
+        : ''
+    this.setData({
+      heroCurrent: idx,
+      heroBgUrl: bg,
+    })
+  },
+  onHeroIndicatorTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const idx = Number((e.currentTarget.dataset || {}).idx || 0)
+    const data = (this.data as HomeState).pageData
+    const bg =
+      data && data.carousel && data.carousel[idx]
+        ? data.carousel[idx].poster.url
+        : ''
+    this.setData({
+      heroCurrent: idx,
+      heroBgUrl: bg,
+    })
   },
   onActivityCardTap(e: WechatMiniprogram.CustomEvent) {
     const activity = (e.detail || {}).activity as {

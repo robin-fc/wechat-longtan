@@ -1,20 +1,7 @@
 <view class="homestay-detail-page">
-  <view class="header-bg"></view>
-  <view class="header-bar">
-    <view class="header-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="header-title">民宿详情</text>
-    <view class="header-right"></view>
-  </view>
-
   <scroll-view scroll-y="true" class="body">
     <view wx:if="{{homestay}}" class="section">
-      <image
-        class="cover"
-        src="{{homestay.cover.url}}"
-        mode="aspectFill"
-      />
+      <image class="cover" src="{{homestay.cover.url}}" mode="aspectFill" />
       <text class="name">{{homestay.name}}</text>
       <view class="tags">
         <block wx:for="{{homestay.featureTags}}" wx:key="id">
@@ -23,47 +10,31 @@
       </view>
       <text class="address">{{homestay.address}}</text>
     </view>
-
     <view class="section">
       <view class="filter-row">
-        <picker
-          mode="date"
-          value="{{startDate}}"
-          bindchange="onStartDateChange"
-        >
+        <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
           <view class="date-picker">
-            <text>
-              {{startDate || '选择入住时间'}}
-            </text>
+            <text>{{startDate || '选择入住时间'}}</text>
           </view>
         </picker>
         <view class="duration-row">
           <block wx:for="{{durations}}" wx:key="value">
-            <view
-              class="duration-item {{item.value === duration ? 'active' : ''}}"
-              data-value="{{item.value}}"
-              bindtap="onDurationTap"
-            >
+            <view class="duration-item {{item.value === duration ? 'active' : ''}}" data-value="{{item.value}}" bindtap="onDurationTap">
               <text>{{item.label}}</text>
             </view>
           </block>
         </view>
       </view>
     </view>
-
     <view class="section">
       <text class="section-title">可选房间</text>
       <view class="room-list">
         <block wx:for="{{rooms}}" wx:key="id">
           <view class="room-item">
-            <homestay-room-card
-              room="{{item}}"
-              bindtap="onRoomTap"
-            />
+            <homestay-room-card room="{{item}}" bindtap="onRoomTap" />
           </view>
         </block>
       </view>
     </view>
   </scroll-view>
 </view>
-

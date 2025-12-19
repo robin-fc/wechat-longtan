@@ -3,6 +3,15 @@ Page({
     checked: false,
     showModal: false,
   },
+  onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    const logged = !!wx.getStorageSync('isLoggedIn')
+    if (logged) {
+      wx.switchTab({ url: '/pages/home/index' })
+      return
+    }
+    const accepted = !!wx.getStorageSync('privacyAccepted')
+    this.setData({ checked: accepted })
+  },
   onCheckChange(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.CheckboxGroupChange

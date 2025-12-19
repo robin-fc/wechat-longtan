@@ -1,12 +1,4 @@
 <view class="activity-list-page">
-  <view class="top-bar">
-    <view class="top-bar-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="top-title">活动</text>
-    <view class="top-bar-right"></view>
-  </view>
-
   <view class="search-row">
     <view class="search-input-wrapper" bindtap="onSearchTap">
       <text class="search-placeholder">搜索活动/活动空间</text>

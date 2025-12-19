@@ -1,12 +1,4 @@
 <view class="order-success-page">
-  <view class="top-bar">
-    <view class="top-bar-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="top-title">报名成功</text>
-    <view class="top-bar-right"></view>
-  </view>
-
   <view class="content">
     <view class="success-icon">✔</view>
     <text class="success-title">报名成功</text>

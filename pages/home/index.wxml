@@ -1,4 +1,7 @@
 <view class="home-page">
+  <view class="top-bg" style="height: {{topBgHeight}}rpx;">
+    <image class="top-bg-img" src="{{heroBgUrl}}" mode="aspectFill" />
+  </view>
   <view class="top-bar" style="padding-top: {{navPaddingTop}}px;">
     <view class="top-bar-left" bindtap="onSearchTap">
       <text class="search-icon">🔍</text>
@@ -6,62 +9,50 @@
     <text class="top-title">DAO 龙潭</text>
     <view class="top-bar-right"></view>
   </view>
-
   <view wx:if="{{loading}}" class="loading">
     <text>加载中...</text>
   </view>
-
   <view wx:else class="content">
-    <swiper
-      class="hero-swiper"
-      indicator-dots="true"
-      autoplay="false"
-      previous-margin="40rpx"
-      next-margin="40rpx"
-    >
-      <block wx:for="{{pageData.carousel}}" wx:key="id">
-        <swiper-item>
-          <view class="hero-card">
-            <image
-              class="hero-poster"
-              src="{{item.poster.url}}"
-              mode="aspectFill"
-            />
+    <swiper class="hero-swiper" indicator-dots="{{false}}" circular="true" autoplay="{{false}}" interval="5000" duration="350" easing-function="easeInOutCubic" previous-margin="{{heroPrevMargin}}" next-margin="{{heroNextMargin}}" current="{{heroCurrent}}" bindchange="onHeroChange">
+      <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
+        <swiper-item style="height: 810rpx;">
+          <view class="hero-card {{heroCurrent === idx ? 'selected' : ''}}" style="margin-left: {{heroCurrent === idx ? heroCardMarginX : 8}}rpx; margin-right: {{heroCurrent === idx ? heroCardMarginX : 8}}rpx;">
+            <view class="hero-poster-wrapper">
+              <image class="hero-poster" src="{{item.poster.url}}" mode="widthFix" />
+            </view>
             <view class="hero-info">
-              <text class="hero-title">{{item.title}}</text>
-              <text class="hero-slogan">{{item.slogan}}</text>
-              <view class="hero-bottom">
-                <companions-bar companions="{{item.companions}}" />
-                <text class="hero-price">
-                  ￥{{item.price.amount}}{{item.price.unit}}
-                </text>
+              <view class="hero-text">
+                <text class="hero-title">{{item.title}}</text>
+                <text class="hero-sep">/</text>
+                <text class="hero-desc">{{item.description}}</text>
               </view>
+              <text class="hero-category">{{item.category}}</text>
             </view>
           </view>
         </swiper-item>
       </block>
     </swiper>
-
+    <view class="hero-indicator">
+      <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
+        <view
+          class="hero-indicator-item {{heroCurrent === idx ? 'active' : ''}}"
+          data-idx="{{idx}}"
+          bindtap="onHeroIndicatorTap"
+        ></view>
+      </block>
+    </view>
     <view class="section">
       <view class="section-header">
         <text class="section-title">分类入口</text>
       </view>
       <view class="entry-grid">
-        <block wx:for="{{pageData.entries}}" wx:key="id">
-          <view
-            class="entry-item"
-            data-item="{{item}}"
-            bindtap="onEntryTap"
-          >
-            <entry-card
-              title="{{item.name}}"
-              icon-url="{{item.icon.url}}"
-            />
+        <block wx:for="{{pageData.entries}}" wx:key="id" wx:for-index="idx">
+          <view class="entry-item" data-item="{{item}}" bindtap="onEntryTap">
+            <entry-card title="{{item.name}}" icon-url="{{item.icon.url}}" />
           </view>
         </block>
       </view>
     </view>
-
     <view class="section">
       <view class="section-header">
         <text class="section-title">热门活动</text>
@@ -72,16 +63,11 @@
       <view class="activity-list">
         <block wx:for="{{pageData.hotActivities}}" wx:key="id">
           <view class="activity-item">
-            <activity-card
-              activity="{{item}}"
-              layout="vertical"
-              bindtap="onActivityCardTap"
-            />
+            <activity-card activity="{{item}}" layout="vertical" bindtap="onActivityCardTap" />
           </view>
         </block>
       </view>
     </view>
-
     <view class="section">
       <view class="section-header">
         <text class="section-title">活动合集</text>
@@ -90,15 +76,13 @@
         </view>
       </view>
       <scroll-view scroll-x="true" class="collection-scroll">
-        <block wx:for="{{pageData.collections}}" wx:key="id">
-          <collection-card
-            collection="{{item}}"
-            bindtap="onCollectionCardTap"
-          />
-        </block>
+        <view class="collection-row">
+          <block wx:for="{{pageData.collections}}" wx:key="id">
+            <collection-card collection="{{item}}" bindtap="onCollectionCardTap" />
+          </block>
+        </view>
       </scroll-view>
     </view>
-
     <view class="section">
       <view class="section-header">
         <text class="section-title">民宿推荐</text>
@@ -109,25 +93,19 @@
       <view class="homestay-list">
         <block wx:for="{{pageData.homestays}}" wx:key="id">
           <view class="homestay-item">
-            <homestay-card
-              homestay="{{item}}"
-              layout="horizontal"
-              bindtap="onHomestayCardTap"
-            />
+            <homestay-card homestay="{{item}}" layout="horizontal" bindtap="onHomestayCardTap" />
           </view>
         </block>
       </view>
     </view>
-
     <view class="section">
       <view class="section-header">
         <text class="section-title">关于 DAO 龙潭</text>
       </view>
       <view class="about-list">
-        <block wx:for="{{pageData.aboutLinks}}" wx:key="id">
-          <view class="about-item">
-            <text class="about-title">{{item.title}}</text>
-            <text class="about-desc">{{item.description}}</text>
+        <block wx:for="{{pageData.aboutLinks}}" wx:key="id" wx:for-index="idx">
+          <view class="about-item" data-item="{{item}}" bindtap="onEntryTap">
+            <entry-card title="{{item.title}}" icon-url="{{item.url}}" />
           </view>
         </block>
       </view>
