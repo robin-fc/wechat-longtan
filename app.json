@@ -43,7 +43,7 @@
         "selectedIconPath": "assets/icons/home-active.png"
       },
       {
-        "pagePath": "pages/activity-collection/list",
+        "pagePath": "pages/activity/list",
         "text": "活动",
         "iconPath": "assets/icons/live.png",
         "selectedIconPath": "assets/icons/live-active.png"

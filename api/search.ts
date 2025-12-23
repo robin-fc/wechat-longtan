@@ -1,6 +1,5 @@
 import type { Activity } from '../model/activity'
 import type { Homestay } from '../model/homestay'
-import type { UserProfile } from '../model/user'
 import type { ID } from '../model/common'
 import { fetchHomeData } from './home'
 
