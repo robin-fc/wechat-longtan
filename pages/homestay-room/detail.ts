@@ -7,6 +7,10 @@ interface RoomDetailState {
   checkInDate: string
   checkOutDate: string
   nights: number
+  menuTop: number
+  menuHeight: number
+  totalPrice: number
+  displayDateRange: string
 }
 
 Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
@@ -15,6 +19,10 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     checkInDate: '',
     checkOutDate: '',
     nights: 0,
+    menuTop: 0,
+    menuHeight: 44,
+    totalPrice: 0,
+    displayDateRange: '',
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -24,10 +32,16 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     if (!id) {
       return
     }
+    const menuRect = wx.getMenuButtonBoundingClientRect()
+    this.setData({
+      menuTop: menuRect ? menuRect.top : 0,
+      menuHeight: menuRect ? menuRect.height : 44,
+    })
     const room = await fetchHomestayRoomDetail(id)
     this.setData({
       room,
     })
+    this.updateNights()
   },
   onBackTap() {
     goBack()
@@ -67,6 +81,8 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     if (!state.checkInDate || !state.checkOutDate) {
       this.setData({
         nights: 0,
+        totalPrice: 0,
+        displayDateRange: '',
       })
       return
     }
@@ -75,12 +91,27 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     if (!isNaN(start) && !isNaN(end) && end > start) {
       const diff = end - start
       const nights = Math.round(diff / (24 * 60 * 60 * 1000))
+      const amount =
+        state.room && state.room.price && state.room.price.amount
+          ? state.room.price.amount
+          : 0
+      const totalPrice = nights * amount
+      const inDate = state.checkInDate
+      const outDate = state.checkOutDate
+      const displayDateRange =
+        inDate && outDate
+          ? `${inDate.slice(5)}至${outDate.slice(5)}`
+          : ''
       this.setData({
         nights,
+        totalPrice,
+        displayDateRange,
       })
     } else {
       this.setData({
         nights: 0,
+        totalPrice: 0,
+        displayDateRange: '',
       })
     }
   },

@@ -26,8 +26,6 @@
         <text class="facility">{{item}}</text>
       </block>
     </view>
-    <text class="price">
-      ￥{{room.price.amount}}{{room.price.unit}}
-    </text>
+    <text class="price">￥{{room.price.amount}}/{{room.price.unit}}</text>
   </view>
 </view>

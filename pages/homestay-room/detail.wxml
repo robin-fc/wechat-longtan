@@ -1,17 +1,28 @@
 <view class="room-detail-page">
+  <view class="header">
+    <image
+      wx:if="{{room && room.images && room.images.length}}"
+      class="header-bg"
+      src="{{room.images[0].url}}"
+      mode="aspectFill"
+    />
+    <image
+      wx:else
+      class="header-bg"
+      src="/assets/images/room.jpg"
+      mode="aspectFill"
+    />
+    <view class="header-mask"></view>
+  </view>
+  <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+    <view class="header-left" bindtap="onBackTap">
+      <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+    </view>
+    <text class="header-title">房间详情</text>
+    <view class="header-right"></view>
+  </view>
   <scroll-view scroll-y="true" class="body">
-    <view wx:if="{{room}}" class="section">
-      <swiper class="poster-swiper">
-        <block wx:for="{{room.images}}" wx:key="id">
-          <swiper-item>
-            <image
-              class="poster"
-              src="{{item.url}}"
-              mode="aspectFill"
-            />
-          </swiper-item>
-        </block>
-      </swiper>
+    <view wx:if="{{room}}" class="intro-card">
       <text class="name">{{room.name}}</text>
       <text class="desc">{{room.description}}</text>
       <text class="meta">房型：山景大床房</text>
@@ -20,7 +31,7 @@
       <text class="meta">卫生间：独立卫生间</text>
     </view>
 
-    <view class="section">
+    <view class="section-bg">
       <text class="section-title">选择日期</text>
       <view class="date-row">
         <picker
@@ -29,9 +40,7 @@
           bindchange="onCheckInChange"
         >
           <view class="date-picker">
-            <text>
-              {{checkInDate || '入住日期'}}
-            </text>
+            <text>{{checkInDate || '入住日期'}}</text>
           </view>
         </picker>
         <text class="date-sep">~</text>
@@ -41,9 +50,7 @@
           bindchange="onCheckOutChange"
         >
           <view class="date-picker">
-            <text>
-              {{checkOutDate || '离开日期'}}
-            </text>
+            <text>{{checkOutDate || '离开日期'}}</text>
           </view>
         </picker>
       </view>
@@ -62,17 +69,11 @@
 
   <view class="bottom-bar" wx:if="{{room}}">
     <view class="price-info">
-      <text class="price-label">价格</text>
-      <text class="price-value">
-        ￥{{room.price.amount}}{{room.price.unit}}
-      </text>
-      <text class="price-desc">
-        {{checkInDate}} ~ {{checkOutDate}}
-      </text>
+      <text class="price-value">￥{{totalPrice}}</text>
+      <text class="price-desc">{{displayDateRange}} 共{{nights}}晚*{{room.price.amount}}/{{room.price.unit}}</text>
     </view>
     <view class="submit-button" bindtap="onApplyTap">
       <text>申请预订</text>
     </view>
   </view>
 </view>
-

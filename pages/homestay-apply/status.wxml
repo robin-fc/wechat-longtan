@@ -1,12 +1,4 @@
 <view class="apply-status-page">
-  <view class="top-bar">
-    <view class="top-bar-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="top-title">我的申请</text>
-    <view class="top-bar-right"></view>
-  </view>
-
   <view class="list-wrapper">
     <block wx:for="{{applications}}" wx:key="id">
       <view class="card">
