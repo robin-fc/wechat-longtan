@@ -1,7 +1,23 @@
 <view class="homestay-detail-page">
+  <view class="header">
+    <image
+      wx:if="{{homestay}}"
+      class="header-bg"
+      src="{{homestay.cover.url}}"
+      mode="aspectFill"
+    />
+    <view wx:else class="header-placeholder"></view>
+    <view class="header-mask"></view>
+  </view>
+  <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+    <view class="header-left" bindtap="onBackTap">
+      <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+    </view>
+    <text class="header-title">民宿详情</text>
+    <view class="header-right"></view>
+  </view>
   <scroll-view scroll-y="true" class="body">
-    <view wx:if="{{homestay}}" class="section">
-      <image class="cover" src="{{homestay.cover.url}}" mode="aspectFill" />
+    <view wx:if="{{homestay}}" class="intro-card">
       <text class="name">{{homestay.name}}</text>
       <view class="tags">
         <block wx:for="{{homestay.featureTags}}" wx:key="id">
@@ -27,7 +43,6 @@
       </view>
     </view>
     <view class="section">
-      <text class="section-title">可选房间</text>
       <view class="room-list">
         <block wx:for="{{rooms}}" wx:key="id">
           <view class="room-item">

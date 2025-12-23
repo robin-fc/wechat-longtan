@@ -18,6 +18,8 @@ interface HomestayDetailState {
   startDate: string
   duration: DurationType
   durations: DurationOption[]
+  menuTop: number
+  menuHeight: number
 }
 
 Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
@@ -32,6 +34,8 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       { label: '一个月', value: 'month' },
       { label: '三个月', value: 'threeMonths' },
     ],
+    menuTop: 0,
+    menuHeight: 44,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -41,6 +45,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     if (!id) {
       return
     }
+    const menuRect = wx.getMenuButtonBoundingClientRect()
+    this.setData({
+      menuTop: menuRect ? menuRect.top : 0,
+      menuHeight: menuRect ? menuRect.height : 44,
+    })
     const homestay = await fetchHomestayDetail(id)
     if (!homestay) {
       return
