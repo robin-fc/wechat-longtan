@@ -2,9 +2,9 @@
   <view class="header">
     <image class="header-bg" src="/assets/images/homestay.jpg" mode="aspectFill" />
     <view class="header-mask"></view>
-    <view class="header-bar">
+    <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
       <view class="header-left" bindtap="onBackTap">
-        <text class="back-icon">←</text>
+        <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
       </view>
       <text class="header-title">活动空间详情</text>
       <view class="header-right"></view>

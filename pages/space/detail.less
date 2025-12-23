@@ -34,10 +34,16 @@
   right: 0;
   top: 0;
   height: 88rpx;
-  padding: 0 24rpx;
+  padding: 0 12rpx;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: rgba(255, 255, 255, 0.28);
+  border-radius: 44rpx;
+  backdrop-filter: blur(12rpx);
+  -webkit-backdrop-filter: blur(12rpx);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+  z-index: 2;
 }
 
 .header-left,
@@ -45,10 +51,14 @@
   width: 88rpx;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .back-icon {
-  font-size: 40rpx;
+  width: 40rpx;
+  height: 40rpx;
+  transform: rotate(90deg);
+  display: block;
 }
 
 .header-title {

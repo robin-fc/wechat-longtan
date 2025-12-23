@@ -10,6 +10,8 @@ interface SpaceDetailState {
   activityCount: number
   address: string
   homestays: Homestay[]
+  menuTop: number
+  menuHeight: number
 }
 
 Page<SpaceDetailState, WechatMiniprogram.IAnyObject>({
@@ -19,8 +21,18 @@ Page<SpaceDetailState, WechatMiniprogram.IAnyObject>({
     activityCount: 3,
     address: '屏南县龙潭村8号',
     homestays: [],
+    menuTop: 0,
+    menuHeight: 88,
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    const sys = wx.getSystemInfoSync()
+    const rect =
+      typeof wx.getMenuButtonBoundingClientRect === 'function'
+        ? wx.getMenuButtonBoundingClientRect()
+        : null
+    const menuTop = rect && rect.top ? rect.top : sys.statusBarHeight || 0
+    const menuHeight = rect && rect.height ? rect.height : 44
+    this.setData({ menuTop, menuHeight })
     const homestays = await fetchHomestayList({})
     this.setData({ homestays })
   },
