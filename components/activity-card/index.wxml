@@ -1,7 +1,9 @@
 <view class="activity-card {{layout}}" bindtap="onTap">
   <view class="relative">
     <image class="poster" src="{{activity.poster.url}}" mode="aspectFill" />
-    <companions-bar companions="{{activity.companions}}" class="content" />
+    <block wx:if="{{layout !== 'horizontal'}}">
+      <companions-bar companions="{{activity.companions}}" class="content" />
+    </block>
     <text class="tag">{{activity.secondaryTag.name}}</text>
   </view>
 
@@ -10,10 +12,17 @@
       <text class="title">{{activity.title}}</text>
     </view>
     <view class="time-row">
-      <text class="time">{{activity.timeRange.startTime}}</text>
+      <text class="time">
+        {{layout === 'horizontal'
+          ? (activity.timeRange.startTime + ' ~ ' + activity.timeRange.endTime)
+          : activity.timeRange.startTime}}
+      </text>
       <text class="price">
         ￥{{activity.price.amount}}/{{activity.price.unit}}
       </text>
     </view>
+    <block wx:if="{{layout === 'horizontal'}}">
+      <companions-bar companions="{{activity.companions}}" class="companions-row" />
+    </block>
   </view>
 </view>

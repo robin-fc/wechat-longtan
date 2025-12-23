@@ -1,12 +1,28 @@
 <view class="activity-detail-page">
+  <view wx:if="{{activity}}" class="header">
+    <image class="header-bg" src="{{activity.poster.url}}" mode="aspectFill" />
+    <view class="header-mask"></view>
+  </view>
+  <view wx:if="{{activity}}" class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+    <view class="header-left" bindtap="onBackTap">
+      <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+    </view>
+    <text class="header-title">活动详情</text>
+    <view class="header-right"></view>
+  </view>
   <view wx:if="{{activity}}" class="body">
-    <view class="poster-wrapper">
-      <image class="poster" src="{{activity.poster.url}}" mode="aspectFill" />
-      <view class="poster-info">
-        <text class="activity-tag">{{activity.secondaryTag.name}}</text>
-        <text class="activity-title">{{activity.title}}</text>
-        <text class="activity-price">￥{{activity.price.amount}}{{activity.price.unit}}</text>
-        <view class="poster-companions" bindtap="onCompanionsTap">
+    <view class="moment-card">
+      <image class="moment-image" src="{{activity.poster.url}}" mode="aspectFill" />
+      <view class="moment-header-wrap">
+        <view class="moment-header">
+          <image class="avatar" src="{{activity.companions.companions[0] && activity.companions.companions[0].avatar ? activity.companions.companions[0].avatar.url : '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+          <view class="header-main">
+            <text class="nickname">{{activity.space.name}}</text>
+            <text class="meta">{{activity.secondaryTag.name}} · ￥{{activity.price.amount}}/{{activity.price.unit}}</text>
+          </view>
+        </view>
+        <text class="moment-text">{{activity.title}}</text>
+        <view class="moment-actions" bindtap="onCompanionsTap">
           <companions-bar companions="{{activity.companions}}" />
         </view>
       </view>
@@ -14,9 +30,7 @@
     <view class="section">
       <view class="section-row">
         <text class="section-label">时间</text>
-        <text class="section-text">
-          {{activity.timeRange.startTime}} ~ {{activity.timeRange.endTime}}
-        </text>
+        <text class="section-text">{{activity.timeRange.startTime}} ~ {{activity.timeRange.endTime}}</text>
       </view>
       <view class="section-row space-row">
         <text class="section-label">活动空间</text>

@@ -1,28 +1,29 @@
 <view class="collection-detail-page">
-  <view wx:if="{{collection}}">
-    <image
-      class="cover"
-      src="{{collection.cover.url}}"
-      mode="aspectFill"
-    />
-    <view class="header">
-      <text class="title">{{collection.name}}</text>
-      <text class="desc">{{collection.description}}</text>
+  <view class="header">
+    <image wx:if="{{collection}}" class="header-bg" src="{{collection.cover.url}}" mode="aspectFill" />
+    <view wx:else class="header-placeholder"></view>
+    <view class="header-mask"></view>
+    <view wx:if="{{collection}}" class="header-info">
+      <text class="info-title">{{collection.name}}</text>
+      <text wx:if="{{collection.description}}" class="info-desc">{{collection.description}}</text>
     </view>
+  </view>
+  <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+    <view class="header-left" bindtap="onBackTap">
+      <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+    </view>
+    <text class="header-title">{{collection ? collection.name : '活动合集详情'}}</text>
+    <view class="header-right"></view>
+  </view>
+  <view class="body">
     <view class="section">
-      <text class="section-title">活动列表</text>
       <view class="activity-list">
-        <block wx:for="{{collection.activities}}" wx:key="id">
+        <block wx:if="{{collection}}" wx:for="{{collection.activities}}" wx:key="id">
           <view class="activity-item">
-            <activity-card
-              activity="{{item}}"
-              layout="horizontal"
-              bindtap="onActivityTap"
-            />
+            <activity-card activity="{{item}}" layout="horizontal" bindtap="onActivityTap" />
           </view>
         </block>
       </view>
     </view>
   </view>
 </view>
-

@@ -5,12 +5,16 @@ import { smartNavigateTo, goBack } from '../../utils/navigation'
 interface ActivityDetailState {
   activity: Activity | null
   isCollected: boolean
+  menuTop: number
+  menuHeight: number
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     activity: null,
     isCollected: false,
+    menuTop: 0,
+    menuHeight: 44,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -24,8 +28,11 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     if (!activity) {
       return
     }
+    const menuRect = wx.getMenuButtonBoundingClientRect()
     this.setData({
       activity,
+      menuTop: menuRect ? menuRect.top : 0,
+      menuHeight: menuRect ? menuRect.height : 44,
     })
   },
   onBackTap() {

@@ -1,7 +1,7 @@
 {
   "navigationBarTitleText": "活动合集详情",
+  "navigationStyle": "custom",
   "usingComponents": {
     "activity-card": "/components/activity-card/index"
   }
 }
-

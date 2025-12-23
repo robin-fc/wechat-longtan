@@ -1,14 +1,18 @@
 import { fetchActivityCollectionDetail } from '../../api/activity'
 import type { ActivityCollection } from '../../model/activity'
-import { smartNavigateTo } from '../../utils/navigation'
+import { smartNavigateTo, goBack } from '../../utils/navigation'
 
 interface CollectionDetailState {
   collection: ActivityCollection | null
+  menuTop: number
+  menuHeight: number
 }
 
 Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     collection: null,
+    menuTop: 0,
+    menuHeight: 44,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -18,6 +22,11 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
     if (!id) {
       return
     }
+    const menuRect = wx.getMenuButtonBoundingClientRect()
+    this.setData({
+      menuTop: menuRect ? menuRect.top : 0,
+      menuHeight: menuRect ? menuRect.height : 44,
+    })
     const collection = await fetchActivityCollectionDetail(id)
     if (!collection) {
       return
@@ -25,6 +34,9 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
     this.setData({
       collection,
     })
+  },
+  onBackTap() {
+    goBack()
   },
   onActivityTap(e: WechatMiniprogram.CustomEvent) {
     const activity = (e.detail || {}).activity as {
