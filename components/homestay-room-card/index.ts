@@ -2,7 +2,7 @@ Component({
   properties: {
     room: {
       type: Object,
-      value: null,
+      value: {},
     },
   },
   methods: {
@@ -11,4 +11,3 @@ Component({
     },
   },
 })
-
