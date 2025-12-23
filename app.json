@@ -6,6 +6,7 @@
     "pages/agreement/privacy",
     "pages/search/index",
     "pages/activity-collection/list",
+    "pages/activity-collection/publish",
     "pages/activity-collection/detail",
     "pages/activity/list",
     "pages/activity/detail",

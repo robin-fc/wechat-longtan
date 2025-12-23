@@ -1,42 +1,30 @@
 <view class="my-activities-page">
   <view class="filter-row">
     <block wx:for="{{filters}}" wx:key="id">
-      <view
-        class="filter-item {{item.id === activeFilterId ? 'active' : ''}}"
-        data-id="{{item.id}}"
-        bindtap="onFilterTap"
-      >
+      <view class="filter-item {{item.id === activeFilterId ? 'active' : ''}}" data-id="{{item.id}}" bindtap="onFilterTap">
         <text>{{item.name}}</text>
       </view>
     </block>
-    <view class="add-btn" bindtap="onAddCollectionTap">
-      <text>添加合集</text>
-    </view>
   </view>
-
   <scroll-view scroll-y="true" class="list-scroll">
     <view wx:if="{{activeFilterId !== 'collections'}}" class="activity-list">
       <block wx:for="{{activities}}" wx:key="id">
         <view class="activity-item">
-          <activity-card
-            activity="{{item}}"
-            layout="horizontal"
-            bindtap="onActivityTap"
-          />
+          <activity-card activity="{{item}}" layout="horizontal" bindtap="onActivityTap" />
         </view>
       </block>
     </view>
-
     <view wx:if="{{activeFilterId === 'collections'}}" class="collection-list">
       <block wx:for="{{collections}}" wx:key="id">
         <view class="collection-item">
-          <collection-card
-            collection="{{item}}"
-            bindtap="onCollectionTap"
-          />
+          <collection-card collection="{{item}}" bindtap="onCollectionTap" />
         </view>
       </block>
     </view>
   </scroll-view>
+  <view class="bottom-bar">
+    <view class="submit-button" bindtap="onAddCollectionTap">
+      <text>添加合集</text>
+    </view>
+  </view>
 </view>
-

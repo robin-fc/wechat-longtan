@@ -1,0 +1,41 @@
+<view class="collection-publish-page">
+  <scroll-view scroll-y="true" class="form-scroll">
+    <view class="form-section">
+      <text class="label">合集名称*</text>
+      <input class="input" placeholder="请输入名称" value="{{form.name}}" bindinput="onNameChange" />
+    </view>
+    <view class="form-section">
+      <text class="label">合集封面图*</text>
+      <view class="poster-row">
+        <view wx:if="{{form.coverUrl}}" class="poster-preview square">
+          <image class="poster-image" src="{{form.coverUrl}}" mode="aspectFill" />
+        </view>
+        <view class="poster-upload" bindtap="onChooseCoverTap">
+          <text>上传图片</text>
+          <text class="tip">尺寸：400*400px</text>
+        </view>
+      </view>
+    </view>
+    <view class="form-section">
+      <text class="label">合集列表图*</text>
+      <view class="poster-row">
+        <view wx:if="{{form.listUrl}}" class="poster-preview wide">
+          <image class="poster-image" src="{{form.listUrl}}" mode="aspectFill" />
+        </view>
+        <view class="poster-upload" bindtap="onChooseListTap">
+          <text>上传图片</text>
+          <text class="tip">尺寸：1029*627px</text>
+        </view>
+      </view>
+    </view>
+    <view class="form-section">
+      <text class="label">合集介绍*</text>
+      <textarea class="textarea" placeholder="请输入简介" value="{{form.description}}" bindinput="onDescriptionChange" />
+    </view>
+  </scroll-view>
+  <view class="bottom-bar">
+    <view class="submit-button" bindtap="onSubmitTap">
+      <text>添加合集</text>
+    </view>
+  </view>
+</view>

@@ -72,9 +72,6 @@ Page<MyActivitiesState, WechatMiniprogram.IAnyObject>({
     )
   },
   onAddCollectionTap() {
-    wx.showToast({
-      title: '创建合集功能待接入',
-      icon: 'none',
-    })
+    smartNavigateTo('/pages/activity-collection/publish')
   },
 })

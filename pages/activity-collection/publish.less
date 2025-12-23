@@ -1,0 +1,118 @@
+.collection-publish-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 0 24rpx calc(144rpx + env(safe-area-inset-bottom));
+}
+
+.form-scroll {
+  height: calc(100vh - 88rpx - (144rpx + env(safe-area-inset-bottom)));
+}
+
+.form-section {
+  margin-top: 16rpx;
+  padding: 16rpx 20rpx;
+  background-color: #ffffff;
+  border-radius: 16rpx;
+}
+
+.label {
+  display: block;
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+}
+
+.input {
+  height: 64rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #eeeeee;
+  padding: 0 16rpx;
+  font-size: 26rpx;
+}
+
+.poster-row {
+  display: flex;
+  align-items: center;
+}
+
+.poster-preview {
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-right: 16rpx;
+  border: 1rpx solid #eeeeee;
+  background-color: #fafafa;
+}
+
+.poster-preview.square {
+  width: 160rpx;
+  height: 160rpx;
+}
+
+.poster-preview.wide {
+  width: 360rpx;
+  height: 220rpx;
+}
+
+.poster-image {
+  width: 100%;
+  height: 100%;
+}
+
+.poster-upload {
+  padding: 16rpx 24rpx;
+  border-radius: 12rpx;
+  border: 1rpx dashed #cccccc;
+  font-size: 24rpx;
+  color: #666666;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.poster-upload .tip {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.textarea {
+  min-height: 160rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #eeeeee;
+  padding: 12rpx 16rpx;
+  font-size: 26rpx;
+}
+
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 96rpx;
+  padding: 24rpx 24rpx 0;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  box-sizing: border-box;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top: 1rpx solid #eeeeee;
+}
+
+.submit-button {
+  flex: 1;
+  height: 72rpx;
+  border-radius: 36rpx;
+  background-color: #07c160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-button text {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 700;
+}
