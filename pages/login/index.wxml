@@ -1,18 +1,10 @@
 <view class="container">
-  <view class="logo" />
-  <view class="title">DAO龙潭</view>
+  <view class="logo">
+    <image src="/assets/images/DAO.png" class="logo-img" />
+  </view>
 
-  <button wx:if="{{!checked}}" class="login-btn" bindtap="onLoginTap">
-    微信授权登录
-  </button>
-  <button
-    wx:else
-    class="login-btn"
-    open-type="getPhoneNumber"
-    bindgetphonenumber="onGetPhoneNumber"
-  >
-    微信授权登录
-  </button>
+  <button wx:if="{{!checked}}" class="login-btn" bindtap="onLoginTap">微信授权登录</button>
+  <button wx:else class="login-btn" bindtap="onAuthorizeTap">微信授权登录</button>
 
   <view class="agree-row">
     <checkbox checked="{{checked}}" bindchange="onCheckChange" />
@@ -21,11 +13,32 @@
     <text class="link" bindtap="goPrivacy">《隐私政策》</text>
   </view>
 
-  <privacy-modal
-    show="{{showModal}}"
-    bindagree="onModalAgree"
-    binddeny="onModalDeny"
-    bindtoservice="goService"
-    bindtoprivacy="goPrivacy"
-  />
+  <view class="login-modal" wx:if="{{showProfileModal}}">
+    <view class="modal-mask"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">请授权头像与昵称</text>
+      </view>
+      <view class="modal-body">
+        <view class="avatar-section">
+          <view class="avatar-label">选择头像</view>
+          <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatarProfile">
+            <image class="avatar-preview" src="{{previewAvatar || '/assets/images/default-avatar.png'}}" mode="aspectFill"></image>
+            <text class="avatar-text">点击更换头像</text>
+          </button>
+        </view>
+        <view class="nickname-section">
+          <view class="nickname-label">输入昵称</view>
+          <input class="nickname-input" type="nickname" placeholder="请输入您的昵称" value="{{previewNickname}}" bindinput="onNicknameInputProfile" />
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="modal-confirm-btn" bindtap="confirmProfileAndLogin">
+          继续登录
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <privacy-modal show="{{showModal}}" bindagree="onModalAgree" binddeny="onModalDeny" bindtoservice="goService" bindtoprivacy="goPrivacy" />
 </view>

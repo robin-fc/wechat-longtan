@@ -1,4 +1,4 @@
-import { fetchActivityDetail } from '../../api/activity'
+import { getActivityByIdFromList } from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
@@ -24,7 +24,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     if (!id) {
       return
     }
-    const activity = await fetchActivityDetail(id)
+    const activity = await getActivityByIdFromList(Number(id))
     if (!activity) {
       return
     }
@@ -47,7 +47,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     }
     smartNavigateTo(
       `/pages/activity/companions?activityId=${encodeURIComponent(
-        detail.id
+        String(detail.id)
       )}`
     )
   },
@@ -65,7 +65,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/space/detail?id=${encodeURIComponent(detail.space.id)}`
+      `/pages/space/detail?id=${encodeURIComponent(String(detail.spaceId))}`
     )
   },
   onToggleCollect(

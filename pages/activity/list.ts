@@ -1,60 +1,29 @@
-import {
-  fetchActivityFilters,
-  fetchActivityList,
-  type ActivityFilterGroup,
-  type ActivityFilterItem,
-} from '../../api/activity'
+import { getActivityList } from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
 interface ActivityListState {
-  filterGroups: ActivityFilterGroup[]
-  activeGroupId: string
-  activeItemId: string
-  activeItems: ActivityFilterItem[]
+  activityType: string
   activities: Activity[]
 }
 
 Page<ActivityListState, WechatMiniprogram.IAnyObject>({
   data: {
-    filterGroups: [],
-    activeGroupId: '',
-    activeItemId: '',
-    activeItems: [],
+    activityType: '',
     activities: [],
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
-    const groups = await fetchActivityFilters()
-    let activeGroupId = ''
-    let activeItemId = ''
-    let activeItems: ActivityFilterItem[] = []
-    if (groups.length > 0) {
-      activeGroupId = groups[0].id
-      activeItems = groups[0].items
-      if (activeItems.length > 0) {
-        activeItemId = activeItems[0].id
-      }
-    }
-    this.setData({
-      filterGroups: groups,
-      activeGroupId,
-      activeItemId,
-      activeItems,
-    })
     await this.loadActivities()
   },
   async loadActivities(this: WechatMiniprogram.Page.TrivialInstance) {
-    const groups = (this.data as ActivityListState).filterGroups
-    const activeGroupId = (this.data as ActivityListState).activeGroupId
-    const group = groups.find((g) => g.id === activeGroupId)
-    const list = await fetchActivityList({
-      primaryCategory:
-        group && group.primaryCategory !== 'all'
-          ? group.primaryCategory
-          : undefined,
+    const type = (this.data as ActivityListState).activityType
+    const page = await getActivityList({
+      activityType: type,
+      pageNo: '1',
+      pageSize: '20',
     })
     this.setData({
-      activities: list,
+      activities: page.list,
     })
   },
   onBackTap() {
@@ -66,33 +35,15 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
   onPublishTap() {
     smartNavigateTo('/pages/activity/publish')
   },
-  onFilterGroupTap(
+  onActivityTypeChange(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.BaseEvent
   ) {
     const id = e.currentTarget.dataset.id as string
-    const groups = (this.data as ActivityListState).filterGroups
-    const group = groups.find((g) => g.id === id)
-    if (!group) {
-      return
-    }
-    const activeItems = group.items
-    const activeItemId = activeItems.length > 0 ? activeItems[0].id : ''
     this.setData({
-      activeGroupId: id,
-      activeItems,
-      activeItemId,
+      activityType: id,
     })
     this.loadActivities()
-  },
-  onFilterItemTap(
-    this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.BaseEvent
-  ) {
-    const id = e.currentTarget.dataset.id as string
-    this.setData({
-      activeItemId: id,
-    })
   },
   onActivityTap(e: WechatMiniprogram.CustomEvent) {
     const activity = (e.detail || {}).activity as {

@@ -1,5 +1,5 @@
-import { fetchActivityDetail } from '../../api/activity'
-import type { CompanionInfo } from '../../model/user'
+import { getData, postData } from '../../utils/request'
+import type { FollowUserItem } from '../../model/user'
 import { goBack } from '../../utils/navigation'
 
 interface CompanionItemView {
@@ -22,23 +22,16 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
-    const activityId = options.activityId as string
-    if (!activityId) {
-      return
-    }
-    const activity = await fetchActivityDetail(activityId)
-    if (!activity) {
-      return
-    }
-    const companions = activity.companions.companions.map(
-      (c: CompanionInfo, index: number) => ({
-        id: c.id,
-        avatarUrl: c.avatar ? c.avatar.url : '',
-        nickname: c.nickname,
-        bio: index % 2 === 0 ? '热爱自然与乡村文化' : '期待与你一起同行',
-        isFollowed: index % 3 === 0,
-      })
+    const followers = await getData<FollowUserItem[]>(
+      '/app-api/daolongtan/user-follow/followers'
     )
+    const companions = (followers || []).map((u) => ({
+      id: String(u.userId),
+      avatarUrl: u.avatar || '',
+      nickname: String(u.userId),
+      bio: u.introduction || '',
+      isFollowed: true,
+    }))
     this.setData({
       companions,
     })
@@ -57,30 +50,21 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
       return
     }
     const target = list[index]
-    if (target.isFollowed) {
-      wx.showModal({
-        title: '取消关注',
-        content: '确定要取消关注该用户吗？',
-        success: (res) => {
-          if (res.confirm) {
-            list[index] = {
-              ...target,
-              isFollowed: false,
-            }
-            this.setData({
-              companions: list,
-            })
-          }
-        },
+    const followed = !!target.isFollowed
+    const reqBody = { followeeId: Number(id) }
+    const doReq = followed
+      ? postData<boolean>('/app-api/daolongtan/user-follow/unfollow', reqBody)
+      : postData<boolean>('/app-api/daolongtan/user-follow/follow', reqBody)
+    doReq
+      .then(() => {
+        list[index] = {
+          ...target,
+          isFollowed: !followed,
+        }
+        this.setData({ companions: list })
       })
-      return
-    }
-    list[index] = {
-      ...target,
-      isFollowed: true,
-    }
-    this.setData({
-      companions: list,
-    })
+      .catch(() => {
+        wx.showToast({ title: '操作失败', icon: 'none' })
+      })
   },
 })

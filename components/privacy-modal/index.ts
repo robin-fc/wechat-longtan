@@ -6,20 +6,17 @@ Component({
     },
   },
   methods: {
-    onAgreeGetPhoneNumber(
-      this: WechatMiniprogram.Component.TrivialInstance,
-      e: WechatMiniprogram.ButtonGetPhoneNumber
-    ) {
-      this.triggerEvent("agree", e.detail);
+    onAgreeTap(this: WechatMiniprogram.Component.TrivialInstance) {
+      this.triggerEvent("agree");
     },
     onDeny(this: WechatMiniprogram.Component.TrivialInstance) {
       this.triggerEvent("deny");
     },
     toService(this: WechatMiniprogram.Component.TrivialInstance) {
-      this.triggerEvent("toservice");
+      this.triggerEvent('toservice')
     },
     toPrivacy(this: WechatMiniprogram.Component.TrivialInstance) {
-      this.triggerEvent("toprivacy");
+      this.triggerEvent('toprivacy')
     },
   },
-});
+})

@@ -1,42 +1,27 @@
-import type { ID, ImageResource, Price, TimeRange } from './common'
-import type { CompanionGroup } from './user'
-
-export type ActivityPrimaryCategory =
-  | 'space'
-  | 'cultureCreative'
-  | 'ruralCulture'
-
-export type ActivityStatus = 'ongoing' | 'upcoming' | 'finished'
-
-export interface ActivityTag {
-  id: ID
-  name: string
-}
-
-export interface ActivitySpaceSummary {
-  id: ID
-  name: string
-  address: string
-}
-
 export interface Activity {
-  id: ID
+  id: number
   title: string
-  poster: ImageResource
-  primaryCategory: ActivityPrimaryCategory
-  secondaryTag: ActivityTag
-  timeRange: TimeRange
-  price: Price
-  status: ActivityStatus
-  space: ActivitySpaceSummary
-  companions: CompanionGroup
+  logo?: string
+  collectionId?: number
+  collectionName?: string
+  fee?: number
+  isFree: boolean
+  activityType?: string
+  startTime: string
+  endTime: string
+  spaceId: number
+  spaceName: string
+  detail?: string
+  createTime?: string
 }
 
 export interface ActivityCollection {
-  id: ID
+  id: number
   name: string
+  logo?: string
+  creatorId: number
+  creatorName?: string
+  creatorAvatar?: string
   description?: string
-  cover: ImageResource
-  activities: Activity[]
+  createTime?: string
 }
-

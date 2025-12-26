@@ -1,5 +1,7 @@
 <view class="container">
-  <view class="title">服务协议</view>
-  <view class="content">尊敬的用户：……</view>
+  <view class="content">
+    欢迎来到“DAO龙潭”（以下简称“本社区”）。我们是一个由数字游民共建、共治、共享的去中心化自治社区。保护您的隐私和数据安全是我们核心原则之一。
+本协议旨在向您说明，当您参与本社区（包括但不限于访问我们的网站、使用Discord/Slack等通讯服务器、参与线下活动、使用社区开发的工具或参与DAO治理）时，我们如何收集、使用、披露和保护您的个人信息。
+  </view>
   <button class="agree-btn" bindtap="onAgree">同意</button>
 </view>

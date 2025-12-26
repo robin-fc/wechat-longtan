@@ -1,59 +1,46 @@
 import type { UserProfile } from '../model/user'
-import type { WalletRecord } from '../model/wallet'
-import type { Activity } from '../model/activity'
+import type { ActivityCollection, Activity } from '../model/activity'
+import { getData } from '../utils/request'
+import { getMyActivityList, getMyActivityCollections } from './activity'
+import type { PageResult } from './activity'
 import type { HomestayApplication } from '../model/homestay'
-import type { ID } from '../model/common'
-import { fetchHomeData } from './home'
 import { fetchHomestayApplications } from './homestay'
+import type { WalletRecord } from '../model/wallet'
 
 export interface MyActivityFilter {
-  id: ID
+  id: string
   name: string
+  type?: string
 }
 
 export interface MyStayFilter {
-  id: ID
+  id: string
   name: string
 }
 
-export async function fetchMyProfile(): Promise<UserProfile | undefined> {
-  const home = await fetchHomeData()
-  return home.currentUser
+export function fetchMyProfile(): Promise<UserProfile> {
+  return getData<UserProfile>('/app-api/daolongtan/user/get-info')
 }
 
 export function fetchWalletRecords(): Promise<WalletRecord[]> {
-  const records: WalletRecord[] = [
-    {
-      id: 'wallet-1',
-      type: 'income',
-      createdAt: '2025-01-10 14:20',
-      title: '活动报名收入',
-      description: '进山路徒步活动报名',
-      amount: {
-        amount: 199,
-        currency: 'CNY',
-      },
-      month: '2025-01',
-    },
-    {
-      id: 'wallet-2',
-      type: 'expense',
-      createdAt: '2025-01-05 09:12',
-      title: '报名活动支出',
-      description: '龙潭剪纸体验报名',
-      amount: {
-        amount: 199,
-        currency: 'CNY',
-      },
-      month: '2025-01',
-    },
-  ]
-  return Promise.resolve(records)
+  return Promise.resolve([])
 }
 
-export async function fetchMyActivities(): Promise<Activity[]> {
-  const home = await fetchHomeData()
-  return home.hotActivities
+export async function fetchMyActivities(
+  type: string
+): Promise<Activity[]> {
+  const page: PageResult<Activity> = await getMyActivityList(
+    type,
+    '1',
+    '20'
+  )
+  return page.list
+}
+
+export async function fetchMyCollections(): Promise<ActivityCollection[]> {
+  const page: PageResult<ActivityCollection> =
+    await getMyActivityCollections('1', '20')
+  return page.list
 }
 
 export async function fetchMyStays(): Promise<HomestayApplication[]> {
@@ -62,10 +49,10 @@ export async function fetchMyStays(): Promise<HomestayApplication[]> {
 
 export function fetchMyActivityFilters(): MyActivityFilter[] {
   return [
-    { id: 'joined', name: '我参与的' },
-    { id: 'published', name: '我发布的' },
-    { id: 'collected', name: '我收藏的' },
-    { id: 'to-comment', name: '待评价' },
+    { id: 'joined', name: '我参与的', type: '1' },
+    { id: 'published', name: '我发布的', type: '2' },
+    { id: 'collected', name: '我收藏的', type: '3' },
+    { id: 'to-comment', name: '待评价', type: '4' },
     { id: 'collections', name: '活动合集' },
   ]
 }
