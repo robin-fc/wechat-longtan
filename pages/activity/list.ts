@@ -29,9 +29,14 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '20',
     })
-    this.setData({
-      activities: page.list,
-    })
+    console.log('home 获取活动列表')
+    console.log('page:', page)
+    
+    if (page && page.list && page.list.length > 0) {
+      this.setData({
+        activities: page.list,
+      })
+    }
   },
   onBackTap() {
     goBack()

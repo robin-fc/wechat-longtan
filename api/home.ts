@@ -17,6 +17,7 @@ export interface HomeCarouselItem {
   poster: ImageResource
   description: string
   category: string
+  url?: string
 }
 
 export interface HomeAboutLink {

@@ -49,7 +49,10 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       const data = await fetchHomeData()
       try {
         const banners = await getBannerList()
+        console.log('home 获取banner')
+        console.log('banners:', banners)
         if (banners && banners.length > 0) {
+          
           data.carousel = banners.map((b) => ({
             id: String(b.id),
             title: b.title || '',
@@ -59,6 +62,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
             },
             description: b.description || '',
             category: b.category || '',
+            url: b.url,
           }))
         }
       } catch (e) {
@@ -158,6 +162,16 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       smartNavigateTo(
         `/pages/homestay/detail?id=${encodeURIComponent(homestay.id)}`
       )
+    }
+  },
+  onBannerTap(e: WechatMiniprogram.BaseEvent) {
+    const idx = e.currentTarget.dataset.idx
+    const data = (this.data as HomeState).pageData
+    if (data && data.carousel && data.carousel[idx]) {
+      const banner = data.carousel[idx]
+      if (banner.url) {
+        smartNavigateTo(banner.url)
+      }
     }
   },
 })
