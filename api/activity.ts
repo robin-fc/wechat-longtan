@@ -52,6 +52,15 @@ export function getMyActivityCollections(
   )
 }
 
+export function getActivityRegistrations(
+  activityId: number
+): Promise<ActivityRegistration> {
+  return getData<ActivityRegistration>(
+    '/app-api/daolongtan/activity/registration',
+    { activityId: String(activityId) }
+  )
+}
+
 export async function getActivityByIdFromList(
   id: number
 ): Promise<Activity | undefined> {
@@ -98,78 +107,55 @@ export async function getActivityByIdFromList(
       }
     })(),
     timeRange: {
-      startTime: formatDate(it.startTime),
-      endTime: formatDate(it.endTime),
+      startTime: formatDate(it.startTime) || '',
+      endTime: formatDate(it.endTime) || '',
     },
     price: {
       amount: it.fee || 0,
       currency: 'CNY',
       unit: '人',
     },
-    companions: {
-      companions: [],
-      totalCount: 0,
-    },
     space: {
       id: it.spaceId,
-      name: it.spaceName,
+      name: it.spaceName || '',
       address: '',
       mapImages: [],
     },
+    detail: it.detail || '',
   }
 }
 
-export function getActivityDetail(id: number): Promise<ActivityDetail> {
-  return getData<ActivityDetail>('/app-api/daolongtan/activity/detail', { id })
-}
-
-export function getActivityRegistration(
-  activityId: number
-): Promise<ActivityRegistration> {
-  return getData<ActivityRegistration>(
-    '/app-api/daolongtan/activity/registration',
-    { activityId }
+export async function getActivityDetail(id: number): Promise<ActivityDetail> {
+  return getData<ActivityDetail>(
+    '/app-api/daolongtan/activity/detail',
+    { id: String(id) }
   )
 }
 
-export function getFavoriteCount(activityId: number): Promise<number> {
-  return getData<number>('/app-api/daolongtan/activity/favorite-count', {
-    activityId,
-  })
+export function getFavoriteCount(id: number): Promise<number> {
+  return getData<number>(
+    '/app-api/daolongtan/favorite/count',
+    { bizId: String(id), type: '1' } // 1 for Activity
+  )
 }
 
-export function favoriteActivity(activityId: number): Promise<boolean> {
+export function favoriteActivity(id: number): Promise<boolean> {
   return postData<boolean>(
-    `/app-api/daolongtan/activity/favorite?activityId=${activityId}`,
-    { activityId },
-    { 'content-type': 'application/x-www-form-urlencoded' }
+    '/app-api/daolongtan/favorite/create',
+    { bizId: id, type: 1 }
   )
 }
 
-export function createActivityCollection(body: {
-  name: string
-  coverUrl: string
-  listUrl: string
-  description: string
-}): Promise<boolean> {
+export function unfavoriteActivity(id: number): Promise<boolean> {
   return postData<boolean>(
-    '/app-api/daolongtan/activity-collection/create',
-    body
+    '/app-api/daolongtan/favorite/delete',
+    { bizId: id, type: 1 }
   )
 }
 
-export function unfavoriteActivity(activityId: number): Promise<boolean> {
-  return postData<boolean>(
-    `/app-api/daolongtan/activity/unfavorite?activityId=${activityId}`,
-    { activityId },
-    { 'content-type': 'application/x-www-form-urlencoded' }
-  )
-}
-
-export function shareActivity(activityId: number): Promise<ActivityShareInfo> {
-  return postData<ActivityShareInfo>(
-    `/app-api/daolongtan/activity/share?activityId=${activityId}`,
-    { activityId },
-    { 'content-type': 'application/x-www-form-urlencoded' }
+export function shareActivity(id: number): Promise<ActivityShareInfo> {
+  return getData<ActivityShareInfo>(
+    '/app-api/daolongtan/activity/share-info',
+    { id: String(id) }
   )
 }

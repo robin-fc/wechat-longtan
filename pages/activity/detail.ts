@@ -1,4 +1,4 @@
-import { getActivityByIdFromList, getActivityDetail, getFavoriteCount, favoriteActivity, unfavoriteActivity, shareActivity } from '../../api/activity'
+import { getActivityByIdFromList, getActivityDetail, getFavoriteCount, favoriteActivity, unfavoriteActivity, shareActivity, getActivityRegistrations } from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
@@ -75,6 +75,25 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
     })
+
+    // Fetch companions data
+    getActivityRegistrations(activity.id)
+      .then((reg) => {
+        const companions = {
+          totalCount: reg.count,
+          companions: (reg.userList || []).slice(0, 3).map((u) => ({
+            avatar: { url: u.logo || '/assets/images/default-avatar.png' },
+            nickname: u.memberName || u.wxName
+          }))
+        }
+        this.setData({
+          'activity.companions': companions
+        })
+      })
+      .catch((e) => {
+        console.error('Fetch registrations failed', e)
+      })
+
     const cnt = await getFavoriteCount(activity.id).catch(() => 0)
     const count = typeof cnt === 'number' ? cnt : 0
     const text =
@@ -86,6 +105,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       favoriteCountText: text,
     })
   },
+
   onBackTap() {
     goBack()
   },

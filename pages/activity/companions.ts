@@ -1,5 +1,5 @@
-import { getData, postData } from '../../utils/request'
-import type { FollowUserItem } from '../../model/user'
+import { getActivityRegistrations } from '../../api/activity'
+import { postData } from '../../utils/request'
 import { goBack } from '../../utils/navigation'
 
 interface CompanionItemView {
@@ -22,19 +22,30 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
-    const followers = await getData<FollowUserItem[]>(
-      '/app-api/daolongtan/user-follow/followers'
-    )
-    const companions = (followers || []).map((u) => ({
-      id: String(u.userId),
-      avatarUrl: u.avatar || '',
-      nickname: String(u.userId),
-      bio: u.introduction || '',
-      isFollowed: true,
-    }))
-    this.setData({
-      companions,
-    })
+    const activityId = options.activityId as string
+    if (!activityId) {
+      return
+    }
+
+    try {
+      const result = await getActivityRegistrations(Number(activityId))
+      const userList = result.userList || []
+      
+      const companions: CompanionItemView[] = userList.map((u) => ({
+        id: String(u.userId),
+        avatarUrl: u.logo || '',
+        nickname: u.memberName || u.wxName || `User ${u.userId}`,
+        bio: u.registrationTime ? `报名时间: ${u.registrationTime}` : '',
+        isFollowed: false, // 默认未关注，后续如果有接口可以更新
+      }))
+
+      this.setData({
+        companions,
+      })
+    } catch (e) {
+      console.error('获取同行人员失败', e)
+      wx.showToast({ title: '加载失败', icon: 'none' })
+    }
   },
   onBackTap() {
     goBack()
@@ -68,3 +79,4 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
       })
   },
 })
+

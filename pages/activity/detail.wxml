@@ -28,13 +28,19 @@
           <text class="price-inline">￥{{activity.price.amount}}/{{activity.price.unit}}</text>
           <view class="companions-right">
             <view class="companions-avatars">
-              <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
-              <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
-              <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
+              <block wx:if="{{activity.companions && activity.companions.companions}}">
+                <image 
+                  wx:for="{{activity.companions.companions}}" 
+                  wx:key="index"
+                  class="avatar" 
+                  src="{{item.avatar.url}}" 
+                  mode="aspectFill" 
+                />
+              </block>
             </view>
-            <companions-bar companions="{{activity.companions}}" />
-            <text class="companions-label">人同行</text>
+            <text class="companions-label">{{activity.companions.totalCount || 0}}人同行</text>
           </view>
+
         </view>
       </view>
     </view>
