@@ -1,7 +1,7 @@
 <view class="collection-card" bindtap="onTap">
   <image
     class="cover"
-    src="{{collection.cover.url}}"
+    src="{{collection.listUrl || collection.coverUrl || collection.logo || collection.cover.url}}"
     mode="aspectFill"
   />
   <text class="name">{{collection.name}}</text>

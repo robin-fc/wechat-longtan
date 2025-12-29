@@ -1,4 +1,4 @@
-import { fetchActivityCollections } from '../../api/activity'
+import { getActivityCollections } from '../../api/activity'
 import type { ActivityCollection } from '../../model/activity'
 import { smartNavigateTo } from '../../utils/navigation'
 
@@ -10,10 +10,13 @@ Page<CollectionListState, WechatMiniprogram.IAnyObject>({
   data: {
     collections: [],
   },
-  async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
-    const collections = await fetchActivityCollections()
+  onLoad() {
+    this.refreshData()
+  },
+  async refreshData() {
+    const res = await getActivityCollections('1', '100')
     this.setData({
-      collections,
+      collections: res.list || [],
     })
   },
   onCollectionTap(

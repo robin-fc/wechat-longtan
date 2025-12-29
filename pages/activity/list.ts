@@ -1,5 +1,6 @@
 import { getActivityList } from '../../api/activity'
 import type { Activity } from '../../model/activity'
+import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
 interface ActivityListState {
@@ -29,14 +30,67 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '20',
     })
-    console.log('home 获取活动列表')
-    console.log('page:', page)
-    
-    if (page && page.list && page.list.length > 0) {
-      this.setData({
-        activities: page.list,
-      })
+    const list = (page && page.list) || []
+    const formatDate = (v: any): string => {
+      if (v === undefined || v === null) return ''
+      const s = String(v)
+      const isNum = typeof v === 'number' || /^\d+$/.test(s)
+      if (isNum) {
+        const d = new Date(Number(v))
+        const y = d.getFullYear()
+        const m = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        return `${y}/${m}/${day}`
+      }
+      return s
     }
+    const activities = list.map((it) => ({
+      ...it,
+      poster: {
+        id: String(it.id),
+        url: it.logo || '/assets/images/activity.jpg',
+      },
+      secondaryTag: (() => {
+        const raw = (it as any).activityType
+        let name = ''
+        if (raw !== undefined && raw !== null && raw !== '') {
+          const s = String(raw)
+          const isNum = typeof raw === 'number' || /^\d+$/.test(s)
+          if (isNum) {
+            const n = Number(raw) as ActivityType
+            name = ActivityTypeLabel[n] ?? ''
+          } else {
+            name = s
+          }
+        }
+        return {
+          name: name || it.collectionName || '活动',
+        }
+      })(),
+       space: {
+        id: it.space?.id || '',
+        name: it.space?.name || '',
+        address: it.space?.address || '',
+        mapImages: it.space?.mapImages || [],
+      },
+      timeRange: {
+        startTime: formatDate(it.startTime),
+        endTime: formatDate(it.endTime),
+      },
+      price: {
+        amount: it.fee || 0,
+        currency: 'CNY',
+        unit: '人',
+      },
+      companions: {
+        companions: '同行伙伴' + (it.companions?.companions || []).map((it) => it.nickname || '').join('、'),
+        totalCount: it.companions?.totalCount || 0,
+      },
+     
+    }))
+    this.setData({
+      activities,
+    })
   },
   onBackTap() {
     goBack()

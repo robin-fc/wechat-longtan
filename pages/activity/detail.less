@@ -4,6 +4,7 @@
   padding-bottom: 120rpx;
   padding-top: 0;
   position: relative;
+  box-sizing: border-box;
 }
 
 .header {
@@ -89,9 +90,8 @@
 
 .moment-image {
   position: absolute;
-  top: -170rpx;
+  top: -90rpx;
   left: 20rpx;
-  right: 20rpx;
   width: auto;
   height: 380rpx;
   border-radius: 12rpx;
@@ -100,7 +100,7 @@
 }
 
 .moment-header-wrap {
-  margin-left: 280rpx;
+  margin-left: 220rpx;
 }
 
 .moment-header {
@@ -121,10 +121,30 @@
   flex-direction: column;
 }
 
+.header-title-row {
+  display: flex;
+  align-items: center;
+  column-gap: 8rpx;
+  margin-bottom: 48rpx;
+}
+
 .nickname {
   font-size: 28rpx;
   color: #333333;
   font-weight: 700;
+}
+
+.secondary-tag {
+  display: inline-block;
+  font-size: 20rpx;
+  color: #ffffff;
+  background-color: #35c16b;
+  border-radius: 8rpx;
+  padding: 4rpx 8rpx;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .meta {
@@ -141,14 +161,56 @@
 
 .moment-image {
   margin-top: 16rpx;
-  width: 220rpx;
-  height: 300rpx;
+  width: 180rpx;
+  height: 220rpx;
   border-radius: 12rpx;
   overflow: hidden;
 }
 
 .moment-actions {
-  margin-top: 12rpx;
+  margin-top: 0;
+}
+
+.companions-inline {
+  display: flex;
+  align-items: center;
+  column-gap: 8rpx;
+}
+
+.companions-right {
+  margin-left: auto;
+  padding-right: 24rpx;
+  display: flex;
+  align-items: center;
+  column-gap: 8rpx;
+}
+
+.companions-avatars {
+  display: flex;
+  margin-right: 8rpx;
+}
+
+.companions-avatars .avatar {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ffffff;
+  margin-left: -8rpx;
+}
+
+.companions-avatars .avatar:first-child {
+  margin-left: 0;
+}
+
+.price-inline {
+  font-size: 22rpx;
+  color: #ff4d4f;
+  font-weight: 700;
+}
+
+.companions-label {
+  font-size: 22rpx;
+  color: #333333;
 }
 
 .section {
@@ -177,23 +239,28 @@
 }
 
 .space-row {
-  align-items: flex-start;
+  align-items: center;
 }
 
 .space-main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .space-name {
+  display: block;
   font-size: 24rpx;
   color: #333333;
   font-weight: 700;
 }
 
 .space-address {
+  display: block;
   font-size: 22rpx;
   color: #666666;
-  margin-top: 4rpx;
+  margin-top: 12rpx;
 }
 
 .space-actions {
@@ -203,7 +270,12 @@
   row-gap: 8rpx;
 }
 
-.space-map,
+.space-map {
+  padding: 0;
+  border: none;
+  border-radius: 8rpx;
+}
+
 .space-detail {
   padding: 4rpx 10rpx;
   border-radius: 8rpx;
@@ -213,47 +285,103 @@
 }
 
 .section-title {
-  font-size: 26rpx;
+  display: block;
+  font-size: 30rpx;
   color: #333333;
   font-weight: 700;
   margin-bottom: 8rpx;
 }
 
 .section-content {
+  display: block;
+  font-size: 22rpx;
+  color: #666666;
+}
+.default-content {
+  margin-top: 24rpx;
+  text-align: center;
+  padding: 80rpx 0;
+}
+
+.favorite-section {
+  margin-top: 12rpx;
+ 
+}
+
+.favorite-row {
+  margin-top: 12rpx;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+}
+
+.favorite-avatars {
+  display: flex;
+  margin-right: 12rpx;
+}
+
+.favorite-avatars .avatar {
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ffffff;
+  margin-left: -8rpx;
+}
+
+.favorite-avatars .avatar:first-child {
+  margin-left: 0;
+}
+
+.favorite-text {
+  flex: 1;
   font-size: 22rpx;
   color: #666666;
 }
 
+.favorite-arrow {
+  font-size: 28rpx;
+  color: #999999;
+}
 .bottom-bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 96rpx;
-  padding: 0 24rpx;
+  height: 112rpx;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + constant(safe-area-inset-bottom));
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   background-color: #ffffff;
   display: flex;
   align-items: center;
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
 }
 
 .bottom-item {
-  width: 120rpx;
+  flex: 1;
+  height: 80rpx;
+  margin-right: 16rpx;
+  border: 2rpx solid #dddddd;
+  border-radius: 12rpx;
+  background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
 }
 
 .bottom-label {
-  font-size: 24rpx;
+  font-size: 28rpx;
   color: #333333;
+  font-weight: 500;
 }
 
 .bottom-primary {
-  flex: 1;
-  height: 72rpx;
-  border-radius: 36rpx;
-  background-color: #333333;
+  flex: 1.5;
+  height: 80rpx;
+  border-radius: 12rpx;
+  background-color: #7bc638;
   display: flex;
   align-items: center;
   justify-content: center;

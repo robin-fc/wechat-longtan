@@ -1,8 +1,9 @@
 import type { UserProfile } from '../model/user'
 import type { ActivityCollection, Activity } from '../model/activity'
+import { ActivityType, ActivityTypeLabel } from '../model/activity'
 import { getData } from '../utils/request'
 import { getMyActivityList, getMyActivityCollections } from './activity'
-import type { PageResult } from './activity'
+import type { PageResult } from '../model/common'
 import type { HomestayApplication } from '../model/homestay'
 import { fetchHomestayApplications } from './homestay'
 import type { WalletRecord } from '../model/wallet'
@@ -34,7 +35,63 @@ export async function fetchMyActivities(
     '1',
     '20'
   )
-  return page.list
+  const list = (page && page.list) || []
+  const formatDate = (v: any): string => {
+    if (v === undefined || v === null) return ''
+    const s = String(v)
+    const isNum = typeof v === 'number' || /^\d+$/.test(s)
+    if (isNum) {
+      const d = new Date(Number(v))
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}/${m}/${day}`
+    }
+    return s
+  }
+  return list.map((it) => ({
+    ...it,
+    poster: {
+      id: String(it.id),
+      url: it.logo || '/assets/images/activity.jpg',
+    },
+    secondaryTag: (() => {
+      const raw = (it as any).activityType
+      let name = ''
+      if (raw !== undefined && raw !== null && raw !== '') {
+        const s = String(raw)
+        const isNum = typeof raw === 'number' || /^\d+$/.test(s)
+        if (isNum) {
+          const n = Number(raw) as ActivityType
+          name = ActivityTypeLabel[n] ?? ''
+        } else {
+          name = s
+        }
+      }
+      return {
+        name: name || it.collectionName || '活动',
+      }
+    })(),
+    timeRange: {
+      startTime: formatDate(it.startTime),
+      endTime: formatDate(it.endTime),
+    },
+    price: {
+      amount: it.fee || 0,
+      currency: 'CNY',
+      unit: '人',
+    },
+    companions: {
+      companions: [],
+      totalCount: 0,
+    },
+    space: {
+      id: it.spaceId,
+      name: it.spaceName,
+      address: '',
+      mapImages: [],
+    },
+  }))
 }
 
 export async function fetchMyCollections(): Promise<ActivityCollection[]> {

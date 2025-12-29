@@ -17,18 +17,6 @@
       </view>
     </view>
     <view class="form-section">
-      <text class="label">合集列表图*</text>
-      <view class="poster-row">
-        <view wx:if="{{form.listUrl}}" class="poster-preview wide">
-          <image class="poster-image" src="{{form.listUrl}}" mode="aspectFill" />
-        </view>
-        <view class="poster-upload" bindtap="onChooseListTap">
-          <text>上传图片</text>
-          <text class="tip">尺寸：1029*627px</text>
-        </view>
-      </view>
-    </view>
-    <view class="form-section">
       <text class="label">合集介绍*</text>
       <textarea class="textarea" placeholder="请输入简介" value="{{form.description}}" bindinput="onDescriptionChange" />
     </view>

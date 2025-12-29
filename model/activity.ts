@@ -1,3 +1,31 @@
+import type { ImageResource, Price, TimeRange } from './common'
+
+export enum ActivityType {
+  Photography = 0,
+  Hike = 1,
+  Painting = 2,
+  Woodwork = 3,
+  Pottery = 4,
+  EcologyObservation = 5,
+  FarmingExperience = 6,
+  Music = 7,
+  Handcraft = 8,
+  Yoga = 9,
+}
+
+export const ActivityTypeLabel: Record<ActivityType, string> = {
+  [ActivityType.Photography]: '摄影',
+  [ActivityType.Hike]: '徒步',
+  [ActivityType.Painting]: '绘画',
+  [ActivityType.Woodwork]: '木工',
+  [ActivityType.Pottery]: '陶艺',
+  [ActivityType.EcologyObservation]: '生态观察',
+  [ActivityType.FarmingExperience]: '农耕体验',
+  [ActivityType.Music]: '音乐',
+  [ActivityType.Handcraft]: '手工制作',
+  [ActivityType.Yoga]: '瑜伽',
+}
+
 export interface Activity {
   id: number
   title: string
@@ -13,12 +41,24 @@ export interface Activity {
   spaceName: string
   detail?: string
   createTime?: string
+  poster?: ImageResource
+  secondaryTag?: { id?: string; name: string }
+  timeRange?: TimeRange
+  price?: Price
+  status?: string
+  space?: Space
+  companions?: {
+    companions: Array<{ id?: string; avatar: ImageResource; nickname?: string }>
+    totalCount?: number
+  }
 }
 
 export interface ActivityCollection {
   id: number
   name: string
   logo?: string
+  coverUrl?: string
+  listUrl?: string
   creatorId: number
   creatorName?: string
   creatorAvatar?: string
