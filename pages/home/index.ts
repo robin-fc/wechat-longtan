@@ -97,14 +97,8 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.SwiperChange
   ) {
     const idx = e.detail.current
-    const data = (this.data as HomeState).pageData
-    const bg =
-      data && data.carousel && data.carousel[idx]
-        ? data.carousel[idx].poster.url
-        : ''
     this.setData({
       heroCurrent: idx,
-      heroBgUrl: bg,
     })
   },
   onHeroIndicatorTap(
@@ -112,14 +106,8 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.BaseEvent
   ) {
     const idx = Number((e.currentTarget.dataset || {}).idx || 0)
-    const data = (this.data as HomeState).pageData
-    const bg =
-      data && data.carousel && data.carousel[idx]
-        ? data.carousel[idx].poster.url
-        : ''
     this.setData({
       heroCurrent: idx,
-      heroBgUrl: bg,
     })
   },
   onActivityCardTap(e: WechatMiniprogram.CustomEvent) {

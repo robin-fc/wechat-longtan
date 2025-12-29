@@ -1,24 +1,7 @@
 .home-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
   position: relative;
-}
-
-.top-bg {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.top-bg-img {
-  width: 100%;
-  height: 100%;
-  filter: blur(10rpx);
-  transform: scale(1.08);
-  opacity: 0.5;
 }
 
 .top-bar {
@@ -53,7 +36,7 @@
 }
 
 .top-title-img {
-  height: 60rpx;
+  height: 32rpx;
   width: auto;
 }
 
@@ -74,22 +57,23 @@
 }
 
 .hero-indicator {
-  margin: 12rpx 0 24rpx;
+  margin: 12rpx auto 24rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20rpx;
+  gap: 0;
+  width: 680rpx;
 }
 
 .hero-indicator-item {
-  width: 30rpx;
-  height: 8rpx;
-  background-color: #d9d9d9;
-  border-radius: 14rpx;
+  flex: 1;
+  height: 6rpx;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 0;
 }
 
 .hero-indicator-item.active {
-  background-color: #73d13d;
+  background-color: #333333;
 }
 .hero-card {
   height: auto;
@@ -102,12 +86,6 @@
   margin-top: 0rpx;
   margin-left: 16rpx;
   margin-right: 16rpx;
-}
-
-.hero-card.selected {
-  margin-top: 40rpx;
-  transform: translateY(8rpx) scale(1.02);
-  box-shadow: 0 0rpx 28rpx rgba(0, 0, 0, 0.08);
 }
 
 .hero-poster {

@@ -1,7 +1,4 @@
 <view class="home-page">
-  <view class="top-bg" style="height: {{topBgHeight}}rpx;">
-    <image class="top-bg-img" src="{{heroBgUrl}}" mode="aspectFill" />
-  </view>
   <view class="top-bar" style="padding-top: {{navPaddingTop}}px;">
     <view class="top-bar-left" bindtap="onSearchTap">
       <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit" />
@@ -16,7 +13,7 @@
     <swiper class="hero-swiper" indicator-dots="{{false}}" circular="true" autoplay="{{false}}" interval="5000" duration="350" easing-function="easeInOutCubic" previous-margin="{{heroPrevMargin}}" next-margin="{{heroNextMargin}}" current="{{heroCurrent}}" bindchange="onHeroChange">
       <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
         <swiper-item style="height: 810rpx;">
-          <view class="hero-card {{heroCurrent === idx ? 'selected' : ''}}" style="margin-left: {{heroCurrent === idx ? heroCardMarginX : 8}}rpx; margin-right: {{heroCurrent === idx ? heroCardMarginX : 8}}rpx;">
+          <view class="hero-card">
             <view class="hero-poster-wrapper">
               <image class="hero-poster" src="{{item.poster.url}}" mode="widthFix" />
             </view>
