@@ -1,5 +1,10 @@
 export type ID = string
 
+export interface PageResult<T> {
+  total: number
+  list: T[]
+}
+
 export interface TimeRange {
   startTime: string
   endTime: string

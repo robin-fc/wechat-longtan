@@ -1,5 +1,6 @@
 import { fetchHomeData } from '../../api/home'
 import type { HomePageData, HomeEntryItem } from '../../api/home'
+import { getBannerList } from '../../api/banner'
 import { smartNavigateTo } from '../../utils/navigation'
 
 interface HomeState {
@@ -46,6 +47,23 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   async loadData(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
       const data = await fetchHomeData()
+      try {
+        const banners = await getBannerList()
+        if (banners && banners.length > 0) {
+          data.carousel = banners.map((b) => ({
+            id: String(b.id),
+            title: b.title || '',
+            poster: {
+              id: String(b.id),
+              url: b.logo,
+            },
+            description: b.description || '',
+            category: b.category || '',
+          }))
+        }
+      } catch (e) {
+        console.error('Fetch banners failed:', e)
+      }
       const idx = this.data.heroCurrent
       const bg =
         data.carousel && data.carousel[idx] ? data.carousel[idx].poster.url : ''

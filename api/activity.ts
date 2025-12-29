@@ -1,5 +1,6 @@
-import type { Activity, ActivityCollection } from '../model/activity'
-import { getData } from '../utils/request'
+import type { Activity, ActivityCollection, ActivityDetail, ActivityRegistration, ActivityShareInfo } from '../model/activity'
+import { PageResult } from '../model/common'
+import { getData, postData } from '../utils/request'
 
 export interface ActivityListParams {
   collectionId?: string
@@ -7,11 +8,6 @@ export interface ActivityListParams {
   activityType?: string
   pageNo: string
   pageSize: string
-}
-
-export interface PageResult<T> {
-  total: number
-  list: T[]
 }
 
 export function getActivityList(
@@ -63,4 +59,41 @@ export async function getActivityByIdFromList(
     pageSize: '100',
   })
   return page.list.find((it) => it.id === id)
+}
+
+export function getActivityDetail(id: number): Promise<ActivityDetail> {
+  return getData<ActivityDetail>('/app-api/daolongtan/activity/detail', { id })
+}
+
+export function getActivityRegistration(
+  activityId: number
+): Promise<ActivityRegistration> {
+  return getData<ActivityRegistration>(
+    '/app-api/daolongtan/activity/registration',
+    { activityId }
+  )
+}
+
+export function getFavoriteCount(activityId: number): Promise<number> {
+  return getData<number>('/app-api/daolongtan/activity/favorite-count', {
+    activityId,
+  })
+}
+
+export function favoriteActivity(activityId: number): Promise<boolean> {
+  return postData<boolean>(
+    `/app-api/daolongtan/activity/favorite?activityId=${activityId}`
+  )
+}
+
+export function unfavoriteActivity(activityId: number): Promise<boolean> {
+  return postData<boolean>(
+    `/app-api/daolongtan/activity/unfavorite?activityId=${activityId}`
+  )
+}
+
+export function shareActivity(activityId: number): Promise<ActivityShareInfo> {
+  return postData<ActivityShareInfo>(
+    `/app-api/daolongtan/activity/share?activityId=${activityId}`
+  )
 }
