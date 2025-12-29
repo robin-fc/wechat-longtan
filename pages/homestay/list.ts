@@ -28,6 +28,13 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
     ],
     homestays: [],
   },
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 2,
+      })
+    }
+  },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadHomestays()
   },

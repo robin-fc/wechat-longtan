@@ -5,6 +5,13 @@ Page({
   data: {
     profile: null as WechatMiniprogram.IAnyObject | null,
   },
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 3,
+      })
+    }
+  },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const profile = await fetchMyProfile()
     if (profile && profile.logo) {

@@ -26,6 +26,13 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     heroBgUrl: '',
     topBgHeight: 0,
   },
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 0,
+      })
+    }
+  },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const sys = wx.getSystemInfoSync()
     const ratio = 750 / (sys.windowWidth || 750)

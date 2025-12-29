@@ -32,34 +32,29 @@
     "backgroundTextStyle": "light"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#333333",
+    "custom": true,
+    "color": "#949593",
+    "selectedColor": "#191919",
+    "fontSize": "26rpx",
+    "fontWeight": "500",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/home/index",
-        "text": "首页",
-        "iconPath": "assets/icons/home.png",
-        "selectedIconPath": "assets/icons/home-active.png"
+        "text": "首页"
       },
       {
         "pagePath": "pages/activity/list",
-        "text": "活动",
-        "iconPath": "assets/icons/live.png",
-        "selectedIconPath": "assets/icons/live-active.png"
+        "text": "活动"
       },
       {
         "pagePath": "pages/homestay/list",
-        "text": "民宿",
-        "iconPath": "assets/icons/collection.png",
-        "selectedIconPath": "assets/icons/collection-active.png"
+        "text": "民宿"
       },
       {
         "pagePath": "pages/mine/index",
-        "text": "我的",
-        "iconPath": "assets/icons/profile.png",
-        "selectedIconPath": "assets/icons/profile-active.png"
+        "text": "我的"
       }
     ]
   }

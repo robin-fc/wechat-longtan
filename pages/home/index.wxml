@@ -4,9 +4,9 @@
   </view>
   <view class="top-bar" style="padding-top: {{navPaddingTop}}px;">
     <view class="top-bar-left" bindtap="onSearchTap">
-      <text class="search-icon">🔍</text>
+      <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit" />
     </view>
-    <text class="top-title">DAO 龙潭</text>
+    <image class="top-title-img" src="/assets/images/DAO.png" mode="heightFix" />
     <view class="top-bar-right"></view>
   </view>
   <view wx:if="{{loading}}" class="loading">

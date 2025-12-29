@@ -12,6 +12,13 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     activityType: '',
     activities: [],
   },
+  onShow() {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({
+        selected: 1,
+      })
+    }
+  },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadActivities()
   },
