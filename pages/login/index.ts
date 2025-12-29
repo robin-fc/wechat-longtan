@@ -22,6 +22,8 @@ Page({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.CheckboxGroupChange
   ) {
+    console.log('this', this)
+    console.log('e', e)
     const val = !!e.detail.value.length
     this.setData({ checked: val })
     wx.setStorageSync('privacyAccepted', val)
@@ -39,6 +41,9 @@ Page({
     }
     this.setData({ showProfileModal: true })
   },
+  closeProfileModal(this: WechatMiniprogram.Page.TrivialInstance) {
+    this.setData({ showProfileModal: false })
+  },
   onChooseAvatarProfile(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.CustomEvent<{ avatarUrl: string }>
@@ -55,6 +60,10 @@ Page({
   },
   confirmProfileAndLogin(this: WechatMiniprogram.Page.TrivialInstance) {
     const state = this.data as any
+    if (!state.previewAvatar) {
+      wx.showToast({ title: '请选择头像', icon: 'none' })
+      return
+    }
     if (!state.previewNickname) {
       wx.showToast({ title: '请输入昵称', icon: 'none' })
       return

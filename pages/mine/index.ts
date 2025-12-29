@@ -7,6 +7,9 @@ Page({
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const profile = await fetchMyProfile()
+    if (profile && profile.logo) {
+      profile.logo = profile.logo.trim()
+    }
     this.setData({
       profile: profile || null,
     })

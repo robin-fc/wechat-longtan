@@ -7,17 +7,20 @@
   <button wx:else class="login-btn" bindtap="onAuthorizeTap">微信授权登录</button>
 
   <view class="agree-row">
-    <checkbox checked="{{checked}}" bindchange="onCheckChange" />
+    <checkbox-group bindchange="onCheckChange">
+      <checkbox checked="{{checked}}" value="1" />
+    </checkbox-group>
     <text>我已阅读并同意</text>
     <text class="link" bindtap="goService">《服务协议》</text>
     <text class="link" bindtap="goPrivacy">《隐私政策》</text>
   </view>
 
   <view class="login-modal" wx:if="{{showProfileModal}}">
-    <view class="modal-mask"></view>
+    <view class="modal-mask" bindtap="closeProfileModal"></view>
     <view class="modal-content">
       <view class="modal-header">
         <text class="modal-title">请授权头像与昵称</text>
+        <view class="close-btn" bindtap="closeProfileModal">✕</view>
       </view>
       <view class="modal-body">
         <view class="avatar-section">
