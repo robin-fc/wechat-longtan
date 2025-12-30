@@ -35,8 +35,6 @@
     "custom": true,
     "color": "#949593",
     "selectedColor": "#191919",
-    "fontSize": "26rpx",
-    "fontWeight": "500",
     "backgroundColor": "#ffffff",
     "borderStyle": "black",
     "list": [

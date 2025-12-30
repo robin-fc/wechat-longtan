@@ -29,6 +29,45 @@ declare namespace WechatMiniprogram {
          * - 'fail sdcard not mounted': Android sdcard 挂载失败; */
         errMsg: string
     }
+    interface WindowInfo {
+        pixelRatio: number
+        windowWidth: number
+        windowHeight: number
+        screenWidth: number
+        screenHeight: number
+        statusBarHeight: number
+        language?: string
+        theme?: 'dark' | 'light'
+    }
+    interface DeviceInfo {
+        brand: string
+        model: string
+        deviceOrientation: 'portrait' | 'landscape'
+        platform: string
+        system: string
+    }
+    interface AppBaseInfo {
+        SDKVersion: string
+        version: string
+        language: string
+    }
+    interface SystemSetting {
+        bluetoothEnabled?: boolean
+        wifiEnabled?: boolean
+        locationEnabled?: boolean
+        enableDebug?: boolean
+        fontSizeSetting?: number
+    }
+    interface AppAuthorizeSetting {
+        albumAuthorized?: boolean
+        cameraAuthorized?: boolean
+        microphoneAuthorized?: boolean
+        notificationAuthorized?: boolean
+        notificationAlertAuthorized?: boolean
+        notificationBadgeAuthorized?: boolean
+        notificationSoundAuthorized?: boolean
+        locationAuthorized?: boolean
+    }
     interface AccessOption {
         /** 要判断是否存在的文件/目录路径 (本地路径) */
         path: string
@@ -11717,6 +11756,11 @@ try {
 }
 ``` */
         getSystemInfoSync(): SystemInfo
+        getWindowInfo(): WindowInfo
+        getDeviceInfo(): DeviceInfo
+        getAppBaseInfo(): AppBaseInfo
+        getSystemSetting(): SystemSetting
+        getAppAuthorizeSetting(): AppAuthorizeSetting
         /** [[Animation](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.html) wx.createAnimation(Object object)](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/wx.createAnimation.html)
          *
          * 创建一个动画实例 [animation](https://developers.weixin.qq.com/miniprogram/dev/api/ui/animation/Animation.html)。调用实例的方法来描述动画。最后通过动画实例的 export 方法导出动画数据传递给组件的 animation 属性。 */
