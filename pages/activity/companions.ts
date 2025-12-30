@@ -1,6 +1,7 @@
 import { getActivityRegistrations } from '../../api/activity'
 import { postData } from '../../utils/request'
 import { goBack } from '../../utils/navigation'
+import { formatYMDHM } from '../../utils/date'
 
 interface CompanionItemView {
   id: string
@@ -30,12 +31,11 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
     try {
       const result = await getActivityRegistrations(Number(activityId))
       const userList = result.userList || []
-      
       const companions: CompanionItemView[] = userList.map((u) => ({
         id: String(u.userId),
         avatarUrl: u.logo || '',
         nickname: u.memberName || u.wxName || `User ${u.userId}`,
-        bio: u.registrationTime ? `报名时间: ${u.registrationTime}` : '',
+        bio: u.registrationTime ? `报名时间: ${formatYMDHM(u.registrationTime)}` : '',
         isFollowed: false, // 默认未关注，后续如果有接口可以更新
       }))
 

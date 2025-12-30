@@ -2,6 +2,7 @@ import { getActivityList } from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
+import { formatYMD } from '../../utils/date'
 
 interface ActivityListState {
   activityType: string
@@ -31,19 +32,6 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       pageSize: '20',
     })
     const list = (page && page.list) || []
-    const formatDate = (v: any): string => {
-      if (v === undefined || v === null) return ''
-      const s = String(v)
-      const isNum = typeof v === 'number' || /^\d+$/.test(s)
-      if (isNum) {
-        const d = new Date(Number(v))
-        const y = d.getFullYear()
-        const m = String(d.getMonth() + 1).padStart(2, '0')
-        const day = String(d.getDate()).padStart(2, '0')
-        return `${y}/${m}/${day}`
-      }
-      return s
-    }
     const activities = list.map((it) => ({
       ...it,
       poster: {
@@ -74,8 +62,8 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         mapImages: it.space?.mapImages || [],
       },
       timeRange: {
-        startTime: formatDate(it.startTime),
-        endTime: formatDate(it.endTime),
+        startTime: formatYMD(it.startTime),
+        endTime: formatYMD(it.endTime),
       },
       price: {
         amount: it.fee || 0,

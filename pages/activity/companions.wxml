@@ -1,11 +1,4 @@
 <view class="companions-page">
-  <view class="top-bar">
-    <view class="top-bar-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="top-title">同行的人</text>
-    <view class="top-bar-right"></view>
-  </view>
 
   <view class="list-wrapper">
     <block wx:for="{{companions}}" wx:key="id">

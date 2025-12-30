@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "搜索"
+  "navigationBarTitleText": "搜索",
+  "usingComponents": {
+    "activity-card": "/components/activity-card/index"
+  }
 }
 
