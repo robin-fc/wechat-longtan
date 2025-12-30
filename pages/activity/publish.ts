@@ -12,6 +12,10 @@ interface PublishFormState {
   limit: string
   startTime: string
   endTime: string
+  startDate?: string
+  startClock?: string
+  endDate?: string
+  endClock?: string
   space: string
   spaceId?: string
   posterUrl: string
@@ -48,6 +52,10 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       limit: '',
       startTime: '',
       endTime: '',
+      startDate: '',
+      startClock: '',
+      endDate: '',
+      endClock: '',
       space: '空间A',
       spaceId: '1',
       posterUrl: '',
@@ -136,12 +144,82 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       'form.startTime': e.detail.value,
     })
   },
+  onStartISOChange(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.CustomEvent
+  ) {
+    const iso = (e.detail || {}).value as string
+    if (iso) {
+      this.setData({ 'form.startTime': iso })
+    }
+  },
+  onStartDateChange(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.PickerChange
+  ) {
+    const date = e.detail.value
+    const time = ((this.data as PublishPageState).form.startClock || '').trim()
+    const hhmm = time ? time : '00:00'
+    const combined = `${date} ${hhmm}:00`
+    this.setData({
+      'form.startDate': date,
+      'form.startTime': combined,
+    })
+  },
+  onStartClockChange(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.PickerChange
+  ) {
+    const clock = e.detail.value
+    const date = ((this.data as PublishPageState).form.startDate || '').trim()
+    const dd = date ? date : ''
+    const combined = dd ? `${dd} ${clock}:00` : `${clock}:00`
+    this.setData({
+      'form.startClock': clock,
+      'form.startTime': combined,
+    })
+  },
   onEndTimeChange(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.PickerChange
   ) {
     this.setData({
       'form.endTime': e.detail.value,
+    })
+  },
+  onEndISOChange(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.CustomEvent
+  ) {
+    const iso = (e.detail || {}).value as string
+    if (iso) {
+      this.setData({ 'form.endTime': iso })
+    }
+  },
+  onEndDateChange(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.PickerChange
+  ) {
+    const date = e.detail.value
+    const time = ((this.data as PublishPageState).form.endClock || '').trim()
+    const hhmm = time ? time : '00:00'
+    const combined = `${date} ${hhmm}:00`
+    this.setData({
+      'form.endDate': date,
+      'form.endTime': combined,
+    })
+  },
+  onEndClockChange(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.PickerChange
+  ) {
+    const clock = e.detail.value
+    const date = ((this.data as PublishPageState).form.endDate || '').trim()
+    const dd = date ? date : ''
+    const combined = dd ? `${dd} ${clock}:00` : `${clock}:00`
+    this.setData({
+      'form.endClock': clock,
+      'form.endTime': combined,
     })
   },
   onSpaceChange(
@@ -197,6 +275,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   ) {
     const state = this.data as PublishPageState
     const form = state.form
+    console.log('form', form)
     if (!form.title.trim()) {
       wx.showToast({
         title: '请填写活动标题',
@@ -218,7 +297,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       })
       return
     }
-    if (!form.startTime || !form.endTime) {
+    if (!form.startTime || form.startTime.indexOf('T') < 0 || !form.endTime || form.endTime.indexOf('T') < 0) {
       wx.showToast({
         title: '请选择活动时间',
         icon: 'none',
@@ -240,6 +319,8 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       return
     }
     const typeValue = state.typeValues[state.typeIndex]
+    const startTimeStr = form.startTime
+    const endTimeStr = form.endTime
     const selectedSpace = state.spaceOptions[state.spaceIndex]
     const payload = {
       title: form.title.trim(),
@@ -247,8 +328,8 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       fee: form.free ? 0 : Number(form.price) || 0,
       isFree: form.free,
       activityType: typeValue,
-      startTime: form.startTime,
-      endTime: form.endTime,
+      startTime: startTimeStr,
+      endTime: endTimeStr,
       spaceName: form.space,
       spaceId: selectedSpace ? selectedSpace.id : undefined,
       detail: form.description.trim(),
@@ -271,6 +352,10 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
             limit: '',
             startTime: '',
             endTime: '',
+            startDate: '',
+            startClock: '',
+            endDate: '',
+            endClock: '',
             space: '空间A',
             posterUrl: '',
             description: '',

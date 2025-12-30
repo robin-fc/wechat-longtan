@@ -46,21 +46,9 @@
     <view class="form-section">
       <text class="label">活动时间*</text>
       <view class="time-row">
-        <picker mode="date" value="{{form.startTime}}" bindchange="onStartTimeChange">
-          <view class="picker-value">
-            <text>
-              {{form.startTime || '选择开始日期'}}
-            </text>
-          </view>
-        </picker>
+        <datetime-picker value="{{form.startTime}}" placeholder="选择开始时间" bindchange="onStartISOChange" />
         <text class="time-sep">~</text>
-        <picker mode="date" value="{{form.endTime}}" bindchange="onEndTimeChange">
-          <view class="picker-value">
-            <text>
-              {{form.endTime || '选择结束日期'}}
-            </text>
-          </view>
-        </picker>
+        <datetime-picker value="{{form.endTime}}" placeholder="选择结束时间" bindchange="onEndISOChange" />
       </view>
     </view>
 
