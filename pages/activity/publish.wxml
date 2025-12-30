@@ -9,9 +9,7 @@
       <text class="label">关联合集</text>
       <picker mode="selector" range="{{collectionOptions}}" range-key="name" value="{{collectionIndex}}" bindchange="onCollectionChange">
         <view class="picker-value">
-          <text>
-            {{form.collectionId ? collectionOptions[collectionIndex].name : '可选，选择一个合集'}}
-          </text>
+          <text>{{form.collectionId ? collectionOptions[collectionIndex].name : '可选，选择一个合集'}}</text>
         </view>
       </picker>
     </view>
@@ -46,9 +44,14 @@
     <view class="form-section">
       <text class="label">活动时间*</text>
       <view class="time-row">
-        <datetime-picker value="{{form.startTime}}" placeholder="选择开始时间" bindchange="onStartISOChange" />
-        <text class="time-sep">~</text>
-        <datetime-picker value="{{form.endTime}}" placeholder="选择结束时间" bindchange="onEndISOChange" />
+        <view class="time-col">
+          <text class="time-subtitle">开始</text>
+          <datetime-picker value="{{form.startTime}}" bindchange="onStartISOChange" />
+        </view>
+        <view class="time-col">
+          <text class="time-subtitle">结束</text>
+          <datetime-picker value="{{form.endTime}}" bindchange="onEndISOChange" />
+        </view>
       </view>
     </view>
 

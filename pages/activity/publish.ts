@@ -1,4 +1,5 @@
 import { goBack } from '../../utils/navigation'
+import { toISO8601 } from '../../utils/isoTime'
 import { createActivity } from '../../api/activity'
 import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { uploadImage } from '../../api/common'
@@ -148,10 +149,15 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.CustomEvent
   ) {
-    const iso = (e.detail || {}).value as string
-    if (iso) {
-      this.setData({ 'form.startTime': iso })
-    }
+    const detail = (e.detail || {}) as any
+    const date = (detail.date || '').trim()
+    const time = (detail.time || '').trim()
+    const combined = date && time ? `${date} ${time}` : date || time
+    this.setData({
+      'form.startDate': date,
+      'form.startClock': time,
+      'form.startTime': combined,
+    })
   },
   onStartDateChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -191,10 +197,15 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.CustomEvent
   ) {
-    const iso = (e.detail || {}).value as string
-    if (iso) {
-      this.setData({ 'form.endTime': iso })
-    }
+    const detail = (e.detail || {}) as any
+    const date = (detail.date || '').trim()
+    const time = (detail.time || '').trim()
+    const combined = date && time ? `${date} ${time}` : date || time
+    this.setData({
+      'form.endDate': date,
+      'form.endClock': time,
+      'form.endTime': combined,
+    })
   },
   onEndDateChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -247,7 +258,8 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
         if (!filePath) return
         try {
           wx.showLoading({ title: '上传中...' })
-          const url = await uploadImage(filePath)
+          const res = await uploadImage(filePath, '')
+          const url = (res && res.data && res.data.url) ? res.data.url : ''
           this.setData({
             'form.posterUrl': url,
           })
@@ -297,9 +309,18 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       })
       return
     }
-    if (!form.startTime || form.startTime.indexOf('T') < 0 || !form.endTime || form.endTime.indexOf('T') < 0) {
+    if (!form.startDate || !form.startClock || !form.endDate || !form.endClock) {
       wx.showToast({
         title: '请选择活动时间',
+        icon: 'none',
+      })
+      return
+    }
+    const startISO = toISO8601(form.startDate || '', form.startClock || '')
+    const endISO = toISO8601(form.endDate || '', form.endClock || '')
+    if (!startISO || !endISO) {
+      wx.showToast({
+        title: '时间格式错误',
         icon: 'none',
       })
       return
@@ -319,8 +340,8 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       return
     }
     const typeValue = state.typeValues[state.typeIndex]
-    const startTimeStr = form.startTime
-    const endTimeStr = form.endTime
+    const startTimeStr = startISO
+    const endTimeStr = endISO
     const selectedSpace = state.spaceOptions[state.spaceIndex]
     const payload = {
       title: form.title.trim(),

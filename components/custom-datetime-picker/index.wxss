@@ -1,0 +1,4 @@
+.dtp-inline { display: inline-flex; gap: 12rpx; align-items: center; }
+.dtp-field { display: flex; align-items: center; justify-content: space-between; min-width: 280rpx; height: 64rpx; padding: 0 16rpx; background: #fff; border: 1rpx solid #eeeeee; border-radius: 8rpx; box-sizing: border-box; }
+.dtp-text { font-size: 26rpx; color: #333333; }
+.dtp-icon { width: 32rpx; height: 32rpx; }

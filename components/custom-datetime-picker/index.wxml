@@ -1,0 +1,14 @@
+<view class="dtp-inline">
+  <picker mode="date" value="{{date}}" bindchange="onDateChange">
+    <view class="dtp-field">
+      <text class="dtp-text">{{date || placeholderDate}}</text>
+      <image class="dtp-icon" src="/assets/icons/date.png" mode="aspectFit" />
+    </view>
+  </picker>
+  <picker mode="time" value="{{time}}" bindchange="onTimeChange">
+    <view class="dtp-field">
+      <text class="dtp-text">{{time || placeholderTime}}</text>
+      <image class="dtp-icon" src="/assets/icons/time.png" mode="aspectFit" />
+    </view>
+  </picker>
+</view>
