@@ -13,7 +13,7 @@
     </view>
   </view>
 
-  <view wx:if="{{!hasSearched || results.length === 0}}" class="hot-section">
+  <view wx:if="{{!hasSearched || activities.length === 0}}" class="hot-section">
     <text class="hot-title">热门搜索</text>
     <view class="hot-grid">
       <block wx:for="{{hotKeywords}}" wx:key="id">
@@ -28,25 +28,14 @@
     </view>
   </view>
 
-  <view wx:if="{{hasSearched && results.length > 0}}" class="result-section">
-    <block wx:for="{{results}}" wx:key="id">
-      <view
-        class="result-item"
-        data-item="{{item}}"
-        bindtap="onResultTap"
-      >
-        <view class="result-main">
-          <text class="result-title">{{item.title}}</text>
-          <text class="result-subtitle">{{item.subtitle}}</text>
-        </view>
-        <view class="result-extra">
-          <text class="result-type">
-            {{item.type === 'activity' ? '活动' : ''}}
-            {{item.type === 'homestay' ? '民宿' : ''}}
-            {{item.type === 'user' ? '用户' : ''}}
-          </text>
-          <text class="result-extra-text">{{item.extra}}</text>
-        </view>
+  <view wx:if="{{hasSearched && activities.length > 0}}" class="list-wrapper">
+    <block wx:for="{{activities}}" wx:key="id">
+      <view class="activity-item">
+        <activity-card
+          activity="{{item}}"
+          layout="horizontal"
+          bindtap="onActivityTap"
+        />
       </view>
     </block>
   </view>

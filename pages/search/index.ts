@@ -1,12 +1,12 @@
-import {
-  fetchSearchPageConfig,
-  searchAll,
-} from '../../api/search'
+import { fetchSearchPageConfig } from '../../api/search'
+import { getActivityList } from '../../api/activity'
 import type {
   SearchFrom,
   HotSearchItem,
-  SearchResultItem,
 } from '../../api/search'
+import type { Activity } from '../../model/activity'
+import { ActivityType, ActivityTypeLabel } from '../../model/activity'
+import { formatYMD } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
 interface SearchPageState {
@@ -14,7 +14,7 @@ interface SearchPageState {
   keyword: string
   placeholder: string
   hotKeywords: HotSearchItem[]
-  results: SearchResultItem[]
+  activities: Activity[]
   hasSearched: boolean
 }
 
@@ -24,7 +24,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     keyword: '',
     placeholder: '',
     hotKeywords: [],
-    results: [],
+    activities: [],
     hasSearched: false,
   },
   onLoad(
@@ -68,31 +68,81 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
   },
   async doSearch(this: WechatMiniprogram.Page.TrivialInstance) {
     const keyword = (this.data as SearchPageState).keyword
-    const results = await searchAll(keyword)
+    const trimmed = keyword.trim()
+    if (!trimmed) {
+      this.setData({ activities: [], hasSearched: true })
+      return
+    }
+    const page = await getActivityList({
+      activityType: trimmed,
+      pageNo: '1',
+      pageSize: '20',
+    })
+    const list = (page && page.list) || []
+    const activities = list.map((it) => ({
+      ...it,
+      poster: {
+        id: String(it.id),
+        url: it.logo || '/assets/images/activity.jpg',
+      },
+      secondaryTag: (() => {
+        const raw = (it as any).activityType
+        let name = ''
+        if (raw !== undefined && raw !== null && raw !== '') {
+          const s = String(raw)
+          const isNum = typeof raw === 'number' || /^\d+$/.test(s)
+          if (isNum) {
+            const n = Number(raw) as ActivityType
+            name = ActivityTypeLabel[n] ?? ''
+          } else {
+            name = s
+          }
+        }
+        return {
+          name: name || it.collectionName || '活动',
+        }
+      })(),
+      space: {
+        id: it.space?.id || '',
+        name: it.space?.name || '',
+        address: it.space?.address || '',
+        mapImages: it.space?.mapImages || [],
+      },
+      timeRange: {
+        startTime: formatYMD(it.startTime),
+        endTime: formatYMD(it.endTime),
+      },
+      price: {
+        amount: it.fee || 0,
+        currency: 'CNY',
+        unit: '人',
+      },
+      companions: {
+        companions: (it.companions?.companions || []).map((x) => ({
+          id: x.id,
+          avatar: x.avatar,
+          nickname: x.nickname,
+        })),
+        totalCount: it.companions?.totalCount || 0,
+      },
+    }))
     this.setData({
-      results,
+      activities,
       hasSearched: true,
     })
   },
-  onResultTap(
+  onActivityTap(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.BaseEvent
   ) {
-    const item = e.currentTarget.dataset.item as SearchResultItem
-    if (!item) {
+    const activity = (e.detail || {}).activity as {
+      id?: string
+    }
+    if (!activity || !activity.id) {
       return
     }
-    if (item.type === 'activity') {
-      smartNavigateTo(
-        `/pages/activity/detail?id=${encodeURIComponent(item.id)}`
-      )
-      return
-    }
-    if (item.type === 'homestay') {
-      smartNavigateTo(
-        `/pages/homestay/detail?id=${encodeURIComponent(item.id)}`
-      )
-      return
-    }
+    smartNavigateTo(
+      `/pages/activity/detail?id=${encodeURIComponent(activity.id)}`
+    )
   },
 })
