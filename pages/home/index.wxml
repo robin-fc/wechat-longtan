@@ -29,7 +29,7 @@
         </swiper-item>
       </block>
     </swiper>
-    <view class="hero-indicator">
+    <view class="hero-indicator" wx:if="{{pageData && pageData.carousel && pageData.carousel.length > 1}}">
       <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
         <view
           class="hero-indicator-item {{heroCurrent === idx ? 'active' : ''}}"

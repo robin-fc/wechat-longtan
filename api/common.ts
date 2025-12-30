@@ -24,16 +24,25 @@ export async function uploadImage(
       fail: (err) => reject(err),
     })
   })
-  const mime =
-    filePath.toLowerCase().endsWith('.png') ? 'image/png' : 'image/jpeg'
+  const mime = filePath.toLowerCase().endsWith('.png')
+    ? 'image/png'
+    : 'image/jpeg'
   const dataUrl = `data:${mime};base64,${base64}`
   const body: uploadImageParams = {
     file: dataUrl,
     businessType,
   }
-  const res = await postData<uploadImageRes>(
-    '/daolongtan/common/image/upload',
-    body
-  )
-  return res
+  // const res = await postData<uploadImageRes>(
+  //   '/daolongtan/common/image/upload',
+  //   body
+  // )
+  // return res
+  // 临时返回固定值
+  return {
+    code: 0,
+    msg: 'success',
+    data: {
+      url: 'https://example.com/image.jpg',
+    },
+  }
 }

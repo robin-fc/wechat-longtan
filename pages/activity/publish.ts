@@ -133,9 +133,13 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.Input
   ) {
+    let value = e.detail.value
+    // 只允许输入数字
+    value = value.replace(/[^\d]/g, '')
     this.setData({
-      'form.limit': e.detail.value,
+      'form.limit': value,
     })
+    return value
   },
   onStartTimeChange(
     this: WechatMiniprogram.Page.TrivialInstance,
