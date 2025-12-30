@@ -8,15 +8,23 @@ Page({
     showProfileModal: false,
     previewAvatar: '',
     previewNickname: '',
+    phoneCode: '',
+    isLoggedIn: false,
+    profileCompleted: false,
   },
   onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const logged = !!wx.getStorageSync('isLoggedIn')
-    if (logged) {
+    const completed = !!wx.getStorageSync('profileCompleted')
+    if (logged && completed) {
       wx.switchTab({ url: '/pages/home/index' })
       return
     }
     const accepted = !!wx.getStorageSync('privacyAccepted')
-    this.setData({ checked: accepted })
+    this.setData({
+      checked: accepted,
+      isLoggedIn: logged,
+      profileCompleted: completed,
+    })
   },
   onCheckChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -39,7 +47,10 @@ Page({
       this.setData({ showModal: true })
       return
     }
-    this.setData({ showProfileModal: true })
+    if (this.data.isLoggedIn && !this.data.profileCompleted) {
+      this.setData({ showProfileModal: true })
+      return
+    }
   },
   closeProfileModal(this: WechatMiniprogram.Page.TrivialInstance) {
     this.setData({ showProfileModal: false })
@@ -58,7 +69,7 @@ Page({
     const nickname = String((e.detail && (e.detail as any).value) || '')
     this.setData({ previewNickname: nickname })
   },
-  confirmProfileAndLogin(this: WechatMiniprogram.Page.TrivialInstance) {
+  async confirmProfileAndLogin(this: WechatMiniprogram.Page.TrivialInstance) {
     const state = this.data as any
     if (!state.previewAvatar) {
       wx.showToast({ title: '请选择头像', icon: 'none' })
@@ -68,86 +79,56 @@ Page({
       wx.showToast({ title: '请输入昵称', icon: 'none' })
       return
     }
-    wx.login({
-      success: async (res) => {
-        if (res.code) {
-          try {
-            const data = await login({ code: res.code })
-            wx.setStorageSync('accessToken', data.accessToken)
-            wx.setStorageSync('refreshToken', data.refreshToken)
-            wx.setStorageSync('expiresTime', data.expiresTime)
-            wx.setStorageSync('userId', data.userId)
-            wx.setStorageSync('isLoggedIn', true)
-            try {
-              await updateUserInfo({
-                wxName: state.previewNickname,
-                logo: state.previewAvatar,
-              })
-            } catch (updateError) {
-              console.error('Update user info failed', updateError)
-            }
-            this.setData({ showProfileModal: false })
-            wx.switchTab({ url: '/pages/home/index' })
-          } catch (error) {
-            wx.showToast({ title: '登录失败', icon: 'none' })
-            console.error(error)
-          }
-        } else {
-          wx.showToast({ title: '获取登录凭证失败', icon: 'none' })
-        }
-      },
-      fail: (err) => {
-        console.error('wx.login failed', err)
-        wx.showToast({ title: '登录失败', icon: 'none' })
-      },
-    })
+    try {
+      await updateUserInfo({
+        wxName: state.previewNickname,
+        logo: state.previewAvatar,
+      })
+      wx.setStorageSync('profileCompleted', true)
+      this.setData({ showProfileModal: false, profileCompleted: true })
+      wx.switchTab({ url: '/pages/home/index' })
+    } catch (error) {
+      wx.showToast({ title: '登录失败', icon: 'none' })
+      console.error(error)
+    }
   },
   async onGetPhoneNumber(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.ButtonGetPhoneNumber
   ) {
+    if (!this.data.checked) {
+      this.setData({ showModal: true })
+      return
+    }
     const detail = e.detail || {}
     if (detail.errMsg && detail.errMsg.indexOf('ok') !== -1 && detail.code) {
-      // const phoneCode = detail.code
-      // Use wx.login to get login code
-      wx.login({
-        success: async (res) => {
-          if (res.code) {
-            try {
-              const data = await login({ code: res.code })
-              wx.setStorageSync('accessToken', data.accessToken)
-              wx.setStorageSync('refreshToken', data.refreshToken)
-              wx.setStorageSync('expiresTime', data.expiresTime)
-              wx.setStorageSync('userId', data.userId)
-              wx.setStorageSync('isLoggedIn', true)
+      const phoneCode = detail.code
 
-              // Call updateUserInfo to bind phone number
-              // try {
-              //   await updateUserInfo({ memberPhone: phoneCode })
-              // } catch (updateError) {
-              //   console.error('Update user info failed', updateError)
-              // }
+      try {
+        const data = await login({ code: phoneCode })
+        wx.setStorageSync('accessToken', data.accessToken)
+        wx.setStorageSync('refreshToken', data.refreshToken)
+        wx.setStorageSync('expiresTime', data.expiresTime)
+        wx.setStorageSync('userId', data.userId)
+        wx.setStorageSync('isLoggedIn', true)
 
-              wx.switchTab({ url: '/pages/home/index' })
-            } catch (error) {
-              wx.showToast({ title: '登录失败', icon: 'none' })
-              console.error(error)
-            }
-          } else {
-            wx.showToast({ title: '获取登录凭证失败', icon: 'none' })
-          }
-        },
-        fail: (err) => {
-          console.error('wx.login failed', err)
-          wx.showToast({ title: '登录失败', icon: 'none' })
-        },
-      })
+        this.setData({
+          phoneCode,
+          showProfileModal: true,
+          isLoggedIn: true,
+          profileCompleted: false,
+        })
+      } catch (error) {
+        wx.showToast({ title: '登录失败', icon: 'none' })
+        console.error(error)
+      }
     } else {
       console.log('User denied phone number')
     }
   },
   onModalAgree(this: WechatMiniprogram.Page.TrivialInstance) {
-    this.setData({ checked: true, showModal: false, showProfileModal: true })
+    this.setData({ checked: true, showModal: false })
+    wx.setStorageSync('privacyAccepted', true)
   },
   onModalDeny(this: WechatMiniprogram.Page.TrivialInstance) {
     this.setData({ showModal: false })
@@ -161,6 +142,12 @@ Page({
   },
   onShow(this: WechatMiniprogram.Page.TrivialInstance) {
     const accepted = !!wx.getStorageSync('privacyAccepted')
-    this.setData({ checked: accepted })
+    const logged = !!wx.getStorageSync('isLoggedIn')
+    const completed = !!wx.getStorageSync('profileCompleted')
+    this.setData({
+      checked: accepted,
+      isLoggedIn: logged,
+      profileCompleted: completed,
+    })
   },
 })

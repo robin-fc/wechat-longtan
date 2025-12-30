@@ -4,6 +4,7 @@
   </view>
 
   <button wx:if="{{!checked}}" class="login-btn" bindtap="onLoginTap">微信授权登录</button>
+  <button wx:elif="{{checked && !isLoggedIn}}" class="login-btn" open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">微信授权登录</button>
   <button wx:else class="login-btn" bindtap="onAuthorizeTap">微信授权登录</button>
 
   <view class="agree-row">
@@ -31,7 +32,7 @@
           </button>
         </view>
         <view class="nickname-section">
-          <view class="nickname-label">输入昵称</view>
+          <view class="nickname-label">选择或输入昵称</view>
           <input class="nickname-input" type="nickname" placeholder="请输入您的昵称" value="{{previewNickname}}" bindinput="onNicknameInputProfile" />
         </view>
       </view>
