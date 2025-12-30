@@ -2,7 +2,7 @@ Component({
   properties: {
     activity: {
       type: Object,
-      value: null,
+      value: {},
     },
     layout: {
       type: String,
@@ -15,4 +15,3 @@ Component({
     },
   },
 })
-

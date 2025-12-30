@@ -82,10 +82,21 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         currency: 'CNY',
         unit: '人',
       },
-      companions: {
-        companions: '同行伙伴' + (it.companions?.companions || []).map((it) => it.nickname || '').join('、'),
-        totalCount: it.companions?.totalCount || 0,
-      },
+      companions: (() => {
+        const list = (it.companions as any)?.companions || []
+        const total = (it.companions as any)?.totalCount || 0
+        const arr = Array.isArray(list)
+          ? list.slice(0, 3).map((u: any) => ({
+              id: String(u.id || ''),
+              avatar: { url: u.logo || '/assets/images/default-avatar.png' },
+              nickname: u.nickname || u.memberName || '',
+            }))
+          : []
+        return {
+          companions: arr,
+          totalCount: total,
+        }
+      })(),
      
     }))
     this.setData({
