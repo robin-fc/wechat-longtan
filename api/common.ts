@@ -1,5 +1,3 @@
-import { postData } from '../utils/request'
-
 export interface uploadImageRes {
   code: number
   msg: string

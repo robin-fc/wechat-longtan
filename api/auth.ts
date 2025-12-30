@@ -14,7 +14,13 @@ export function login(data: AppWeixinMiniAppCodeLoginReqVO): Promise<AppWeixinMi
     url: `${baseUrl}/weixin-mini-app-code-login`,
     method: 'POST',
     data,
-  }).then((res) => res.data)
+  }).then((res) => {
+    const payload = res && (res.data as AppWeixinMiniAppLoginRespVO | null)
+    if (payload && payload.accessToken && payload.refreshToken && payload.expiresTime) {
+      return payload
+    }
+    throw new Error((res && res.msg) || '登录失败，请重新获取授权码')
+  })
 }
 
 export function refreshToken(
@@ -24,11 +30,16 @@ export function refreshToken(
     url: `${baseUrl}/refresh-token`,
     method: 'POST',
     data,
-    // 刷新接口不依赖现有 accessToken，直接使用后端允许的占位认证头
     headers: {
       Authorization: 'Bearer test1',
     },
-  }).then((res) => res.data)
+  }).then((res) => {
+    const payload = res && (res.data as AppWeixinMiniAppLoginRespVO | null)
+    if (payload && payload.accessToken && payload.refreshToken && payload.expiresTime) {
+      return payload
+    }
+    throw new Error((res && res.msg) || '令牌刷新失败')
+  })
 }
 
 // 手机号授权码换取手机号信息
@@ -37,5 +48,11 @@ export function postPhoneNumber(data: AppGetPhoneNumberReqVO): Promise<AppGetPho
     url: `${baseUrl}/get-phone-number`,
     method: 'POST',
     data,
-  }).then((res) => res.data)
+  }).then((res) => {
+    const payload = res && (res.data as AppGetPhoneNumberRespVO | null)
+    if (payload && payload.phoneNumber) {
+      return payload
+    }
+    throw new Error((res && res.msg) || '绑定手机号失败，请重试')
+  })
 }
