@@ -261,7 +261,24 @@ export function uploadFile<T>(
               const result = data as CommonResult<T>
               if (result.code === 0 || result.code === 200) {
                 console.log('图片上传成功', result)
-                 resolve(result.data)
+                let payload: any = result.data as any
+                try {
+                  if (typeof payload === 'string') {
+                    const s = payload.trim()
+                    if (s.startsWith('{')) {
+                      payload = JSON.parse(s)
+                    }
+                  }
+                } catch {}
+                if (typeof payload === 'string' && payload.startsWith('http')) {
+                  console.log('图片上传成功(string)', payload)
+                  resolve(payload as unknown as T)
+                } else if (payload && typeof payload === 'object' && typeof payload.url === 'string') {
+                  console.log('图片上传成功(object)', payload.url)
+                  resolve(payload.url as unknown as T)
+                }  else {
+                  reject(new Error('上传响应缺少url'))
+                }
               } else {
                  console.error('上传业务失败', result)
                  reject(new Error(result.msg || `上传失败: ${result.code}`))

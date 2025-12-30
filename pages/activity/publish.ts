@@ -1,4 +1,7 @@
 import { goBack } from '../../utils/navigation'
+import { createActivity } from '../../api/activity'
+import { ActivityType, ActivityTypeLabel } from '../../model/activity'
+import { uploadImage } from '../../api/common'
 
 interface PublishFormState {
   title: string
@@ -10,6 +13,7 @@ interface PublishFormState {
   startTime: string
   endTime: string
   space: string
+  spaceId?: string
   posterUrl: string
   description: string
 }
@@ -19,10 +23,19 @@ interface PublishPageState {
   collectionOptions: { id: string; name: string }[]
   collectionIndex: number
   typeOptions: string[]
+  typeValues: number[]
   typeIndex: number
-  spaceOptions: string[]
+  spaceOptions: { id: number; name: string }[]
   spaceIndex: number
 }
+
+// 构造活动类型选项和对应的值
+const typeKeys = Object.keys(ActivityTypeLabel)
+  .map(k => Number(k))
+  .filter(k => !isNaN(k))
+  .sort((a, b) => a - b)
+const typeOptions = typeKeys.map(k => ActivityTypeLabel[k as ActivityType])
+const typeValues = typeKeys
 
 Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   data: {
@@ -31,24 +44,31 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       collectionId: '',
       price: '',
       free: false,
-      type: '摄影',
+      type: typeOptions[0],
       limit: '',
       startTime: '',
       endTime: '',
       space: '空间A',
+      spaceId: '1',
       posterUrl: '',
       description: '',
     },
     collectionOptions: [
-      { id: '', name: '不关联合集' },
-      { id: 'col-1', name: '周末自然漫游系列' },
+      { id: '0', name: '不关联合集' },
+      { id: '1', name: '周末自然漫游系列' },
     ],
     collectionIndex: 0,
-    typeOptions: ['摄影', '插画', '木工', '陶艺', '雕刻'],
+    typeOptions: typeOptions,
+    typeValues: typeValues,
     typeIndex: 0,
-    spaceOptions: ['空间A', '空间B', '空间C'],
+    spaceOptions: [
+      { id: 1, name: '空间A' },
+      { id: 2, name: '空间B' },
+      { id: 3, name: '空间C' },
+    ],
     spaceIndex: 0,
   },
+
   onBackTap() {
     goBack()
   },
@@ -130,9 +150,11 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   ) {
     const index = Number(e.detail.value || 0)
     const spaceOptions = (this.data as PublishPageState).spaceOptions
+    const target = spaceOptions[index]
     this.setData({
       spaceIndex: index,
-      'form.space': spaceOptions[index],
+      'form.space': target ? target.name : '',
+      'form.spaceId': target ? String(target.id) : '',
     })
   },
   onChoosePosterTap(
@@ -142,11 +164,23 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album', 'camera'],
-      success: (res) => {
-        const path = res.tempFilePaths[0]
-        this.setData({
-          'form.posterUrl': path,
-        })
+      success: async (res) => {
+        const filePath = (res.tempFilePaths || [])[0]
+        if (!filePath) return
+        try {
+          wx.showLoading({ title: '上传中...' })
+          const url = await uploadImage(filePath)
+          this.setData({
+            'form.posterUrl': url,
+          })
+          wx.hideLoading()
+        } catch (e: any) {
+          wx.hideLoading()
+          wx.showToast({
+            title: '上传失败',
+            icon: 'none',
+          })
+        }
       },
     })
   },
@@ -158,10 +192,11 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       'form.description': e.detail.value,
     })
   },
-  onSubmitTap(
+  async onSubmitTap(
     this: WechatMiniprogram.Page.TrivialInstance
   ) {
-    const form = (this.data as PublishPageState).form
+    const state = this.data as PublishPageState
+    const form = state.form
     if (!form.title.trim()) {
       wx.showToast({
         title: '请填写活动标题',
@@ -204,12 +239,77 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       })
       return
     }
-    wx.showToast({
-      title: '已提交，待审核',
-      icon: 'success',
-    })
-    setTimeout(() => {
-      goBack()
-    }, 800)
+    const typeValue = state.typeValues[state.typeIndex]
+    const selectedSpace = state.spaceOptions[state.spaceIndex]
+    const payload = {
+      title: form.title.trim(),
+      collectionId: form.collectionId ? Number(form.collectionId) || form.collectionId : undefined,
+      fee: form.free ? 0 : Number(form.price) || 0,
+      isFree: form.free,
+      activityType: typeValue,
+      startTime: form.startTime,
+      endTime: form.endTime,
+      spaceName: form.space,
+      spaceId: selectedSpace ? selectedSpace.id : undefined,
+      detail: form.description.trim(),
+      posterUrl: form.posterUrl,
+      limit: Number(form.limit) || undefined,
+    }
+    try {
+      wx.showLoading({ title: '提交中...', mask: true })
+      const ok = await createActivity(payload)
+      wx.hideLoading()
+      if (ok) {
+        // 清空表单
+        this.setData({
+          form: {
+            title: '',
+            collectionId: '',
+            price: '',
+            free: false,
+            type: typeOptions[0],
+            limit: '',
+            startTime: '',
+            endTime: '',
+            space: '空间A',
+            posterUrl: '',
+            description: '',
+          },
+          collectionIndex: 0,
+          typeIndex: 0,
+          spaceIndex: 0,
+        })
+        wx.showToast({
+          title: '已提交，待审核',
+          icon: 'success',
+        })
+        // 返回并刷新列表页
+        const pages = getCurrentPages()
+        if (pages.length > 1) {
+          const prePage = pages[pages.length - 2] as any
+          if (prePage) {
+            if (typeof prePage.loadActivities === 'function') {
+              prePage.loadActivities()
+            } else if (typeof prePage.refreshData === 'function') {
+              prePage.refreshData()
+            }
+          }
+        }
+        setTimeout(() => {
+          wx.navigateBack()
+        }, 600)
+      } else {
+        wx.showToast({
+          title: '提交失败',
+          icon: 'none',
+        })
+      }
+    } catch (e) {
+      wx.hideLoading()
+      wx.showToast({
+        title: '网络错误',
+        icon: 'none',
+      })
+    }
   },
 })

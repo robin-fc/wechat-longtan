@@ -113,12 +113,12 @@ Page({
       return
     }
 
+    console.log('form.coverUrl', form.coverUrl);
     try {
       wx.showLoading({ title: '提交中...', mask: true })
       const ok = await createActivityCollection({
         name: form.name.trim(),
-        coverUrl: form.coverUrl,
-        listUrl: form.listUrl,
+        logo: form.coverUrl,
         description: form.description.trim(),
       })
       wx.hideLoading()
@@ -129,9 +129,13 @@ Page({
         })
         const pages = getCurrentPages()
         if (pages.length > 1) {
-          const prePage = pages[pages.length - 2]
-          if (prePage && typeof (prePage as any).refreshData === 'function') {
-            ;(prePage as any).refreshData()
+          const prePage = pages[pages.length - 2] as any
+          if (prePage) {
+            if (typeof prePage.refreshData === 'function') {
+              prePage.refreshData()
+            } else if (typeof prePage.loadCollections === 'function') {
+              prePage.loadCollections()
+            }
           }
         }
         setTimeout(() => {

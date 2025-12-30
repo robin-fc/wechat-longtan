@@ -46,18 +46,18 @@
     <view class="form-section">
       <text class="label">活动时间*</text>
       <view class="time-row">
-        <picker mode="datetime" value="{{form.startTime}}" bindchange="onStartTimeChange">
+        <picker mode="date" value="{{form.startTime}}" bindchange="onStartTimeChange">
           <view class="picker-value">
             <text>
-              {{form.startTime || '选择开始时间'}}
+              {{form.startTime || '选择开始日期'}}
             </text>
           </view>
         </picker>
         <text class="time-sep">~</text>
-        <picker mode="datetime" value="{{form.endTime}}" bindchange="onEndTimeChange">
+        <picker mode="date" value="{{form.endTime}}" bindchange="onEndTimeChange">
           <view class="picker-value">
             <text>
-              {{form.endTime || '选择结束时间'}}
+              {{form.endTime || '选择结束日期'}}
             </text>
           </view>
         </picker>
@@ -66,9 +66,9 @@
 
     <view class="form-section">
       <text class="label">活动空间*</text>
-      <picker mode="selector" range="{{spaceOptions}}" value="{{spaceIndex}}" bindchange="onSpaceChange">
+      <picker mode="selector" range="{{spaceOptions}}" range-key="name" value="{{spaceIndex}}" bindchange="onSpaceChange">
         <view class="picker-value">
-          <text>{{spaceOptions[spaceIndex]}}</text>
+          <text>{{spaceOptions[spaceIndex].name}}</text>
         </view>
       </picker>
     </view>

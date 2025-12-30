@@ -11,6 +11,26 @@ export interface ActivityListParams {
   pageSize: string
 }
 
+export interface CreateActivityCollectionPayload {
+  name: string
+  logo: string
+  description: string
+}
+
+export interface CreateActivityPayload {
+  title: string
+  collectionId?: number | string
+  fee?: number
+  isFree: boolean
+  activityType: number
+  startTime: string
+  endTime: string
+  spaceName: string
+  detail: string
+  posterUrl: string
+  limit?: number
+}
+
 export function getActivityList(
   params: ActivityListParams
 ): Promise<PageResult<Activity>> {
@@ -49,6 +69,24 @@ export function getMyActivityCollections(
   return getData<PageResult<ActivityCollection>>(
     '/app-api/daolongtan/activity-collection/my-list',
     { pageNo, pageSize }
+  )
+}
+
+export function createActivity(
+  payload: CreateActivityPayload
+): Promise<boolean> {
+  return postData<boolean>(
+    '/app-api/daolongtan/activity/create',
+    payload
+  )
+}
+
+export function createActivityCollection(
+  payload: CreateActivityCollectionPayload
+): Promise<boolean> {
+  return postData<boolean>(
+    '/app-api/daolongtan/activity-collection/create',
+    payload
   )
 }
 
