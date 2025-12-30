@@ -35,11 +35,11 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     }
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
-    const sys = wx.getSystemInfoSync()
-    const ratio = 750 / (sys.windowWidth || 750)
-    const halfScreenRpx = Math.round((sys.windowHeight || 1334) * ratio / 2)
+    const win = wx.getWindowInfo()
+    const ratio = 750 / (win.windowWidth || 750)
+    const halfScreenRpx = Math.round((win.windowHeight || 1334) * ratio / 2)
     this.setData({
-      navPaddingTop: sys.statusBarHeight || 0,
+      navPaddingTop: win.statusBarHeight || 0,
       topBgHeight: halfScreenRpx,
     })
     await this.loadData()
