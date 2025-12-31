@@ -8,6 +8,10 @@ Component({
       type: String,
       value: 'vertical',
     },
+    compact: {
+      type: Boolean,
+      value: false,
+    },
   },
   methods: {
     onTap(this: WechatMiniprogram.Component.TrivialInstance) {

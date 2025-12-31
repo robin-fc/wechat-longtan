@@ -2,6 +2,7 @@ import { getActivityCollections, getActivityList } from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import type { ActivityCollection } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
+import { formatYMDHM } from '../../utils/date'
 
 interface CollectionDetailState {
   collection: ActivityCollection | null
@@ -37,19 +38,6 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
       pageSize: '100',
     })
     const list = (page && page.list) || []
-    const formatDate = (v: any): string => {
-      if (v === undefined || v === null) return ''
-      const s = String(v)
-      const isNum = typeof v === 'number' || /^\d+$/.test(s)
-      if (isNum) {
-        const d = new Date(Number(v))
-        const y = d.getFullYear()
-        const m = String(d.getMonth() + 1).padStart(2, '0')
-        const day = String(d.getDate()).padStart(2, '0')
-        return `${y}/${m}/${day}`
-      }
-      return s
-    }
     const activities: Activity[] = list.map((it) => ({
       ...it,
       poster: {
@@ -79,8 +67,8 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
         mapImages: [],
       },
       timeRange: {
-        startTime: formatDate(it.startTime),
-        endTime: formatDate(it.endTime),
+        startTime: formatYMDHM(it.startTime),
+        endTime: formatYMDHM(it.endTime),
       },
       price: {
         amount: it.fee || 0,

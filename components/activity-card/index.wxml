@@ -1,4 +1,4 @@
-<view class="activity-card {{layout}}" bindtap="onTap">
+<view class="activity-card {{layout}} {{compact ? 'compact' : ''}}" bindtap="onTap">
   <view class="relative">
     <image class="poster" src="{{activity.poster.url}}" mode="aspectFill" />
     <block wx:if="{{layout !== 'horizontal'}}">
@@ -14,15 +14,29 @@
     <view class="time-row">
       <text class="time">
         {{layout === 'horizontal'
-          ? (activity.timeRange.startTime + ' ~ ' + activity.timeRange.endTime)
+          ? (activity.timeRange.startTime + '-' + activity.timeRange.endTime)
           : activity.timeRange.startTime}}
       </text>
-      <text class="price">
+      <text class="price" wx:if="{{layout !== 'horizontal'}}">
         ￥{{activity.price.amount}}/{{activity.price.unit}}
       </text>
     </view>
+    
     <block wx:if="{{layout === 'horizontal'}}">
-      <companions-bar companions="{{activity.companions}}" class="companions-row" />
+      <view class="location-row">
+        <image class="location-icon" src="/assets/icons/home.png" mode="aspectFit" />
+        <text class="location-text">{{activity.spaceName || activity.space.name || ''}}</text>
+      </view>
+      
+      <view class="bottom-row">
+        <view class="companions-wrapper">
+          <text class="companions-label">同行伙伴</text>
+          <companions-bar companions="{{activity.companions}}" class="companions-bar-inline" />
+        </view>
+        <text class="price">
+          ￥{{activity.price.amount}} <text class="unit">元</text>
+        </text>
+      </view>
     </block>
   </view>
 </view>
