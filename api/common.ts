@@ -1,3 +1,5 @@
+import { uploadFile } from "../utils/request"
+
 export interface uploadImageRes {
   code: number
   msg: string
@@ -9,38 +11,40 @@ export interface uploadImageParams {
   businessType?: string
 }
 
-export async function uploadImage(
-  filePath: string,
-  businessType = ''
-): Promise<uploadImageRes> {
-  const fsm = wx.getFileSystemManager()
-  const base64 = await new Promise<string>((resolve, reject) => {
-    fsm.readFile({
-      filePath,
-      encoding: 'base64',
-      success: (res) => resolve(res.data as string),
-      fail: (err) => reject(err),
-    })
-  })
-  const mime = filePath.toLowerCase().endsWith('.png')
-    ? 'image/png'
-    : 'image/jpeg'
-  const dataUrl = `data:${mime};base64,${base64}`
-  const body: uploadImageParams = {
-    file: dataUrl,
-    businessType,
-  }
-  // const res = await postData<uploadImageRes>(
-  //   '/daolongtan/common/image/upload',
-  //   body
-  // )
-  // return res
-  // 临时返回固定值
-  return {
-    code: 0,
-    msg: 'success',
-    data: {
-      url: 'https://example.com/image.jpg',
-    },
-  }
+export function uploadImage(filePath: string, businessType: string = ''): Promise<string> {
+  return uploadFile<string>(
+    '/daolongtan/common/image/upload',
+    filePath,
+    'file',
+    { businessType }
+  )
 }
+// export async function uploadImage(
+//   filePath: string,
+//   businessType = ''
+// ): Promise<uploadImageRes> {
+//   const fsm = wx.getFileSystemManager()
+//   const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+//     fsm.readFile({
+//       filePath,
+//       success: (res) => resolve(res.data as ArrayBuffer),
+//       fail: (err) => reject(err),
+//     })
+//   })
+//   const lower = filePath.toLowerCase()
+//   const isPng = lower.endsWith('.png')
+//   const mime = isPng ? 'image/png' : 'image/jpeg'
+//   const fileName = filePath.split('/').pop() || (isPng ? 'image.png' : 'image.jpg')
+//   const formData = businessType ? { businessType } : undefined
+//   const res = await postImageData<uploadImageRes>(
+//     '/daolongtan/common/image/upload',
+//     buffer,
+//     {
+//       fileName,
+//       fieldName: 'file',
+//       contentType: mime,
+//       formData,
+//     }
+//   )
+//   return res
+// }

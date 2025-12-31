@@ -7,12 +7,20 @@ import { formatYMD } from '../../utils/date'
 interface ActivityListState {
   activityType: string
   activities: Activity[]
+  filterGroups: { id: string; name: string }[]
+  activeGroupId: string
+  activeItems: { id: string; name: string }[]
+  activeItemId: string
 }
 
 Page<ActivityListState, WechatMiniprogram.IAnyObject>({
   data: {
     activityType: '',
     activities: [],
+    filterGroups: [],
+    activeGroupId: '',
+    activeItems: [],
+    activeItemId: '',
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -20,6 +28,28 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         selected: 1,
       })
     }
+  },
+  onFilterGroupTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const id = e.currentTarget.dataset.id as string
+    this.setData({
+      activeGroupId: id || '',
+      activeItems: [],
+      activeItemId: '',
+    })
+  },
+  onFilterItemTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const id = e.currentTarget.dataset.id as string
+    this.setData({
+      activeItemId: id || '',
+      activityType: id || '',
+    })
+    this.loadActivities()
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadActivities()
@@ -32,11 +62,12 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       pageSize: '20',
     })
     const list = (page && page.list) || []
+    console.log('list', list)
     const activities = list.map((it) => ({
       ...it,
       poster: {
         id: String(it.id),
-        url: it.logo || '/assets/images/activity.jpg',
+        url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
       },
       secondaryTag: (() => {
         const raw = (it as any).activityType

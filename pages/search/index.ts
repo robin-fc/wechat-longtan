@@ -83,7 +83,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
       ...it,
       poster: {
         id: String(it.id),
-        url: it.logo || '/assets/images/activity.jpg',
+        url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
       },
       secondaryTag: (() => {
         const raw = (it as any).activityType

@@ -27,7 +27,7 @@ export interface CreateActivityPayload {
   endTime: string
   spaceName: string
   detail: string
-  posterUrl: string
+  logo: string
   limit?: number
 }
 

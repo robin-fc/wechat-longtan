@@ -19,7 +19,7 @@ interface PublishFormState {
   endClock?: string
   space: string
   spaceId?: string
-  posterUrl: string
+  logo: string
   description: string
 }
 
@@ -59,7 +59,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       endClock: '',
       space: '空间A',
       spaceId: '1',
-      posterUrl: '',
+      logo: '',
       description: '',
     },
     collectionOptions: [
@@ -262,10 +262,11 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
         if (!filePath) return
         try {
           wx.showLoading({ title: '上传中...' })
-          const res = await uploadImage(filePath, '')
-          const url = (res && res.data && res.data.url) ? res.data.url : ''
+          const res = await uploadImage(filePath,'')
+          console.log('uploadImage', res)
+          const url = res || ''
           this.setData({
-            'form.posterUrl': url,
+            'form.logo': url,
           })
           wx.hideLoading()
         } catch (e: any) {
@@ -329,7 +330,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       })
       return
     }
-    if (!form.posterUrl) {
+    if (!form.logo) {
       wx.showToast({
         title: '请上传活动海报',
         icon: 'none',
@@ -358,7 +359,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       spaceName: form.space,
       spaceId: selectedSpace ? selectedSpace.id : undefined,
       detail: form.description.trim(),
-      posterUrl: form.posterUrl,
+      logo: form.logo,
       limit: Number(form.limit) || undefined,
     }
     try {
@@ -382,7 +383,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
             endDate: '',
             endClock: '',
             space: '空间A',
-            posterUrl: '',
+            logo: '',
             description: '',
           },
           collectionIndex: 0,

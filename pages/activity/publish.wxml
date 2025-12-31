@@ -67,8 +67,8 @@
     <view class="form-section">
       <text class="label">活动海报*</text>
       <view class="poster-row">
-        <view wx:if="{{form.posterUrl}}" class="poster-preview">
-          <image class="poster-image" src="{{form.posterUrl}}" mode="aspectFill" />
+        <view wx:if="{{form.logo}}" class="poster-preview">
+          <image class="poster-image" src="{{form.logo}}" mode="aspectFill" />
         </view>
         <view class="poster-upload" bindtap="onChoosePosterTap">
           <text>上传图片</text>

@@ -47,6 +47,18 @@ Component({
         this.setData({ date, time: hhmm })
         return
       }
+      // 尝试解析单一的日期或时间
+      // 包含 - 且不含 : 视为日期
+      if (v.indexOf('-') > -1 && v.indexOf(':') === -1) {
+        this.setData({ date: v, time: '' })
+        return
+      }
+      // 包含 : 且不含 - 视为时间
+      if (v.indexOf(':') > -1 && v.indexOf('-') === -1) {
+        const hhmm = v.slice(0, 5)
+        this.setData({ date: '', time: hhmm })
+        return
+      }
       this.setData({ date: '', time: '' })
     },
     onDateChange(e: WechatMiniprogram.PickerChange) {
