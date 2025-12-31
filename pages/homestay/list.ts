@@ -42,10 +42,7 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance
   ) {
     const state = this.data as HomestayListState
-    const list = await fetchHomestayList({
-      startDate: state.startDate,
-      durationType: state.duration,
-    })
+    const list = await fetchHomestayList()
     this.setData({
       homestays: list,
     })

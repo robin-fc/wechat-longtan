@@ -17,7 +17,7 @@
     </view>
     <text class="address">{{homestay.address}}</text>
     <text class="price">
-      ￥{{homestay.referencePrice.amount}}{{homestay.referencePrice.unit}}
+      ￥{{homestay.minPrice}}起
     </text>
   </view>
 </view>

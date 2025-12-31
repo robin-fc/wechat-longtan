@@ -10,20 +10,12 @@
     <text>加载中...</text>
   </view>
   <view wx:else class="content">
-    <swiper class="hero-swiper" indicator-dots="{{false}}" circular="true" autoplay="{{false}}" interval="5000" duration="350" easing-function="easeInOutCubic" previous-margin="{{heroPrevMargin}}" next-margin="{{heroNextMargin}}" current="{{heroCurrent}}" bindchange="onHeroChange">
+    <swiper class="hero-swiper" indicator-dots="{{false}}" circular="true" autoplay="{{false}}" interval="5000" duration="350" easing-function="easeInOutCubic" current="{{heroCurrent}}" bindchange="onHeroChange">
       <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
-        <swiper-item style="height: 810rpx;">
-          <view class="hero-card {{heroCurrent === idx ? 'selected' : ''}}" style="margin-left: {{heroCurrent === idx ? heroCardMarginX : 8}}rpx; margin-right: {{heroCurrent === idx ? heroCardMarginX : 8}}rpx;" bindtap="onBannerTap" data-idx="{{idx}}">
+        <swiper-item class="custom-swiper-item">
+          <view class="hero-card {{heroCurrent === idx ? 'selected' : ''}}" bindtap="onBannerTap" data-idx="{{idx}}">
             <view class="hero-poster-wrapper">
               <image class="hero-poster" src="{{item.poster.url}}" mode="widthFix" />
-            </view>
-            <view class="hero-info">
-              <view class="hero-text">
-                <text class="hero-title">{{item.title}}</text>
-                <text class="hero-sep">/</text>
-                <text class="hero-desc">{{item.description}}</text>
-              </view>
-              <text class="hero-category">{{item.category}}</text>
             </view>
           </view>
         </swiper-item>
@@ -39,9 +31,6 @@
       </block>
     </view>
     <view class="section">
-      <view class="section-header">
-        <text class="section-title">分类入口</text>
-      </view>
       <view class="entry-grid">
         <block wx:for="{{pageData.entries}}" wx:key="id" wx:for-index="idx">
           <view class="entry-item" data-item="{{item}}" bindtap="onEntryTap">
@@ -50,13 +39,16 @@
         </block>
       </view>
     </view>
-    <view class="section">
+    <view class="section-activity">
       <view class="section-header">
-        <text class="section-title">热门活动</text>
+        <image class="section-title-icon" src="/assets/icons/home/hotActivity.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreHotActivityTap">
           <text>更多</text>
         </view>
       </view>
+    </view>
+    <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
+    <view class="white-content">
       <view class="activity-list">
         <block wx:for="{{pageData.hotActivities}}" wx:key="id">
           <view class="activity-item">
@@ -64,14 +56,14 @@
           </view>
         </block>
       </view>
-    </view>
     <view class="section">
       <view class="section-header">
-        <text class="section-title">活动合集</text>
+        <image class="section-title-icon" src="/assets/icons/home/hotActivityCollection.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreCollectionsTap">
           <text>更多</text>
         </view>
       </view>
+      <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
       <scroll-view scroll-x="true" class="collection-scroll">
         <view class="collection-row">
           <block wx:for="{{pageData.collections}}" wx:key="id">
@@ -82,11 +74,12 @@
     </view>
     <view class="section">
       <view class="section-header">
-        <text class="section-title">民宿推荐</text>
+        <image class="section-title-icon" src="/assets/icons/home/hotHomestay.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreHomestaysTap">
           <text>更多</text>
         </view>
       </view>
+      <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
       <view class="homestay-list">
         <block wx:for="{{pageData.homestays}}" wx:key="id">
           <view class="homestay-item">
@@ -97,8 +90,9 @@
     </view>
     <view class="section">
       <view class="section-header">
-        <text class="section-title">关于 DAO 龙潭</text>
+        <image class="section-title-icon" src="/assets/icons/home/About.png" mode="heightFix" />
       </view>
+      <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
       <view class="about-list">
         <block wx:for="{{pageData.aboutLinks}}" wx:key="id" wx:for-index="idx">
           <view class="about-item" data-item="{{item}}" bindtap="onEntryTap">
@@ -106,6 +100,7 @@
           </view>
         </block>
       </view>
+    </view>
     </view>
   </view>
 </view>

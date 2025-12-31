@@ -1,6 +1,6 @@
 import type { Activity, ActivityCollection } from '../model/activity'
 import type { Homestay } from '../model/homestay'
-import type { CompanionGroup, UserProfile } from '../model/user'
+import type { UserProfile } from '../model/user'
 import type { ID, ImageResource, Price, TimeRange } from '../model/common'
 
 export interface HomeEntryItem {
@@ -37,329 +37,90 @@ export interface HomePageData {
   aboutLinks: HomeAboutLink[]
 }
 
-const avatar1: ImageResource = {
-  id: 'avatar-1',
-  url: '/assets/images/default-avatar.png',
-}
-
-const defaultCompanions: CompanionGroup = {
-  companions: [
-    { id: 'c1', nickname: '伙伴一', avatar: avatar1 },
-    { id: 'c2', nickname: '伙伴二', avatar: avatar1 },
-    { id: 'c3', nickname: '伙伴三', avatar: avatar1 },
-  ],
-  totalCount: 12,
-}
-
-const baseTimeRange: TimeRange = {
-  startTime: '2025/01/20',
-  endTime: '2025/01/20',
-}
-
-const basePrice: Price = {
-  amount: 199,
-  currency: 'CNY',
-  unit: '人',
-}
-
-const carouselMock: HomeCarouselItem[] = [
-  {
-    id: 'car-1',
-    title: '龙潭剪纸体验',
-    poster: {
-      id: 'car-img-1',
-      url: '/assets/images/activity.jpg',
-    },
-    description: '屏南数字游民生活周',
-    category: '插画',
-  },
-  {
-    id: 'car-2',
-    title: '龙潭剪纸体验',
-    poster: {
-      id: 'car-img-2',
-      url: '/assets/images/banner.jpg',
-    },
-    description: '科技学术类专题',
-    category: '摄影漫游',
-  },
-  {
-    id: 'car-3',
-    title: '龙潭剪纸体验',
-    poster: {
-      id: 'car-img-3',
-      url: '/assets/images/banner.jpg',
-    },
-    description: '乡村文化体验',
-    category: '徒步',
-  },
-]
-
 const entriesMock: HomeEntryItem[] = [
   {
-    id: 'entry-illust',
-    name: '插画',
-    icon: {
-      id: 'entry-illust-icon',
-      url: '/assets/images/card-placeholder.png',
-    },
-    type: 'activityCategory',
-    value: '插画',
-  },
-  {
     id: 'entry-photo',
-    name: '摄影漫游',
-    icon: {
-      id: 'entry-photo-icon',
-      url: '/assets/images/card-placeholder.png',
-    },
+    name: '摄影',
+    icon: { id: 'entry-photo-icon', url: '/assets/icons/home/camera.png' },
     type: 'activityCategory',
     value: '摄影',
   },
   {
-    id: 'entry-eco',
-    name: '生态观察',
-    icon: { id: 'entry-eco-icon', url: '/assets/images/card-placeholder.png' },
+    id: 'entry-illust',
+    name: '插画',
+    icon: { id: 'entry-illust-icon', url: '/assets/icons/home/art.png' },
     type: 'activityCategory',
-    value: '生态观察',
+    value: '插画',
   },
   {
-    id: 'entry-pottery',
-    name: '陶艺',
-    icon: {
-      id: 'entry-pottery-icon',
-      url: '/assets/images/card-placeholder.png',
-    },
+    id: 'entry-writing',
+    name: '写作',
+    icon: { id: 'entry-writing-icon', url: '/assets/icons/home/drawing.png' },
     type: 'activityCategory',
-    value: '陶艺',
+    value: '写作',
   },
   {
     id: 'entry-wood',
     name: '木工',
-    icon: { id: 'entry-wood-icon', url: '/assets/images/card-placeholder.png' },
+    icon: { id: 'entry-wood-icon', url: '/assets/icons/home/work.png' },
     type: 'activityCategory',
     value: '木工',
   },
   {
-    id: 'entry-music',
-    name: '音乐夜',
-    icon: {
-      id: 'entry-music-icon',
-      url: '/assets/images/card-placeholder.png',
-    },
+    id: 'entry-story',
+    name: '故事采集',
+    icon: { id: 'entry-story-icon', url: '/assets/icons/home/story.png' },
     type: 'activityCategory',
-    value: '音乐夜',
-  },
-  {
-    id: 'entry-farm',
-    name: '农耕体验',
-    icon: { id: 'entry-farm-icon', url: '/assets/images/card-placeholder.png' },
-    type: 'activityCategory',
-    value: '农耕体验',
+    value: '故事采集',
   },
   {
     id: 'entry-hike',
     name: '徒步',
-    icon: { id: 'entry-hike-icon', url: '/assets/images/card-placeholder.png' },
+    icon: { id: 'entry-hike-icon', url: '/assets/icons/home/mountain.png' },
     type: 'activityCategory',
     value: '徒步',
   },
-]
-
-const hotActivityMock: Activity[] = [
   {
-    id: 'act-1',
-    title: '进山路徒步一日体验',
-    poster: {
-      id: 'act-1-poster',
-      url: '/assets/images/activity.jpg',
-    },
-    primaryCategory: 'ruralCulture',
-    secondaryTag: { id: 'tag-hike', name: '徒步' },
-    timeRange: baseTimeRange,
-    price: basePrice,
-    status: 'ongoing',
-    space: {
-      id: 'space-1',
-      name: '龙潭山谷',
-      address: '龙潭村入口集合',
-    },
-    companions: defaultCompanions,
+    id: 'entry-eco',
+    name: '生态观察',
+    icon: { id: 'entry-eco-icon', url: '/assets/icons/home/ruler..png' },
+    type: 'activityCategory',
+    value: '生态观察',
   },
   {
-    id: 'act-2',
-    title: '进山路徒步一日体验',
-    poster: {
-      id: 'act-2-poster',
-      url: '/assets/images/activity.jpg',
-    },
-    primaryCategory: 'ruralCulture',
-    secondaryTag: { id: 'tag-hike', name: '徒步' },
-    timeRange: baseTimeRange,
-    price: basePrice,
-    status: 'ongoing',
-    space: {
-      id: 'space-1',
-      name: '龙潭山谷',
-      address: '龙潭村入口集合',
-    },
-    companions: defaultCompanions,
+    id: 'entry-valley',
+    name: '溪谷探访',
+    icon: { id: 'entry-valley-icon', url: '/assets/icons/home/valley.png' },
+    type: 'activityCategory',
+    value: '溪谷探访',
   },
   {
-    id: 'act-3',
-    title: '进山路徒步一日徒步一日体验3',
-    poster: {
-      id: 'act-3-poster',
-      url: '/assets/images/activity.jpg',
-    },
-    primaryCategory: 'ruralCulture',
-    secondaryTag: { id: 'tag-hike', name: '徒步' },
-    timeRange: baseTimeRange,
-    price: basePrice,
-    status: 'ongoing',
-    space: {
-      id: 'space-3',
-      name: '龙潭山谷',
-      address: '龙潭村入口集合',
-    },
-    companions: defaultCompanions,
+    id: 'entry-history',
+    name: '村史讲述',
+    icon: { id: 'entry-history-icon', url: '/assets/icons/home/history.png' },
+    type: 'activityCategory',
+    value: '村史讲述',
   },
   {
-    id: 'act-4',
-    title: '进山路徒步一日徒步一日体验3',
-    poster: {
-      id: 'act-3-poster',
-      url: '/assets/images/activity.jpg',
-    },
-    primaryCategory: 'ruralCulture',
-    secondaryTag: { id: 'tag-hike', name: '徒步' },
-    timeRange: baseTimeRange,
-    price: basePrice,
-    status: 'ongoing',
-    space: {
-      id: 'space-3',
-      name: '龙潭山谷',
-      address: '龙潭村入口集合',
-    },
-    companions: defaultCompanions,
-  },
-]
-
-const collectionsMock: ActivityCollection[] = [
-  {
-    id: 'col-1',
-    name: '周末自然漫游系列',
-    description: '围绕龙潭自然与乡村文化的周末精选活动',
-    cover: {
-      id: 'col-1-cover',
-      url: '/assets/images/activity.jpg',
-    },
-    activities: hotActivityMock,
+    id: 'entry-market',
+    name: '手作市集',
+    icon: { id: 'entry-market-icon', url: '/assets/icons/home/work.png' },
+    type: 'activityCategory',
+    value: '手作市集',
   },
   {
-    id: 'col-2',
-    name: '周末自然漫游系列',
-    description: '围绕龙潭自然与乡村文化的周末精选活动',
-    cover: {
-      id: 'col-1-cover',
-      url: '/assets/images/activity.jpg',
-    },
-    activities: hotActivityMock,
+    id: 'entry-music',
+    name: '音乐夜',
+    icon: { id: 'entry-music-icon', url: '/assets/icons/home/music..png' },
+    type: 'activityCategory',
+    value: '音乐夜',
   },
   {
-    id: 'col-3',
-    name: '周末自然漫游系列',
-    description: '围绕龙潭自然与乡村文化的周末精选活动',
-    cover: {
-      id: 'col-1-cover',
-      url: '/assets/images/activity.jpg',
-    },
-    activities: hotActivityMock,
-  },
-  {
-    id: 'col-4',
-    name: '周末自然漫游系列',
-    description: '围绕龙潭自然与乡村文化的周末精选活动',
-    cover: {
-      id: 'col-1-cover',
-      url: '/assets/images/activity.jpg',
-    },
-    activities: hotActivityMock,
-  },
-]
-
-const homestayMock: Homestay[] = [
-  {
-    id: 'home-1',
-    name: '龙潭风铃小院',
-    cover: {
-      id: 'home-1-cover',
-      url: '/assets/images/homestay.jpg',
-    },
-    address: '龙潭村口向里步行五分钟',
-    featureTags: [
-      { id: 'tag-quiet', name: '安静庭院' },
-      { id: 'tag-view', name: '山景房' },
-    ],
-    referencePrice: {
-      amount: 2999,
-      currency: 'CNY',
-      unit: '周',
-    },
-  },
-  {
-    id: 'home-2',
-    name: '龙潭风铃小院',
-    cover: {
-      id: 'home-1-cover',
-      url: '/assets/images/homestay.jpg',
-    },
-    address: '龙潭村口向里步行五分钟',
-    featureTags: [
-      { id: 'tag-quiet', name: '安静庭院' },
-      { id: 'tag-view', name: '山景房' },
-    ],
-    referencePrice: {
-      amount: 2999,
-      currency: 'CNY',
-      unit: '周',
-    },
-  },
-  {
-    id: 'home-3',
-    name: '龙潭风铃小院',
-    cover: {
-      id: 'home-1-cover',
-      url: '/assets/images/homestay.jpg',
-    },
-    address: '龙潭村口向里步行五分钟',
-    featureTags: [
-      { id: 'tag-quiet', name: '安静庭院' },
-      { id: 'tag-view', name: '山景房' },
-    ],
-    referencePrice: {
-      amount: 2999,
-      currency: 'CNY',
-      unit: '周',
-    },
-  },
-  {
-    id: 'home-4',
-    name: '龙潭风铃小院',
-    cover: {
-      id: 'home-1-cover',
-      url: '/assets/images/homestay.jpg',
-    },
-    address: '龙潭村口向里步行五分钟',
-    featureTags: [
-      { id: 'tag-quiet', name: '安静庭院' },
-      { id: 'tag-view', name: '山景房' },
-    ],
-    referencePrice: {
-      amount: 2999,
-      currency: 'CNY',
-      unit: '周',
-    },
+    id: 'entry-artfest',
+    name: '艺术节',
+    icon: { id: 'entry-artfest-icon', url: '/assets/icons/home/art.png' },
+    type: 'activityCategory',
+    value: '艺术节',
   },
 ]
 
@@ -367,40 +128,35 @@ const aboutLinksMock: HomeAboutLink[] = [
   {
     id: 'about-history',
     title: '龙潭史',
-    url: '/assets/images/card-placeholder.png',
+    url: '/assets/icons/about/history.png',
     description: '了解龙潭的历史与故事',
   },
   {
     id: 'about-guide',
     title: '居住指南',
-    url: '/assets/images/card-placeholder.png',
+    url: '/assets/icons/about/lifeGuide.png',
     description: '抵达与居住的实用信息',
   },
   {
     id: 'map-guide',
     title: '地图手册',
-    url: '/assets/images/card-placeholder.png',
+    url: '/assets/icons/about/map.png',
     description: '了解地图上的标志性地点',
   },
   {
     id: 'user-level',
     title: '身份等级',
-    url: '/assets/images/card-placeholder.png',
+    url: '/assets/icons/about/diamond.png',
     description: '了解您的身份等级',
   },
 ]
 
 const homeMockData: HomePageData = {
-  currentUser: {
-    id: 'user-1',
-    nickname: '龙潭访客',
-    avatar: avatar1,
-  },
-  carousel: carouselMock,
+  carousel: [],
   entries: entriesMock,
-  hotActivities: hotActivityMock,
-  collections: collectionsMock,
-  homestays: homestayMock,
+  hotActivities: [],
+  collections: [],
+  homestays: [],
   aboutLinks: aboutLinksMock,
 }
 

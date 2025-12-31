@@ -1,6 +1,9 @@
 import { fetchHomeData } from '../../api/home'
 import type { HomePageData, HomeEntryItem } from '../../api/home'
 import { getBannerList } from '../../api/banner'
+import { getActivityList, getActivityCollections } from '../../api/activity'
+import { getAvailableHomestayList } from '../../api/homestay'
+import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { smartNavigateTo } from '../../utils/navigation'
 
 interface HomeState {
@@ -8,9 +11,6 @@ interface HomeState {
   pageData: HomePageData | null
   navPaddingTop: number
   heroCurrent: number
-  heroCardMarginX: number
-  heroPrevMargin: string
-  heroNextMargin: string
   heroBgUrl: string
   topBgHeight: number
 }
@@ -21,9 +21,6 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     pageData: null,
     navPaddingTop: 0,
     heroCurrent: 1,
-    heroCardMarginX: 40,
-    heroPrevMargin: '60rpx',
-    heroNextMargin: '60rpx',
     heroBgUrl: '',
     topBgHeight: 0,
   },
@@ -67,6 +64,37 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
         }
       } catch (e) {
         console.error('Fetch banners failed:', e)
+      }
+      try {
+        const page = await getActivityList({ pageNo: '1', pageSize: '5' })
+        const list = (page && page.list) || []
+        data.hotActivities = list.map((a) => {
+          const tag =
+            typeof a.activityType === 'number'
+              ? ActivityTypeLabel[a.activityType as ActivityType]
+              : ActivityTypeLabel[Number(a.activityType) as ActivityType]
+          return {
+            ...a,
+            poster: { id: String(a.id), url: a.logo || '' },
+            timeRange: { startTime: a.startTime, endTime: a.endTime },
+            price: { amount: Number(a.fee || 0), currency: 'CNY', unit: '人' },
+            secondaryTag: { name: tag || '' },
+          }
+        })
+      } catch (e) {
+        console.error('Fetch activities failed:', e)
+      }
+      try {
+        const page = await getActivityCollections('1', '5')
+        data.collections = (page && page.list) || []
+      } catch (e) {
+        console.error('Fetch collections failed:', e)
+      }
+      try {
+        const list = await getAvailableHomestayList()
+        data.homestays = (list || []).slice(0, 3)
+      } catch (e) {
+        console.error('Fetch homestays failed:', e)
       }
       const idx = this.data.heroCurrent
       const bg =

@@ -1,8 +1,9 @@
 import {
-  fetchHomestayRoomDetail,
+  getAvailableRoomList,
 } from '../../api/homestay'
 import type { HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
+import { formatYMD } from '../../utils/date'
 
 interface ApplyForm {
   name: string
@@ -39,11 +40,16 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const roomId = options.roomId as string
-    if (!roomId) {
+    const homestayId = options.homestayId as string
+    if (!roomId || !homestayId) {
       return
     }
-    const room = await fetchHomestayRoomDetail(roomId)
-    const display = `${room.name}`
+    const today = formatYMD(new Date())
+    const rooms = await getAvailableRoomList(homestayId, today)
+    const room = rooms.find(r => String(r.id) === roomId)
+    if (!room) return
+
+    const display = `${room.roomNumberWithPackage}`
     this.setData({
       room,
       roomNameDisplay: display,

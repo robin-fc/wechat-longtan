@@ -1,5 +1,6 @@
-import { fetchHomestayRoomDetail } from '../../api/homestay'
+import { fetchHomestayRoomDetail, getAvailableRoomList } from '../../api/homestay'
 import type { HomestayRoom } from '../../model/homestay'
+import { formatYMD } from '../../utils/date'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 interface RoomDetailState {
@@ -29,15 +30,21 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
     const id = options.id as string
-    if (!id) {
+    const homestayId = options.homestayId as string
+    if (!id || !homestayId) {
       return
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
     this.setData({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
+      homestayId,
     })
-    const room = await fetchHomestayRoomDetail(id)
+    
+    const today = formatYMD(new Date())
+    const rooms = await getAvailableRoomList(homestayId, today)
+    const room = rooms.find(r => String(r.id) === id) || null
+    
     this.setData({
       room,
     })
@@ -92,8 +99,8 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       const diff = end - start
       const nights = Math.round(diff / (24 * 60 * 60 * 1000))
       const amount =
-        state.room && state.room.price && state.room.price.amount
-          ? state.room.price.amount
+        state.room && state.room.price && state.room.price
+          ? state.room.price
           : 0
       const totalPrice = nights * amount
       const inDate = state.checkInDate
@@ -123,7 +130,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/homestay-apply/form?roomId=${encodeURIComponent(state.room.id)}`
+      `/pages/homestay-apply/form?roomId=${encodeURIComponent(state.room.id)}&homestayId=${encodeURIComponent(state.room.id)}`
     )
   },
 })

@@ -68,7 +68,7 @@ export async function searchAll(
       type: 'homestay',
       title: item.name,
       subtitle: item.address,
-      extra: `${item.referencePrice.amount}${item.referencePrice.currency}/${item.referencePrice.unit}`,
+      extra: `￥${item.minPrice}起`,
     })
   )
   const users: SearchResultItem[] = home.currentUser

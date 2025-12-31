@@ -67,67 +67,100 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     this.doSearch()
   },
   async doSearch(this: WechatMiniprogram.Page.TrivialInstance) {
-    const keyword = (this.data as SearchPageState).keyword
+    const state = this.data as SearchPageState
+    const keyword = state.keyword
     const trimmed = keyword.trim()
     if (!trimmed) {
-      this.setData({ activities: [], hasSearched: true })
+      this.setData({
+        activities: [],
+        collections: [],
+        homestays: [],
+        hasSearched: true,
+      })
       return
     }
-    const page = await getActivityList({
-      activityType: trimmed,
+
+    const promises: Promise<any>[] = []
+
+    // 1. Activity Search
+    const activityPromise = getActivityList({
+      keyword: trimmed,
       pageNo: '1',
       pageSize: '20',
-    })
-    const list = (page && page.list) || []
-    const activities = list.map((it) => ({
-      ...it,
-      poster: {
-        id: String(it.id),
-        url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
-      },
-      secondaryTag: (() => {
-        const raw = (it as any).activityType
-        let name = ''
-        if (raw !== undefined && raw !== null && raw !== '') {
-          const s = String(raw)
-          const isNum = typeof raw === 'number' || /^\d+$/.test(s)
-          if (isNum) {
-            const n = Number(raw) as ActivityType
-            name = ActivityTypeLabel[n] ?? ''
-          } else {
-            name = s
+    }).then((page) => {
+      const list = (page && page.list) || []
+      return list.map((it) => ({
+        ...it,
+        poster: {
+          id: String(it.id),
+          url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
+        },
+        secondaryTag: (() => {
+          const raw = (it as any).activityType
+          let name = ''
+          if (raw !== undefined && raw !== null && raw !== '') {
+            const s = String(raw)
+            const isNum = typeof raw === 'number' || /^\d+$/.test(s)
+            if (isNum) {
+              const n = Number(raw) as ActivityType
+              name = ActivityTypeLabel[n] ?? ''
+            } else {
+              name = s
+            }
           }
-        }
-        return {
-          name: name || it.collectionName || '活动',
-        }
-      })(),
-      space: {
-        id: it.space?.id || '',
-        name: it.space?.name || '',
-        address: it.space?.address || '',
-        mapImages: it.space?.mapImages || [],
-      },
-      timeRange: {
-        startTime: formatYMD(it.startTime),
-        endTime: formatYMD(it.endTime),
-      },
-      price: {
-        amount: it.fee || 0,
-        currency: 'CNY',
-        unit: '人',
-      },
-      companions: {
-        companions: (it.companions?.companions || []).map((x) => ({
-          id: x.id,
-          avatar: x.avatar,
-          nickname: x.nickname,
-        })),
-        totalCount: it.companions?.totalCount || 0,
-      },
-    }))
+          return {
+            name: name || it.collectionName || '活动',
+          }
+        })(),
+        space: {
+          id: it.space?.id || '',
+          name: it.space?.name || '',
+          address: it.space?.address || '',
+          mapImages: it.space?.mapImages || [],
+        },
+        timeRange: {
+          startTime: formatYMD(it.startTime),
+          endTime: formatYMD(it.endTime),
+        },
+        price: {
+          amount: it.fee || 0,
+          currency: 'CNY',
+          unit: '人',
+        },
+        companions: {
+          companions: (it.companions?.companions || []).map((x) => ({
+            id: x.id,
+            avatar: x.avatar,
+            nickname: x.nickname,
+          })),
+          totalCount: it.companions?.totalCount || 0,
+        },
+      }))
+    })
+    promises.push(activityPromise)
+
+    // 2. Collection Search
+    const collectionPromise = getActivityCollections(
+      '1',
+      '20',
+      undefined,
+      trimmed
+    ).then((page) => page.list || [])
+    promises.push(collectionPromise)
+
+    // 3. Homestay Search (only if from === 'home')
+    let homestayPromise = Promise.resolve([])
+    if (state.from === 'home') {
+      homestayPromise = getAvailableHomestayList({ keyword: trimmed })
+    }
+    promises.push(homestayPromise)
+
+    const [activities, collections, homestays] = await Promise.all(promises)
+
     this.setData({
       activities,
+      collections,
+      homestays,
       hasSearched: true,
     })
   },
@@ -143,6 +176,34 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     }
     smartNavigateTo(
       `/pages/activity/detail?id=${encodeURIComponent(activity.id)}`
+    )
+  },
+  onCollectionTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const collection = (e.detail || {}).collection as {
+      id?: string
+    }
+    if (!collection || !collection.id) {
+      return
+    }
+    smartNavigateTo(
+      `/pages/activity-collection/detail?id=${encodeURIComponent(collection.id)}`
+    )
+  },
+  onHomestayTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const homestay = (e.detail || {}).homestay as {
+      id?: string
+    }
+    if (!homestay || !homestay.id) {
+      return
+    }
+    smartNavigateTo(
+      `/pages/homestay/detail?id=${encodeURIComponent(homestay.id)}`
     )
   },
 })

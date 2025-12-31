@@ -1,9 +1,9 @@
 <view class="room-card" bindtap="onTap">
   <view class="poster-wrap">
     <image
-      wx:if="{{room.images && room.images.length}}"
+      wx:if="{{room.logo}}"
       class="poster"
-      src="{{room.images[0].url}}"
+      src="{{room.logo}}"
       mode="aspectFill"
     />
     <image
@@ -14,18 +14,16 @@
     />
   </view>
   <view class="content">
-    <text class="name">{{room.name}}</text>
-    <text class="duration">{{room.stayDurationText}}</text>
-    <text class="capacity">可住{{room.capacity}}人</text>
+    <text class="name">{{room.roomNumberWithPackage}}</text>
     <view class="facilities">
       <block
-        wx:for="{{room.facilities}}"
-        wx:key="*this"
+        wx:for="{{room.tags}}"
+        wx:key="id"
         wx:for-item="item"
       >
-        <text class="facility">{{item}}</text>
+        <text class="facility">{{item.name}}</text>
       </block>
     </view>
-    <text class="price">￥{{room.price.amount}}/{{room.price.unit}}</text>
+    <text class="price">￥{{room.price.amount}}</text>
   </view>
 </view>

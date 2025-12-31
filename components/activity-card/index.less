@@ -13,20 +13,15 @@
   flex-direction: row;
 }
 
-.tag {
-  position: absolute;
-  top: 0;
-  left: 0;
-  font-size: 20rpx;
-  color: #ffffff;
-  background-color: #ff7b3b;
-  border-radius: 8rpx;
-  padding: 4rpx 8rpx;
+.relative {
+  position: relative;
 }
 
 .poster {
   width: 100%;
-  height: 187rpx;
+  aspect-ratio: 9/16;
+  max-height: 480rpx;
+  display: block;
 }
 
 .activity-card.horizontal .poster {
@@ -34,55 +29,88 @@
   height: 260rpx;
 }
 
-.content {
-  flex: 1;
-  padding: 12rpx 16rpx;
-  display: flex;
-  flex-direction: column;
+.tag {
+  font-size: 20rpx;
+  color: #ffffff;
+  background-color: #000000;
+  padding: 6rpx 10rpx;
+  line-height: 1;
+  border-radius: 4rpx;
 }
 
-.relative {
-  position: relative;
+.image-tag {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border-radius: 8rpx 0 0 0;
+}
+
+.title-tag {
+  margin-right: 8rpx;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  padding: 20rpx;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .title-row {
   display: flex;
   align-items: center;
-  margin-bottom: 4rpx;
+  margin-bottom: 16rpx;
 }
 
 .title {
-  font-size: 26rpx;
-  color: #333333;
-  font-weight: 700;
+  font-size: 24rpx;
+  color: #000000;
   flex: 1;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-word;
-  line-height: 36rpx;
-  min-height: 72rpx;
 }
 
+/* Vertical Footer Styles */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.price-wrapper {
+  display: flex;
+  align-items: baseline;
+  color: #000000;
+}
+
+.currency {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.amount {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-left: 2rpx;
+}
+
+.date {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+/* Horizontal Layout Legacy/Compat Styles */
 .time-row {
   font-size: 22rpx;
   color: #999999;
   margin-bottom: 2rpx;
   line-height: 32rpx;
-}
-
-.space-row {
-  font-size: 22rpx;
-  color: #666666;
-}
-
-.bottom-row {
-  display: flex;
 }
 
 .companions-row {

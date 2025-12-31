@@ -54,11 +54,12 @@ export function getMyActivityList(
 export function getActivityCollections(
   pageNo: string,
   pageSize: string,
-  creatorId?: string
+  creatorId?: string,
+  keyword?: string
 ): Promise<PageResult<ActivityCollection>> {
   return getData<PageResult<ActivityCollection>>(
     '/app-api/daolongtan/activity-collection/list',
-    { pageNo, pageSize, creatorId }
+    { pageNo, pageSize, creatorId, keyword }
   )
 }
 

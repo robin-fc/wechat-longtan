@@ -42,11 +42,11 @@ Page<ApplyStatusState, WechatMiniprogram.IAnyObject>({
       statusText: mapStatusText(item.status),
       statusClass: item.status,
       priceText: `${item.totalPrice.amount}${item.totalPrice.unit || ''}`,
-      title: `申请民宿 ${item.homestayId} 房间 ${item.roomId}`,
+      title: item.title,
       timeText: `${item.stayRange.startTime} ~ ${item.stayRange.endTime}`,
-      guestName: item.applicantName,
-      phone: item.phone,
-      canCancel: item.status === 'pending' || item.status === 'confirmed',
+      guestName: item.applicantName || '',
+      phone: item.phone || '',
+      canCancel: item.status === 'unpaid' || item.status === 'pending' || item.status === 'confirmed',
     }))
     this.setData({
       applications: views,

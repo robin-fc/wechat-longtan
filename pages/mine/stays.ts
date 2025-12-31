@@ -73,7 +73,7 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
           })
     const items: StayItemView[] = filtered.map((item) => ({
       id: item.id,
-      title: `申请民宿 ${item.homestayId} 房间 ${item.roomId}`,
+      title: item.title,
       statusText: mapStayStatusText(item.status),
       timeText: `${item.stayRange.startTime} ~ ${item.stayRange.endTime}`,
       address: '龙潭民宿',

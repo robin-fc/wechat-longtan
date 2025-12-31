@@ -1,7 +1,9 @@
 {
   "navigationBarTitleText": "搜索",
   "usingComponents": {
-    "activity-card": "/components/activity-card/index"
+    "activity-card": "/components/activity-card/index",
+    "collection-card": "/components/collection-card/index",
+    "homestay-card": "/components/homestay-card/index"
   }
 }
 

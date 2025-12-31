@@ -1,9 +1,10 @@
 import {
   fetchHomestayDetail,
-  fetchHomestayRoomDetail,
+  getAvailableRoomList,
 } from '../../api/homestay'
-import type { Homestay, HomestayRoom } from '../../model/homestay'
+import type { HomestayDetail, HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
+import { formatYMD } from '../../utils/date'
 
 type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
 
@@ -13,7 +14,7 @@ interface DurationOption {
 }
 
 interface HomestayDetailState {
-  homestay: Homestay | null
+  homestay: HomestayDetail | null
   rooms: HomestayRoom[]
   startDate: string
   duration: DurationType
@@ -54,10 +55,12 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     if (!homestay) {
       return
     }
-    const room = await fetchHomestayRoomDetail('room-1')
+    // 默认查询当天
+    const today = formatYMD(new Date())
+    const rooms = await getAvailableRoomList(id, today)
     this.setData({
       homestay,
-      rooms: [room],
+      rooms,
     })
   },
   onBackTap() {

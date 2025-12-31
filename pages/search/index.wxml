@@ -28,16 +28,50 @@
     </view>
   </view>
 
-  <view wx:if="{{hasSearched && activities.length > 0}}" class="list-wrapper">
-    <block wx:for="{{activities}}" wx:key="id">
-      <view class="activity-item">
-        <activity-card
-          activity="{{item}}"
-          layout="horizontal"
-          bindtap="onActivityTap"
-        />
-      </view>
-    </block>
+  <view wx:if="{{hasSearched}}" class="result-container">
+    <view wx:if="{{activities.length === 0 && collections.length === 0 && homestays.length === 0}}" class="empty-state">
+      <text>未找到相关结果</text>
+    </view>
+
+    <!-- Activity Collections -->
+    <view wx:if="{{collections.length > 0}}" class="section">
+      <view class="section-title">活动合集</view>
+      <block wx:for="{{collections}}" wx:key="id">
+        <view class="item-wrapper">
+          <collection-card
+            collection="{{item}}"
+            bindtap="onCollectionTap"
+          />
+        </view>
+      </block>
+    </view>
+
+    <!-- Activities -->
+    <view wx:if="{{activities.length > 0}}" class="section">
+      <view class="section-title">活动</view>
+      <block wx:for="{{activities}}" wx:key="id">
+        <view class="item-wrapper">
+          <activity-card
+            activity="{{item}}"
+            layout="horizontal"
+            bindtap="onActivityTap"
+          />
+        </view>
+      </block>
+    </view>
+
+    <!-- Homestays -->
+    <view wx:if="{{homestays.length > 0}}" class="section">
+      <view class="section-title">民宿</view>
+      <block wx:for="{{homestays}}" wx:key="id">
+        <view class="item-wrapper">
+          <homestay-card
+            homestay="{{item}}"
+            bindtap="onHomestayTap"
+          />
+        </view>
+      </block>
+    </view>
   </view>
 </view>
 
