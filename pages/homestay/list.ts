@@ -1,4 +1,4 @@
-import { fetchHomestayList } from '../../api/homestay'
+import { fetchHomestayList, getHomestayAvailableList } from '../../api/homestay'
 import type { Homestay } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
@@ -41,14 +41,50 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
   async loadHomestays(
     this: WechatMiniprogram.Page.TrivialInstance
   ) {
-    const state = this.data as HomestayListState
-    const list = await fetchHomestayList({
-      startDate: state.startDate,
-      durationType: state.duration,
-    })
-    this.setData({
-      homestays: list,
-    })
+    try {
+      const apiList = await getHomestayAvailableList()
+      const tagMap: Record<string, string> = {
+        '0': '全天热水',
+        '1': '免费Wi-Fi',
+        '2': '付费停车位',
+        '3': '免费停车位',
+        '4': '洗衣机',
+        '5': '行李寄存',
+        '6': '有早餐',
+      }
+      const list: Homestay[] = (apiList || []).map((it) => {
+        const coverUrl =
+          (it.mapImages || '')
+            .split(';')
+            .map((s) => s.trim())
+            .filter(Boolean)[0] || '/assets/images/homestay.jpg'
+        const featureTags = (it.tags || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((code) => ({ id: code, name: tagMap[code] || code }))
+        return {
+          id: String(it.id),
+          name: it.name,
+          cover: { id: `home-${it.id}-cover`, url: coverUrl },
+          address: it.address,
+          featureTags,
+          referencePrice: { amount: it.minPrice || 0, currency: 'CNY', unit: '晚' },
+        }
+      })
+      this.setData({
+        homestays: list,
+      })
+    } catch {
+      const state = this.data as HomestayListState
+      const list = await fetchHomestayList({
+        startDate: state.startDate,
+        durationType: state.duration,
+      })
+      this.setData({
+        homestays: list,
+      })
+    }
   },
   onBackTap() {
     goBack()

@@ -1,6 +1,15 @@
-import type { Homestay, HomestayApplication, HomestayRoom } from '../model/homestay'
+import type {
+  Homestay,
+  HomestayApplication,
+  HomestayRoom,
+  AppHomestayRoomListItem,
+  AppHomestayPackageItem,
+  AppHomestayListItem,
+  AppHomestayDetail,
+} from '../model/homestay'
 import type { ID, ImageResource, TimeRange, Price } from '../model/common'
 import { fetchHomeData } from './home'
+import { getData } from '../utils/request'
 
 export interface HomestayListQuery {
   startDate?: string
@@ -70,5 +79,24 @@ export function fetchHomestayRoomDetail(
 
 export function fetchHomestayApplications(): Promise<HomestayApplication[]> {
   return Promise.resolve([applicationMock])
+}
+
+export function getHomestayAvailableRooms(params: {
+  homestayId: string
+  checkInDate: string
+}): Promise<AppHomestayRoomListItem[]> {
+  return getData('/app-api/daolongtan/homestay/room/list', params)
+}
+
+export function getHomestayPackageList(): Promise<AppHomestayPackageItem[]> {
+  return getData('/app-api/daolongtan/homestay/package/list')
+}
+
+export function getHomestayAvailableList(): Promise<AppHomestayListItem[]> {
+  return getData('/app-api/daolongtan/homestay/list')
+}
+
+export function getHomestayDetailApi(id: number): Promise<AppHomestayDetail> {
+  return getData('/app-api/daolongtan/homestay/detail', { id })
 }
 

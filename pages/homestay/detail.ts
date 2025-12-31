@@ -1,6 +1,6 @@
 import {
-  fetchHomestayDetail,
-  fetchHomestayRoomDetail,
+  getHomestayDetailApi,
+  getHomestayAvailableRooms,
 } from '../../api/homestay'
 import type { Homestay, HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
@@ -50,15 +50,72 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
     })
-    const homestay = await fetchHomestayDetail(id)
-    if (!homestay) {
-      return
+    try {
+      const detail = await getHomestayDetailApi(Number(id))
+      const coverUrl = (() => {
+        try {
+          const arr = JSON.parse(detail.images || '[]')
+          if (Array.isArray(arr) && arr.length && typeof arr[0] === 'string') {
+            return arr[0]
+          }
+        } catch {}
+        return detail.logo || ''
+      })()
+      const homestay: Homestay = {
+        id: String(detail.id),
+        name: detail.name,
+        cover: { id: `homestay-${detail.id}-cover`, url: coverUrl },
+        address: detail.address,
+        featureTags: [],
+        referencePrice: { amount: 0, currency: 'CNY', unit: '晚' },
+      }
+      const now = new Date()
+      const yyyy = String(now.getFullYear())
+      const mm = String(now.getMonth() + 1).padStart(2, '0')
+      const dd = String(now.getDate()).padStart(2, '0')
+      const startDate = `${yyyy}-${mm}-${dd}`
+      this.setData({
+        homestay,
+        startDate: startDate,
+      })
+      const tagMap: Record<string, string> = {
+        '0': '独立卫生间',
+        '1': '山景房',
+        '2': '海景房',
+        '3': '家庭房',
+        '4': '双床房',
+        '5': '大床房',
+      }
+      const roomList = await getHomestayAvailableRooms({
+        homestayId: String(detail.id),
+        checkInDate: startDate,
+      })
+      const rooms: HomestayRoom[] = (roomList || []).map((item) => {
+        const duration = (item.roomNumberWithPackage || '').split('-')[1] || ''
+        const facilities = (item.tags || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((code) => tagMap[code])
+          .filter(Boolean)
+        return {
+          id: String(item.id),
+          homestayId: String(detail.id),
+          name: item.roomNumberWithPackage,
+          images: [{ id: `room-${item.id}`, url: item.logo }],
+          description: '',
+          stayDurationText: duration || '一周起',
+          price: { amount: item.price, currency: 'CNY', unit: '晚' },
+          capacity: 2,
+          facilities,
+        }
+      })
+      this.setData({
+        rooms,
+      })
+    } catch (e) {
+      // ignore for now
     }
-    const room = await fetchHomestayRoomDetail('room-1')
-    this.setData({
-      homestay,
-      rooms: [room],
-    })
   },
   onBackTap() {
     goBack()
@@ -67,8 +124,46 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.PickerChange
   ) {
-    this.setData({
-      startDate: e.detail.value,
+    const startDate = e.detail.value
+    this.setData({ startDate })
+    const data = this.data as HomestayDetailState
+    const homestay = data.homestay
+    if (!homestay) {
+      return
+    }
+    const tagMap: Record<string, string> = {
+      '0': '独立卫生间',
+      '1': '山景房',
+      '2': '海景房',
+      '3': '家庭房',
+      '4': '双床房',
+      '5': '大床房',
+    }
+    getHomestayAvailableRooms({
+      homestayId: String(homestay.id),
+      checkInDate: startDate as string,
+    }).then((roomList) => {
+      const rooms: HomestayRoom[] = (roomList || []).map((item) => {
+        const duration = (item.roomNumberWithPackage || '').split('-')[1] || ''
+        const facilities = (item.tags || '')
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean)
+          .map((code) => tagMap[code])
+          .filter(Boolean)
+        return {
+          id: String(item.id),
+          homestayId: String(homestay.id),
+          name: item.roomNumberWithPackage,
+          images: [{ id: `room-${item.id}`, url: item.logo }],
+          description: '',
+          stayDurationText: duration || '一周起',
+          price: { amount: item.price, currency: 'CNY', unit: '晚' },
+          capacity: 2,
+          facilities,
+        }
+      })
+      this.setData({ rooms })
     })
   },
   onDurationTap(

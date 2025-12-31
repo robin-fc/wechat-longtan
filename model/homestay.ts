@@ -46,3 +46,43 @@ export interface HomestayApplication {
   canceledReason?: string
 }
 
+export interface AppHomestayRoomListItem {
+  id: number
+  roomNumberWithPackage: string
+  price: number
+  logo: string
+  tags: string
+}
+
+export interface AppHomestayPackageItem {
+  packageType: number
+  packageName: string
+  days: number
+}
+
+export interface ReservedUser {
+  userId: number
+  avatar: string
+}
+
+export interface AppHomestayListItem {
+  id: number
+  name: string
+  minPrice: number
+  address: string
+  mapImages: string
+  tags: string
+  reservedUsers: ReservedUser[]
+}
+
+export interface AppHomestayDetail {
+  id: number
+  name: string
+  logo: string
+  images: string
+  mapImages: string
+  address: string
+  description: string
+  contact: string
+}
+
