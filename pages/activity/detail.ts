@@ -1,6 +1,7 @@
 import { getActivityByIdFromList, getActivityDetail, getFavoriteCount, favoriteActivity, unfavoriteActivity, shareActivity, getActivityRegistrations } from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
+import { formatYMDHM } from '../../utils/date'
 
 interface ActivityDetailState {
   activity: Activity | null
@@ -33,19 +34,6 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     const detail = await getActivityDetail(Number(id))
-    const formatDate = (v: any): string => {
-      if (v === undefined || v === null) return ''
-      const s = String(v)
-      const isNum = typeof v === 'number' || /^\d+$/.test(s)
-      if (isNum) {
-        const d = new Date(Number(v))
-        const y = d.getFullYear()
-        const m = String(d.getMonth() + 1).padStart(2, '0')
-        const day = String(d.getDate()).padStart(2, '0')
-        return `${y}/${m}/${day}`
-      }
-      return s
-    }
     const activity: Activity = {
       ...base,
       poster: base.poster ?? {
@@ -53,8 +41,8 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         url: detail.logo || '/assets/images/activity.jpg',
       },
       timeRange: {
-        startTime: formatDate(detail.startTime) || (base.timeRange?.startTime || ''),
-        endTime: formatDate(detail.endTime) || (base.timeRange?.endTime || ''),
+        startTime: formatYMDHM(detail.startTime) || (base.timeRange?.startTime || ''),
+        endTime: formatYMDHM(detail.endTime) || (base.timeRange?.endTime || ''),
       },
       price: {
         amount: detail.fee ?? (base.price?.amount || 0),

@@ -2,6 +2,7 @@ import type { Activity, ActivityCollection, ActivityDetail, ActivityRegistration
 import { ActivityType, ActivityTypeLabel } from '../model/activity'
 import { PageResult } from '../model/common'
 import { getData, postData } from '../utils/request'
+import { formatYMDHM } from '../utils/date'
 
 export interface ActivityListParams {
   collectionId?: string
@@ -108,19 +109,6 @@ export async function getActivityByIdFromList(
   })
   const it = page.list.find((x) => x.id === id)
   if (!it) return undefined
-  const formatDate = (v: any): string => {
-    if (v === undefined || v === null) return ''
-    const s = String(v)
-    const isNum = typeof v === 'number' || /^\d+$/.test(s)
-    if (isNum) {
-      const d = new Date(Number(v))
-      const y = d.getFullYear()
-      const m = String(d.getMonth() + 1).padStart(2, '0')
-      const day = String(d.getDate()).padStart(2, '0')
-      return `${y}/${m}/${day}`
-    }
-    return s
-  }
   return {
     ...it,
     poster: {
@@ -145,8 +133,8 @@ export async function getActivityByIdFromList(
       }
     })(),
     timeRange: {
-      startTime: formatDate(it.startTime) || '',
-      endTime: formatDate(it.endTime) || '',
+      startTime: formatYMDHM(it.startTime) || '',
+      endTime: formatYMDHM(it.endTime) || '',
     },
     price: {
       amount: it.fee || 0,

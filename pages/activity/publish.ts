@@ -1,6 +1,6 @@
 import { goBack } from '../../utils/navigation'
 import { toISO8601 } from '../../utils/isoTime'
-import { createActivity } from '../../api/activity'
+import { createActivity, getMyActivityCollections } from '../../api/activity'
 import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { uploadImage } from '../../api/common'
 
@@ -76,6 +76,22 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       { id: 3, name: '空间C' },
     ],
     spaceIndex: 0,
+  },
+  async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    try {
+      const page = await getMyActivityCollections('1', '100')
+      const options = [{ id: '0', name: '不关联合集' }].concat(
+        (page.list || []).map((it) => ({
+          id: String(it.id),
+          name: it.name || '',
+        }))
+      )
+      this.setData({
+        collectionOptions: options,
+        collectionIndex: 0,
+        'form.collectionId': '',
+      })
+    } catch {}
   },
 
   onBackTap() {
