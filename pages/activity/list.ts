@@ -2,7 +2,7 @@ import { getActivityList } from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
-import { formatYMD } from '../../utils/date'
+import { formatYMDHM } from '../../utils/date'
 
 interface ActivityListState {
   activityType: string
@@ -93,8 +93,8 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         mapImages: it.space?.mapImages || [],
       },
       timeRange: {
-        startTime: formatYMD(it.startTime),
-        endTime: formatYMD(it.endTime),
+        startTime: formatYMDHM(it.startTime),
+        endTime: formatYMDHM(it.endTime),
       },
       price: {
         amount: it.fee || 0,

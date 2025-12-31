@@ -1,19 +1,15 @@
-import { getData } from '../utils/request'
 import type {
-  AppHomestayListRespVO,
-  AppHomestayDetailRespVO,
-  AppHomestayRoomListRespVO,
-  AppHomestayPackageRespVO,
-  AppOrderListRespVO,
   Homestay,
-  HomestayDetail,
-  HomestayRoom,
-  HomestayPackage,
   HomestayApplication,
-  HomestayApplicationStatus,
-  HomestayFeatureTag,
+  HomestayRoom,
+  AppHomestayRoomListItem,
+  AppHomestayPackageItem,
+  AppHomestayListItem,
+  AppHomestayDetail,
 } from '../model/homestay'
-import { HOMESTAY_TAGS, ROOM_TAGS } from '../model/homestay'
+import type { ID, ImageResource, TimeRange, Price } from '../model/common'
+import { fetchHomeData } from './home'
+import { getData } from '../utils/request'
 
 import type { ID } from '../model/common'
 
@@ -114,56 +110,22 @@ export async function fetchHomestayRoomDetail(id: ID): Promise<HomestayRoom> {
   return {} as HomestayRoom
 }
 
-export async function getPackageList(): Promise<HomestayPackage[]> {
-  const raw = await getData<AppHomestayPackageRespVO[]>(
-    '/app-api/daolongtan/homestay/package/list'
-  )
-  return (raw || []).map((it) => ({
-    packageType: it.packageType,
-    packageName: it.packageName,
-    days: it.days,
-  }))
+export function getHomestayAvailableRooms(params: {
+  homestayId: string
+  checkInDate: string
+}): Promise<AppHomestayRoomListItem[]> {
+  return getData('/app-api/daolongtan/homestay/room/list', params)
 }
 
-// Map API status to local status
-function mapStatus(status: number): HomestayApplicationStatus {
-  switch (status) {
-    case 1:
-      return 'unpaid' // 待付款
-    case 2:
-      return 'pending' // 待审核 -> pending
-    case 3:
-      return 'confirmed' // 待入住 -> confirmed
-    case 4:
-      return 'checkedIn' // 已入住 -> checkedIn
-    default:
-      return 'canceled' // Assume others are canceled/finished
-  }
+export function getHomestayPackageList(): Promise<AppHomestayPackageItem[]> {
+  return getData('/app-api/daolongtan/homestay/package/list')
 }
 
-export async function fetchHomestayApplications(): Promise<
-  HomestayApplication[]
-> {
-  // type=5 means all orders
-  const raw = await getData<{ list: AppOrderListRespVO[]; total: number }>(
-    '/app-api/daolongtan/order/my-list',
-    { type: 5, pageNo: 1, pageSize: 100 }
-  )
-  return (raw.list || []).map((it) => ({
-    id: it.orderNo,
-    title: it.title,
-    status: mapStatus(it.status),
-    stayRange: {
-      startTime: new Date(it.checkInDate).toISOString(),
-      endTime: new Date(it.checkOutDate).toISOString(),
-    },
-    totalPrice: {
-      amount: it.amountTotal,
-      currency: 'CNY',
-    },
-    roomImage: it.roomImage,
-    roomDetails: it.roomDetails,
-    applicantName: '', // Not returned
-    phone: '', // Not returned
-  }))
+export function getHomestayAvailableList(): Promise<AppHomestayListItem[]> {
+  return getData('/app-api/daolongtan/homestay/list')
 }
+
+export function getHomestayDetailApi(id: number): Promise<AppHomestayDetail> {
+  return getData('/app-api/daolongtan/homestay/detail', { id })
+}
+

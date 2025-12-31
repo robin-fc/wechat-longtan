@@ -10,6 +10,10 @@ Component({
       type: String,
       value: 'vertical',
     },
+    compact: {
+      type: Boolean,
+      value: false,
+    },
   },
   data: {
     formattedDate: '',
