@@ -1,17 +1,21 @@
-import type {
-  Homestay,
-  HomestayApplication,
-  HomestayRoom,
-  AppHomestayRoomListItem,
-  AppHomestayPackageItem,
-  AppHomestayListItem,
-  AppHomestayDetail,
+import {
+  type Homestay,
+  type HomestayApplication,
+  type HomestayRoom,
+  type AppHomestayRoomListItem,
+  type AppHomestayPackageItem,
+  type AppHomestayListItem,
+  type AppHomestayDetail,
+  type HomestayFeatureTag,
+  AppHomestayDetailRespVO,
+  AppHomestayListRespVO,
+  AppHomestayRoomListRespVO,
+  HOMESTAY_TAGS,
+  HomestayDetail,
+  ROOM_TAGS,
 } from '../model/homestay'
-import type { ID, ImageResource, TimeRange, Price } from '../model/common'
-import { fetchHomeData } from './home'
-import { getData } from '../utils/request'
-
 import type { ID } from '../model/common'
+import { getData } from '../utils/request'
 
 // Helper to map tags string "0,1" to object array
 function mapTags(
