@@ -90,6 +90,36 @@ export interface Homestay {
   minPrice: number
   mapImages: string[]
   reservedUsers: { userId: number; avatar: string }[]
+  // 新增字段
+  description?: string
+  roomCount?: number
+  mapThumbnail?: ImageResource
+  coordinates?: {
+    latitude: number
+    longitude: number
+  }
+}
+
+export interface HomestayRoom {
+  id: string
+  homestayId: string
+  name: string
+  images: ImageResource[]
+  description: string
+  stayDurationText: string
+  price: Price
+  capacity: number
+  facilities: string[]
+  // 新增字段
+  attributes?: { label: string; value: string }[] // e.g. [{label: "房型", value: "大床"}]
+  tags?: string[] // e.g. ["温馨", "硬件顶配"]
+  guestAvatars?: string[]
+  guestCount?: number
+  // 详情页长文本
+  intro?: string
+  notice?: string
+  priceRule?: string
+  checkInProcess?: string
 }
 
 export interface HomestayDetail extends Homestay {
@@ -97,14 +127,6 @@ export interface HomestayDetail extends Homestay {
   images: ImageResource[]
   description: string
   contact: string
-}
-
-export interface HomestayRoom {
-  id: number
-  roomNumberWithPackage: string
-  price: number
-  logo: string
-  tags: HomestayFeatureTag[]
 }
 
 export interface HomestayPackage {

@@ -1,49 +1,6 @@
 .room-detail-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
-}
-
-.header {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 360rpx;
-  overflow: hidden;
-  z-index: 0;
-}
-
-.header-bg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.header-mask {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.25));
-}
-
-.header-bar {
-  position: absolute;
-  left: 12rpx;
-  right: 12rpx;
-  height: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 100;
-}
-
-.header-left,
-.header-right {
-  width: 88rpx;
-  display: flex;
-  align-items: center;
+  background-color: #ffffff;
 }
 
 .back-icon {
@@ -51,119 +8,125 @@
   height: 40rpx;
   display: block;
   transform: rotate(90deg);
-}
-
-.header-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #ffffff;
+  filter: brightness(0); /* Ensure it's black */
 }
 
 .body {
   position: relative;
   z-index: 1;
-  padding: 300rpx 0 calc(144rpx + env(safe-area-inset-bottom)) 0;
-  height: 100vh;
+  padding-bottom: calc(144rpx + env(safe-area-inset-bottom));
 }
 
-.section-bg {
-  padding: 16rpx 20rpx;
-  margin: 16rpx 20rpx 0 20rpx;
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
-}
-
-.section {
-  padding: 16rpx 20rpx;
-  margin-top: 12rpx;
-}
-
-.intro-card {
-  position: relative;
-  margin-top: 0;
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
-  padding: 16rpx 20rpx 20rpx;
-  width: calc(100 - 80rpx);
-  margin: 0 20rpx;
-}
-
-.poster-swiper {
+.poster-image {
   width: 100%;
-  height: 260rpx;
-}
-
-.poster {
-  width: 100%;
-  height: 260rpx;
-  border-radius: 16rpx;
-}
-
-.name {
+  height: 75vw; /* 4:3 aspect ratio */
   display: block;
-  margin-top: 8rpx;
-  font-size: 30rpx;
+}
+
+.content-wrapper {
+  padding: 32rpx;
+}
+
+.price-row {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 16rpx;
+}
+
+.currency {
+  font-size: 32rpx;
+  font-weight: 500;
   color: #333333;
-  font-weight: 700;
+  margin-right: 4rpx;
 }
 
-.desc {
-  display: block;
-  margin-top: 4rpx;
+.amount {
+  font-size: 48rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.title-row {
+  margin-bottom: 24rpx;
+}
+
+.room-name {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333333;
+}
+
+.tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 48rpx;
+}
+
+.tag-item {
   font-size: 22rpx;
   color: #666666;
-}
-
-.meta {
-  display: block;
-  margin-top: 2rpx;
-  font-size: 22rpx;
-  color: #666666;
-}
-
-.section-title {
-  font-size: 26rpx;
-  color: #333333;
-  font-weight: 700;
+  border: 1rpx solid #dddddd;
+  border-radius: 4rpx;
+  padding: 4rpx 12rpx;
+  margin-right: 12rpx;
   margin-bottom: 8rpx;
 }
 
-.date-row {
-  display: flex;
-  align-items: center;
+/* Specific colors for tags if needed, or just keep them neutral as per new design */
+/* Reference shows: Green-ish for "温馨", Orange for "硬件顶配", Grey for "免费wifi" */
+.tag-item:nth-child(1) {
+  color: #73d13d;
+  border-color: #73d13d;
+}
+.tag-item:nth-child(2) {
+  color: #ffaa33;
+  border-color: #ffaa33;
 }
 
-.date-picker {
-  flex: 1;
-  height: 64rpx;
-  border-radius: 32rpx;
-  background-color: #ffffff;
-  padding: 0 16rpx;
-  border: 1rpx solid #eeeeee;
+.attributes-grid {
   display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 48rpx;
+}
+
+.attribute-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  font-size: 24rpx;
+  margin-bottom: 24rpx;
+}
+
+.attr-value {
+  font-size: 28rpx;
+  font-weight: 600;
   color: #333333;
+  margin-bottom: 8rpx;
 }
 
-.date-sep {
-  margin: 0 8rpx;
-  font-size: 24rpx;
+.attr-label {
+  font-size: 22rpx;
   color: #999999;
 }
 
-.nights {
-  display: block;
-  margin-top: 8rpx;
-  font-size: 22rpx;
-  color: #666666;
+.text-section {
+  margin-bottom: 48rpx;
 }
 
-.paragraph {
-  font-size: 22rpx;
+.section-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.section-content {
+  display: block;
+  font-size: 26rpx;
   color: #666666;
+  line-height: 1.6;
+  text-align: justify;
 }
 
 .bottom-bar {
@@ -171,54 +134,25 @@
   left: 0;
   right: 0;
   bottom: 0;
-  min-height: 96rpx;
-  padding: 0 24rpx;
   background-color: #ffffff;
-  display: flex;
-  align-items: center;
+  padding: 20rpx 32rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
-  z-index: 1000;
-  box-sizing: border-box;
-  padding-bottom: constant(safe-area-inset-bottom);
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-top: 20rpx;
-  border-top: 1rpx solid #eeeeee;
-}
-
-.price-info {
-  flex: 1;
-}
-
-.price-label {
-  font-size: 22rpx;
-  color: #666666;
-}
-
-.price-value {
-  display: block;
-  font-size: 32rpx;
-  color: #ff4d4f;
-  font-weight: 700;
-}
-
-.price-desc {
-  display: block;
-  font-size: 22rpx;
-  color: #666666;
+  z-index: 100;
 }
 
 .submit-button {
-  width: 220rpx;
-  height: 72rpx;
-  border-radius: 36rpx;
-  background-color: #07c160;
+  width: 100%;
+  height: 88rpx;
+  background-color: #000000;
+  border-radius: 8rpx;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .submit-button text {
-  font-size: 28rpx;
+  font-size: 30rpx;
+  font-weight: 600;
   color: #ffffff;
-  font-weight: 700;
 }

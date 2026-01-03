@@ -1,77 +1,69 @@
 <view class="room-detail-page">
-  <view class="header">
+  <scroll-view scroll-y="true" class="body">
     <image
       wx:if="{{room && room.images && room.images.length}}"
-      class="header-bg"
+      class="poster-image"
       src="{{room.images[0].url}}"
       mode="aspectFill"
     />
     <image
       wx:else
-      class="header-bg"
+      class="poster-image"
       src="/assets/images/room.jpg"
       mode="aspectFill"
     />
-    <view class="header-mask"></view>
-  </view>
-  <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
-    <view class="header-left" bindtap="onBackTap">
-      <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
-    </view>
-    <text class="header-title">房间详情</text>
-    <view class="header-right"></view>
-  </view>
-  <scroll-view scroll-y="true" class="body">
-    <view wx:if="{{room}}" class="intro-card">
-      <text class="name">{{room.name}}</text>
-      <text class="desc">{{room.description}}</text>
-      <text class="meta">房型：山景大床房</text>
-      <text class="meta">面积：约30㎡</text>
-      <text class="meta">可住人数：{{room.capacity}}人</text>
-      <text class="meta">卫生间：独立卫生间</text>
-    </view>
 
-    <view class="section-bg">
-      <text class="section-title">选择日期</text>
-      <view class="date-row">
-        <picker
-          mode="date"
-          value="{{checkInDate}}"
-          bindchange="onCheckInChange"
-        >
-          <view class="date-picker">
-            <text>{{checkInDate || '入住日期'}}</text>
-          </view>
-        </picker>
-        <text class="date-sep">~</text>
-        <picker
-          mode="date"
-          value="{{checkOutDate}}"
-          bindchange="onCheckOutChange"
-        >
-          <view class="date-picker">
-            <text>{{checkOutDate || '离开日期'}}</text>
-          </view>
-        </picker>
+    <view class="content-wrapper" wx:if="{{room}}">
+      <view class="price-row">
+        <text class="currency">¥</text>
+        <text class="amount">{{room.price.amount}}</text>
       </view>
-      <text class="nights">
-        共{{nights}}晚，一周起住，越久越便宜
-      </text>
-    </view>
 
-    <view class="section">
-      <text class="section-title">预定须知</text>
-      <text class="paragraph">
-        这里展示房间简介、预订须知、价格规则、入住流程等内容。
-      </text>
+      <view class="title-row">
+        <text class="room-name">{{room.name}}</text>
+      </view>
+
+      <view class="tags-row">
+        <block wx:for="{{room.tags}}" wx:key="*this">
+          <text class="tag-item">{{item}}</text>
+        </block>
+        <block wx:for="{{room.facilities}}" wx:key="*this" wx:if="{{!room.tags || room.tags.length === 0}}">
+           <text class="tag-item">{{item}}</text>
+        </block>
+      </view>
+
+      <view class="attributes-grid" wx:if="{{room.attributes}}">
+        <block wx:for="{{room.attributes}}" wx:key="label">
+          <view class="attribute-item">
+            <text class="attr-value">{{item.value}}</text>
+            <text class="attr-label">{{item.label}}</text>
+          </view>
+        </block>
+      </view>
+
+      <view class="text-section" wx:if="{{room.intro}}">
+        <text class="section-title">房间简介</text>
+        <text class="section-content">{{room.intro}}</text>
+      </view>
+
+      <view class="text-section" wx:if="{{room.notice}}">
+        <text class="section-title">预订须知</text>
+        <text class="section-content">{{room.notice}}</text>
+      </view>
+
+      <view class="text-section" wx:if="{{room.priceRule}}">
+        <text class="section-title">价格规则</text>
+        <text class="section-content">{{room.priceRule}}</text>
+      </view>
+
+      <view class="text-section" wx:if="{{room.checkInProcess}}">
+        <text class="section-title">入住流程</text>
+        <text class="section-content">{{room.checkInProcess}}</text>
+      </view>
     </view>
   </scroll-view>
 
   <view class="bottom-bar" wx:if="{{room}}">
-    <view class="price-info">
-      <text class="price-value">￥{{totalPrice}}</text>
-      <text class="price-desc">{{displayDateRange}} 共{{nights}}晚*{{room.price.amount}}/{{room.price.unit}}</text>
-    </view>
     <view class="submit-button" bindtap="onApplyTap">
       <text>申请预订</text>
     </view>

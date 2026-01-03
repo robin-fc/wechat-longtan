@@ -1,9 +1,9 @@
 <view class="room-card" bindtap="onTap">
   <view class="poster-wrap">
     <image
-      wx:if="{{room.logo}}"
+      wx:if="{{room.images && room.images.length}}"
       class="poster"
-      src="{{room.logo}}"
+      src="{{room.images[0].url}}"
       mode="aspectFill"
     />
     <image
@@ -14,16 +14,44 @@
     />
   </view>
   <view class="content">
-    <text class="name">{{room.roomNumberWithPackage}}</text>
-    <view class="facilities">
-      <block
-        wx:for="{{room.tags}}"
-        wx:key="id"
-        wx:for-item="item"
-      >
-        <text class="facility">{{item.name}}</text>
+    <view class="row-title">
+      <text class="name">{{room.name}}</text>
+    </view>
+    <view class="row-attributes">
+      <block wx:for="{{room.attributes}}" wx:key="*this">
+        <text class="attribute-item">{{item}}</text>
+        <text class="attribute-divider" wx:if="{{index < room.attributes.length - 1}}">|</text>
       </block>
     </view>
-    <text class="price">￥{{room.price.amount}}</text>
+    <view class="row-tags">
+      <!-- Mock logic for colors based on index for variety -->
+      <block wx:for="{{room.tags}}" wx:key="*this">
+        <text class="tag-outline tag-color-{{index % 3}}">{{item}}</text>
+      </block>
+      <block wx:for="{{room.facilities}}" wx:key="*this">
+        <text class="tag-outline tag-color-2">{{item}}</text>
+      </block>
+    </view>
+    <view class="footer-row">
+      <view class="footer-left">
+        <view class="guests-wrap" wx:if="{{room.guestAvatars && room.guestAvatars.length}}">
+          <view class="avatars">
+            <block wx:for="{{room.guestAvatars}}" wx:key="*this">
+              <image class="guest-avatar" src="{{item}}" mode="aspectFill"/>
+            </block>
+          </view>
+          <view class="guest-count-badge" wx:if="{{room.guestCount}}">
+             <text class="guest-count-num">{{room.guestCount}}</text>
+          </view>
+          <text class="guest-count-text">人住过</text>
+        </view>
+      </view>
+      <view class="footer-right">
+        <view class="price-btn">
+          <text class="price-symbol">￥</text>
+          <text class="price-amount">{{room.price.amount}}</text>
+        </view>
+      </view>
+    </view>
   </view>
 </view>
