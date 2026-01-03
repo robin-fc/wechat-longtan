@@ -15,10 +15,17 @@
         <text class="tag">{{item.name}}</text>
       </block>
     </view>
-    <text class="address">{{homestay.address}}</text>
-    <text class="price">
-      ￥{{homestay.minPrice}}起
-    </text>
+    <view class="footer">
+      <view class="price">
+        <text class="symbol">￥</text>
+        <text class="amount">{{homestay.minPrice}}</text>
+        <text class="unit"> /天起</text>
+      </view>
+      <view class="address">
+        <text class="address-label">地址：</text>
+        <text class="address-text">{{homestay.address}}</text>
+      </view>
+    </view>
   </view>
 </view>
 
