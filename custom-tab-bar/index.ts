@@ -11,7 +11,7 @@ Component({
       text: "活动"
     }, {
       pagePath: "/pages/homestay/list",
-      text: "民宿"
+      text: "入住"
     }, {
       pagePath: "/pages/mine/index",
       text: "我的"

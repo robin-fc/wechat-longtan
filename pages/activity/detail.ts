@@ -1,4 +1,12 @@
-import { getActivityByIdFromList, getActivityDetail, getFavoriteCount, favoriteActivity, unfavoriteActivity, shareActivity, getActivityRegistrations } from '../../api/activity'
+import {
+  getActivityByIdFromList,
+  getActivityDetail,
+  getFavoriteCount,
+  favoriteActivity,
+  unfavoriteActivity,
+  shareActivity,
+  getActivityRegistrations,
+} from '../../api/activity'
 import type { Activity } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
@@ -41,8 +49,9 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         url: detail.logo || '/assets/images/activity.jpg',
       },
       timeRange: {
-        startTime: formatYMDHM(detail.startTime) || (base.timeRange?.startTime || ''),
-        endTime: formatYMDHM(detail.endTime) || (base.timeRange?.endTime || ''),
+        startTime:
+          formatYMDHM(detail.startTime) || base.timeRange?.startTime || '',
+        endTime: formatYMDHM(detail.endTime) || base.timeRange?.endTime || '',
       },
       price: {
         amount: detail.fee ?? (base.price?.amount || 0),
@@ -51,10 +60,11 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       },
       space: {
         id: base.space?.id ?? detail.space.id,
-        name: detail.space.name || (base.space?.name || ''),
-        address: detail.space.address || (base.space?.address || ''),
-        mapImages: detail.space.mapImages || (base.space?.mapImages || []),
+        name: detail.space.name || base.space?.name || '',
+        address: detail.space.address || base.space?.address || '',
+        mapImages: detail.space.mapImages || base.space?.mapImages || [],
       },
+      organizer: detail.organizer,
       detail: detail.detail || base.detail,
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
@@ -71,11 +81,11 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
           totalCount: reg.count,
           companions: (reg.userList || []).slice(0, 3).map((u) => ({
             avatar: { url: u.logo || '/assets/images/default-avatar.png' },
-            nickname: u.memberName || u.wxName
-          }))
+            nickname: u.memberName || u.wxName,
+          })),
         }
         this.setData({
-          'activity.companions': companions
+          'activity.companions': companions,
         })
       })
       .catch((e) => {
@@ -97,9 +107,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   onBackTap() {
     goBack()
   },
-  onCompanionsTap(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  onCompanionsTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return
@@ -110,15 +118,26 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       )}`
     )
   },
-  onOpenMapTap() {
-    wx.showToast({
-      title: '地图功能待接入',
-      icon: 'none',
-    })
+  onOpenMapTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const activity = (this.data as ActivityDetailState).activity
+    if (!activity) {
+      return
+    }
+
+    const mapImages = activity.space?.mapImages || []
+    if (mapImages && mapImages.length > 0) {
+      wx.previewImage({
+        current: mapImages[0], // 当前显示图片的http链接
+        urls: mapImages, // 需要预览的图片http链接列表
+      })
+    } else {
+      wx.showToast({
+        title: '暂无地图信息',
+        icon: 'none',
+      })
+    }
   },
-  onSpaceDetailTap(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  onSpaceDetailTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return
@@ -127,15 +146,15 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       `/pages/space/detail?id=${encodeURIComponent(String(detail.spaceId))}`
     )
   },
-  onToggleCollect(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  onToggleCollect(this: WechatMiniprogram.Page.TrivialInstance) {
     const prev = (this.data as ActivityDetailState).isCollected
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return
     }
-    const req = prev ? unfavoriteActivity(detail.id) : favoriteActivity(detail.id)
+    const req = prev
+      ? unfavoriteActivity(detail.id)
+      : favoriteActivity(detail.id)
     req
       .then(() => {
         this.setData({ isCollected: !prev })
@@ -144,7 +163,9 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
             const count = typeof cnt === 'number' ? cnt : 0
             const text =
               count >= 10000
-                ? `${(Math.round((count / 10000) * 10) / 10).toFixed(1)} 万人收藏`
+                ? `${(Math.round((count / 10000) * 10) / 10).toFixed(
+                    1
+                  )} 万人收藏`
                 : `${count} 人收藏`
             this.setData({
               favoriteCount: count,
@@ -157,7 +178,9 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
             const count = Math.max(0, curr + delta)
             const text =
               count >= 10000
-                ? `${(Math.round((count / 10000) * 10) / 10).toFixed(1)} 万人收藏`
+                ? `${(Math.round((count / 10000) * 10) / 10).toFixed(
+                    1
+                  )} 万人收藏`
                 : `${count} 人收藏`
             this.setData({
               favoriteCount: count,
@@ -169,9 +192,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         wx.showToast({ title: '操作失败', icon: 'none' })
       })
   },
-  onShareTap(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  onShareTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return
@@ -185,9 +206,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         wx.showToast({ title: '分享准备失败', icon: 'none' })
       })
   },
-  onSignupTap(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  onSignupTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return

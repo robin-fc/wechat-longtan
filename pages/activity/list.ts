@@ -28,6 +28,19 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         selected: 1,
       })
     }
+    try {
+      const category = wx.getStorageSync('ACTIVITY_CATEGORY_FILTER')
+      if (category) {
+        wx.removeStorageSync('ACTIVITY_CATEGORY_FILTER')
+        this.setData({
+          activeItemId: category,
+          activityType: category,
+        })
+        this.loadActivities()
+      }
+    } catch (e) {
+      console.error('Read storage failed:', e)
+    }
   },
   onFilterGroupTap(
     this: WechatMiniprogram.Page.TrivialInstance,

@@ -154,10 +154,20 @@ export async function getActivityByIdFromList(
 }
 
 export async function getActivityDetail(id: number): Promise<ActivityDetail> {
-  return getData<ActivityDetail>(
+  const data = await getData<ActivityDetail>(
     '/app-api/daolongtan/activity/detail',
     { id: String(id) }
   )
+  // Mock organizer extra info if missing
+  if (data && data.organizer) {
+    if (!data.organizer.tags) {
+      data.organizer.tags = []
+    }
+    if (!data.organizer.spaceName) {
+      data.organizer.spaceName = ''
+    }
+  }
+  return data
 }
 
 export function getFavoriteCount(activityId: number): Promise<number> {

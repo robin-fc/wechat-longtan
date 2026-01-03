@@ -47,6 +47,7 @@ export interface Activity {
   price?: Price
   status?: string
   space?: Space
+  organizer?: Organizer
   companions?: {
     companions: Array<{ id?: string; avatar: ImageResource; nickname?: string }>
     totalCount?: number
@@ -71,6 +72,8 @@ export interface Organizer {
   wxName: string
   memberName: string
   logo: string
+  tags?: string[]
+  spaceName?: string
 }
 
 export interface Space {

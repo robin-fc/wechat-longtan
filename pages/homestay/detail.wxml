@@ -13,7 +13,7 @@
     <view class="header-left" bindtap="onBackTap">
       <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
     </view>
-    <text class="header-title">民宿详情</text>
+    <text class="header-title">入住详情</text>
     <view class="header-right"></view>
   </view>
   <scroll-view scroll-y="true" class="body">
@@ -28,11 +28,14 @@
     </view>
     <view class="section">
       <view class="filter-row">
-        <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
-          <view class="date-picker">
-            <text>{{startDate || '选择入住时间'}}</text>
-          </view>
-        </picker>
+        <view class="date-selection-row">
+          <text class="filter-label">入住时间</text>
+          <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+            <view class="date-picker">
+              <text>{{startDate || '选择入住时间'}}</text>
+            </view>
+          </picker>
+        </view>
         <view class="duration-row">
           <block wx:for="{{durations}}" wx:key="value">
             <view class="duration-item {{item.value === duration ? 'active' : ''}}" data-value="{{item.value}}" bindtap="onDurationTap">

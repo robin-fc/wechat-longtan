@@ -24,7 +24,7 @@
       <text class="label">免费取消截至时间</text>
       <text class="value">{{freeCancelDeadline}}</text>
       <text class="label second">退款政策</text>
-      <text class="value">入住前7天可全额退款，之后将根据民宿规则部分退款。</text>
+      <text class="value">入住前7天可全额退款，之后将根据入住时长和入住规则部分退款。</text>
     </view>
     <view class="section">
       <text class="label">姓名*</text>

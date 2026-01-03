@@ -119,13 +119,20 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       return
     }
     if (item.type === 'activityCategory') {
-      smartNavigateTo(
-        `/pages/activity/list?category=${encodeURIComponent(item.value)}`
-      )
+      try {
+        wx.setStorageSync('ACTIVITY_CATEGORY_FILTER', item.value)
+      } catch (e) {
+        console.error('Set storage failed:', e)
+      }
+      wx.switchTab({
+        url: '/pages/activity/list',
+      })
       return
     }
     if (item.type === 'homestay') {
-      smartNavigateTo('/pages/homestay/list')
+      wx.switchTab({
+        url: '/pages/homestay/list',
+      })
       return
     }
     if (item.type === 'collection') {
@@ -134,13 +141,17 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     }
   },
   onMoreHotActivityTap() {
-    smartNavigateTo('/pages/activity/list')
+    wx.switchTab({
+      url: '/pages/activity/list',
+    })
   },
   onMoreCollectionsTap() {
     smartNavigateTo('/pages/activity-collection/list')
   },
   onMoreHomestaysTap() {
-    smartNavigateTo('/pages/homestay/list')
+    wx.switchTab({
+      url: '/pages/homestay/list',
+    })
   },
   onHeroChange(
     this: WechatMiniprogram.Page.TrivialInstance,
