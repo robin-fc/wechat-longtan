@@ -1,7 +1,7 @@
 import type { Activity, ActivityCollection } from '../model/activity'
 import type { Homestay } from '../model/homestay'
 import type { UserProfile } from '../model/user'
-import type { ID, ImageResource, Price, TimeRange } from '../model/common'
+import type { ID, ImageResource } from '../model/common'
 
 export interface HomeEntryItem {
   id: ID
@@ -48,21 +48,21 @@ const entriesMock: HomeEntryItem[] = [
   {
     id: 'entry-illust',
     name: '插画',
-    icon: { id: 'entry-illust-icon', url: '/assets/icons/home/art.png' },
+    icon: { id: 'entry-illust-icon', url: '/assets/icons/home/drawing.png' },
     type: 'activityCategory',
     value: '插画',
   },
   {
     id: 'entry-writing',
     name: '写作',
-    icon: { id: 'entry-writing-icon', url: '/assets/icons/home/drawing.png' },
+    icon: { id: 'entry-writing-icon', url: '/assets/icons/home/work.png' },
     type: 'activityCategory',
     value: '写作',
   },
   {
     id: 'entry-wood',
     name: '木工',
-    icon: { id: 'entry-wood-icon', url: '/assets/icons/home/work.png' },
+    icon: { id: 'entry-wood-icon', url: '/assets/icons/home/ruler.png' },
     type: 'activityCategory',
     value: '木工',
   },
@@ -76,14 +76,14 @@ const entriesMock: HomeEntryItem[] = [
   {
     id: 'entry-hike',
     name: '徒步',
-    icon: { id: 'entry-hike-icon', url: '/assets/icons/home/mountain.png' },
+    icon: { id: 'entry-hike-icon', url: '/assets/icons/home/walking.png' },
     type: 'activityCategory',
     value: '徒步',
   },
   {
     id: 'entry-eco',
     name: '生态观察',
-    icon: { id: 'entry-eco-icon', url: '/assets/icons/home/ruler..png' },
+    icon: { id: 'entry-eco-icon', url: '/assets/icons/home/ecology.png' },
     type: 'activityCategory',
     value: '生态观察',
   },
@@ -104,14 +104,14 @@ const entriesMock: HomeEntryItem[] = [
   {
     id: 'entry-market',
     name: '手作市集',
-    icon: { id: 'entry-market-icon', url: '/assets/icons/home/work.png' },
+    icon: { id: 'entry-market-icon', url: '/assets/icons/home/market.png' },
     type: 'activityCategory',
     value: '手作市集',
   },
   {
     id: 'entry-music',
     name: '音乐夜',
-    icon: { id: 'entry-music-icon', url: '/assets/icons/home/music..png' },
+    icon: { id: 'entry-music-icon', url: '/assets/icons/home/music.png' },
     type: 'activityCategory',
     value: '音乐夜',
   },
