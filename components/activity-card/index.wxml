@@ -9,18 +9,24 @@
       <text class="tag title-tag" wx:if="{{layout === 'vertical'}}">{{activity.secondaryTag.name}}</text>
       <text class="title">{{activity.title}}</text>
     </view>
-    <view class="time-row">
-      <text class="time">
-        {{layout === 'horizontal'
-          ? (activity.timeRange.startTime + '-' + activity.timeRange.endTime)
-          : activity.timeRange.startTime}}
-      </text>
-      <text class="price" wx:if="{{layout !== 'horizontal'}}">
-        ￥{{activity.price.amount}}/{{activity.price.unit}}
-      </text>
-    </view>
     
-    <block wx:if="{{layout === 'horizontal'}}">
+    <!-- Vertical Layout Info -->
+    <view class="info-row" wx:if="{{layout === 'vertical'}}">
+      <view class="price-wrapper">
+        <text class="currency">¥</text>
+        <text class="amount">{{activity.price.amount}}</text>
+      </view>
+      <text class="date">{{formattedDate}}</text>
+    </view>
+
+    <!-- Horizontal Layout Info -->
+    <block wx:else>
+      <view class="time-row">
+        <text class="time">
+          {{activity.timeRange.startTime + '-' + activity.timeRange.endTime}}
+        </text>
+      </view>
+    
       <view class="location-row">
         <image class="location-icon" src="/assets/icons/home.png" mode="aspectFit" />
         <text class="location-text">{{activity.spaceName || activity.space.name || ''}}</text>
