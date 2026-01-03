@@ -2,9 +2,8 @@ import {
   getHomestayDetailApi,
   getHomestayAvailableRooms,
 } from '../../api/homestay'
-import type { Homestay, HomestayDetail, HomestayRoom, HomestayFeatureTag } from '../../model/homestay'
+import type { Homestay, HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
-import { formatYMD } from '../../utils/date'
 
 type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
 
@@ -25,7 +24,11 @@ interface HomestayDetailState {
 }
 
 // Helper to map API room response to HomestayRoom with mocked fields
-const mapApiRoomToHomestayRoom = (item: any, homestayId: number, tagMap: Record<string, string>): HomestayRoom => {
+const mapApiRoomToHomestayRoom = (
+  item: any,
+  homestayId: number,
+  tagMap: Record<string, string>
+): HomestayRoom => {
   const duration = (item.roomNumberWithPackage || '').split('-')[1] || ''
   const facilities = (item.tags || '')
     .split(',')
@@ -45,7 +48,12 @@ const mapApiRoomToHomestayRoom = (item: any, homestayId: number, tagMap: Record<
     capacity: 2,
     facilities,
     // Mock missing fields
-    attributes: ['35m²', '一楼', '独立卫浴'],
+    attributes: [
+      { label: '房型', value: '大床' },
+      { label: '面积', value: '35m²' },
+      { label: '楼层', value: '一楼' },
+      { label: '设施', value: '独立卫浴' },
+    ],
     tags: ['连住优惠', '超赞房东'],
     guestAvatars: [
       'https://picsum.photos/50/50?random=1',
@@ -95,7 +103,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         } catch {}
         return detail.logo || ''
       })()
-      
+
       // Mock missing fields
       const homestay: Homestay = {
         id: detail.id,
@@ -110,9 +118,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         minPrice: 0,
         mapImages: [],
         reservedUsers: [],
-        description: detail.description || '位于福建宁德屏南县龙潭古镇，这里的建筑融合了江南古镇和闽东特色，黄墙黛瓦，木质结构的房屋依山傍水。你可以在此沉浸式感受原汁原味的乡村生活，体验小桥流水的宁静，还能穿着...',
+        description:
+          detail.description ||
+          '位于福建宁德屏南县龙潭古镇，这里的建筑融合了江南古镇和闽东特色，黄墙黛瓦，木质结构的房屋依山傍水。你可以在此沉浸式感受原汁原味的乡村生活，体验小桥流水的宁静，还能穿着...',
         roomCount: 3,
-        mapThumbnail: { id: 'map', url: 'https://picsum.photos/400/200' }, 
+        mapThumbnail: { id: 'map', url: 'https://picsum.photos/400/200' },
         coordinates: { latitude: 26.9, longitude: 119.0 },
       }
 
@@ -137,7 +147,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         homestayId: String(detail.id),
         checkInDate: startDate,
       })
-      const rooms: HomestayRoom[] = (roomList || []).map((item) => 
+      const rooms: HomestayRoom[] = (roomList || []).map((item) =>
         mapApiRoomToHomestayRoom(item, detail.id, tagMap)
       )
       this.setData({
@@ -189,7 +199,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       homestayId: String(homestay.id),
       checkInDate: startDate as string,
     }).then((roomList) => {
-      const rooms: HomestayRoom[] = (roomList || []).map((item) => 
+      const rooms: HomestayRoom[] = (roomList || []).map((item) =>
         mapApiRoomToHomestayRoom(item, homestay.id, tagMap)
       )
       this.setData({ rooms })
@@ -204,9 +214,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       duration: value,
     })
   },
-  onRoomTap(
-    _e: WechatMiniprogram.CustomEvent
-  ) {
+  onRoomTap(_e: WechatMiniprogram.CustomEvent) {
     const room = (_e.detail || {}).room as {
       id?: string
       homestayId?: string

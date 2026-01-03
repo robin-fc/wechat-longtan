@@ -155,8 +155,8 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       const diff = end - start
       const nights = Math.round(diff / (24 * 60 * 60 * 1000))
       const amount =
-        state.room && state.room.price && state.room.price
-          ? state.room.price
+        state.room && state.room.price
+          ? state.room.price.amount
           : 0
       const totalPrice = nights * amount
       const inDate = state.checkInDate

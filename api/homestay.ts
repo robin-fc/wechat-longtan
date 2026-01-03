@@ -1,6 +1,5 @@
 import {
   type Homestay,
-  type HomestayApplication,
   type HomestayRoom,
   type AppHomestayRoomListItem,
   type AppHomestayPackageItem,
@@ -98,13 +97,29 @@ export async function getAvailableRoomList(
     `/app-api/daolongtan/homestay/room/list`,
     { homestayId, checkInDate }
   )
-  return (raw || []).map((it) => ({
-    id: it.id,
-    roomNumberWithPackage: it.roomNumberWithPackage,
-    price: it.price,
-    logo: it.logo,
-    tags: mapTags(it.tags, ROOM_TAGS),
-  }))
+  return (raw || []).map((it) => {
+    const tagNames = it.tags
+      ? it.tags
+          .split(',')
+          .map((s) => ROOM_TAGS[Number(s)])
+          .filter(Boolean)
+      : []
+    const duration = (it.roomNumberWithPackage || '').split('-')[1] || '一周起'
+
+    return {
+      id: String(it.id),
+      homestayId: String(homestayId),
+      name: it.roomNumberWithPackage,
+      images: [{ id: `room-${it.id}`, url: it.logo }],
+      description: '',
+      stayDurationText: duration,
+      price: { amount: it.price, currency: 'CNY', unit: '晚' },
+      capacity: 2,
+      facilities: tagNames,
+      tags: tagNames,
+      attributes: [],
+    }
+  })
 }
 
 export async function fetchHomestayRoomDetail(id: ID): Promise<HomestayRoom> {
