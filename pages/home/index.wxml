@@ -49,13 +49,15 @@
     </view>
     <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
     <view class="white-content">
-      <view class="activity-list">
-        <block wx:for="{{pageData.hotActivities}}" wx:key="id">
-          <view class="activity-item">
-            <activity-card activity="{{item}}" layout="vertical" bindtap="onActivityCardTap" />
-          </view>
-        </block>
-      </view>
+      <scroll-view scroll-x="true" class="activity-scroll">
+        <view class="activity-list">
+          <block wx:for="{{pageData.hotActivities}}" wx:key="id">
+            <view class="activity-item">
+              <activity-card activity="{{item}}" layout="vertical" bindtap="onActivityCardTap" />
+            </view>
+          </block>
+        </view>
+      </scroll-view>
     <view class="section">
       <view class="section-header">
         <image class="section-title-icon" src="/assets/icons/home/hotActivityCollection.png" mode="heightFix" />

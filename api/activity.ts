@@ -8,6 +8,7 @@ export interface ActivityListParams {
   collectionId?: string
   spaceId?: string
   activityType?: string
+  keyword?: string
   pageNo: string
   pageSize: string
 }

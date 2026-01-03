@@ -1,5 +1,6 @@
 import { fetchSearchPageConfig } from '../../api/search'
-import { getActivityList } from '../../api/activity'
+import { getActivityList, getActivityCollections } from '../../api/activity'
+import { getAvailableHomestayList } from '../../api/homestay'
 import type {
   SearchFrom,
   HotSearchItem,
@@ -8,6 +9,7 @@ import type { Activity } from '../../model/activity'
 import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { formatYMD } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
+import { Homestay } from '../../model/homestay'
 
 interface SearchPageState {
   from: SearchFrom
@@ -149,7 +151,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     promises.push(collectionPromise)
 
     // 3. Homestay Search (only if from === 'home')
-    let homestayPromise = Promise.resolve([])
+    let homestayPromise: Promise<Homestay[]> = Promise.resolve([])
     if (state.from === 'home') {
       homestayPromise = getAvailableHomestayList({ keyword: trimmed })
     }
@@ -166,7 +168,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
   },
   onActivityTap(
     this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.BaseEvent
+    e: WechatMiniprogram.CustomEvent
   ) {
     const activity = (e.detail || {}).activity as {
       id?: string
@@ -180,7 +182,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
   },
   onCollectionTap(
     this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.BaseEvent
+    e: WechatMiniprogram.CustomEvent
   ) {
     const collection = (e.detail || {}).collection as {
       id?: string
@@ -194,7 +196,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
   },
   onHomestayTap(
     this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.BaseEvent
+    e: WechatMiniprogram.CustomEvent
   ) {
     const homestay = (e.detail || {}).homestay as {
       id?: string
