@@ -113,7 +113,7 @@ export async function getAvailableRoomList(
       images: [{ id: `room-${it.id}`, url: it.logo }],
       description: '',
       stayDurationText: duration,
-      price: { amount: it.price, currency: 'CNY', unit: '晚' },
+      price: { amount: it.price, currency: 'CNY', unit: '天' },
       capacity: 2,
       facilities: tagNames,
       tags: tagNames,

@@ -1,12 +1,4 @@
 <view class="my-stays-page">
-  <view class="top-bar">
-    <view class="top-bar-left" bindtap="onBackTap">
-      <text class="back-icon">←</text>
-    </view>
-    <text class="top-title">我的入住</text>
-    <view class="top-bar-right"></view>
-  </view>
-
   <view class="filter-row">
     <block wx:for="{{filters}}" wx:key="value">
       <view

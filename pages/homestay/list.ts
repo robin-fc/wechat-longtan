@@ -69,7 +69,7 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
           cover: { id: `home-${it.id}-cover`, url: coverUrl },
           address: it.address,
           featureTags,
-          referencePrice: { amount: it.minPrice || 0, currency: 'CNY', unit: '晚' },
+          referencePrice: { amount: it.minPrice || 0, currency: 'CNY', unit: '天' },
         }
       })
       this.setData({

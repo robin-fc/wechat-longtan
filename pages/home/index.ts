@@ -92,7 +92,16 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       }
       try {
         const list = await getAvailableHomestayList()
-        data.homestays = (list || []).slice(0, 3)
+        data.homestays = (list || [])
+          .slice(0, 3)
+          .map((h) => ({
+            ...h,
+            referencePrice: {
+              amount: (h as any).minPrice || 0,
+              currency: 'CNY',
+              unit: '天',
+            },
+          }))
       } catch (e) {
         console.error('Fetch homestays failed:', e)
       }

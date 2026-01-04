@@ -83,7 +83,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
         images: [{ id: `room-${item.id}`, url: item.logo }],
         description: '',
         stayDurationText: duration,
-        price: { amount: item.price || 0, currency: 'CNY', unit: '晚' },
+        price: { amount: item.price || 0, currency: 'CNY', unit: '天' },
         capacity: 2,
         facilities,
         attributes: [

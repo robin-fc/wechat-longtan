@@ -44,7 +44,7 @@ const mapApiRoomToHomestayRoom = (
     images: [{ id: `room-${item.id}`, url: item.logo }],
     description: '',
     stayDurationText: duration || '一周起',
-    price: { amount: item.price, currency: 'CNY', unit: '晚' },
+    price: { amount: item.price, currency: 'CNY', unit: '天' },
     capacity: 2,
     facilities,
     // Mock missing fields

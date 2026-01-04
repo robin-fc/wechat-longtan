@@ -84,8 +84,9 @@ export async function fetchMyActivities(
 
 export async function fetchMyCollections(): Promise<ActivityCollection[]> {
   const page: PageResult<ActivityCollection> =
-    await getMyActivityCollections('1', '20')
-  return page.list
+  await getMyActivityCollections('1', '20')
+  const list = (page && page.list) || []
+  return list
 }
 
 export async function fetchMyStays(): Promise<HomestayApplication[]> {
