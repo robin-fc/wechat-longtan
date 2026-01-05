@@ -12,7 +12,12 @@
             <text>{{checkInDate || '选择入住日期'}}</text>
           </view>
         </picker>
-        <text class="date-sep">~</text>
+        <block wx:if="{{checkInDate && checkOutDate}}">
+          <text class="date-sep">共{{nightsCount}}晚</text>
+        </block>
+        <block wx:else>
+          <text class="date-sep">~</text>
+        </block>
         <picker mode="date" value="{{checkOutDate}}" bindchange="onCheckOutChange">
           <view class="date-picker">
             <text>{{checkOutDate || '选择离开日期'}}</text>
@@ -40,7 +45,7 @@
   <view class="bottom-bar">
     <view class="price-info" wx:if="{{room}}">
       <text class="price-label">合计</text>
-      <text class="price-value">￥{{room.price.amount}}/{{room.price.unit}}</text>
+      <text class="price-value">￥{{totalPriceDisplay}}/{{room.price.unit}}</text>
     </view>
     <view class="submit-button" bindtap="onSubmitTap">
       <text>提交订单</text>

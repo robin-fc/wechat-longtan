@@ -83,6 +83,12 @@ export interface Space {
   mapImages: string[]
 }
 
+export interface FavoriteUser {
+  userId: number
+  avatar: string
+  introduction: string | null
+}
+
 export interface ActivityDetail {
   id: number
   title: string
@@ -94,6 +100,9 @@ export interface ActivityDetail {
   fee: number
   isFree: boolean
   detail: string
+  favoriteCount: number
+  favoriteUsers: FavoriteUser[]
+  isFavorited: boolean
 }
 
 export interface RegistrationUser {

@@ -194,6 +194,19 @@ export function postData<T>(
   }).then((res) => (res.data as T))
 }
 
+export function postDataWithRes<T>(
+  path: string,
+  body?: any,
+  extraHeaders?: Record<string, string>
+): Promise<T> {
+  return request<T>({
+    url: path,
+    method: 'POST',
+    headers: extraHeaders,
+    data: body ?? {},
+  }).then((res) => (res as T))
+}
+
 function buildQuery(params: Record<string, any>) {
   const keys = Object.keys(params).filter(
     (k) => params[k] !== undefined && params[k] !== null && params[k] !== ''

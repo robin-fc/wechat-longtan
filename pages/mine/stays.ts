@@ -1,6 +1,7 @@
-import { fetchMyStays } from '../../api/mine'
-import type { HomestayApplication } from '../../model/homestay'
+import { getMyOrderList } from '../../api/order'
+import type { AppOrderListRespVO } from '../../model/order'
 import { goBack } from '../../utils/navigation'
+import { formatYMDHM } from '../../utils/date'
 
 type StayFilter = 'all' | 'unpaid' | 'pending' | 'upcoming' | 'checkedIn'
 
@@ -23,17 +24,13 @@ interface MyStaysState {
   items: StayItemView[]
 }
 
-function mapStayStatusText(status: HomestayApplication['status']): string {
-  if (status === 'pending') {
-    return '待审核'
-  }
-  if (status === 'confirmed') {
-    return '待入住'
-  }
-  if (status === 'checkedIn') {
-    return '已入住'
-  }
-  return '已取消'
+function mapPaymentStatusText(status: number): string {
+  if (status === 0) return '待支付'
+  if (status === 1) return '支付中'
+  if (status === 2) return '支付成功'
+  if (status === 3) return '支付失败'
+  if (status === 4) return '已关闭'
+  return ''
 }
 
 Page<MyStaysState, WechatMiniprogram.IAnyObject>({
@@ -54,28 +51,24 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
   async loadStays(
     this: WechatMiniprogram.Page.TrivialInstance
   ) {
-    const list = await fetchMyStays()
     const filter = (this.data as MyStaysState).activeFilter
-    const filtered =
+    const type =
       filter === 'all'
-        ? list
-        : list.filter((item) => {
-            if (filter === 'pending') {
-              return item.status === 'pending'
-            }
-            if (filter === 'checkedIn') {
-              return item.status === 'checkedIn'
-            }
-            if (filter === 'upcoming') {
-              return item.status === 'confirmed'
-            }
-            return false
-          })
-    const items: StayItemView[] = filtered.map((item) => ({
-      id: item.id,
-      title: item.title,
-      statusText: mapStayStatusText(item.status),
-      timeText: `${item.stayRange.startTime} ~ ${item.stayRange.endTime}`,
+        ? '5'
+        : filter === 'unpaid'
+        ? '1'
+        : filter === 'pending'
+        ? '2'
+        : filter === 'upcoming'
+        ? '3'
+        : '4'
+    const page = await getMyOrderList(type, '1', '20')
+    const list: AppOrderListRespVO[] = (page && page.list) || []
+    const items: StayItemView[] = list.map((it) => ({
+      id: it.bizOrderNo,
+      title: it.title,
+      statusText: mapPaymentStatusText(it.status),
+      timeText: `${formatYMDHM(it.checkInDate)} ~ ${formatYMDHM(it.checkOutDate)}`,
       address: '龙潭民宿',
     }))
     this.setData({

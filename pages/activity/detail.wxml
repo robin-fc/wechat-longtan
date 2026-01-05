@@ -73,9 +73,20 @@
     <view class="section favorite-section">
       <view class="favorite-row">
         <view class="favorite-avatars">
-          <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
-          <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
-          <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
+          <block wx:if="{{favoriteUsers && favoriteUsers.length > 0}}">
+            <image 
+              wx:for="{{favoriteUsers}}" 
+              wx:key="userId" 
+              class="avatar" 
+              src="{{item.avatar || '/assets/images/default-avatar.png'}}" 
+              mode="aspectFill" 
+            />
+          </block>
+          <block wx:else>
+            <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
+            <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
+            <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
+          </block>
         </view>
         <text class="favorite-text">{{favoriteCountText}}</text>
         <text class="favorite-arrow">›</text>
@@ -88,7 +99,7 @@
   </view>
   <view wx:if="{{activity}}" class="bottom-bar">
     <view class="bottom-item" bindtap="onToggleCollect">
-      <text class="bottom-label">{{isCollected ? '已收藏' : '收藏'}}</text>
+      <text class="bottom-label">{{isFavorited ? '已收藏' : '收藏'}}</text>
     </view>
     <view class="bottom-item" bindtap="onShareTap">
       <text class="bottom-label">分享</text>

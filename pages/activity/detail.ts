@@ -1,19 +1,19 @@
 import {
   getActivityByIdFromList,
   getActivityDetail,
-  getFavoriteCount,
   favoriteActivity,
   unfavoriteActivity,
   shareActivity,
   getActivityRegistrations,
 } from '../../api/activity'
-import type { Activity } from '../../model/activity'
+import type { Activity, FavoriteUser } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
 
 interface ActivityDetailState {
   activity: Activity | null
-  isCollected: boolean
+  isFavorited: boolean
+  favoriteUsers: FavoriteUser[]
   menuTop: number
   menuHeight: number
   favoriteCount: number
@@ -23,7 +23,8 @@ interface ActivityDetailState {
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     activity: null,
-    isCollected: false,
+    isFavorited: false,
+    favoriteUsers: [],
     menuTop: 0,
     menuHeight: 44,
     favoriteCount: 0,
@@ -68,10 +69,21 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       detail: detail.detail || base.detail,
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
+
+    const favoriteCount = detail.favoriteCount || 0
+    const favoriteCountText =
+      favoriteCount >= 10000
+        ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(1)} 万人收藏`
+        : `${favoriteCount} 人收藏`
+
     this.setData({
       activity,
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
+      isFavorited: detail.isFavorited,
+      favoriteUsers: (detail.favoriteUsers || []).slice(0, 5),
+      favoriteCount,
+      favoriteCountText,
     })
 
     // Fetch companions data
@@ -91,17 +103,6 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       .catch((e) => {
         console.error('Fetch registrations failed', e)
       })
-
-    const cnt = await getFavoriteCount(activity.id).catch(() => 0)
-    const count = typeof cnt === 'number' ? cnt : 0
-    const text =
-      count >= 10000
-        ? `${(Math.round((count / 10000) * 10) / 10).toFixed(1)} 万人收藏`
-        : `${count} 人收藏`
-    this.setData({
-      favoriteCount: count,
-      favoriteCountText: text,
-    })
   },
 
   onBackTap() {
@@ -147,7 +148,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     )
   },
   onToggleCollect(this: WechatMiniprogram.Page.TrivialInstance) {
-    const prev = (this.data as ActivityDetailState).isCollected
+    const prev = (this.data as ActivityDetailState).isFavorited
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return
@@ -157,35 +158,25 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       : favoriteActivity(detail.id)
     req
       .then(() => {
-        this.setData({ isCollected: !prev })
-        getFavoriteCount(detail.id)
-          .then((cnt) => {
-            const count = typeof cnt === 'number' ? cnt : 0
-            const text =
-              count >= 10000
-                ? `${(Math.round((count / 10000) * 10) / 10).toFixed(
+        this.setData({ isFavorited: !prev })
+        getActivityDetail(detail.id)
+          .then((freshDetail) => {
+            const favoriteCount = freshDetail.favoriteCount || 0
+            const favoriteCountText =
+              favoriteCount >= 10000
+                ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(
                     1
                   )} 万人收藏`
-                : `${count} 人收藏`
+                : `${favoriteCount} 人收藏`
             this.setData({
-              favoriteCount: count,
-              favoriteCountText: text,
+              isFavorited: freshDetail.isFavorited,
+              favoriteUsers: (freshDetail.favoriteUsers || []).slice(0, 5),
+              favoriteCount,
+              favoriteCountText,
             })
           })
-          .catch(() => {
-            const curr = (this.data as ActivityDetailState).favoriteCount
-            const delta = prev ? -1 : 1
-            const count = Math.max(0, curr + delta)
-            const text =
-              count >= 10000
-                ? `${(Math.round((count / 10000) * 10) / 10).toFixed(
-                    1
-                  )} 万人收藏`
-                : `${count} 人收藏`
-            this.setData({
-              favoriteCount: count,
-              favoriteCountText: text,
-            })
+          .catch((e) => {
+            console.error('Refresh detail failed', e)
           })
       })
       .catch(() => {
