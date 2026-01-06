@@ -188,14 +188,37 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     if (!detail) {
       return
     }
-    shareActivity(detail.id)
-      .then(() => {
-        wx.showShareMenu({ withShareTicket: true })
-        wx.showToast({ title: '可分享', icon: 'none' })
-      })
-      .catch(() => {
-        wx.showToast({ title: '分享准备失败', icon: 'none' })
-      })
+    // 记录分享行为，但不依赖它来唤起分享（通过 button open-type="share" 唤起）
+    shareActivity(detail.id).catch(() => {
+      console.error('Share record failed')
+    })
+  },
+  onShareAppMessage() {
+    const detail = (this.data as unknown as ActivityDetailState).activity
+    if (!detail) {
+      return {
+        title: '龙潭村活动',
+        path: '/pages/home/index',
+      }
+    }
+    return {
+      title: detail.title,
+      path: `/pages/activity/detail?id=${detail.id}`,
+      imageUrl: detail.poster?.url,
+    }
+  },
+  onShareTimeline() {
+    const detail = (this.data as unknown as ActivityDetailState).activity
+    if (!detail) {
+      return {
+        title: '龙潭村活动',
+      }
+    }
+    return {
+      title: detail.title,
+      query: `id=${detail.id}`,
+      imageUrl: detail.poster?.url,
+    }
   },
   onSignupTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = (this.data as ActivityDetailState).activity
