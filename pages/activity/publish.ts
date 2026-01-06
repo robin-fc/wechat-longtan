@@ -308,7 +308,6 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   ) {
     const state = this.data as PublishPageState
     const form = state.form
-    console.log('form', form)
     if (!form.title.trim()) {
       wx.showToast({
         title: '请填写活动标题',

@@ -112,8 +112,6 @@ Page({
       })
       return
     }
-
-    console.log('form.coverUrl', form.coverUrl);
     try {
       wx.showLoading({ title: '提交中...', mask: true })
       const ok = await createActivityCollection({
