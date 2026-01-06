@@ -1,5 +1,5 @@
 import { getAvailableRoomList } from '../../api/homestay'
-import { createAccommodationOrder } from '../../api/order'
+import { createAccommodationOrder, generatePayParams } from '../../api/order'
 import type { HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 import { formatYMD1 } from '../../utils/date'
@@ -207,33 +207,64 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     }
     wx.showLoading({ title: '创建订单中...', mask: true })
     createAccommodationOrder(params)
-      .then((res) => {
+      .then(async (res) => {
         console.log('createAccommodationOrder res=', res)
-        wx.hideLoading()
-        if (res.code === 0) {
-          const orderId = res.data?.orderId
-           wx.showToast({
-          title: '订单已创建，待支付',
-          icon: 'success',
-        })
-          setTimeout(() => {
-            smartNavigateTo('/pages/homestay-apply/status')
-          }, 800)
-          }else if (res.code === 1001003004) {
+        if (res.code !== 0) {
+          wx.hideLoading()
+          if (res.code === 1001003004) {
             wx.showToast({
               title: res?.msg || '最少需要入住7天',
-              icon: 'none',      // 关键点：设置为 'none'
-              duration: 2000,    // 持续时间
-              mask: true,        // 是否显示透明蒙层，防止触摸穿透
+              icon: 'none',
+              duration: 2000,
+              mask: true,
             })
           } else {
             wx.showToast({
               title: res?.msg || '创建订单失败',
-              icon: 'none',      // 关键点：设置为 'none'
-              duration: 2000,    // 持续时间
-              mask: true,        // 是否显示透明蒙层，防止触摸穿透
+              icon: 'none',
+              duration: 2000,
+              mask: true,
             })
           }
+          return
+        }
+        const bizOrderNo = res.data?.bizOrderNo
+        if (!bizOrderNo) {
+          wx.hideLoading()
+          wx.showToast({ title: '订单号缺失', icon: 'none' })
+          return
+        }
+        try {
+          // const amount = (this.data as ApplyFormState).totalPrice || 0
+          const amount = 0.1
+          const pay = await generatePayParams({ bizOrderNo, amount })
+          const p = pay && pay.payParams
+          if (!p) {
+            wx.hideLoading()
+            wx.showToast({ title: '支付参数缺失', icon: 'none' })
+            return
+          }
+          wx.hideLoading()
+          wx.requestPayment({
+            timeStamp: p.timeStamp,
+            nonceStr: p.nonceStr,
+            package: p.packageData,
+            signType: p.signType as any,
+            paySign: p.paySign,
+            success: () => {
+              wx.showToast({ title: '支付成功', icon: 'success' })
+              setTimeout(() => {
+                smartNavigateTo('/pages/homestay-apply/status')
+              }, 600)
+            },
+            fail: () => {
+              wx.showToast({ title: '支付未完成', icon: 'none' })
+            },
+          } as any)
+        } catch (e) {
+          wx.hideLoading()
+          wx.showToast({ title: '拉起支付失败', icon: 'none' })
+        }
       })
       .catch((err) => {
         wx.hideLoading()

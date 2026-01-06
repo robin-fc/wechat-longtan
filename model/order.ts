@@ -47,3 +47,33 @@ export interface AppOrderListRespVO {
   amountTotal: number
   createTime: string
 }
+
+export interface AccommodationInfo {
+  homestayName: string
+  roomName: string
+  homestayAddress: string
+  checkInDate: string
+  checkOutDate: string
+  nights: number
+}
+
+export interface ActivityInfo {
+  activityStartTime: string
+  activityEndTime: string
+  activityLocation: string
+  activityType: string
+}
+
+export interface AppOrderDetailRespVO {
+  bizOrderNo: string
+  status: number
+  amountTotal: number
+  bizType: number
+  title: string
+  activity?: ActivityInfo
+  accommodation?: AccommodationInfo
+  contactName: string
+  contactPhone: string
+  createTime: string
+  payTime?: string
+}

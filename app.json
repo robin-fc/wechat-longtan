@@ -23,7 +23,8 @@
     "pages/mine/index",
     "pages/mine/assets",
     "pages/mine/activities",
-    "pages/mine/stays"
+    "pages/mine/stays",
+    "pages/order/detail"
   ],
   "window": {
     "navigationBarTitleText": "登录",

@@ -1,6 +1,6 @@
-import { getMyOrderList } from '../../api/order'
+import { getMyOrderList, generatePayParams } from '../../api/order'
 import type { AppOrderListRespVO } from '../../model/order'
-import { goBack } from '../../utils/navigation'
+import { goBack, smartNavigateTo } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
 
 type StayFilter = 'all' | 'unpaid' | 'pending' | 'upcoming' | 'checkedIn'
@@ -16,6 +16,9 @@ interface StayItemView {
   statusText: string
   timeText: string
   address: string
+  showPayButton: boolean
+  showCancelButton: boolean
+  amount: number
 }
 
 interface MyStaysState {
@@ -45,6 +48,14 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
     activeFilter: 'all',
     items: [],
   },
+  onItemTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const biz = e.currentTarget.dataset.biz as string
+    if (!biz) return
+    smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(biz)}`)
+  },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadStays()
   },
@@ -70,6 +81,9 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
       statusText: mapPaymentStatusText(it.status),
       timeText: `${formatYMDHM(it.checkInDate)} ~ ${formatYMDHM(it.checkOutDate)}`,
       address: '龙潭民宿',
+      showPayButton: type === '1' || (type === '5' && it.status === 0),
+      showCancelButton: type === '2' || type === '3',
+      amount: it.amountTotal || 0,
     }))
     this.setData({
       items,
@@ -77,6 +91,59 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
   },
   onBackTap() {
     goBack()
+  },
+  async onPayTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const biz = e.currentTarget.dataset.biz as string
+    const amount = Number(e.currentTarget.dataset.amount || 0)
+    if (!biz || !amount) {
+      wx.showToast({ title: '缺少订单信息', icon: 'none' })
+      return
+    }
+    try {
+      const resp = await generatePayParams({ bizOrderNo: biz, amount })
+      const p = resp && resp.payParams
+      if (!p) {
+        wx.showToast({ title: '支付参数缺失', icon: 'none' })
+        return
+      }
+      wx.requestPayment({
+        timeStamp: p.timeStamp,
+        nonceStr: p.nonceStr,
+        package: p.packageData,
+        signType: p.signType as any,
+        paySign: p.paySign,
+        success: () => {
+          wx.showToast({ title: '支付成功', icon: 'success' })
+          this.loadStays()
+        },
+        fail: () => {
+          wx.showToast({ title: '支付未完成', icon: 'none' })
+        },
+      } as any)
+    } catch {
+      wx.showToast({ title: '支付失败', icon: 'none' })
+    }
+  },
+  async onCancelTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const biz = e.currentTarget.dataset.biz as string
+    if (!biz) {
+      wx.showToast({ title: '缺少订单信息', icon: 'none' })
+      return
+    }
+    wx.showModal({
+      title: '取消订单',
+      content: '确定要取消该订单吗？',
+      success: async (res) => {
+        if (!res.confirm) return
+        wx.showToast({ title: '取消功能待接入', icon: 'none' })
+      },
+    })
   },
   async onFilterTap(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -89,4 +156,3 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
     await this.loadStays()
   },
 })
-

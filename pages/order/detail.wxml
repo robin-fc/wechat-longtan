@@ -1,0 +1,65 @@
+<view class="order-detail-page">
+
+  <view class="status-banner {{view.statusClass}}">
+    <text class="status-text">{{view.statusText}}</text>
+  </view>
+  <view wx:if="{{hasHint}}" class="hint-text">
+    <text>{{view.hintText}}</text>
+  </view>
+
+  <view class="section amount-section">
+    <view class="amount-row">
+      <view class="amount-left">
+        <text class="label">订单金额</text>
+        <text class="amount">{{view.amountText}}</text>
+      </view>
+      <text class="detail">明细</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="title">{{view.title}}</text>
+    <view class="address-row">
+      <image class="addr-icon" src="/assets/icons/location.png" mode="aspectFit" />
+      <text class="address">{{view.address}}</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="label">入离日期</text>
+    <view class="date-row">
+      <text class="date">{{view.checkInText}}</text>
+      <text class="nights"> - {{view.nightsText}} - </text>
+      <text class="date">{{view.checkOutText}}</text>
+    </view>
+    <view class="cancel-row">
+      <text class="cancel-text">下单后24小时内可免费取消。</text><text  class="cancel-policy">《详见退款政策》</text>
+    </view>
+  </view>
+
+  <view class="section">
+    <text class="lable">其他信息</text>
+    <view class="info-row">
+      <text class="info-label">住客姓名</text>
+      <text class="info-value">{{view.contactName}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">联系手机</text>
+      <text class="info-value">{{view.contactPhone}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">订单编号</text>
+      <text class="info-value">{{view.orderNo}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">下单时间</text>
+      <text class="info-value">{{view.createTime}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{canCancel}}" class="bottom-bar">
+    <view class="cancel-btn" bindtap="onCancelTap">
+      <text>取消订单</text>
+    </view>
+  </view>
+</view>

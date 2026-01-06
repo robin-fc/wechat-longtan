@@ -5,6 +5,7 @@ import type {
   AppOrderCreateReqVO,
   AppPayOrderCreateRespVO,
   AppOrderListRespVO,
+  AppOrderDetailRespVO,
 } from '../model/order'
 import type { PageResult } from '../model/common'
 
@@ -48,5 +49,14 @@ export function getMyOrderList(
   return getData<PageResult<AppOrderListRespVO>>(
     `${baseUrl}/my-list`,
     { type, pageNo, pageSize }
+  )
+}
+
+export function getOrderDetail(
+  bizOrderNo: string
+): Promise<AppOrderDetailRespVO> {
+  return getData<AppOrderDetailRespVO>(
+    `${baseUrl}/detail`,
+    { bizOrderNo }
   )
 }
