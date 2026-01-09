@@ -1,7 +1,7 @@
 import { getOrderDetail, cancelOrder, generatePayParams } from '../../api/order'
 import type { AppOrderDetailRespVO } from '../../model/order'
 import { goBack } from '../../utils/navigation'
-import { formatYMDHM, formatYMD1 } from '../../utils/date'
+import { formatYMDHM, formatYMD1, parseToDate } from '../../utils/date'
 
 interface OrderDetailView {
   statusText: string
@@ -71,6 +71,15 @@ Page({
     const inDate = acc?.checkInDate || ''
     const outDate = acc?.checkOutDate || ''
     const nights = acc?.nights || 0
+    
+    const createDate = parseToDate(detail.createTime)
+    let isWithin24Hours = false
+    if (createDate) {
+      const now = Date.now()
+      const diff = now - createDate.getTime()
+      isWithin24Hours = diff < 24 * 60 * 60 * 1000
+    }
+
     const view: OrderDetailView = {
       statusText,
       statusClass: detail.status === 2 ? 'success' : detail.status === 0 ? 'pending' : 'default',
@@ -92,7 +101,7 @@ Page({
       orderNo: detail.bizOrderNo || '',
       createTime: formatYMDHM(detail.createTime),
       showPayButton: detail.status === 0 || detail.status === 1,
-      showCancelButton: detail.status === 0 || detail.status === 2 || detail.status === 1,
+      showCancelButton: (detail.status === 0 || detail.status === 2 || detail.status === 1) && isWithin24Hours,
     }
     
     const cancelReasons = [
