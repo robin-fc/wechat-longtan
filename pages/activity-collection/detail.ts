@@ -29,9 +29,13 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
     })
-    const collRes = await getActivityCollections('1', '100')
-    const base = (collRes.list || []).find((c) => String(c.id) === String(id))
-    if (!base) return
+    const collRes = await getActivityCollections('1', '100').catch(() => null)
+    const collList = ((collRes as any)?.list as any[]) || []
+    const base = collList.find((c) => String(c.id) === String(id))
+    if (!base) {
+      wx.showToast({ title: '活动合集不存在', icon: 'none' })
+      return
+    }
     const page = await getActivityList({
       collectionId: String(id),
       pageNo: '1',

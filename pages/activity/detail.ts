@@ -34,39 +34,65 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
-    const id = options.id as string
-    if (!id) {
+    const idRaw = options.id as string
+    if (!idRaw) {
       return
     }
-    const base = await getActivityByIdFromList(Number(id))
-    if (!base) {
+    const id = Number(idRaw)
+    if (!Number.isFinite(id) || id <= 0) {
       return
     }
-    const detail = await getActivityDetail(Number(id))
+
+    const [base, detail] = await Promise.all([
+      getActivityByIdFromList(id).catch(() => undefined),
+      getActivityDetail(id),
+    ])
+    if (!detail) {
+      return
+    }
+
+    const baseFallback: Activity =
+      base ??
+      ({
+        id: detail.id,
+        title: detail.title,
+        logo: detail.logo,
+        isFree: detail.isFree,
+        startTime: detail.startTime,
+        endTime: detail.endTime,
+        spaceId: detail.space.id,
+        spaceName: detail.space.name,
+        fee: detail.fee,
+        detail: detail.detail,
+      } as unknown as Activity)
     const activity: Activity = {
-      ...base,
-      poster: base.poster ?? {
+      ...baseFallback,
+      poster: baseFallback.poster ?? {
         id: String(detail.id),
         url: detail.logo || '/assets/images/activity.jpg',
       },
       timeRange: {
         startTime:
-          formatYMDHM(detail.startTime) || base.timeRange?.startTime || '',
-        endTime: formatYMDHM(detail.endTime) || base.timeRange?.endTime || '',
+          formatYMDHM(detail.startTime) ||
+          baseFallback.timeRange?.startTime ||
+          '',
+        endTime:
+          formatYMDHM(detail.endTime) || baseFallback.timeRange?.endTime || '',
       },
       price: {
-        amount: detail.fee ?? (base.price?.amount || 0),
+        amount: detail.fee ?? (baseFallback.price?.amount || 0),
         currency: 'CNY',
-        unit: base.price?.unit || '人',
+        unit: baseFallback.price?.unit || '人',
       },
       space: {
-        id: base.space?.id ?? detail.space.id,
-        name: detail.space.name || base.space?.name || '',
-        address: detail.space.address || base.space?.address || '',
-        mapImages: detail.space.mapImages || base.space?.mapImages || [],
+        id: baseFallback.space?.id ?? detail.space.id,
+        name: detail.space.name || baseFallback.space?.name || '',
+        address: detail.space.address || baseFallback.space?.address || '',
+        mapImages:
+          detail.space.mapImages || baseFallback.space?.mapImages || [],
       },
       organizer: detail.organizer,
-      detail: detail.detail || base.detail,
+      detail: detail.detail || baseFallback.detail,
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
 

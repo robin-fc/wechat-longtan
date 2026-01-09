@@ -53,7 +53,7 @@
         <view class="activity-list">
           <block wx:for="{{pageData.hotActivities}}" wx:key="id">
             <view class="activity-item">
-              <activity-card activity="{{item}}" layout="vertical" bindtap="onActivityCardTap" />
+              <activity-card activity="{{item}}" layout="vertical" bindcardtap="onActivityCardTap" />
             </view>
           </block>
         </view>

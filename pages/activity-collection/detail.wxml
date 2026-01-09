@@ -20,7 +20,7 @@
       <view class="activity-list">
         <block wx:if="{{collection}}" wx:for="{{collection.activities}}" wx:key="id">
           <view class="activity-item">
-            <activity-card activity="{{item}}" layout="horizontal" compact="true" bindtap="onActivityTap" />
+            <activity-card activity="{{item}}" layout="horizontal" compact="true" bindcardtap="onActivityTap" />
           </view>
         </block>
       </view>

@@ -29,7 +29,7 @@ Component({
   },
   methods: {
     onTap(this: WechatMiniprogram.Component.TrivialInstance) {
-      this.triggerEvent('tap', { activity: this.data.activity })
+      this.triggerEvent('cardtap', { activity: this.data.activity })
     },
   },
 })

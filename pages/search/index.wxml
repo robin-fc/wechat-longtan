@@ -54,7 +54,7 @@
           <activity-card
             activity="{{item}}"
             layout="horizontal"
-            bindtap="onActivityTap"
+            bindcardtap="onActivityTap"
           />
         </view>
       </block>
