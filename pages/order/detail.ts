@@ -46,6 +46,14 @@ Page({
     showCancelModal: false,
     cancelReasons: [] as string[],
     selectedReasonIndex: -1,
+    countdownText: '',
+  },
+  timer: null as number | null,
+  onUnload() {
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    }
   },
   onBackTap() {
     goBack()
@@ -74,10 +82,43 @@ Page({
     
     const createDate = parseToDate(detail.createTime)
     let isWithin24Hours = false
+    let isWithin10Minutes = false
+    let countdownText = ''
+    
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    }
+
     if (createDate) {
       const now = Date.now()
       const diff = now - createDate.getTime()
       isWithin24Hours = diff < 24 * 60 * 60 * 1000
+      isWithin10Minutes = diff < 10 * 60 * 1000
+
+      if ((detail.status === 0 || detail.status === 1) && isWithin10Minutes) { // 待支付且在10分钟内
+        const expireTime = createDate.getTime() + 10 * 60 * 1000
+        const updateCountdown = () => {
+          const remaining = expireTime - Date.now()
+          if (remaining <= 0) {
+            this.setData({ countdownText: '', canPay: false })
+            if (this.timer) {
+              clearInterval(this.timer)
+              this.timer = null
+            }
+            // 倒计时结束，可能需要刷新页面状态
+            this.fetchOrderDetail(bizOrderNo)
+            return
+          }
+          const m = Math.floor(remaining / 60000)
+          const s = Math.floor((remaining % 60000) / 1000)
+          this.setData({
+            countdownText: `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+          })
+        }
+        updateCountdown()
+        this.timer = setInterval(updateCountdown, 1000) as unknown as number
+      }
     }
 
     const view: OrderDetailView = {
@@ -100,7 +141,7 @@ Page({
       contactPhone: detail.contactPhone || '',
       orderNo: detail.bizOrderNo || '',
       createTime: formatYMDHM(detail.createTime),
-      showPayButton: detail.status === 0 || detail.status === 1,
+      showPayButton: (detail.status === 0 || detail.status === 1) && isWithin10Minutes,
       showCancelButton: (detail.status === 0 || detail.status === 2 || detail.status === 1) && isWithin24Hours,
     }
     

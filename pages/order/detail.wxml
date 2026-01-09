@@ -59,6 +59,7 @@
 
   <view wx:if="{{canCancel || canPay}}" class="bottom-bar">
     <view wx:if="{{canPay}}" class="pay-btn" bindtap="onPayTap">
+      <text wx:if="{{countdownText}}" class="countdown-text">{{countdownText}}</text>
       <text>立即支付</text>
     </view>
     <view wx:if="{{canCancel}}" class="cancel-btn" bindtap="onCancelTap">
