@@ -1,7 +1,9 @@
-import { getData, postData, postDataWithRes } from '../utils/request'
+import { getData, postData, postDataWithRes, request } from '../utils/request'
 import type {
   AppGeneratePayParamsReqVO,
   AppGeneratePayParamsRespVO,
+  AppActivityOrderCreateReqVO,
+  AppPayOrderCreateDataVO,
   AppOrderCreateReqVO,
   AppPayOrderCreateRespVO,
   AppOrderListRespVO,
@@ -29,6 +31,20 @@ export async function createAccommodationOrder(
   )
   console.log('createAccommodationOrder resp=', res)
    return res;
+}
+
+export async function createActivityOrder(
+  data: AppActivityOrderCreateReqVO
+): Promise<AppPayOrderCreateDataVO> {
+  const res = await request<AppPayOrderCreateDataVO>({
+    url: `${baseUrl}/create-activity`,
+    method: 'POST',
+    data,
+  })
+  if (res.code === 0 || res.code === 200) {
+    return res.data
+  }
+  throw new Error(res.msg || '创建活动订单失败')
 }
 
 export function getAccommodationOrderList(

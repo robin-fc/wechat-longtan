@@ -77,3 +77,32 @@ export interface AppOrderDetailRespVO {
   createTime: string
   payTime?: string
 }
+
+export interface ActivityOrder {
+  id: string
+  activityId: string | number
+  title: string
+  spaceName: string
+  timeRange: {
+    startTime: string
+    endTime: string
+  }
+  participantName: string
+  participantPhone: string
+  notice: string
+  status: string
+  totalPrice: {
+    amount: number
+    currency: string
+    unit?: string
+  }
+}
+
+export interface AppActivityOrderCreateReqVO {
+  activityId: number
+}
+
+export interface AppPayOrderCreateDataVO {
+  bizOrderNo: string
+  createTime: string
+}
