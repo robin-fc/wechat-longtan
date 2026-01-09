@@ -1,7 +1,9 @@
 .order-detail-page {
   min-height: 100vh;
   background-color: #ffffff;
+  padding-bottom: 140rpx;
 }
+
 .top-bar {
   height: 88rpx;
   display: flex;
@@ -83,9 +85,10 @@
   font-size: 32rpx;
   font-weight: 700;
   color: #333333;
+  margin-bottom: 8rpx;
 }
 .address-row {
-  margin-top: 24rpx;
+  margin-top: 16rpx;
   display: flex;
   align-items: center;
 }
@@ -98,73 +101,181 @@
   font-size: 24rpx;
   color: #999999;
 }
-.label {
-  font-size: 28rpx;
-  color: #333333;
-  font-weight: 700;
-}
+
+/* Date Section Styles */
 .date-row {
-  margin-top: 24rpx;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  margin-top: 16rpx;
 }
 .date {
   font-size: 30rpx;
+  font-weight: 600;
   color: #333333;
 }
 .nights {
-  font-size: 28rpx;
-  color: #333333;
+  font-size: 24rpx;
+  color: #999999;
+  margin: 0 16rpx;
 }
-.cancel-row{
-   margin-top: 12rpx;
+.cancel-row {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid #f9f9f9;
 }
-.cancel-text{
-   margin-top: 24rpx;
-   font-size: 24rpx;
+.cancel-text {
+  font-size: 24rpx;
+  color: #666666;
 }
 .cancel-policy {
-  margin-top: 24rpx;
   font-size: 24rpx;
-  color: #35c16b;
+  color: #576b95;
+}
+
+/* Info Section Styles */
+.lable {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 24rpx;
+  display: block;
 }
 .info-row {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  margin-top: 24rpx;
+  margin-bottom: 20rpx;
 }
 .info-label {
-  font-size: 26rpx;
-  color:#333333;
+  font-size: 28rpx;
+  color: #666666;
 }
 .info-value {
-  font-size: 26rpx;
-  margin-left: 26rpx;
+  font-size: 28rpx;
   color: #333333;
 }
+
+/* Bottom Bar Styles */
 .bottom-bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 16rpx 24rpx;
   background-color: #ffffff;
-  border-top: 1px solid #f0f0f0;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  z-index: 90;
 }
 .cancel-btn {
+  height: 80rpx;
+  border: 1rpx solid #dddddd;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #333333;
+  background-color: #ffffff;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding: 48rpx 32rpx;
+  position: relative;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.modal-title {
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 48rpx;
+}
+
+.reason-list {
+  margin-bottom: 60rpx;
+}
+
+.reason-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 0;
+}
+
+.radio-icon {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  border: 2rpx solid #dddddd;
+  margin-right: 24rpx;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.radio-icon.selected {
+  border: none;
+  background-color: #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-icon.selected::after {
+  content: '';
+  width: 20rpx;
+  height: 10rpx;
+  border-left: 4rpx solid #ffffff;
+  border-bottom: 4rpx solid #ffffff;
+  transform: rotate(-45deg) translate(2rpx, -2rpx);
+}
+
+.reason-text {
+  font-size: 30rpx;
+  color: #333333;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.modal-btn {
+  flex: 1;
   height: 88rpx;
-  border-radius: 8rpx;
-  background-color: #000000;
-  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 30rpx;
-  font-weight: 700;
+  border-radius: 4rpx;
 }
 
+.modal-btn.secondary {
+  border: 2rpx solid #dddddd;
+  color: #333333;
+  background-color: #ffffff;
+}
+
+.modal-btn.primary {
+  background-color: #111111;
+  color: #ffffff;
+}

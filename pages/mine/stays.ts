@@ -57,6 +57,9 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
     smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(biz)}`)
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    // onShow will handle loading
+  },
+  async onShow(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadStays()
   },
   async loadStays(

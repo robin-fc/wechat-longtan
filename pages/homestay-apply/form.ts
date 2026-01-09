@@ -229,14 +229,16 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
           return
         }
         const bizOrderNo = res.data?.bizOrderNo
+        console.log('bizOrderNo=', bizOrderNo)
         if (!bizOrderNo) {
           wx.hideLoading()
           wx.showToast({ title: '订单号缺失', icon: 'none' })
           return
         }
         try {
-          // const amount = (this.data as ApplyFormState).totalPrice || 0
-          const amount = 0.1
+         
+          const amount = Number(((this.data as ApplyFormState).totalPrice || 0).toFixed(2))
+          console.log('amount=', amount)
           const pay = await generatePayParams({ bizOrderNo, amount })
           const p = pay && pay.payParams
           if (!p) {
@@ -253,12 +255,20 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
             paySign: p.paySign,
             success: () => {
               wx.showToast({ title: '支付成功', icon: 'success' })
-              setTimeout(() => {
-                smartNavigateTo('/pages/homestay-apply/status')
+              console.log('支付成功，跳转订单详情页', bizOrderNo)
+              // setTimeout(() => {
+              //   smartNavigateTo('/pages/homestay-apply/status')
+              // }, 600)
+               setTimeout(() => {
+                smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`)
               }, 600)
             },
             fail: () => {
               wx.showToast({ title: '支付未完成', icon: 'none' })
+              console.log('支付未完成，跳转订单详情页', bizOrderNo)
+               setTimeout(() => {
+                smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`)
+              }, 600)
             },
           } as any)
         } catch (e) {

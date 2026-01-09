@@ -1,4 +1,4 @@
-import { getOrderDetail } from '../../api/order'
+import { getOrderDetail, cancelOrder } from '../../api/order'
 import type { AppOrderDetailRespVO } from '../../model/order'
 import { goBack } from '../../utils/navigation'
 import { formatYMDHM, formatYMD1 } from '../../utils/date'
@@ -40,6 +40,9 @@ Page({
     view: null as OrderDetailView | null,
     hasHint: false,
     canCancel: false,
+    showCancelModal: false,
+    cancelReasons: [] as string[],
+    selectedReasonIndex: -1,
   },
   onBackTap() {
     goBack()
@@ -53,6 +56,9 @@ Page({
       wx.showToast({ title: '缺少订单号', icon: 'none' })
       return
     }
+    this.fetchOrderDetail(bizOrderNo)
+  },
+  async fetchOrderDetail(bizOrderNo: string) {
     const detail: AppOrderDetailRespVO = await getOrderDetail(bizOrderNo)
     const statusText = mapPaymentStatusText(detail.status)
     const isAccommodation = detail.bizType === 1
@@ -81,19 +87,54 @@ Page({
       contactPhone: detail.contactPhone || '',
       orderNo: detail.bizOrderNo || '',
       createTime: formatYMDHM(detail.createTime),
-      showCancelButton: detail.status === 0 || detail.status === 2,
+      showCancelButton: detail.status === 0 || detail.status === 2 || detail.status === 1,
     }
-    this.setData({ view, hasHint: !!view.hintText, canCancel: !!view.showCancelButton })
-  },
-  onCancelTap() {
-    wx.showModal({
-      title: '取消订单',
-      content: '确定要取消该订单吗？',
-      success: (res) => {
-        if (res.confirm) {
-          wx.showToast({ title: '取消功能待接入', icon: 'none' })
-        }
-      },
+    
+    const cancelReasons = [
+      '行程取消',
+      '订错日期/房型',
+      '我的入住信息填错了',
+      '其他'
+    ]
+
+    this.setData({
+      view,
+      hasHint: !!view.hintText,
+      canCancel: !!view.showCancelButton,
+      cancelReasons,
+      selectedReasonIndex: -1,
+      showCancelModal: false
     })
+  },
+onCancelTap() {
+  this.setData({ showCancelModal: true })
+},
+closeCancelModal() {
+  this.setData({ showCancelModal: false })
+},
+preventBubble() {},
+onReasonSelect(e: WechatMiniprogram.TouchEvent) {
+  const index = e.currentTarget.dataset.index
+  this.setData({ selectedReasonIndex: index })
+},
+async onConfirmCancel() {
+    const { selectedReasonIndex, cancelReasons, view } = this.data
+    if (selectedReasonIndex < 0) {
+      wx.showToast({ title: '请选择取消原因', icon: 'none' })
+      return
+    }
+    const reason = cancelReasons[selectedReasonIndex]
+    const bizOrderNo = view?.orderNo
+    
+    if (!bizOrderNo) return
+
+    try {
+      await cancelOrder({ bizOrderNo, reason })
+      wx.showToast({ title: '取消申请已提交', icon: 'success' })
+      this.closeCancelModal()
+      this.fetchOrderDetail(bizOrderNo)
+    } catch (err) {
+      console.error(err)
+    }
   },
 })

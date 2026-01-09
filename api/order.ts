@@ -76,3 +76,10 @@ export function getOrderDetail(
     { bizOrderNo }
   )
 }
+
+export function cancelOrder(data: {
+  bizOrderNo: string
+  reason: string
+}): Promise<boolean> {
+  return postData<boolean>(`${baseUrl}/cancel`, data)
+}

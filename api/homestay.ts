@@ -12,6 +12,9 @@ import {
   HOMESTAY_TAGS,
   HomestayDetail,
   ROOM_TAGS,
+  HomestayApplication,
+  AppOrderListRespVO,
+  HomestayApplicationStatus,
 } from '../model/homestay'
 import type { ID } from '../model/common'
 import { getData } from '../utils/request'
@@ -146,5 +149,31 @@ export function getHomestayAvailableList(): Promise<AppHomestayListItem[]> {
 
 export function getHomestayDetailApi(id: number): Promise<AppHomestayDetail> {
   return getData('/app-api/daolongtan/homestay/detail', { id })
+}
+
+export async function fetchHomestayApplications(): Promise<HomestayApplication[]> {
+  // type=5 means all orders
+  const raw = await getData<{ list: AppOrderListRespVO[]; total: number }>(
+    '/app-api/daolongtan/order/my-list',
+    { type: 5, pageNo: 1, pageSize: 100 }
+  )
+  return (raw.list || []).map((it) => ({
+    id: it.orderNo,
+    title: it.title,
+    status: it.status as unknown as HomestayApplicationStatus,
+   // status: mapStatus(it.status),
+    stayRange: {
+      startTime: new Date(it.checkInDate).toISOString(),
+      endTime: new Date(it.checkOutDate).toISOString(),
+    },
+    totalPrice: {
+      amount: it.amountTotal,
+      currency: 'CNY',
+    },
+    roomImage: it.roomImage,
+    roomDetails: it.roomDetails,
+    applicantName: '', // Not returned
+    phone: '', // Not returned
+  }))
 }
 
