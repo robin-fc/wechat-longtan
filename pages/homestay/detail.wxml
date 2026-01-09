@@ -62,12 +62,15 @@
       </view>
     </view>
     <view class="section">
-      <view class="room-list">
+      <view class="room-list" wx:if="{{rooms && rooms.length > 0}}">
         <block wx:for="{{rooms}}" wx:key="id">
           <view class="room-item">
             <homestay-room-card room="{{item}}" bindtap="onRoomTap" />
           </view>
         </block>
+      </view>
+      <view class="empty-rooms" wx:else>
+         <text class="empty-text">对不起，您所选时间没有合适房源了，请修改日期后再试</text>
       </view>
     </view>
   </scroll-view>
