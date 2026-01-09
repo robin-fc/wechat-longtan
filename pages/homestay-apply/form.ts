@@ -7,7 +7,6 @@ import { formatYMD1 } from '../../utils/date'
 interface ApplyForm {
   name: string
   idCard: string
-  wechatId: string
   phone: string
 }
 
@@ -36,7 +35,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     form: {
       name: '',
       idCard: '',
-      wechatId: '',
       phone: '',
     },
   },
@@ -86,7 +84,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.PickerChange
   ) {
-    const inDate = e.detail.value
+    const inDate = e.detail.value as string
     const outDate = (this.data as ApplyFormState).checkOutDate
     if (outDate) {
       const inTs = new Date(inDate).getTime()
@@ -114,7 +112,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.PickerChange
   ) {
-    const outDate = e.detail.value
+    const outDate = e.detail.value as string
     const inDate = (this.data as ApplyFormState).checkInDate
     if (inDate) {
       const inTs = new Date(inDate).getTime()
@@ -154,14 +152,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       'form.idCard': e.detail.value,
     })
   },
-  onWechatChange(
-    this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.Input
-  ) {
-    this.setData({
-      'form.wechatId': e.detail.value,
-    })
-  },
   onPhoneChange(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.Input
@@ -199,13 +189,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       })
       return
     }
-    if (!form.wechatId.trim()) {
-      wx.showToast({
-        title: '请填写微信号',
-        icon: 'none',
-      })
-      return
-    }
     if (!form.phone.trim()) {
       wx.showToast({
         title: '请填写手机号',
@@ -219,7 +202,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       checkOutDate: state.checkOutDate+'T00:00:00.00Z',
       contactName: form.name.trim(),
       contactIdCard: form.idCard.trim(),
-      contactWechat: form.wechatId.trim(),
       contactPhone: form.phone.trim(),
     }
     wx.showLoading({ title: '创建订单中...', mask: true })

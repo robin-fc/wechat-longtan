@@ -23,7 +23,6 @@ export interface AppOrderCreateReqVO {
   checkOutDate: string
   contactName: string
   contactIdCard: string
-  contactWechat: string
   contactPhone: string
 }
 

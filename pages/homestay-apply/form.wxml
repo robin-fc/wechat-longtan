@@ -35,8 +35,6 @@
       <input class="input" placeholder="请输入姓名" value="{{form.name}}" bindinput="onNameChange" />
       <text class="label second">身份证*</text>
       <input class="input" placeholder="请输入身份证号" value="{{form.idCard}}" bindinput="onIdCardChange" />
-      <text class="label second">微信号*</text>
-      <input class="input" placeholder="请输入微信号" value="{{form.wechatId}}" bindinput="onWechatChange" />
       <text class="label second">手机号*</text>
       <input class="input" placeholder="请输入手机号" value="{{form.phone}}" bindinput="onPhoneChange" />
     </view>
