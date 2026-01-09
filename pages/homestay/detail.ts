@@ -214,7 +214,10 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       duration: value,
     })
   },
-  onRoomTap(_e: WechatMiniprogram.CustomEvent) {
+  onRoomTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    _e: WechatMiniprogram.CustomEvent
+  ) {
     const room = (_e.detail || {}).room as {
       id?: string
       homestayId?: string
@@ -222,10 +225,15 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     if (!room || !room.id) {
       return
     }
+    const { startDate, duration } = this.data as HomestayDetailState
     smartNavigateTo(
       `/pages/homestay-room/detail?id=${encodeURIComponent(
         room.id
-      )}&homestayId=${encodeURIComponent(room.homestayId || '')}`
+      )}&homestayId=${encodeURIComponent(
+        room.homestayId || ''
+      )}&startDate=${encodeURIComponent(startDate)}&duration=${encodeURIComponent(
+        duration
+      )}`
     )
   },
 })

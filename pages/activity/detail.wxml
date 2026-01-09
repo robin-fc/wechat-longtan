@@ -16,7 +16,7 @@
         </view>
         
         <view class="header-title-row">
-          <text class="secondary-tag">{{activity.secondaryTag.name}}</text>
+          <text class="secondary-tag">{{activity.activityType}}</text>
           <text class="nickname">{{activity.title}}</text>
         </view>
 

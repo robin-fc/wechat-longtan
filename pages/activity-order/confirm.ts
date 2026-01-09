@@ -66,10 +66,12 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
         spaceId: detail.space.id,
         spaceName: detail.space.name,
         fee: detail.fee,
+        auditStatus: detail.auditStatus,
       } as unknown as Activity)
 
     const activity: Activity = {
       ...baseFallback,
+      auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
       poster: baseFallback.poster ?? {
         id: String(detail.id),
         url: detail.logo || '/assets/images/activity.jpg',
@@ -175,6 +177,22 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     const activityId = Number(activityIdRaw)
     if (!Number.isFinite(activityId) || activityId <= 0) {
       wx.showToast({ title: '活动ID异常', icon: 'none' })
+      return
+    }
+
+    const activity = (this.data as ConfirmOrderState).activity
+    if (activity && activity.auditStatus !== 1) {
+      let msg = '该活动未审核通过，无法报名'
+      if (activity.auditStatus === 0) {
+        msg = '该活动正在审核中，暂时无法报名'
+      } else if (activity.auditStatus === 2) {
+        msg = '该活动审核不通过，无法报名'
+      }
+      wx.showModal({
+        title: '提示',
+        content: msg,
+        showCancel: false,
+      })
       return
     }
 

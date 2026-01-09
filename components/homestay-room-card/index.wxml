@@ -18,7 +18,7 @@
       <text class="name">{{room.name}}</text>
     </view>
     <view class="row-attributes">
-      <block wx:for="{{room.attributes}}" wx:key="*this" wx:for-item="item">
+      <block wx:for="{{room.attributes}}" wx:key="label" wx:for-item="item">
         <text class="attribute-item">{{item.label || item}}</text>
         <text class="attribute-divider" wx:if="{{index < room.attributes.length - 1}}">|</text>
       </block>

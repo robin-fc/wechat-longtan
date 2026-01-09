@@ -46,20 +46,37 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
   ) {
     const roomId = options.roomId as string
     const homestayId = options.homestayId as string
+    const startDate = options.startDate as string
+    const duration = parseInt(options.duration as string, 10) || 1
+
     if (!roomId || !homestayId) {
       return
     }
-    const today = formatYMD1(new Date(),'-');
-    const rooms = await getAvailableRoomList(homestayId, today)
+    
+    let checkInDate = startDate || formatYMD1(new Date(), '-')
+    let checkOutDate = ''
+    if (checkInDate) {
+      const start = new Date(checkInDate)
+      const end = new Date(start.getTime() + duration * 24 * 60 * 60 * 1000)
+      checkOutDate = formatYMD1(end, '-')
+    }
+
+    this.setData({
+      checkInDate,
+      checkOutDate,
+      nightsCount: duration
+    })
+
+    const rooms = await getAvailableRoomList(homestayId, checkInDate)
     const room = rooms.find(r => String(r.id) === roomId)
     if (!room) return
-
     const display = `${room.name}`
+    const totalPrice = (room.price.amount || 0) * duration
     this.setData({
       room,
       roomNameDisplay: display,
-      totalPrice: room.price.amount,
-      totalPriceDisplay: (room.price.amount || 0).toFixed(2),
+      totalPrice: totalPrice,
+      totalPriceDisplay: totalPrice.toFixed(2),
     })
   },
   onBackTap() {
@@ -229,7 +246,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
           return
         }
         const bizOrderNo = res.data?.bizOrderNo
-        console.log('bizOrderNo=', bizOrderNo)
         if (!bizOrderNo) {
           wx.hideLoading()
           wx.showToast({ title: '订单号缺失', icon: 'none' })
@@ -238,7 +254,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
         try {
          
           const amount = Number(((this.data as ApplyFormState).totalPrice || 0).toFixed(2))
-          console.log('amount=', amount)
           const pay = await generatePayParams({ bizOrderNo, amount })
           const p = pay && pay.payParams
           if (!p) {

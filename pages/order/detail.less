@@ -168,8 +168,12 @@
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
   z-index: 90;
+  display: flex;
+  gap: 24rpx;
 }
+.pay-btn,
 .cancel-btn {
+  flex: 1;
   height: 80rpx;
   border: 1rpx solid #dddddd;
   border-radius: 40rpx;
@@ -179,6 +183,11 @@
   font-size: 28rpx;
   color: #333333;
   background-color: #ffffff;
+}
+.pay-btn {
+  border-color: #111111;
+  background-color: #111111;
+  color: #ffffff;
 }
 
 /* Modal Styles */

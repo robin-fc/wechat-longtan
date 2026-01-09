@@ -1,4 +1,4 @@
-import { getOrderDetail, cancelOrder } from '../../api/order'
+import { getOrderDetail, cancelOrder, generatePayParams } from '../../api/order'
 import type { AppOrderDetailRespVO } from '../../model/order'
 import { goBack } from '../../utils/navigation'
 import { formatYMDHM, formatYMD1 } from '../../utils/date'
@@ -8,6 +8,7 @@ interface OrderDetailView {
   statusClass: string
   hintText: string
   amountText: string
+  amount: number
   title: string
   address: string
   checkInText: string
@@ -17,6 +18,7 @@ interface OrderDetailView {
   contactPhone: string
   orderNo: string
   createTime: string
+  showPayButton: boolean
   showCancelButton: boolean
 }
 
@@ -40,6 +42,7 @@ Page({
     view: null as OrderDetailView | null,
     hasHint: false,
     canCancel: false,
+    canPay: false,
     showCancelModal: false,
     cancelReasons: [] as string[],
     selectedReasonIndex: -1,
@@ -78,6 +81,7 @@ Page({
           ? '请尽快完成支付以保留预订'
           : '',
       amountText: `￥${(detail.amountTotal || 0).toFixed(2)}`,
+      amount: detail.amountTotal || 0,
       title,
       address,
       checkInText: `${formatYMD1(inDate, '月').replace('月', '月')} ${weekText(inDate)}`,
@@ -87,6 +91,7 @@ Page({
       contactPhone: detail.contactPhone || '',
       orderNo: detail.bizOrderNo || '',
       createTime: formatYMDHM(detail.createTime),
+      showPayButton: detail.status === 0 || detail.status === 1,
       showCancelButton: detail.status === 0 || detail.status === 2 || detail.status === 1,
     }
     
@@ -101,10 +106,45 @@ Page({
       view,
       hasHint: !!view.hintText,
       canCancel: !!view.showCancelButton,
+      canPay: !!view.showPayButton,
       cancelReasons,
       selectedReasonIndex: -1,
       showCancelModal: false
     })
+  },
+  async onPayTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const view = this.data.view as OrderDetailView | null
+    const bizOrderNo = view?.orderNo
+    const amount = Number(view?.amount || 0)
+    if (!bizOrderNo || !amount) {
+      wx.showToast({ title: '缺少订单信息', icon: 'none' })
+      return
+    }
+    console.log('发起支付请求', bizOrderNo, amount)
+    try {
+      const resp = await generatePayParams({ bizOrderNo, amount })
+      const p = resp && resp.payParams
+      if (!p) {
+        wx.showToast({ title: '支付参数缺失', icon: 'none' })
+        return
+      }
+      wx.requestPayment({
+        timeStamp: p.timeStamp,
+        nonceStr: p.nonceStr,
+        package: p.packageData,
+        signType: p.signType as any,
+        paySign: p.paySign,
+        success: () => {
+          wx.showToast({ title: '支付成功', icon: 'success' })
+          this.fetchOrderDetail(bizOrderNo)
+        },
+        fail: () => {
+          wx.showToast({ title: '支付未完成', icon: 'none' })
+        },
+      } as any)
+    } catch {
+      wx.showToast({ title: '支付失败', icon: 'none' })
+    }
   },
 onCancelTap() {
   this.setData({ showCancelModal: true })

@@ -2,7 +2,6 @@
   <scroll-view scroll-y="true" class="body">
     <view wx:if="{{room}}" class="section">
       <text class="title">{{roomNameDisplay}}</text>
-      <text class="sub">入住时长：{{room.stayDurationText}}</text>
     </view>
     <view class="section">
       <text class="label">入住日期</text>

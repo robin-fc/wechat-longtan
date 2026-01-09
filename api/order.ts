@@ -29,7 +29,6 @@ export async function createAccommodationOrder(
     `${baseUrl}/create-accommodation`,
     data
   )
-  console.log('createAccommodationOrder resp=', res)
    return res;
 }
 

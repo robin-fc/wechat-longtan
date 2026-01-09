@@ -57,8 +57,11 @@
     </view>
   </view>
 
-  <view wx:if="{{canCancel}}" class="bottom-bar">
-    <view class="cancel-btn" bindtap="onCancelTap">
+  <view wx:if="{{canCancel || canPay}}" class="bottom-bar">
+    <view wx:if="{{canPay}}" class="pay-btn" bindtap="onPayTap">
+      <text>立即支付</text>
+    </view>
+    <view wx:if="{{canCancel}}" class="cancel-btn" bindtap="onCancelTap">
       <text>取消订单</text>
     </view>
   </view>

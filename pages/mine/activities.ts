@@ -71,11 +71,9 @@ Page<MyActivitiesState, WechatMiniprogram.IAnyObject>({
     const activity = (e.detail || {}).activity as {
       id?: string
     }
-    console.log('activity', activity)
     if (!activity || !activity.id) {
       return
     }
-    console.log('activity.id', activity.id)
     smartNavigateTo(
       `/pages/activity/detail?id=${encodeURIComponent(activity.id)}`
     )

@@ -31,21 +31,53 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
   ) {
     const id = options.id as string
     const homestayId = options.homestayId as string
+    const startDate = (options.startDate as string) || ''
+    const duration = (options.duration as string) || ''
+
     if (!id || !homestayId) {
       return
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
+    
+    let checkInDate = startDate
+    if (!checkInDate) {
+      const now = new Date()
+      const yyyy = String(now.getFullYear())
+      const mm = String(now.getMonth() + 1).padStart(2, '0')
+      const dd = String(now.getDate()).padStart(2, '0')
+      checkInDate = `${yyyy}-${mm}-${dd}`
+    }
+
+    let checkOutDate = ''
+    if (duration) {
+      const daysMap: Record<string, number> = {
+        'week': 7,
+        'twoWeeks': 14,
+        'month': 30,
+        'threeMonths': 90
+      }
+      const days = daysMap[duration] || 0
+      if (days > 0) {
+        // Handle date string format compatibility
+        const start = new Date(checkInDate.replace(/-/g, '/'))
+        if (!isNaN(start.getTime())) {
+          const end = new Date(start.getTime() + days * 24 * 60 * 60 * 1000)
+          const y = end.getFullYear()
+          const m = String(end.getMonth() + 1).padStart(2, '0')
+          const d = String(end.getDate()).padStart(2, '0')
+          checkOutDate = `${y}-${m}-${d}`
+        }
+      }
+    }
+
     this.setData({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
       homestayId,
+      checkInDate,
+      checkOutDate
     })
-    const now = new Date()
-    const yyyy = String(now.getFullYear())
-    const mm = String(now.getMonth() + 1).padStart(2, '0')
-    const dd = String(now.getDate()).padStart(2, '0')
-    const checkInDate = `${yyyy}-${mm}-${dd}`
-    this.setData({ checkInDate })
+    
     await this.fetchRoomDetail(homestayId, id, checkInDate)
     this.updateNights()
   },
@@ -64,6 +96,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       '5': '大床房',
     }
     try {
+      console.log('room/detail.ts 查询可用房间', homestayId, checkInDate)
       const list = await getHomestayAvailableRooms({ homestayId, checkInDate })
       const item = (list || []).find((x) => String(x.id) === String(id))
       if (!item) {
@@ -186,7 +219,13 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/homestay-apply/form?roomId=${encodeURIComponent(state.room.id)}&homestayId=${encodeURIComponent(state.room.id)}`
+      `/pages/homestay-apply/form?roomId=${encodeURIComponent(
+        state.room.id
+      )}&homestayId=${encodeURIComponent(
+        state.room.homestayId
+      )}&startDate=${encodeURIComponent(
+        state.checkInDate
+      )}&duration=${encodeURIComponent(String(state.nights))}`
     )
   },
 })
