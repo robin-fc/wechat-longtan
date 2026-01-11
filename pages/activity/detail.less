@@ -59,6 +59,10 @@
   flex-direction: column;
 }
 
+.moment-image-wrapper {
+  position: relative;
+}
+
 .moment-image {
   position: static;
   width: 100%;
@@ -66,6 +70,22 @@
   border-radius: 0;
   box-shadow: none;
   display: block;
+}
+
+.image-tag {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 24rpx;
+  padding: 4rpx 12rpx;
+  line-height: 1;
+  border-radius: 8rpx 0 0 0;
+  z-index: 2;
 }
 
 .moment-content {

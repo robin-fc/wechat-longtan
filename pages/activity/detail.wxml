@@ -8,7 +8,10 @@
   </view>
   <view wx:if="{{activity}}" class="body" style="padding-top: {{menuTop + menuHeight + 10}}px;">
     <view class="moment-card">
-      <image class="moment-image" src="{{activity.poster.url}}" mode="aspectFill" />
+      <view class="moment-image-wrapper">
+        <image class="moment-image" src="{{activity.poster.url}}" mode="aspectFill" />
+        <text class="image-tag">{{activity.activityType}}</text>
+      </view>
       <view class="moment-content">
         <view class="price-row">
           <text class="price-symbol">¥</text>
