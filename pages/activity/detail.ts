@@ -102,7 +102,33 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         mapImages:
           detail.space.mapImages || baseFallback.space?.mapImages || [],
       },
-      organizer: detail.organizer,
+      organizer: detail.organizer
+        ? {
+            ...detail.organizer,
+            tags: (() => {
+              const raw = detail.organizer.tags
+              const organizerTagsMap: Record<number, string> = {
+                0: '空间主理人',
+                1: '活动发起人',
+              }
+              if (Array.isArray(raw)) return raw
+              if (typeof raw === 'string' && raw) {
+                return (raw as string)
+                  .split(',')
+                  .map((s) => s.trim())
+                  .filter((s) => s)
+                  .map((s) => {
+                    const n = Number(s)
+                    if (!Number.isNaN(n) && organizerTagsMap[n]) {
+                      return organizerTagsMap[n]
+                    }
+                    return s
+                  })
+              }
+              return []
+            })() as any,
+          }
+        : undefined,
       detail: detail.detail || baseFallback.detail,
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()

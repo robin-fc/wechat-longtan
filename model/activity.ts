@@ -73,7 +73,7 @@ export interface Organizer {
   wxName: string
   memberName: string
   logo: string
-  tags?: string[]
+  tags: string
   spaceName?: string
 }
 
