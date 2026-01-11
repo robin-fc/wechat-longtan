@@ -51,10 +51,10 @@
 
     <view class="section organizer-section" wx:if="{{activity.organizer}}">
       <view class="organizer-row">
-        <image class="organizer-avatar" src="{{activity.organizer.logo}}" mode="aspectFill" />
+        <image class="organizer-avatar" src="{{activity.organizer.logo}}" mode="aspectFill" bindtap="onOrganizerTap" />
         <view class="organizer-info">
           <view class="organizer-header">
-            <view class="organizer-name-wrap">
+            <view class="organizer-name-wrap" bindtap="onOrganizerTap">
               <text class="organizer-name">{{activity.organizer.memberName || activity.organizer.wxName}}</text>
               <view class="organizer-tags" wx:if="{{activity.organizer.tags && activity.organizer.tags.length}}">
                 <text class="organizer-tag" wx:for="{{activity.organizer.tags}}" wx:key="*this">{{item}}</text>
@@ -76,8 +76,8 @@
             style="width: {{registrationLimit > 0 ? (registrationCount / registrationLimit * 100) : 0}}%"
           ></view>
         </view>
-        <text class="registration-text" wx:if="{{registrationLimit > 0}}">已报名 {{registrationCount}}/{{registrationLimit}}</text>
-        <text class="registration-text" wx:else>已报名 {{registrationCount}}</text>
+        <text class="registration-text" wx:if="{{registrationLimit > 0}}" bindtap="onRegistrationTap">已报名 {{registrationCount}}/{{registrationLimit}}</text>
+        <text class="registration-text" wx:else bindtap="onRegistrationTap">已报名 {{registrationCount}}</text>
         
         <view class="registration-avatars" bindtap="onCompanionsTap">
           <block wx:for="{{registrationUsers}}" wx:key="userId">

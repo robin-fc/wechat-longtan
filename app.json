@@ -2,6 +2,8 @@
   "pages": [
     "pages/login/index",
     "pages/home/index",
+    "pages/user/other-profile/index",
+    "pages/user/list/index",
     "pages/agreement/service",
     "pages/agreement/privacy",
     "pages/search/index",

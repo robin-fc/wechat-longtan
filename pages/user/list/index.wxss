@@ -1,0 +1,116 @@
+.container {
+  padding: 0 32rpx;
+  background: #fff;
+  min-height: 100vh;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+  flex-shrink: 0;
+}
+
+.info {
+  flex: 1;
+  overflow: hidden;
+  margin-right: 24rpx;
+}
+
+.name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+  flex-wrap: wrap;
+}
+
+.nickname {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-right: 12rpx;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 20rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+  margin-right: 8rpx;
+  margin-top: 2rpx;
+}
+
+.tag-new {
+  background: #FFF8E1;
+  color: #FFB300;
+}
+
+.tag-host {
+  background: #333;
+  color: #fff;
+}
+
+.tag-visitor {
+  background: #E0F2F1;
+  color: #009688;
+}
+
+.tag-nomad {
+  background: #E8F5E9;
+  color: #4CAF50;
+}
+
+.bio {
+  font-size: 26rpx;
+  color: #999;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+}
+
+.action-btn {
+  flex-shrink: 0;
+}
+
+.follow-btn {
+  font-size: 26rpx;
+  width: 140rpx;
+  height: 60rpx;
+  line-height: 56rpx;
+  padding: 0;
+  background: #fff;
+  color: #333;
+  border: 1rpx solid #333;
+  border-radius: 4rpx;
+  margin: 0;
+}
+
+.follow-btn.followed {
+  color: #999;
+  border-color: #ccc;
+  background: #fff;
+}
+
+.follow-btn::after {
+  border: none;
+}
+
+.loading, .empty {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 28rpx;
+}

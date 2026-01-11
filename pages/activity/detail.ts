@@ -279,6 +279,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       })
   },
 
+  onOrganizerTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const activity = (this.data as ActivityDetailState).activity
+    if (!activity || !activity.organizer || !activity.organizer.userId) return
+    smartNavigateTo(`/pages/user/other-profile/index?userId=${activity.organizer.userId}`)
+  },
+
   onToggleFollowOrganizer(this: WechatMiniprogram.Page.TrivialInstance) {
     const activity = (this.data as ActivityDetailState).activity
     if (!activity || !activity.organizer) return
@@ -368,6 +374,16 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       `/pages/activity-order/confirm?activityId=${encodeURIComponent(
         detail.id
       )}`
+    )
+  },
+
+  onRegistrationTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const activity = (this.data as ActivityDetailState).activity
+    if (!activity) {
+      return
+    }
+    smartNavigateTo(
+      `/pages/user/list/index?title=已报名用户&type=registration&id=${activity.id}`
     )
   },
 })

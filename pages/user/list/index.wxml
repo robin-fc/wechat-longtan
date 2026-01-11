@@ -1,0 +1,35 @@
+<view class="container">
+  <block wx:for="{{userList}}" wx:key="userId">
+    <view class="user-item" bindtap="onUserTap" data-id="{{item.userId}}">
+      <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
+      
+      <view class="info">
+        <view class="name-row">
+          <text class="nickname">{{item.nickname}}</text>
+          <view class="tags">
+            <text class="tag {{tag === '新村民' ? 'tag-new' : tag === '主理人' ? 'tag-host' : tag === '游客' ? 'tag-visitor' : 'tag-nomad'}}" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+          </view>
+        </view>
+        <text class="bio">{{item.bio}}</text>
+      </view>
+      
+      <view class="action-btn">
+        <button 
+          class="follow-btn {{item.isFollowed ? 'followed' : ''}}" 
+          catchtap="onFollowTap" 
+          data-index="{{index}}"
+        >
+          {{item.isFollowed ? '已关注' : '关注'}}
+        </button>
+      </view>
+    </view>
+  </block>
+  
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+  
+  <view wx:if="{{!loading && userList.length === 0}}" class="empty">
+    <text>暂无数据</text>
+  </view>
+</view>
