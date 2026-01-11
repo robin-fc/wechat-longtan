@@ -4,16 +4,13 @@
       <text
         class="secondary-tag"
         wx:if="{{activity.secondaryTag && activity.secondaryTag.name}}"
-      >
-        {{activity.secondaryTag.name}}
-      </text>
+      >{{activity.secondaryTag.name}}</text>
       <text class="nickname">{{activity.title}}</text>
     </view>
 
     <view class="info-row time-row">
       <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
-      <text class="info-text">
-        {{activity.timeRange.startTime}}-{{activity.timeRange.endTime}}
+      <text class="info-text">{{activity.timeRange.startTime}}-{{activity.timeRange.endTime}}
       </text>
     </view>
 
