@@ -46,13 +46,14 @@ export interface Activity {
   timeRange?: TimeRange
   price?: Price
   status?: string
-  space?: Space
+  space: Space
   organizer?: Organizer
   companions?: {
     companions: Array<{ id?: string; avatar: ImageResource; nickname?: string }>
     totalCount?: number
   }
   auditStatus?: number // 0: 待审核, 1: 审核通过, 2: 审核不通过
+  maxParticipants?: number
 }
 
 export interface ActivityCollection {
@@ -106,6 +107,7 @@ export interface ActivityDetail {
   isFavorited: boolean
   activityType?: ActivityType
   auditStatus?: number
+  maxParticipants?: number
 }
 
 export interface RegistrationUser {

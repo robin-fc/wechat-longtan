@@ -59,7 +59,7 @@ export async function searchAll(
       type: 'activity',
       title: item.title,
       subtitle: item.space.name,
-      extra: `${item.timeRange.startTime} ~ ${item.timeRange.endTime}`,
+      extra: `${item.startTime} ~ ${item.endTime}`,
     })
   )
   const homestays: SearchResultItem[] = home.homestays.map(
@@ -76,7 +76,7 @@ export async function searchAll(
         {
           id: home.currentUser.id,
           type: 'user',
-          title: home.currentUser.nickname,
+          title: home.currentUser.memberName,
         } as SearchResultItem,
       ]
     : []

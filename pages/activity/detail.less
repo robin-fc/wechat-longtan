@@ -245,11 +245,17 @@
   justify-content: center;
 }
 
-.organizer-name-row {
+.organizer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.organizer-name-wrap {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 8rpx;
 }
 
 .organizer-name {
@@ -259,6 +265,26 @@
   margin-right: 16rpx;
 }
 
+.follow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  height: 56rpx;
+  border-radius: 28rpx;
+  background-color: #ffffff;
+  border: 1rpx solid #333333;
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+.follow-btn.following {
+  background-color: #f5f5f5;
+  border-color: #dddddd;
+  color: #999999;
+}
+
 .organizer-tags {
   display: flex;
   align-items: center;
@@ -266,16 +292,89 @@
 
 .organizer-tag {
   font-size: 20rpx;
-  color: #35c16b;
-  background-color: rgba(53, 193, 107, 0.1);
+  color: #333333;
+  background-color: #ffc300;
   padding: 2rpx 10rpx;
-  border-radius: 6rpx;
+  border-radius: 4rpx;
   margin-right: 8rpx;
+}
+
+/* Specific tag styles based on text if needed, currently using yellow for all as per image example style (sort of) */
+/* The example image has "新村民" in yellow, "主理人" in black. */
+/* We can use nth-child or data attributes if we want specific colors, but simple is ok for now */
+.organizer-tag:nth-child(even) {
+  background-color: #333333;
+  color: #ffffff;
 }
 
 .organizer-space {
   font-size: 24rpx;
   color: #999999;
+}
+
+/* Registration Progress */
+.registration-progress {
+  margin-top: 32rpx;
+  display: flex;
+  align-items: center;
+}
+
+.progress-bar-wrap {
+  flex: 1;
+  height: 16rpx;
+  background-color: #f0f0f0;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-right: 16rpx;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #7bc638;
+  border-radius: 8rpx;
+}
+
+.registration-text {
+  font-size: 24rpx;
+  color: #666666;
+  margin-right: 24rpx;
+}
+
+.registration-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.reg-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ffffff;
+  margin-left: -16rpx;
+  background-color: #f0f0f0;
+}
+
+.reg-avatar:first-child {
+  margin-left: 0;
+}
+
+.reg-count-badge {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background-color: #7bc638;
+  border: 2rpx solid #ffffff;
+  margin-left: -16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.reg-count-badge text {
+  font-size: 20rpx;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .companions-avatars .avatar:first-child {

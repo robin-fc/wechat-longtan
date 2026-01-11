@@ -161,7 +161,7 @@ export async function getActivityDetail(id: number): Promise<ActivityDetail> {
   // Mock organizer extra info if missing
   if (data && data.organizer) {
     if (!data.organizer.tags) {
-      data.organizer.tags = []
+      data.organizer.tags = ''
     }
     if (!data.organizer.spaceName) {
       data.organizer.spaceName = ''

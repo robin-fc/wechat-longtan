@@ -7,9 +7,15 @@ import {
   getActivityRegistrations,
 } from '../../api/activity'
 import {
+  AppUserFollow,
+  AppUserUnfollow,
+  AppUserFollow_getFollowings,
+} from '../../api/user-follow'
+import {
   type Activity,
   type FavoriteUser,
   ActivityTypeLabel,
+  type RegistrationUser,
 } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
@@ -22,6 +28,10 @@ interface ActivityDetailState {
   menuHeight: number
   favoriteCount: number
   favoriteCountText: string
+  isFollowingOrganizer: boolean
+  registrationCount: number
+  registrationLimit: number
+  registrationUsers: RegistrationUser[]
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -33,6 +43,10 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     menuHeight: 44,
     favoriteCount: 0,
     favoriteCountText: '0 人收藏',
+    isFollowingOrganizer: false,
+    registrationCount: 0,
+    registrationLimit: 0,
+    registrationUsers: [],
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -161,11 +175,29 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         }
         this.setData({
           'activity.companions': companions,
+          registrationCount: reg.count,
+          registrationUsers: (reg.userList || []).slice(0, 5),
+          registrationLimit: detail.maxParticipants || 0,
         })
       })
       .catch((e) => {
         console.error('Fetch registrations failed', e)
       })
+
+    // Fetch follow status
+    if (activity.organizer) {
+      AppUserFollow_getFollowings()
+        .then((res) => {
+          const list = res.data || []
+          const isFollowing = list.some(
+            (u) => u.userId === activity.organizer!.userId
+          )
+          this.setData({ isFollowingOrganizer: isFollowing })
+        })
+        .catch(() => {
+          // Ignore error, default to false
+        })
+    }
   },
 
   onBackTap() {
@@ -232,19 +264,47 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
                   )} 万人收藏`
                 : `${favoriteCount} 人收藏`
             this.setData({
-              isFavorited: freshDetail.isFavorited,
-              favoriteUsers: (freshDetail.favoriteUsers || []).slice(0, 5),
               favoriteCount,
               favoriteCountText,
+              favoriteUsers: (freshDetail.favoriteUsers || []).slice(0, 5),
             })
           })
-          .catch((e) => {
-            console.error('Refresh detail failed', e)
-          })
+          .catch(() => {})
       })
-      .catch(() => {
-        wx.showToast({ title: '操作失败', icon: 'none' })
+      .catch((e) => {
+        wx.showToast({
+          title: prev ? '取消收藏失败' : '收藏失败',
+          icon: 'none',
+        })
       })
+  },
+
+  onToggleFollowOrganizer(this: WechatMiniprogram.Page.TrivialInstance) {
+    const activity = (this.data as ActivityDetailState).activity
+    if (!activity || !activity.organizer) return
+
+    const isFollowing = (this.data as ActivityDetailState).isFollowingOrganizer
+    const organizerId = activity.organizer.userId
+
+    if (isFollowing) {
+      wx.showModal({
+        title: '提示',
+        content: '确定要取消关注该主理人吗？',
+        success: (res) => {
+          if (res.confirm) {
+            AppUserUnfollow({ followeeId: organizerId }).then(() => {
+              this.setData({ isFollowingOrganizer: false })
+              wx.showToast({ title: '已取消关注', icon: 'none' })
+            })
+          }
+        },
+      })
+    } else {
+      AppUserFollow({ followeeId: organizerId }).then(() => {
+        this.setData({ isFollowingOrganizer: true })
+        wx.showToast({ title: '关注成功', icon: 'none' })
+      })
+    }
   },
   onShareTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = (this.data as ActivityDetailState).activity
