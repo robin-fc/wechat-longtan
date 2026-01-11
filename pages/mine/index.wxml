@@ -1,51 +1,81 @@
 <view class="mine-page">
-  <view class="profile-section">
-    <image
-      class="avatar"
-      src="{{profile && profile.logo ? profile.logo : ''}}"
-      mode="aspectFill"
-    />
-    <view class="info">
-      <text class="name">{{profile ? profile.wxName : '未登录用户'}}</text>
-      <text class="bio">个性签名可在这里编辑</text>
-    </view>
-    <view class="edit-btn" bindtap="onEditProfileTap">
-      <text>编辑</text>
-    </view>
+  <!-- 顶部背景图 -->
+  <view class="header-bg">
+    <image class="bg-image" src="{{profile.bgImage || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80'}}" mode="aspectFill" />
   </view>
 
-  <view class="stat-section">
-    <view class="stat-item" bindtap="onFollowersTap">
-      <text class="stat-num">0</text>
-      <text class="stat-label">粉丝</text>
-    </view>
-    <view class="stat-item" bindtap="onFollowingTap">
-      <text class="stat-num">0</text>
-      <text class="stat-label">关注</text>
-    </view>
-  </view>
+  <view class="content-wrapper">
+    <!-- 用户信息区域 -->
+    <view class="user-info-card">
+      <view class="avatar-row">
+        <view class="avatar-wrap">
+          <image class="avatar" src="{{profile && profile.logo ? profile.logo : '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+          <image class="gender-icon" src="{{profile.gender === 1 ? '/assets/icons/male.png' : '/assets/icons/female.png'}}" mode="aspectFit" />
+        </view>
+        <view class="info-content">
+          <view class="name-row">
+            <text class="nickname">{{profile ? profile.wxName : '未登录用户'}}</text>
+            <view class="edit-icon-wrap" bindtap="onEditProfileTap">
+              <image class="edit-icon" src="/assets/icons/edit.png" mode="aspectFit" />
+            </view>
+            <view class="tags">
+              <text class="tag {{tag === '新村民' ? 'tag-new' : tag === '主理人' ? 'tag-host' : 'tag-normal'}}" wx:for="{{profile.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+            </view>
+          </view>
+          <view class="id-row">
+            <text class="user-id">ID {{profile.id || '000000'}}</text>
+          </view>
+          <view class="join-row">
+            <text class="join-time">{{profile.joinTime}}加入</text>
+          </view>
+        </view>
+      </view>
 
-  <view class="menu-section">
-    <view class="menu-item" bindtap="onWalletTap">
-      <text class="menu-title">我的钱包</text>
+      <view class="bio-row">
+        <text class="bio">{{profile.desc || '这个人很懒，什么都没写~'}}</text>
+      </view>
+      
+      <view class="stats-row">
+        <view class="stat-item" bindtap="onFollowingTap">
+          <text class="stat-num">{{profile.followingCount || 0}}</text>
+          <text class="stat-label">关注</text>
+        </view>
+        <view class="stat-item" bindtap="onFollowersTap">
+          <text class="stat-num">{{profile.followerCount || 0}}</text>
+          <text class="stat-label">粉丝</text>
+        </view>
+        <view class="stat-item" bindtap="onWalletTap">
+          <text class="stat-num">{{profile.assets || 0}}</text>
+          <text class="stat-label">资产</text>
+        </view>
+      </view>
     </view>
-    <view class="menu-item" bindtap="onMyActivitiesTap">
-      <text class="menu-title">我的活动</text>
-    </view>
-    <view class="menu-item" bindtap="onMyStaysTap">
-      <text class="menu-title">我的入住</text>
-    </view>
-    <view class="menu-item" bindtap="onServiceTap">
-      <text class="menu-title">用户协议</text>
-    </view>
-    <view class="menu-item" bindtap="onPrivacyTap">
-      <text class="menu-title">隐私政策</text>
-    </view>
-  </view>
 
-  <view class="logout-section">
-    <view class="logout-btn" bindtap="onLogoutTap">
-      <text>退出登录</text>
+    <!-- 菜单列表 -->
+    <view class="menu-section">
+      <view class="menu-item" bindtap="onMyActivitiesTap">
+        <text class="menu-title">我的活动</text>
+        <image class="arrow-right" src="/assets/icons/arrow-right.png" mode="aspectFit" />
+      </view>
+      <view class="menu-item" bindtap="onMyStaysTap">
+        <text class="menu-title">我的入住</text>
+        <image class="arrow-right" src="/assets/icons/arrow-right.png" mode="aspectFit" />
+      </view>
+      <view class="menu-item" bindtap="onPrivacyTap">
+        <text class="menu-title">隐私政策</text>
+        <image class="arrow-right" src="/assets/icons/arrow-right.png" mode="aspectFit" />
+      </view>
+      <view class="menu-item" bindtap="onServiceTap">
+        <text class="menu-title">服务协议</text>
+        <image class="arrow-right" src="/assets/icons/arrow-right.png" mode="aspectFit" />
+      </view>
+    </view>
+
+    <!-- 退出登录 -->
+    <view class="logout-section" wx:if="{{profile}}">
+      <view class="logout-btn" bindtap="onLogoutTap">
+        <text>退出登录</text>
+      </view>
     </view>
   </view>
 </view>

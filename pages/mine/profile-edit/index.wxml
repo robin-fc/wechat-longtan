@@ -1,0 +1,40 @@
+<view class="edit-page">
+  <view class="header-bg">
+     <image class="bg-image" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80" mode="aspectFill" />
+  </view>
+
+  <view class="form-card">
+    <view class="avatar-section">
+      <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image class="avatar" src="{{avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+        <view class="camera-icon">
+          <image src="/assets/icons/camera.png" mode="aspectFit" />
+        </view>
+        <text class="change-text">更换头像</text>
+      </button>
+    </view>
+
+    <view class="form-item">
+      <text class="label">您的昵称</text>
+      <input class="input" type="nickname" value="{{nickname}}" placeholder="请输入昵称" bindinput="onNicknameInput" />
+    </view>
+
+    <view class="form-item">
+      <text class="label">性别</text>
+      <view class="gender-options">
+        <view class="gender-opt {{gender === 1 ? 'active' : ''}}" data-value="1" bindtap="onGenderChange">男</view>
+        <view class="gender-opt {{gender === 2 ? 'active' : ''}}" data-value="2" bindtap="onGenderChange">女</view>
+        <view class="gender-opt {{gender === 0 ? 'active' : ''}}" data-value="0" bindtap="onGenderChange">其他</view>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <text class="label">活动详情</text>
+      <textarea class="textarea" value="{{bio}}" placeholder="假如生活欺骗了你..." bindinput="onBioInput" maxlength="200" />
+    </view>
+  </view>
+
+  <view class="footer">
+    <button class="save-btn" bindtap="onSave" loading="{{loading}}">完成</button>
+  </view>
+</view>
