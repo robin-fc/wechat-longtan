@@ -41,7 +41,7 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '100',
     })
-    const list = (res && res.pageResult && res.pageResult.list) || []
+    const list = (res && res.data?.pageResult && res.data?.pageResult.list) || []
     const activities: Activity[] = list.map((it) => ({
       ...it,
       poster: {

@@ -1,15 +1,12 @@
 import { fetchSearchPageConfig } from '../../api/search'
 import { getActivityList, getActivityCollections } from '../../api/activity'
 import { getAvailableHomestayList } from '../../api/homestay'
-import type {
-  SearchFrom,
-  HotSearchItem,
-} from '../../api/search'
+import type { SearchFrom, HotSearchItem } from '../../api/search'
 import type { Activity } from '../../model/activity'
 import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { formatYMD } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
-import { Homestay } from '../../model/homestay'
+import { AppHomestayDetail, AppHomestayListRespVO } from '../../model/homestay'
 
 interface SearchPageState {
   from: SearchFrom
@@ -90,12 +87,13 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '20',
     }).then((page) => {
-      const list = (page && page.list) || []
+      const list = (page && page.data?.pageResult?.list) || []
       return list.map((it) => ({
         ...it,
         poster: {
           id: String(it.id),
-          url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
+          url:
+            (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
         },
         secondaryTag: (() => {
           const raw = (it as any).activityType
@@ -114,12 +112,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
             name: name || it.collectionName || '活动',
           }
         })(),
-        space: {
-          id: it.space?.id || '',
-          name: it.space?.name || '',
-          address: it.space?.address || '',
-          mapImages: it.space?.mapImages || [],
-        },
+       
         timeRange: {
           startTime: formatYMD(it.startTime),
           endTime: formatYMD(it.endTime),
@@ -128,14 +121,6 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
           amount: it.fee || 0,
           currency: 'CNY',
           unit: '人',
-        },
-        companions: {
-          companions: (it.companions?.companions || []).map((x) => ({
-            id: x.id,
-            avatar: x.avatar,
-            nickname: x.nickname,
-          })),
-          totalCount: it.companions?.totalCount || 0,
         },
       }))
     })
@@ -151,7 +136,7 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     promises.push(collectionPromise)
 
     // 3. Homestay Search (only if from === 'home')
-    let homestayPromise: Promise<Homestay[]> = Promise.resolve([])
+    let homestayPromise: Promise<AppHomestayListRespVO[]> = Promise.resolve([])
     if (state.from === 'home') {
       homestayPromise = getAvailableHomestayList({ keyword: trimmed })
     }
@@ -191,7 +176,9 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/activity-collection/detail?id=${encodeURIComponent(collection.id)}`
+      `/pages/activity-collection/detail?id=${encodeURIComponent(
+        collection.id
+      )}`
     )
   },
   onHomestayTap(

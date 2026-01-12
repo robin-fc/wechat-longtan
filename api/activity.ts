@@ -1,6 +1,12 @@
-import type { Activity, ActivityCollection, ActivityDetail, ActivityRegistration, ActivityShareInfo } from '../model/activity'
-import { ActivityType, ActivityTypeLabel } from '../model/activity'
-import { PageResult } from '../model/common'
+import type {
+  Activity,
+  ActivityCollection,
+  ActivityDetail,
+  ActivityRegistration,
+  ActivityShareInfo,
+  AppActivityRespVO,
+} from '../model/activity'
+import { PageResult, CommonResult, PaginatedResult } from '../model/common'
 import { getData, postData } from '../utils/request'
 import { formatYMDHM } from '../utils/date'
 
@@ -41,8 +47,8 @@ export interface ActivityListResponse {
 
 export function getActivityList(
   params: ActivityListParams
-): Promise<ActivityListResponse> {
-  return getData<ActivityListResponse>(
+): Promise<CommonResult<ActivityListResponse>> {
+  return getData<CommonResult<ActivityListResponse>>(
     '/app-api/daolongtan/activity/list',
     params
   )
@@ -53,10 +59,11 @@ export function getMyActivityList(
   pageNo: string,
   pageSize: string
 ): Promise<PageResult<Activity>> {
-  return getData<PageResult<Activity>>(
-    '/app-api/daolongtan/activity/my-list',
-    { type, pageNo, pageSize }
-  )
+  return getData<PageResult<Activity>>('/app-api/daolongtan/activity/my-list', {
+    type,
+    pageNo,
+    pageSize,
+  })
 }
 
 export function getActivityCollections(
@@ -84,10 +91,7 @@ export function getMyActivityCollections(
 export function createActivity(
   payload: CreateActivityPayload
 ): Promise<boolean> {
-  return postData<boolean>(
-    '/app-api/daolongtan/activity/create',
-    payload
-  )
+  return postData<boolean>('/app-api/daolongtan/activity/create', payload)
 }
 
 export function createActivityCollection(
@@ -115,13 +119,13 @@ export async function getActivityByIdFromList(
     pageNo: '1',
     pageSize: '100',
   })
-  const it = res.pageResult.list.find((x) => x.id === id)
+  const it = res.data?.pageResult.list.find((x) => x.id === id)
   if (!it) return undefined
   return {
     ...it,
-    logo:  it.logo,
-      startTime: formatYMDHM(it.startTime) || '',
-      endTime: formatYMDHM(it.endTime) || '',
+    logo: it.logo,
+    startTime: formatYMDHM(it.startTime) || '',
+    endTime: formatYMDHM(it.endTime) || '',
     detail: it.detail || '',
   }
 }

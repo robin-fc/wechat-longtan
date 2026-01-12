@@ -9,7 +9,6 @@ import {
 import {
   AppUserFollow,
   AppUserUnfollow,
-  AppUserFollow_getFollowings,
 } from '../../api/user-follow'
 import {
   type Activity,
@@ -18,7 +17,6 @@ import {
   type RegistrationUser,
 } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
-import { formatYMDHM } from '../../utils/date'
 
 interface ActivityDetailState {
   activity: Activity | null
@@ -88,78 +86,10 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const activity: Activity = {
       ...baseFallback,
       auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
-      poster: baseFallback.poster ?? {
-        id: String(detail.id),
-        url: detail.logo || '/assets/images/activity.jpg',
-      },
       activityType:
         detail.activityType !== undefined
           ? ActivityTypeLabel[detail.activityType]
           : baseFallback.activityType,
-      timeRange: {
-        startTime:
-          formatYMDHM(detail.startTime) ||
-          baseFallback.timeRange?.startTime ||
-          '',
-        endTime:
-          formatYMDHM(detail.endTime) || baseFallback.timeRange?.endTime || '',
-      },
-      price: {
-        amount: detail.fee ?? (baseFallback.price?.amount || 0),
-        currency: 'CNY',
-        unit: baseFallback.price?.unit || '人',
-      },
-      space: {
-        id: baseFallback.space?.id ?? detail.space.id,
-        name: detail.space.name || baseFallback.space?.name || '',
-        address: detail.space.address || baseFallback.space?.address || '',
-        mapImages:
-          detail.space.mapImages || baseFallback.space?.mapImages || [],
-      },
-      organizer: detail.organizer
-        ? {
-            ...detail.organizer,
-            tags: (() => {
-              console.log('organizer.tags', detail.organizer.tags)
-              const raw = detail.organizer.tags
-              const organizerTagsMap: Record<number, string> = {
-                0: '空间主理人',
-                1: '活动发起人',
-              }
-              if (Array.isArray(raw)) {
-                return raw.map((s) => {
-                  const n = Number(s)
-                  return !Number.isNaN(n) && organizerTagsMap[n] ? organizerTagsMap[n] : String(s)
-                })
-              }
-              if (typeof raw === 'string' && raw) {
-                const s = raw.trim()
-                if (s.startsWith('[') && s.endsWith(']')) {
-                  try {
-                    const arr = JSON.parse(s)
-                    if (Array.isArray(arr)) {
-                      return arr
-                        .map((v) => String(v))
-                        .map((t) => {
-                          const n = Number(t)
-                          return !Number.isNaN(n) && organizerTagsMap[n] ? organizerTagsMap[n] : t
-                        })
-                    }
-                  } catch {}
-                }
-                return s
-                  .split(',')
-                  .map((t) => t.trim())
-                  .filter(Boolean)
-                  .map((t) => {
-                    const n = Number(t)
-                    return !Number.isNaN(n) && organizerTagsMap[n] ? organizerTagsMap[n] : t
-                  })
-              }
-              return []
-            })() as any,
-          }
-        : undefined,
       detail: detail.detail || baseFallback.detail,
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
@@ -167,7 +97,9 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const favoriteCount = detail.favoriteCount || 0
     const favoriteCountText =
       favoriteCount >= 10000
-        ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(1)} 万人收藏`
+        ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(
+            1
+          )} 万人收藏`
         : `${favoriteCount} 人收藏`
 
     this.setData({
@@ -201,20 +133,20 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         console.error('Fetch registrations failed', e)
       })
 
-    // Fetch follow status
-    if (activity.organizer) {
-      AppUserFollow_getFollowings()
-        .then((res) => {
-          const list = res.data || []
-          const isFollowing = list.some(
-            (u) => u.userId === activity.organizer!.userId
-          )
-          this.setData({ isFollowingOrganizer: isFollowing })
-        })
-        .catch(() => {
-          // Ignore error, default to false
-        })
-    }
+    // todo
+    // if (activity.organizer) {
+    //   AppUserFollow_getFollowings()
+    //     .then((res) => {
+    //       const list = res.data || []
+    //       const isFollowing = list.some(
+    //         (u) => u.userId === activity.organizer!.userId
+    //       )
+    //       this.setData({ isFollowingOrganizer: isFollowing })
+    //     })
+    //     .catch(() => {
+    //       // Ignore error, default to false
+    //     })
+    // }
   },
 
   onBackTap() {
@@ -237,7 +169,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-    const mapImages = activity.space?.mapImages || []
+    const mapImages = [activity.logo]
     if (mapImages && mapImages.length > 0) {
       wx.previewImage({
         current: mapImages[0], // 当前显示图片的http链接
@@ -298,8 +230,11 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
 
   onOrganizerTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const activity = (this.data as ActivityDetailState).activity
+    // todo，看怎么拿这个数据
     if (!activity || !activity.organizer || !activity.organizer.userId) return
-    smartNavigateTo(`/pages/user/other-profile/index?userId=${activity.organizer.userId}`)
+    smartNavigateTo(
+      `/pages/user/other-profile/index?userId=${activity.organizer.userId}`
+    )
   },
 
   onToggleFollowOrganizer(this: WechatMiniprogram.Page.TrivialInstance) {
@@ -350,7 +285,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     return {
       title: detail.title,
       path: `/pages/activity/detail?id=${detail.id}`,
-      imageUrl: detail.poster?.url,
+      imageUrl: detail.logo,
     }
   },
   onShareTimeline() {
@@ -363,7 +298,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     return {
       title: detail.title,
       query: `id=${detail.id}`,
-      imageUrl: detail.poster?.url,
+      imageUrl: detail.logo,
     }
   },
   onSignupTap(this: WechatMiniprogram.Page.TrivialInstance) {

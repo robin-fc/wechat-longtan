@@ -3,7 +3,6 @@ import { createActivityOrder, generatePayParams } from '../../api/order'
 import type { Activity } from '../../model/activity'
 import type { ActivityOrder } from '../../model/order'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
-import { formatYMDHM } from '../../utils/date'
 
 interface ConfirmOrderState {
   activity: Activity | null
@@ -72,32 +71,8 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     const activity: Activity = {
       ...baseFallback,
       auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
-      poster: baseFallback.poster ?? {
-        id: String(detail.id),
-        url: detail.logo || '/assets/images/activity.jpg',
-      },
-      timeRange: {
-        startTime:
-          formatYMDHM(detail.startTime) ||
-          baseFallback.timeRange?.startTime ||
-          '',
-        endTime:
-          formatYMDHM(detail.endTime) || baseFallback.timeRange?.endTime || '',
-      },
-      price: {
-        amount: detail.fee ?? baseFallback.price?.amount ?? 0,
-        currency: 'CNY',
-        unit: baseFallback.price?.unit || '人',
-      },
       spaceId: baseFallback.spaceId ?? detail.space.id,
       spaceName: detail.space.name || baseFallback.spaceName || '',
-      space: {
-        id: baseFallback.space?.id ?? detail.space.id,
-        name: detail.space.name || baseFallback.space?.name || '',
-        address: detail.space.address || baseFallback.space?.address || '',
-        mapImages: detail.space.mapImages || baseFallback.space?.mapImages || [],
-      },
-      organizer: detail.organizer,
       detail: detail.detail || baseFallback.detail,
     }
 
@@ -106,15 +81,6 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       id: `order-${Date.now()}`,
       activityId: activity.id,
       title: activity.title,
-      spaceName: activity?.space?.name || '',
-      timeRange: activity.timeRange || {
-        startTime: '',
-        endTime: '',
-      },
-      totalPrice: activity.price || {
-        amount: 0,
-        currency: 'CNY',
-      },
       notice: '报名成功后如需取消，请提前联系主理人确认。',
     }
     this.setData({
@@ -128,7 +94,8 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-    const mapImages = activity.space?.mapImages || []
+    // todo
+    const mapImages = [activity.logo]
     if (mapImages && mapImages.length > 0) {
       wx.previewImage({
         current: mapImages[0],
@@ -169,9 +136,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       'order.participantPhone': e.detail.value,
     })
   },
-  async onSubmitTap(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  async onSubmitTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const order = (this.data as ConfirmOrderState).order
     const activityIdRaw = order.activityId
     const activityId = Number(activityIdRaw)

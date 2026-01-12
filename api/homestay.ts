@@ -47,8 +47,7 @@ export async function fetchHomestayDetail(
     id: raw.id,
     name: raw.name,
     address: raw.address,
-    mapImages:
-      raw.mapImages ,
+    mapImages: raw.mapImages ,
     tags: [], // Detail doesn't return tags?
     logo: raw.logo,
     images: raw.images,
