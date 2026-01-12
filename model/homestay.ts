@@ -28,20 +28,9 @@ export interface AppHomestayListRespVO {
   name: string
   minPrice: number
   address: string
-  mapImages: string // "url;url"
-  tags: string // "0,1"
+  mapImages: string[] // 民宿地图集（多张图片）
+  tags: string[] // 民宿标签（每个数字对应一个标签：0=全天热水, 1=免费Wi-Fi, 2=付费停车位, 3=免费停车位, 4=洗衣机, 5=行李寄存, 6=有早餐）
   reservedUsers: { userId: number; avatar: string }[]
-}
-
-export interface AppHomestayDetailRespVO {
-  id: number
-  name: string
-  logo: string
-  images: string // JSON string
-  mapImages: string // "url;url"
-  address: string
-  description: string
-  contact: string
 }
 
 export interface AppHomestayRoomListRespVO {
@@ -81,25 +70,6 @@ export interface HomestayFeatureTag {
   name: string
 }
 
-export interface Homestay {
-  id: number
-  name: string
-  cover: ImageResource
-  address: string
-  featureTags: HomestayFeatureTag[]
-  minPrice: number
-  mapImages: string[]
-  reservedUsers: { userId: number; avatar: string }[]
-  // 新增字段
-  description?: string
-  roomCount?: number
-  mapThumbnail?: ImageResource
-  coordinates?: {
-    latitude: number
-    longitude: number
-  }
-}
-
 export interface HomestayRoom {
   id: string
   homestayId: string
@@ -122,20 +92,18 @@ export interface HomestayRoom {
   checkInProcess?: string
 }
 
-export interface HomestayDetail extends Homestay {
-  logo: string
-  images: ImageResource[]
-  description: string
-  contact: string
-}
-
 export interface HomestayPackage {
   packageType: number
   packageName: string
   days: number
 }
 
-export type HomestayApplicationStatus = 'pending' | 'confirmed' | 'canceled' | 'checkedIn' | 'unpaid'
+export type HomestayApplicationStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'canceled'
+  | 'checkedIn'
+  | 'unpaid'
 
 export interface HomestayApplication {
   id: string // orderNo
@@ -175,19 +143,48 @@ export interface AppHomestayListItem {
   name: string
   minPrice: number
   address: string
-  mapImages: string
-  tags: string
+  mapImages: string[]
+  tags: string[]
   reservedUsers: ReservedUser[]
 }
 
-export interface AppHomestayDetail {
-  id: number
-  name: string
-  logo: string
-  images: string
-  mapImages: string
-  address: string
-  description: string
-  contact: string
+export const tagMap: Record<string, string> = {
+  '0': '全天热水',
+  '1': '免费Wi-Fi',
+  '2': '付费停车位',
+  '3': '免费停车位',
+  '4': '洗衣机',
+  '5': '行李寄存',
+  '6': '有早餐',
 }
 
+export interface AppHomestayDetail {
+  /*民宿ID */
+  id: number
+
+  /*民宿名称 */
+  name: string
+
+  /*民宿logo */
+  logo: string
+
+  /*民宿图集 */
+  images: string[]
+
+  /*民宿地图集（多张图片） */
+  mapImages: string[]
+
+  /*民宿地址 */
+  address: string
+
+  /*民宿简介 */
+  description: string
+
+  /*民宿联系方式 */
+  contact: string
+
+  /*民宿标签（每个数字对应一个标签：0=全天热水, 1=免费Wi-Fi, 2=付费停车位, 3=免费停车位, 4=洗衣机, 5=行李寄存, 6=有早餐） */
+  tags: string[]
+
+  onSaleCount?: number
+}

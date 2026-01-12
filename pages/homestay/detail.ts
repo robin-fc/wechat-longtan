@@ -2,7 +2,7 @@ import {
   getHomestayDetailApi,
   getHomestayAvailableRooms,
 } from '../../api/homestay'
-import type { Homestay, HomestayRoom } from '../../model/homestay'
+import { tagMap, type AppHomestayDetail, type HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
@@ -13,7 +13,7 @@ interface DurationOption {
 }
 
 interface HomestayDetailState {
-  homestay: Homestay | null
+  homestay: AppHomestayDetail | null
   rooms: HomestayRoom[]
   startDate: string
   duration: DurationType
@@ -80,37 +80,14 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       menuHeight: menuRect ? menuRect.height : 44,
     })
     try {
-      const detail = await getHomestayDetailApi(Number(id))
-      const coverUrl = (() => {
-        try {
-          const arr = JSON.parse(detail.images || '[]')
-          if (Array.isArray(arr) && arr.length && typeof arr[0] === 'string') {
-            return arr[0]
-          }
-        } catch {}
-        return detail.logo || ''
-      })()
-
-      // Construct homestay object from detail
-      const homestay: Homestay = {
-        id: detail.id,
-        name: detail.name,
-        cover: { id: `homestay-${detail.id}-cover`, url: coverUrl },
-        address: detail.address,
-        featureTags: [],
-        minPrice: 0,
-        mapImages: [],
-        reservedUsers: [],
-        description: detail.description,
-      }
-
+      const homestayDetail = await getHomestayDetailApi(Number(id))
       const now = new Date()
       const yyyy = String(now.getFullYear())
       const mm = String(now.getMonth() + 1).padStart(2, '0')
       const dd = String(now.getDate()).padStart(2, '0')
       const startDate = `${yyyy}-${mm}-${dd}`
       this.setData({
-        homestay,
+        homestay: homestayDetail,
         startDate: startDate,
       })
       const tagMap: Record<string, string> = {
@@ -122,11 +99,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         '5': '大床房',
       }
       const roomList = await getHomestayAvailableRooms({
-        homestayId: String(detail.id),
+        homestayId: String(homestayDetail.id),
         checkInDate: startDate,
       })
       const rooms: HomestayRoom[] = (roomList || []).map((item) =>
-        mapApiRoomToHomestayRoom(item, detail.id, tagMap)
+        mapApiRoomToHomestayRoom(item, homestayDetail.id, tagMap)
       )
       this.setData({
         rooms,
@@ -144,13 +121,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     })
   },
   onOpenMap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const homestay = this.data.homestay as Homestay | null
-    if (homestay && homestay.coordinates) {
-      wx.openLocation({
-        latitude: homestay.coordinates.latitude,
-        longitude: homestay.coordinates.longitude,
-        name: homestay.name,
-        address: homestay.address,
+    const homestay = this.data.homestay as AppHomestayDetail | null
+    if (homestay && homestay.mapImages && homestay.mapImages.length > 0) {
+      wx.previewImage({
+        urls: homestay.mapImages,
+        current: homestay.mapImages[0],
       })
     }
   },
@@ -165,14 +140,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     if (!homestay) {
       return
     }
-    const tagMap: Record<string, string> = {
-      '0': '独立卫生间',
-      '1': '山景房',
-      '2': '海景房',
-      '3': '家庭房',
-      '4': '双床房',
-      '5': '大床房',
-    }
+    
     getHomestayAvailableRooms({
       homestayId: String(homestay.id),
       checkInDate: startDate as string,
@@ -209,9 +177,9 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         room.id
       )}&homestayId=${encodeURIComponent(
         room.homestayId || ''
-      )}&startDate=${encodeURIComponent(startDate)}&duration=${encodeURIComponent(
-        duration
-      )}`
+      )}&startDate=${encodeURIComponent(
+        startDate
+      )}&duration=${encodeURIComponent(duration)}`
     )
   },
 })

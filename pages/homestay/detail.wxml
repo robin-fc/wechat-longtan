@@ -11,8 +11,8 @@
         <view class="intro-main">
           <text class="name">{{homestay.name}}</text>
           <view class="tags">
-            <block wx:for="{{homestay.featureTags}}" wx:key="id">
-              <text class="tag tag-{{index % 3}}">{{item.name}}</text>
+            <block wx:for="{{homestay.tags}}" wx:key="id">
+              <text class="tag tag-{{index % 3}}">{{item}}</text>
             </block>
           </view>
           <view class="info-row" wx:if="{{homestay.roomCount}}">

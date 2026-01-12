@@ -1,5 +1,9 @@
 import { fetchHomestayList, getHomestayAvailableList } from '../../api/homestay'
-import type { Homestay } from '../../model/homestay'
+import {
+  AppHomestayDetail,
+  AppHomestayListItem,
+  tagMap,
+} from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
@@ -13,7 +17,7 @@ interface HomestayListState {
   startDate: string
   duration: DurationType
   durations: DurationOption[]
-  homestays: Homestay[]
+  homestays: AppHomestayListItem[]
 }
 
 Page<HomestayListState, WechatMiniprogram.IAnyObject>({
@@ -38,49 +42,30 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadHomestays()
   },
-  async loadHomestays(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  async loadHomestays(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
       const apiList = await getHomestayAvailableList()
-      const tagMap: Record<string, string> = {
-        '0': '全天热水',
-        '1': '免费Wi-Fi',
-        '2': '付费停车位',
-        '3': '免费停车位',
-        '4': '洗衣机',
-        '5': '行李寄存',
-        '6': '有早餐',
-      }
-      const list: Homestay[] = (apiList || []).map((it) => {
-        const coverUrl =
-          (it.mapImages || '')
-            .split(';')
-            .map((s) => s.trim())
-            .filter(Boolean)[0] || '/assets/images/homestay.jpg'
-        const featureTags = (it.tags || '')
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean)
-          .map((code) => ({ id: code, name: tagMap[code] || code }))
+      const list: AppHomestayListItem[] = (apiList || []).map((it) => {
         return {
-          id: String(it.id),
+          id: it.id,
           name: it.name,
-          cover: { id: `home-${it.id}-cover`, url: coverUrl },
           address: it.address,
-          featureTags,
-          referencePrice: { amount: it.minPrice || 0, currency: 'CNY', unit: '天' },
+          minPrice: it.minPrice || 0,
+          mapImages: it.mapImages,
+          tags: it.tags,
+          reservedUsers: it.reservedUsers || [],
+          referencePrice: {
+            amount: it.minPrice || 0,
+            currency: 'CNY',
+            unit: '天',
+          },
         }
       })
       this.setData({
         homestays: list,
       })
     } catch {
-      const state = this.data as HomestayListState
-      const list = await fetchHomestayList({
-        startDate: state.startDate,
-        durationType: state.duration,
-      })
+      const list = await fetchHomestayList({  })
       this.setData({
         homestays: list,
       })
@@ -108,9 +93,7 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
     })
     this.loadHomestays()
   },
-  onHomestayTap(
-    _e: WechatMiniprogram.CustomEvent
-  ) {
+  onHomestayTap(_e: WechatMiniprogram.CustomEvent) {
     const homestay = (_e.detail || {}).homestay as {
       id?: string
     }

@@ -1,16 +1,11 @@
 import {
-  type Homestay,
   type HomestayRoom,
   type AppHomestayRoomListItem,
   type AppHomestayPackageItem,
   type AppHomestayListItem,
   type AppHomestayDetail,
-  type HomestayFeatureTag,
-  AppHomestayDetailRespVO,
   AppHomestayListRespVO,
   AppHomestayRoomListRespVO,
-  HOMESTAY_TAGS,
-  HomestayDetail,
   ROOM_TAGS,
   HomestayApplication,
   AppOrderListRespVO,
@@ -19,50 +14,21 @@ import {
 import type { ID } from '../model/common'
 import { getData } from '../utils/request'
 
-// Helper to map tags string "0,1" to object array
-function mapTags(
-  tagsStr: string | undefined | null,
-  mapping: Record<number, string>
-): HomestayFeatureTag[] {
-  if (tagsStr === undefined || tagsStr === null || tagsStr === '') return []
-  const s = String(tagsStr)
-  return s.split(',').map((item) => {
-    const id = Number(item.trim())
-    return { id, name: mapping[id] || '未知' }
-  })
-}
-
-// Helper to get cover from mapImages
-function getCover(
-  mapImages: string | undefined,
-  id: number
-): { id: string; url: string } {
-  let url = '/assets/images/homestay.jpg'
-  if (mapImages && typeof mapImages === 'string') {
-    url = mapImages.split(';')[0] || url
-  }
-  return { id: String(id), url }
-}
 
 export async function getAvailableHomestayList(params?: {
   keyword?: string
-}): Promise<Homestay[]> {
+}): Promise<AppHomestayListItem[]> {
   const raw = await getData<AppHomestayListRespVO[]>(
     '/app-api/daolongtan/homestay/list',
     params
   )
-  console.log('getAvailableHomestayList raw', raw)
   return (raw || []).map((it) => ({
     id: it.id,
     name: it.name,
     minPrice: it.minPrice || 0,
     address: it.address,
-    mapImages:
-      it.mapImages && typeof it.mapImages === 'string'
-        ? it.mapImages.split(';')
-        : [],
-    featureTags: mapTags(it.tags, HOMESTAY_TAGS),
-    cover: getCover(it.mapImages, it.id),
+    mapImages: it.mapImages,
+    tags: (it.tags || '').map((s) => s.trim()).filter(Boolean),
     reservedUsers: it.reservedUsers || [],
   }))
 }
@@ -72,30 +38,20 @@ export const fetchHomestayList = getAvailableHomestayList
 
 export async function fetchHomestayDetail(
   id: number | string
-): Promise<HomestayDetail> {
-  const raw = await getData<AppHomestayDetailRespVO>(
+): Promise<AppHomestayDetail> {
+  const raw = await getData<AppHomestayDetail>(
     `/app-api/daolongtan/homestay/detail`,
     { id }
   )
   return {
     id: raw.id,
     name: raw.name,
-    minPrice: 0, // Detail doesn't return price?
     address: raw.address,
     mapImages:
-      raw.mapImages && typeof raw.mapImages === 'string'
-        ? raw.mapImages.split(';')
-        : [],
-    featureTags: [], // Detail doesn't return tags?
-    cover: { id: String(raw.id), url: raw.logo || '' }, // Use logo as cover
-    reservedUsers: [],
+      raw.mapImages ,
+    tags: [], // Detail doesn't return tags?
     logo: raw.logo,
-    images: raw.images
-      ? JSON.parse(raw.images).map((url: string, idx: number) => ({
-          id: String(idx),
-          url,
-        }))
-      : [],
+    images: raw.images,
     description: raw.description,
     contact: raw.contact,
   }
