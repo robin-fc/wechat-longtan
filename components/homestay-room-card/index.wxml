@@ -34,14 +34,14 @@
     </view>
     <view class="footer-row">
       <view class="footer-left">
-        <view class="guests-wrap" wx:if="{{room.guestAvatars && room.guestAvatars.length}}">
+        <view class="guests-wrap" wx:if="{{room.stayedUsers && room.stayedUsers.length}}">
           <view class="avatars">
-            <block wx:for="{{room.guestAvatars}}" wx:key="*this">
-              <image class="guest-avatar" src="{{item}}" mode="aspectFill"/>
+            <block wx:for="{{room.stayedUsers}}" wx:key="userId">
+              <image class="guest-avatar" src="{{item.logo}}" mode="aspectFill"/>
             </block>
           </view>
-          <view class="guest-count-badge" wx:if="{{room.guestCount}}">
-             <text class="guest-count-num">{{room.guestCount}}</text>
+          <view class="guest-count-badge" wx:if="{{room.stayedUsers.length}}">
+             <text class="guest-count-num">{{room.stayedUsers.length}}</text>
           </view>
           <text class="guest-count-text">人住过</text>
         </view>

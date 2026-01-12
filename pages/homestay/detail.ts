@@ -47,6 +47,7 @@ const mapApiRoomToHomestayRoom = (
     price: { amount: item.price, currency: 'CNY', unit: '天' },
     capacity: 2,
     facilities,
+    stayedUsers: item.stayedUsers || [],
   }
 }
 

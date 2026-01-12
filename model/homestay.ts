@@ -84,8 +84,7 @@ export interface HomestayRoom {
   // 新增字段
   attributes?: { label: string; value: string }[] // e.g. [{label: "房型", value: "大床"}]
   tags?: string[] // e.g. ["温馨", "硬件顶配"]
-  guestAvatars?: string[]
-  guestCount?: number
+  stayedUsers?: AppUserInfoRespVO[]
   // 详情页长文本
   intro?: string
   notice?: string
