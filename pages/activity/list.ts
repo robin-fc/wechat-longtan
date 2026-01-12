@@ -133,12 +133,6 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
           name: name || it.collectionName || '活动',
         }
       })(),
-       space: {
-        id: it.space?.id || '',
-        name: it.space?.name || '',
-        address: it.space?.address || '',
-        mapImages: it.space?.mapImages || [],
-      },
       timeRange: {
         startTime: formatYMDHM(it.startTime),
         endTime: formatYMDHM(it.endTime),
@@ -148,22 +142,6 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         currency: 'CNY',
         unit: '人',
       },
-      companions: (() => {
-        const rawList = (it.companions as any)?.companions || it.registeredUsers || []
-        const total = (it.companions as any)?.totalCount || it.registeredCount || 0
-        const arr = Array.isArray(rawList)
-          ? rawList.slice(0, 3).map((u: any) => ({
-              id: String(u.id || u.userId || ''),
-              avatar: { url: u.logo || u.avatar || '/assets/images/default-avatar.png' },
-              nickname: u.nickname || u.memberName || u.wxName || '',
-            }))
-          : []
-        return {
-          companions: arr,
-          totalCount: total,
-        }
-      })(),
-     
     }))
     
     const allActivities = pageNo === 1 ? newActivities : [...currentActivities, ...newActivities]

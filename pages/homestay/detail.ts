@@ -23,7 +23,7 @@ interface HomestayDetailState {
   isDescriptionExpanded: boolean
 }
 
-// Helper to map API room response to HomestayRoom with mocked fields
+// Helper to map API room response to HomestayRoom
 const mapApiRoomToHomestayRoom = (
   item: any,
   homestayId: number,
@@ -47,19 +47,6 @@ const mapApiRoomToHomestayRoom = (
     price: { amount: item.price, currency: 'CNY', unit: '天' },
     capacity: 2,
     facilities,
-    // Mock missing fields
-    attributes: [
-      { label: '房型', value: '大床' },
-      { label: '面积', value: '35m²' },
-      { label: '楼层', value: '一楼' },
-      { label: '设施', value: '独立卫浴' },
-    ],
-    tags: ['连住优惠', '超赞房东'],
-    guestAvatars: [
-      'https://picsum.photos/50/50?random=1',
-      'https://picsum.photos/50/50?random=2',
-    ],
-    guestCount: 12,
   }
 }
 
@@ -104,26 +91,17 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         return detail.logo || ''
       })()
 
-      // Mock missing fields
+      // Construct homestay object from detail
       const homestay: Homestay = {
         id: detail.id,
         name: detail.name,
         cover: { id: `homestay-${detail.id}-cover`, url: coverUrl },
         address: detail.address,
-        featureTags: [
-          { id: 1, name: '古镇中心' },
-          { id: 2, name: '河景' },
-          { id: 3, name: '设计师民宿' },
-        ],
+        featureTags: [],
         minPrice: 0,
         mapImages: [],
         reservedUsers: [],
-        description:
-          detail.description ||
-          '位于福建宁德屏南县龙潭古镇，这里的建筑融合了江南古镇和闽东特色，黄墙黛瓦，木质结构的房屋依山傍水。你可以在此沉浸式感受原汁原味的乡村生活，体验小桥流水的宁静，还能穿着...',
-        roomCount: 3,
-        mapThumbnail: { id: 'map', url: 'https://picsum.photos/400/200' },
-        coordinates: { latitude: 26.9, longitude: 119.0 },
+        description: detail.description,
       }
 
       const now = new Date()
