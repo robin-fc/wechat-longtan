@@ -61,8 +61,8 @@
 
 .avatar-section .avatar-btn .camera-icon {
   position: absolute;
-  top: 110rpx;
-  margin-left: 60rpx;
+  top: 120rpx;
+  margin-left: 100rpx;
   width: 48rpx;
   height: 48rpx;
   background-color: rgba(0,0,0,0.6);

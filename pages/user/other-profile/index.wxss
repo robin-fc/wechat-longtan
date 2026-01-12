@@ -75,11 +75,9 @@
   position: absolute;
   bottom: 10rpx;
   right: 10rpx;
-  width: 32rpx;
-  height: 32rpx;
-  background: #ff69b4; /* Pink for female, use blue for male dynamically if needed */
+  width: 40rpx;
+  height: 40rpx;
   border-radius: 50%;
-  padding: 4rpx;
   border: 2rpx solid #fff;
 }
 
