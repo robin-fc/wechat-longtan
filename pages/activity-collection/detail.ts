@@ -36,12 +36,12 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
       wx.showToast({ title: '活动合集不存在', icon: 'none' })
       return
     }
-    const page = await getActivityList({
+    const res = await getActivityList({
       collectionId: String(id),
       pageNo: '1',
       pageSize: '100',
     })
-    const list = (page && page.list) || []
+    const list = (res && res.pageResult && res.pageResult.list) || []
     const activities: Activity[] = list.map((it) => ({
       ...it,
       poster: {

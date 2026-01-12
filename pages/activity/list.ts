@@ -100,12 +100,12 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
   async loadActivities(this: WechatMiniprogram.Page.TrivialInstance) {
     const { activityType, pageNo, activities: currentActivities } = this.data as ActivityListState
     const pageSize = 20
-    const page = await getActivityList({
+    const res = await getActivityList({
       activityType,
       pageNo: String(pageNo),
       pageSize: String(pageSize),
     })
-    const list = (page && ((page as any).pageResult?.list || (page as any).list || (page as any).items || (page as any).data || (Array.isArray(page) ? page : []))) || []
+    const list = (res && res.pageResult && res.pageResult.list) || []
     
     // Check if we have more data
     const hasMore = list.length === pageSize

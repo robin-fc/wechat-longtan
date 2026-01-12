@@ -1,170 +1,368 @@
 .space-detail-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
-  border-top-left-radius: 40rpx;
-  border-top-right-radius: 40rpx;
+  background-color: #f7f8fa;
+  padding-bottom: 40rpx;
 }
 
-.header {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 380rpx;
-  z-index: 0;
+/* 顶部图片区域 */
+.header-image-container {
+  position: relative;
+  width: 100%;
+  height: 500rpx;
 }
 
-.header-bg {
+.header-swiper {
   width: 100%;
   height: 100%;
 }
 
-.header-mask {
+.header-image {
+  width: 100%;
+  height: 100%;
+}
+
+.image-count {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.35));
-}
-
-.header-bar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 88rpx;
-  padding: 0 12rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  // background-color: rgba(255, 255, 255, 0.28);
-  border-radius: 44rpx;
-  // backdrop-filter: blur(12rpx);
-  // -webkit-backdrop-filter: blur(12rpx);
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
-  z-index: 2;
-}
-
-.header-left,
-.header-right {
-  width: 88rpx;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.back-icon {
-  width: 40rpx;
-  height: 40rpx;
-  display: block;
-}
-
-.header-title {
-  font-size: 30rpx;
-  font-weight: 700;
-  color: #ffffff;
-  text-align: center;
-}
-
-.header-info {
-  position: absolute;
-  left: 24rpx;
   right: 24rpx;
-  bottom: 100rpx;
-  display: flex;
-  flex-direction: column;
-}
-
-.info-title {
-  font-size: 32rpx;
-  color: #ffffff;
-  font-weight: 700;
-}
-
-.info-subtitle {
-  margin-top: 4rpx;
-  font-size: 24rpx;
-  color: #ffffff;
-}
-
-.info-address {
-  margin-top: 4rpx;
-  font-size: 22rpx;
-  color: #ffffff;
-}
-
-.tabs {
-  position: relative;
-  z-index: 1;
-  margin: 320rpx 0 0 0;
-  border-radius: 32rpx 32rpx 0 0;
-  background-color: rgba(255, 255, 255, 1);
-  display: flex;
-}
-
-.tab-item {
-  flex: 1;
-  height: 64rpx;
+  bottom: 24rpx;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8rpx 20rpx;
+  border-radius: 24rpx;
   display: flex;
   align-items: center;
-  justify-content: center;
+}
+
+.count-text {
+  color: #fff;
   font-size: 24rpx;
-  color: #353535;
 }
 
-.tab-item.active {
-  color: #333333;
-  font-weight: 700;
-  background-color: #ffffff;
-  border-radius: 32rpx;
-}
-
-.body {
+/* 空间核心信息卡片 */
+.info-card {
   position: relative;
-  z-index: 1;
-  margin-top: 16rpx;
-  padding: 24rpx 24rpx;
-  height: calc(100vh - 88rpx - 80rpx);
+  margin: -40rpx 24rpx 0;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  z-index: 10;
 }
 
-.section {
-  padding: 16rpx 20rpx;
-  background-color: #ffffff;
-  border-radius: 16rpx;
-}
-
-.homestay-list {
+.space-header {
   display: flex;
-  flex-direction: column;
-  row-gap: 16rpx;
-}
-
-.homestay-item {}
-
-.section-title {
-  font-size: 26rpx;
-  color: #333333;
-  font-weight: 700;
-  margin-bottom: 8rpx;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16rpx;
 }
 
 .space-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  flex: 1;
+  margin-right: 20rpx;
+  line-height: 1.4;
+}
+
+.share-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  width: auto;
+}
+
+.share-btn::after {
+  border: none;
+}
+
+.share-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 4rpx;
+}
+
+.share-btn text {
+  font-size: 20rpx;
+  color: #666666;
+}
+
+.space-meta {
+  margin-bottom: 24rpx;
+}
+
+.meta-tag {
+  display: inline-block;
+  background: #fff0f0;
+  color: #ff4d4f;
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.space-address-row {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #f0f0f0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.location-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.address-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow-icon {
+  width: 24rpx;
+  height: 24rpx;
+  opacity: 0.3;
+}
+
+.divider {
+  height: 24rpx;
+}
+
+.space-description {
+  margin-bottom: 32rpx;
+}
+
+.desc-title {
+  display: block;
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 12rpx;
+}
+
+.desc-text {
+  font-size: 28rpx;
+  color: #666666;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* 主理人区域 */
+.organizer-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f9f9f9;
+  padding: 20rpx;
+  border-radius: 16rpx;
+}
+
+.organizer-left {
+  display: flex;
+  align-items: center;
+}
+
+.organizer-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.organizer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.organizer-name-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4rpx;
+}
+
+.organizer-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-right: 12rpx;
+}
+
+.organizer-badge {
+  background: #333333;
+  color: #ffffff;
+  font-size: 20rpx;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+}
+
+.organizer-desc {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.contact-btn {
+  padding: 10rpx 24rpx;
+  border: 1rpx solid #dddddd;
+  border-radius: 30rpx;
   font-size: 24rpx;
   color: #333333;
-  font-weight: 700;
+  background: #ffffff;
 }
 
-.space-desc {
-  display: block;
-  margin-top: 4rpx;
+/* 活动列表区域 */
+.activity-section {
+  margin: 32rpx 24rpx;
+}
+
+.section-header {
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  position: relative;
+  padding-left: 20rpx;
+}
+
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8rpx;
+  height: 32rpx;
+  background: #07c160;
+  border-radius: 4rpx;
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.activity-item {
+  background: #ffffff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-cover-box {
+  position: relative;
+  width: 100%;
+  height: 300rpx;
+}
+
+.activity-cover {
+  width: 100%;
+  height: 100%;
+}
+
+.activity-status-badge {
+  position: absolute;
+  top: 20rpx;
+  left: 20rpx;
+  background: rgba(7, 193, 96, 0.9);
+  color: #ffffff;
   font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.activity-content {
+  padding: 24rpx;
+}
+
+.activity-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 16rpx;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.activity-info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.info-icon {
+  width: 28rpx;
+  height: 28rpx;
+  margin-right: 8rpx;
+  opacity: 0.6;
+}
+
+.info-text {
+  font-size: 24rpx;
   color: #666666;
 }
 
-.space-host {
-  display: block;
-  margin-top: 4rpx;
+.activity-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1rpx solid #f5f5f5;
+  padding-top: 20rpx;
+}
+
+.price-box {
+  display: flex;
+  align-items: baseline;
+  color: #ff4d4f;
+}
+
+.currency {
+  font-size: 24rpx;
+  font-weight: bold;
+}
+
+.amount {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin: 0 4rpx;
+}
+
+.unit {
   font-size: 22rpx;
-  color: #666666;
+  color: #999999;
+}
+
+.join-btn {
+  background: #07c160;
+  color: #ffffff;
+  font-size: 26rpx;
+  font-weight: bold;
+  padding: 12rpx 32rpx;
+  border-radius: 32rpx;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40rpx 0;
+  color: #999999;
+  font-size: 26rpx;
 }

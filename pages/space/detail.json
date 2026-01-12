@@ -1,7 +1,5 @@
 {
-  "navigationBarTitleText": "活动空间详情",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "homestay-card": "/components/homestay-card/index"
-  }
+  "navigationBarTitleText": "活动空间",
+  "navigationStyle": "default",
+  "usingComponents": {}
 }

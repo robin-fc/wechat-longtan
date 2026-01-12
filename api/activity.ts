@@ -33,10 +33,16 @@ export interface CreateActivityPayload {
   limit?: number
 }
 
+export interface ActivityListResponse {
+  pageResult: PageResult<Activity>
+  onSaleCount: number
+  detail?: string
+}
+
 export function getActivityList(
   params: ActivityListParams
-): Promise<PageResult<Activity>> {
-  return getData<PageResult<Activity>>(
+): Promise<ActivityListResponse> {
+  return getData<ActivityListResponse>(
     '/app-api/daolongtan/activity/list',
     params
   )
@@ -105,50 +111,17 @@ export function getActivityRegistrations(
 export async function getActivityByIdFromList(
   id: number
 ): Promise<Activity | undefined> {
-  const page = await getActivityList({
+  const res = await getActivityList({
     pageNo: '1',
     pageSize: '100',
   })
-  const it = page.list.find((x) => x.id === id)
+  const it = res.pageResult.list.find((x) => x.id === id)
   if (!it) return undefined
   return {
     ...it,
-    poster: {
-      id: String(it.id),
-      url: it.logo || '/assets/images/activity.jpg',
-    },
-    secondaryTag: (() => {
-      const raw = (it as any).activityType
-      let name = ''
-      if (raw !== undefined && raw !== null && raw !== '') {
-        const s = String(raw)
-        const isNum = typeof raw === 'number' || /^\d+$/.test(s)
-        if (isNum) {
-          const n = Number(raw) as ActivityType
-          name = ActivityTypeLabel[n] ?? ''
-        } else {
-          name = s
-        }
-      }
-      return {
-        name: name || it.collectionName || '活动',
-      }
-    })(),
-    timeRange: {
+    logo:  it.logo,
       startTime: formatYMDHM(it.startTime) || '',
       endTime: formatYMDHM(it.endTime) || '',
-    },
-    price: {
-      amount: it.fee || 0,
-      currency: 'CNY',
-      unit: '人',
-    },
-    space: {
-      id: it.spaceId,
-      name: it.spaceName || '',
-      address: '',
-      mapImages: [],
-    },
     detail: it.detail || '',
   }
 }

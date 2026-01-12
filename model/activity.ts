@@ -27,33 +27,54 @@ export const ActivityTypeLabel: Record<ActivityType, string> = {
 }
 
 export interface Activity {
+  /*编号 */
   id: number
+
+  /*活动标题 */
   title: string
-  logo?: string
-  collectionId?: number
-  collectionName?: string
-  fee?: number
+
+  /*活动logo */
+  logo: string
+
+  /*所属合集ID */
+  collectionId: number
+
+  /*所属合集名称 */
+  collectionName: string
+
+  /*费用 */
+  fee: number
+
+  /*是否免费（false收费 true免费） */
   isFree: boolean
-  activityType?: string
+
+  /*活动类型：0-摄影，1-徒步，2-绘画，3-木工，4-陶艺，5-生态观察，6-农耕体验，7-音乐，8-手工制作，9-瑜伽 */
+  activityType: string
+
+  /*活动开始时间 */
   startTime: string
+
+  /*活动结束时间 */
   endTime: string
+
+  /*空间ID */
   spaceId: number
+
+  /*空间名称 */
   spaceName: string
-  detail?: string
-  createTime?: string
-  poster?: ImageResource
-  secondaryTag?: { id?: string; name: string }
-  timeRange?: TimeRange
-  price?: Price
-  status?: string
-  space: Space
-  organizer?: Organizer
-  companions?: {
-    companions: Array<{ id?: string; avatar: ImageResource; nickname?: string }>
-    totalCount?: number
-  }
-  auditStatus?: number // 0: 待审核, 1: 审核通过, 2: 审核不通过
-  maxParticipants?: number
+
+  /*活动详情 */
+  detail: string
+
+  /*审核状态（0待审核 1审核通过 2审核不通过） */
+  auditStatus: number
+
+  /*创建时间 */
+  createTime: string
+
+  /*报名人数 */
+  registeredCount: number
+  registeredUsers: RegistrationUser[]
 }
 
 export interface ActivityCollection {
@@ -69,14 +90,19 @@ export interface ActivityCollection {
   createTime?: string
 }
 
-export interface Organizer {
+export interface RegistrationUser {
   userId: number
   wxName: string
   memberName: string
   logo: string
   tags: string
   spaceName?: string
+  introduction: string
+  memberLevel: string //成员等级（字典键值：0=老村民，1=新村民，2=数字游民，3=游客）
+  memberTags: string[] //成员标签（字典键值：0=空间主理人，1=活动发起人）
 }
+
+export interface Organizer extends RegistrationUser {}
 
 export interface Space {
   id: number
