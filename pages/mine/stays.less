@@ -63,32 +63,94 @@
   border-radius: 16rpx;
 }
 
-.row {
+.card-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.date-range {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.status-tag {
+  padding: 4rpx 16rpx;
+  background-color: #f5f5f5;
+  color: #666;
+  font-size: 24rpx;
+  border-radius: 4rpx;
+
+  &.pending {
+    background-color: #F0F9EB;
+    color: #52C41A;
+  }
+}
+
+.card-body {
+  display: flex;
+  margin-bottom: 24rpx;
+}
+
+.room-image {
+  width: 200rpx;
+  height: 150rpx;
+  border-radius: 8rpx;
+  margin-right: 24rpx;
+  background-color: #eee;
+}
+
+.room-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 
-.title {
+.room-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.room-tags {
   font-size: 26rpx;
-  color: #333333;
-  font-weight: 700;
+  color: #999;
+  margin-bottom: 16rpx;
 }
 
-.status {
-  font-size: 22rpx;
-  color: #666666;
+.room-price {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
 }
 
-.time {
-  margin-top: 4rpx;
-  font-size: 22rpx;
-  color: #666666;
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1rpx solid #f5f5f5;
+  padding-top: 24rpx;
 }
 
-.space {
-  margin-top: 4rpx;
-  font-size: 22rpx;
-  color: #666666;
+.btn {
+  padding: 16rpx 48rpx;
+  font-size: 28rpx;
+  border-radius: 4rpx;
+  margin-left: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pay-btn {
+  background-color: #07c160;
+  color: #fff;
+}
+
+.cancel-btn {
+  background-color: #1A1A1A;
+  color: #fff;
 }
 

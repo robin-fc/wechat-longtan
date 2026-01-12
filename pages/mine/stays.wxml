@@ -14,31 +14,37 @@
   <scroll-view scroll-y="true" class="list-scroll">
     <block wx:for="{{items}}" wx:key="id">
       <view class="card" data-biz="{{item.id}}" bindtap="onItemTap">
-        <view class="row">
-          <text class="title">{{item.title}}</text>
-          <text class="status">{{item.statusText}}</text>
+        <view class="card-header">
+          <text class="date-range">入离日期：{{item.timeText}}</text>
+          <view class="status-tag {{item.statusText === '待审核' ? 'pending' : ''}}">
+            <text>{{item.statusText}}</text>
+          </view>
         </view>
-        <view class="row">
-          <text class="time">{{item.timeText}}</text>
+
+        <view class="card-body">
+          <image class="room-image" src="{{item.roomImage}}" mode="aspectFill"></image>
+          <view class="room-info">
+            <view class="room-title">{{item.title}}</view>
+            <view class="room-tags">{{item.tags}}</view>
+            <view class="room-price">¥ {{item.amount}}</view>
+          </view>
         </view>
-        <view class="row">
-          <text class="space">{{item.address}}</text>
-        </view>
-        <view class="row">
+
+        <view class="card-footer" wx:if="{{item.showPayButton || item.showCancelButton}}">
           <view
             wx:if="{{item.showPayButton}}"
-            class="pay-btn"
+            class="btn pay-btn"
             data-biz="{{item.id}}"
             data-amount="{{item.amount}}"
-            bindtap="onPayTap"
+            catchtap="onPayTap"
           >
             <text>立即支付</text>
           </view>
           <view
             wx:if="{{item.showCancelButton}}"
-            class="cancel-btn"
+            class="btn cancel-btn"
             data-biz="{{item.id}}"
-            bindtap="onCancelTap"
+            catchtap="onCancelTap"
           >
             <text>取消订单</text>
           </view>

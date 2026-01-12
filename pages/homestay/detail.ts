@@ -30,7 +30,7 @@ const mapApiRoomToHomestayRoom = (
   tagMap: Record<string, string>
 ): HomestayRoom => {
   const duration = (item.roomNumberWithPackage || '').split('-')[1] || ''
-  const facilities = (item.tags || '')
+  const facilities = String(item.tags || '')
     .split(',')
     .map((s: string) => s.trim())
     .filter(Boolean)

@@ -1,7 +1,14 @@
 import { getMyOrderList, generatePayParams } from '../../api/order'
 import type { AppOrderListRespVO } from '../../model/order'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
-import { formatYMDHM } from '../../utils/date'
+import { formatYMDHM, parseToDate } from '../../utils/date'
+
+function formatDateToCN(v: any): string {
+  const d = parseToDate(v)
+  if (!d) return ''
+  return `${d.getMonth() + 1}月${d.getDate()}日`
+}
+
 
 type StayFilter = 'all' | 'unpaid' | 'pending' | 'upcoming' | 'checkedIn'
 
@@ -19,6 +26,8 @@ interface StayItemView {
   showPayButton: boolean
   showCancelButton: boolean
   amount: number
+  roomImage: string
+  tags: string
 }
 
 interface MyStaysState {
@@ -34,6 +43,15 @@ function mapPaymentStatusText(status: number): string {
   if (status === 3) return '支付失败'
   if (status === 4) return '已关闭'
   return ''
+}
+
+const RoomTagMap: Record<string, string> = {
+  '0': '独立卫生间',
+  '1': '山景房',
+  '2': '海景房',
+  '3': '家庭房',
+  '4': '双床房',
+  '5': '大床房',
 }
 
 Page<MyStaysState, WechatMiniprogram.IAnyObject>({
@@ -82,11 +100,16 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
       id: it.bizOrderNo,
       title: it.title,
       statusText: mapPaymentStatusText(it.status),
-      timeText: `${formatYMDHM(it.checkInDate)} ~ ${formatYMDHM(it.checkOutDate)}`,
+      timeText: `${formatDateToCN(it.checkInDate)}-${formatDateToCN(it.checkOutDate)}`,
       address: '龙潭民宿',
       showPayButton: type === '1' || (type === '5' && it.status === 0),
       showCancelButton: type === '2' || type === '3',
       amount: it.amountTotal || 0,
+      roomImage: it.roomImage || '',
+      tags: String(it.rootTags || '')
+        .split(',')
+        .map((t) => RoomTagMap[t] || t)
+        .join(' | '),
     }))
     this.setData({
       items,

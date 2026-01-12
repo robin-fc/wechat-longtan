@@ -96,16 +96,30 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       '5': '大床房',
     }
     try {
-      console.log('room/detail.ts 查询可用房间', homestayId, checkInDate)
+      console.log('room/detail.ts 查询可用房间', id, checkInDate)
       const list = await getHomestayAvailableRooms({ homestayId, checkInDate })
       const item = (list || []).find((x) => String(x.id) === String(id))
+      console.log('room/detail.ts 查询可用房间结果1', item)
       if (!item) {
         return
       }
-      const facilities = (item.tags || '')
-        .split(',')
-        .map((s) => s.trim())
+      const rawTags = item.tags
+      const codes = (() => {
+        if (Array.isArray(rawTags)) return rawTags.map((v) => String(v))
+        const s = String(rawTags || '').trim()
+        if (!s) return []
+        if (s.startsWith('[') && s.endsWith(']')) {
+          try {
+            const arr = JSON.parse(s)
+            if (Array.isArray(arr)) return arr.map((v) => String(v))
+          } catch {}
+        }
+        return s.split(',')
+      })()
+        .map((v) => String(v).trim().replace(/^"+|"+$/g, ''))
         .filter(Boolean)
+
+      const facilities = codes
         .map((code) => tagMap[code])
         .filter(Boolean)
       const duration = (item.roomNumberWithPackage || '').split('-')[1] || '一周起'
