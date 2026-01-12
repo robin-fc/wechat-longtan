@@ -9,6 +9,9 @@ interface FilterOption {
 
 interface RecordGroup {
   month: string
+  income: number
+  expense: number
+  collapsed: boolean
   items: WalletRecord[]
 }
 
@@ -16,6 +19,7 @@ interface AssetsState {
   filters: FilterOption[]
   activeFilter: FilterOption['value']
   groups: RecordGroup[]
+  totalAsset: number
 }
 
 const FilterTypeMap: Record<string, number> = {
@@ -35,6 +39,7 @@ Page<AssetsState, WechatMiniprogram.IAnyObject>({
     ],
     activeFilter: 'all',
     groups: [],
+    totalAsset: 0,
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadRecords()
@@ -47,12 +52,15 @@ Page<AssetsState, WechatMiniprogram.IAnyObject>({
     const res = await fetchWalletRecords(type, 1, 20).catch(() => null)
     
     if (!res || !res.monthSummaries) {
-      this.setData({ groups: [] })
+      this.setData({ groups: [], totalAsset: 0 })
       return
     }
 
-    const groups: RecordGroup[] = res.monthSummaries.map((summary: { monthDisplayName: any; transactions: any[]; month: any }) => ({
-      month: summary.monthDisplayName, // 或者使用 summary.month 如果 UI 需要 '2026-01'
+    const groups: RecordGroup[] = res.monthSummaries.map((summary) => ({
+      month: summary.monthDisplayName,
+      income: summary.income,
+      expense: summary.expense,
+      collapsed: false,
       items: summary.transactions.map((tx) => ({
         // Map WalletTransaction to WalletRecord
         id: '', // 新数据无ID
@@ -71,6 +79,7 @@ Page<AssetsState, WechatMiniprogram.IAnyObject>({
 
     this.setData({
       groups,
+      totalAsset: res.totalAsset,
     })
   },
   onBackTap() {
@@ -85,5 +94,13 @@ Page<AssetsState, WechatMiniprogram.IAnyObject>({
       activeFilter: value,
     })
     await this.loadRecords()
+  },
+  onToggleMonth(e: WechatMiniprogram.BaseEvent) {
+    const index = e.currentTarget.dataset.index
+    const groups = this.data.groups as RecordGroup[]
+    const key = `groups[${index}].collapsed`
+    this.setData({
+      [key]: !groups[index].collapsed
+    })
   },
 })

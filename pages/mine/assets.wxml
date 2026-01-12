@@ -1,42 +1,62 @@
 <view class="assets-page">
-  <view class="filter-row">
-    <block wx:for="{{filters}}" wx:key="value">
-      <view
-        class="filter-item {{item.value === activeFilter ? 'active' : ''}}"
-        data-value="{{item.value}}"
-        bindtap="onFilterTap"
-      >
-        <text>{{item.label}}</text>
-      </view>
-    </block>
+  <view class="asset-header">
+    <view class="total-asset">{{totalAsset}}</view>
+    <view class="total-label">活动收益</view>
   </view>
 
-  <scroll-view scroll-y="true" class="list-scroll">
-    <block wx:for="{{groups}}" wx:key="month">
-      <view class="month-block">
-        <text class="month-title">{{item.month}}</text>
-        <block wx:for="{{item.items}}" wx:key="id">
-          <view class="record-item">
-            <view class="record-main">
-              <text class="record-title">{{item.title}}</text>
-              <text class="record-desc">{{item.description}}</text>
+  <view class="list-section">
+    <view class="section-title">资产明细</view>
+    <view class="filter-row">
+      <block wx:for="{{filters}}" wx:key="value">
+        <view
+          class="filter-item {{item.value === activeFilter ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onFilterTap"
+        >
+          <text>{{item.label}}</text>
+        </view>
+      </block>
+    </view>
+
+    <scroll-view scroll-y="true" class="list-scroll">
+      <block wx:for="{{groups}}" wx:key="month">
+        <view class="month-block">
+          <view class="month-header">
+            <view class="month-row">
+              <text class="month-title">{{item.month}}</text>
+              <image class="icon-arrow-down {{item.collapsed ? 'collapsed' : ''}}" src="/assets/icons/arrow-black.png" mode="aspectFit" bindtap="onToggleMonth" data-index="{{index}}"></image>
             </view>
-            <view class="record-amount">
-              <text
-                class="amount {{item.type === 'income' ? 'income' : ''}} {{item.type === 'expense' ? 'expense' : ''}}"
-              >
-                {{item.type === 'income' ? '+' : '-'}}
-                {{item.amount.amount}}
-              </text>
-              <text class="record-time">{{item.createdAt}}</text>
+            <view class="month-summary">
+              <text>收入 ¥{{item.income}}</text>
+              <text class="summary-divider"></text>
+              <text>支出 ¥{{item.expense}}</text>
             </view>
           </view>
-        </block>
+          
+          <view class="record-list" wx:if="{{!item.collapsed}}">
+            <block wx:for="{{item.items}}" wx:key="id" wx:for-item="record">
+              <view class="record-item">
+                <view class="record-row-top">
+                  <text class="record-title">{{record.title}}</text>
+                  <text class="amount {{record.type === 'income' ? 'income' : ''}} {{record.type === 'expense' ? 'expense' : ''}}">
+                    {{record.type === 'income' ? '+' : ''}}{{record.amount.amount}}
+                  </text>
+                </view>
+                <view class="record-row-middle">
+                  <text class="record-desc">{{record.description}}</text>
+                </view>
+                <view class="record-row-bottom">
+                  <text class="record-time">{{record.createdAt}}</text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{groups.length === 0}}" class="empty">
+        <text>暂无资产明细</text>
       </view>
-    </block>
-    <view wx:if="{{groups.length === 0}}" class="empty">
-      <text>暂无资产明细</text>
-    </view>
-  </scroll-view>
+    </scroll-view>
+  </view>
 </view>
 
