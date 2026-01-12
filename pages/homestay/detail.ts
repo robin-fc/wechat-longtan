@@ -2,7 +2,7 @@ import {
   getHomestayDetailApi,
   getHomestayAvailableRooms,
 } from '../../api/homestay'
-import { tagMap, type AppHomestayDetail, type HomestayRoom } from '../../model/homestay'
+import { tagMap, type AppHomestayDetail, type HomestayRoom, HOMESTAY_TAGS } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
@@ -81,6 +81,12 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     })
     try {
       const homestayDetail = await getHomestayDetailApi(Number(id))
+      
+      // Map tags from numbers to strings
+      if (homestayDetail.tags && Array.isArray(homestayDetail.tags)) {
+        homestayDetail.tags = homestayDetail.tags.map(t => HOMESTAY_TAGS[Number(t)] || t)
+      }
+
       const now = new Date()
       const yyyy = String(now.getFullYear())
       const mm = String(now.getMonth() + 1).padStart(2, '0')

@@ -18,5 +18,5 @@ export interface AppUserInfoRespVO {
   memberLevel: string
 
   /*组织者标签（逗号分隔的字典键值：0=空间主理人，1=活动发起人） */
-  tags: string
+  memberTags: string
 }

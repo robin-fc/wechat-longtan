@@ -11,7 +11,7 @@
         <view class="intro-main">
           <text class="name">{{homestay.name}}</text>
           <view class="tags">
-            <block wx:for="{{homestay.tags}}" wx:key="id">
+            <block wx:for="{{homestay.tags}}" wx:key="*this">
               <text class="tag tag-{{index % 3}}">{{item}}</text>
             </block>
           </view>

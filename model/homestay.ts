@@ -1,4 +1,5 @@
 import type { ImageResource, TimeRange, Price } from './common'
+import { AppUserInfoRespVO } from './user-follow'
 
 // 民宿标签映射
 export const HOMESTAY_TAGS: Record<number, string> = {
@@ -125,6 +126,7 @@ export interface AppHomestayRoomListItem {
   price: number
   logo: string
   tags: string
+  stayedUsers: AppUserInfoRespVO[]
 }
 
 export interface AppHomestayPackageItem {
