@@ -120,23 +120,40 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         ? {
             ...detail.organizer,
             tags: (() => {
+              console.log('organizer.tags', detail.organizer.tags)
               const raw = detail.organizer.tags
               const organizerTagsMap: Record<number, string> = {
                 0: '空间主理人',
                 1: '活动发起人',
               }
-              if (Array.isArray(raw)) return raw
+              if (Array.isArray(raw)) {
+                return raw.map((s) => {
+                  const n = Number(s)
+                  return !Number.isNaN(n) && organizerTagsMap[n] ? organizerTagsMap[n] : String(s)
+                })
+              }
               if (typeof raw === 'string' && raw) {
-                return (raw as string)
-                  .split(',')
-                  .map((s) => s.trim())
-                  .filter((s) => s)
-                  .map((s) => {
-                    const n = Number(s)
-                    if (!Number.isNaN(n) && organizerTagsMap[n]) {
-                      return organizerTagsMap[n]
+                const s = raw.trim()
+                if (s.startsWith('[') && s.endsWith(']')) {
+                  try {
+                    const arr = JSON.parse(s)
+                    if (Array.isArray(arr)) {
+                      return arr
+                        .map((v) => String(v))
+                        .map((t) => {
+                          const n = Number(t)
+                          return !Number.isNaN(n) && organizerTagsMap[n] ? organizerTagsMap[n] : t
+                        })
                     }
-                    return s
+                  } catch {}
+                }
+                return s
+                  .split(',')
+                  .map((t) => t.trim())
+                  .filter(Boolean)
+                  .map((t) => {
+                    const n = Number(t)
+                    return !Number.isNaN(n) && organizerTagsMap[n] ? organizerTagsMap[n] : t
                   })
               }
               return []

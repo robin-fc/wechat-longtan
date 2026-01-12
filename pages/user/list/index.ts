@@ -1,6 +1,7 @@
 import { fetchMockUserList } from '../../../api/user'
 import type { MockUserItem } from '../../../api/user'
 import { smartNavigateTo } from '../../../utils/navigation'
+import { AppUserFollow, AppUserUnfollow } from '../../../api/user-follow'
 
 interface UserListState {
   userList: MockUserItem[]
@@ -57,23 +58,69 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
     }
   },
 
-  onFollowTap(e: WechatMiniprogram.BaseEvent) {
-    const index = e.currentTarget.dataset.index
-    const list = this.data.userList
+  async onFollowTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.BaseEvent
+  ) {
+    const index = Number(e.currentTarget.dataset.index)
+    const list = this.data.userList || []
     const item = list[index]
-    
-    // Optimistic update
-    const newItem = { ...item, isFollowed: !item.isFollowed }
-    const newList = [...list]
-    newList[index] = newItem
-    
-    this.setData({
-      userList: newList
+    if (!item) return
+
+    const userIdNum = Number(item.userId)
+    if (!userIdNum) {
+      wx.showToast({ title: '用户信息缺失', icon: 'none' })
+      return
+    }
+
+    const nextFollowed = !item.isFollowed
+
+    const setFollowed = (followed: boolean) => {
+      const newList = list.slice()
+      newList[index] = { ...item, isFollowed: followed }
+      this.setData({ userList: newList })
+    }
+
+    const rollback = () => {
+      const prevList = list.slice()
+      prevList[index] = item
+      this.setData({ userList: prevList })
+    }
+
+    const doFollow = async () => {
+      setFollowed(true)
+      try {
+        await AppUserFollow({ followeeId: userIdNum })
+        wx.showToast({ title: '已关注', icon: 'none' })
+      } catch {
+        rollback()
+        wx.showToast({ title: '操作失败', icon: 'none' })
+      }
+    }
+
+    const doUnfollow = async () => {
+      setFollowed(false)
+      try {
+        await AppUserUnfollow({ followeeId: userIdNum })
+        wx.showToast({ title: '已取消关注', icon: 'none' })
+      } catch {
+        rollback()
+        wx.showToast({ title: '操作失败', icon: 'none' })
+      }
+    }
+
+    if (nextFollowed) {
+      await doFollow()
+      return
+    }
+
+    wx.showModal({
+      title: '取消关注',
+      content: '确定要取消关注吗？',
+      success: (res) => {
+        if (!res.confirm) return
+        doUnfollow()
+      },
     })
-    
-    wx.showToast({
-      title: newItem.isFollowed ? '已关注' : '已取消关注',
-      icon: 'none'
-    })
-  }
+  },
 })

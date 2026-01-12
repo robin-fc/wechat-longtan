@@ -107,7 +107,7 @@
               wx:for="{{favoriteUsers}}" 
               wx:key="userId" 
               class="avatar" 
-              src="{{item.avatar || '/assets/images/default-avatar.png'}}" 
+              src="{{item.logo || '/assets/images/default-avatar.png'}}" 
               mode="aspectFill" 
             />
           </block>

@@ -16,17 +16,30 @@ interface MineState {
 }
 
 function parseMemberTags(v: unknown): string[] {
-  if (v === undefined || v === null) return []
-  if (Array.isArray(v)) {
-    return v.map((it) => String(it).trim()).filter(Boolean)
+  const MemberTagMap: Record<string, string> = {
+    '0': '空间主理人',
+    '1': '活动发起人',
   }
-  if (typeof v === 'string') {
-    return v
-      .split(',')
-      .map((it) => it.trim())
-      .filter(Boolean)
-  }
-  return []
+  const codes = (() => {
+    if (v === undefined || v === null) return []
+    if (Array.isArray(v)) return v.map((it) => String(it))
+    if (typeof v === 'string') {
+      const s = v.trim()
+      if (!s) return []
+      if (s.startsWith('[') && s.endsWith(']')) {
+        try {
+          const arr = JSON.parse(s)
+          if (Array.isArray(arr)) return arr.map((it) => String(it))
+        } catch {}
+      }
+      return s.split(',')
+    }
+    return []
+  })()
+    .map((it) => String(it).trim().replace(/^"+|"+$/g, ''))
+    .filter(Boolean)
+
+  return codes.map((code) => MemberTagMap[code]).filter(Boolean)
 }
 
 function mapMemberLevelLabel(level: unknown): string {
@@ -83,7 +96,7 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
           gender: profile.sex || 2, // 默认为女
           tags: [
             mapMemberLevelLabel(profile.memberLevel),
-            ...(memberTags.length ? memberTags : ['主理人']),
+            ...(memberTags.length ? memberTags : ['空间主理人']),
           ],
         }
         

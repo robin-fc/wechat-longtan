@@ -51,10 +51,11 @@ export async function getAvailableHomestayList(params?: {
     '/app-api/daolongtan/homestay/list',
     params
   )
+  console.log('getAvailableHomestayList raw', raw)
   return (raw || []).map((it) => ({
     id: it.id,
     name: it.name,
-    minPrice: it.minPrice,
+    minPrice: it.minPrice || 0,
     address: it.address,
     mapImages:
       it.mapImages && typeof it.mapImages === 'string'

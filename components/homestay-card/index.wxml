@@ -18,8 +18,8 @@
     <view class="footer">
       <view class="price">
         <text class="symbol">￥</text>
-        <text class="amount">{{homestay.referencePrice.amount}}</text>
-        <text class="unit">/{{homestay.referencePrice.unit}}起</text>
+        <text class="amount">{{(homestay.referencePrice && homestay.referencePrice.amount) || homestay.minPrice || 0}}</text>
+        <text class="unit">/{{(homestay.referencePrice && homestay.referencePrice.unit) || '天'}}起</text>
       </view>
       <view class="address">
         <text class="address-label">地址：</text>

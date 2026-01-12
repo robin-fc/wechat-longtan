@@ -12,7 +12,7 @@ export function AppUserUnfollow(data: {
   followeeId: number
 }): Promise<CommonResult<boolean>> {
   return request<boolean>({
-    url: '/app-api/daolongtan/user/update-info',
+    url: '/app-api/daolongtan/user-follow/unfollow',
     method: 'POST',
     data,
   })

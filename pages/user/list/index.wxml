@@ -7,7 +7,7 @@
         <view class="name-row">
           <text class="nickname">{{item.nickname}}</text>
           <view class="tags">
-            <text class="tag {{tag === '新村民' ? 'tag-new' : tag === '主理人' ? 'tag-host' : tag === '游客' ? 'tag-visitor' : 'tag-nomad'}}" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+            <text class="tag {{tag === '新村民' ? 'tag-new' : (tag === '主理人' || tag === '空间主理人') ? 'tag-host' : tag === '游客' ? 'tag-visitor' : 'tag-nomad'}}" wx:for="{{item.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
           </view>
         </view>
         <text class="bio">{{item.bio}}</text>

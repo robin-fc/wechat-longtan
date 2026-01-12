@@ -1,4 +1,4 @@
-import { request } from '../utils/request'
+import { request, getData } from '../utils/request'
 import type { AppUpdateWeixinUserInfoReqVO } from '../model/user'
 import type { CommonResult } from '../model/common'
 
@@ -19,60 +19,96 @@ export interface MockUserItem {
   isFollowed: boolean
 }
 
+interface FollowingsUserItem {
+  userId: number
+  logo: string
+  wxName: string
+  memberName: string
+  introduction: string | null
+  memberLevel: string
+  tags: unknown
+}
+
+function mapMemberLevelLabel(level: unknown): string {
+  const v = level === undefined || level === null ? '' : String(level)
+  if (v === '0') return '老村民'
+  if (v === '1') return '新村民'
+  if (v === '2') return '数字游民'
+  if (v === '3') return '游客'
+  return '游客'
+}
+
+function mapMemberTags(v: unknown): string[] {
+  const MemberTagMap: Record<string, string> = {
+    '0': '空间主理人',
+    '1': '活动发起人',
+  }
+  const codes = (() => {
+    if (v === undefined || v === null) return []
+    if (Array.isArray(v)) return v.map((it) => String(it))
+    const s = String(v).trim()
+    if (!s) return []
+    if (s.startsWith('[') && s.endsWith(']')) {
+      try {
+        const arr = JSON.parse(s)
+        if (Array.isArray(arr)) return arr.map((it) => String(it))
+      } catch {}
+    }
+    return s.split(',')
+  })()
+    .map((it) => String(it).trim().replace(/^"+|"+$/g, ''))
+    .filter(Boolean)
+
+  return codes.map((code) => MemberTagMap[code]).filter(Boolean)
+}
+
 export function fetchMockUserList(type: string, id?: string): Promise<MockUserItem[]> {
-  // 模拟网络延迟
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([
-        {
-          userId: '101',
-          nickname: 'Yumi',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-          tags: ['新村民', '主理人'],
-          bio: '你的意中人是个盖世英雄，他每天...',
-          isFollowed: false
-        },
-        {
-          userId: '102',
-          nickname: 'hero',
-          avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-          tags: ['游客'],
-          bio: '遇到喜欢的人就勇敢追求，这样你...',
-          isFollowed: false
-        },
-        {
-          userId: '103',
-          nickname: '七七',
-          avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-          tags: ['数字游民'],
-          bio: '穷不要紧，抬头挺胸让大家看看，...',
-          isFollowed: true
-        },
-        {
-          userId: '104',
-          nickname: '惊鸿',
-          avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-          tags: ['数字游民'],
-          bio: '爱笑的姑娘，总是比别人更容易长...',
-          isFollowed: false
-        },
-        {
-          userId: '105',
-          nickname: '十一月的萧邦',
-          avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-          tags: ['数字游民'],
-          bio: '长的丑没好处吗，不，你可以凭长...',
-          isFollowed: false
-        },
-        {
-          userId: '106',
-          nickname: '莫莫',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1600&q=80',
-          tags: ['数字游民'],
-          bio: '人生就像一个茶几，上面摆满了杯...',
-          isFollowed: false
+  if (type === 'following') {
+    return getData<FollowingsUserItem[]>(
+      '/app-api/daolongtan/user-follow/followings'
+    ).then((list) =>
+      (list || []).map((u) => {
+        const nickname = (u.memberName || u.wxName || '').trim()
+        const avatar = (u.logo || '').trim() || '/assets/images/default-avatar.png'
+        const tags = [
+          mapMemberLevelLabel(u.memberLevel),
+          ...mapMemberTags(u.tags),
+        ].filter(Boolean)
+        return {
+          userId: String(u.userId),
+          nickname: nickname || `User ${u.userId}`,
+          avatar,
+          tags,
+          bio: u.introduction ? String(u.introduction) : '',
+          isFollowed: true,
         }
-      ])
-    }, 500)
-  })
+      })
+    )
+  }
+
+  if (type === 'followers') {
+    return getData<FollowingsUserItem[]>(
+      '/app-api/daolongtan/user-follow/followers'
+    ).then((list) =>
+      (list || []).map((u) => {
+        const nickname = (u.memberName || u.wxName || '').trim()
+        const avatar = (u.logo || '').trim() || '/assets/images/default-avatar.png'
+        const tags = [
+          mapMemberLevelLabel(u.memberLevel),
+          ...mapMemberTags(u.tags),
+        ].filter(Boolean)
+        return {
+          userId: String(u.userId),
+          nickname: nickname || `User ${u.userId}`,
+          avatar,
+          tags,
+          bio: u.introduction ? String(u.introduction) : '',
+          isFollowed: false,
+        }
+      })
+    )
+  }
+
+  // 其他列表类型暂沿用 mock
+  return Promise.resolve([])
 }
