@@ -18,6 +18,13 @@ interface AssetsState {
   groups: RecordGroup[]
 }
 
+const FilterTypeMap: Record<string, number> = {
+  all: 0,
+  income: 1,
+  expense: 2,
+  refund: 3,
+}
+
 Page<AssetsState, WechatMiniprogram.IAnyObject>({
   data: {
     filters: [
@@ -35,23 +42,33 @@ Page<AssetsState, WechatMiniprogram.IAnyObject>({
   async loadRecords(
     this: WechatMiniprogram.Page.TrivialInstance
   ) {
-    const all = await fetchWalletRecords()
     const filter = (this.data as AssetsState).activeFilter
-    const list =
-      filter === 'all'
-        ? all
-        : all.filter((item) => item.type === filter)
-    const groupsMap: { [key: string]: typeof all } = {}
-    list.forEach((item) => {
-      if (!groupsMap[item.month]) {
-        groupsMap[item.month] = []
-      }
-      groupsMap[item.month].push(item)
-    })
-    const groups: RecordGroup[] = Object.keys(groupsMap).map((month) => ({
-      month,
-      items: groupsMap[month],
+    const type = FilterTypeMap[filter] ?? 0
+    const res = await fetchWalletRecords(type, 1, 20).catch(() => null)
+    
+    if (!res || !res.monthSummaries) {
+      this.setData({ groups: [] })
+      return
+    }
+
+    const groups: RecordGroup[] = res.monthSummaries.map((summary: { monthDisplayName: any; transactions: any[]; month: any }) => ({
+      month: summary.monthDisplayName, // 或者使用 summary.month 如果 UI 需要 '2026-01'
+      items: summary.transactions.map((tx) => ({
+        // Map WalletTransaction to WalletRecord
+        id: '', // 新数据无ID
+        type: (tx.type === 1 ? 'income' : tx.type === 2 ? 'expense' : 'refund') as WalletRecordType,
+        createdAt: tx.transactionTime,
+        title: tx.description,
+        description: tx.typeDisplayName,
+        amount: {
+          amount: tx.amountValue,
+          currency: 'CNY',
+          unit: '元'
+        },
+        month: summary.month
+      }))
     }))
+
     this.setData({
       groups,
     })

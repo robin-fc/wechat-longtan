@@ -6,7 +6,7 @@ import { getMyActivityList, getMyActivityCollections } from './activity'
 import type { PageResult } from '../model/common'
 import type { HomestayApplication } from '../model/homestay'
 import { fetchHomestayApplications } from './homestay'
-import type { WalletRecord } from '../model/wallet'
+import type { AssetDetailResult } from '../model/wallet'
 import { formatYMDHM } from '../utils/date'
 
 export interface MyActivityFilter {
@@ -20,12 +20,35 @@ export interface MyStayFilter {
   name: string
 }
 
+export interface UserSummary {
+  followingCount: number
+  followerCount: number
+  asset: number
+}
+
 export function fetchMyProfile(): Promise<UserProfile> {
   return getData<UserProfile>('/app-api/daolongtan/user/get-info')
 }
 
-export function fetchWalletRecords(): Promise<WalletRecord[]> {
-  return Promise.resolve([])
+export function fetchUserSummary(): Promise<UserSummary> {
+  return getData<UserSummary>('/app-api/daolongtan/user/summary')
+}
+
+export function fetchWalletRecords(
+  type: number,
+  pageNo: number,
+  pageSize: number,
+  month?: string
+): Promise<AssetDetailResult> {
+  return getData<AssetDetailResult>(
+    '/app-api/daolongtan/user/asset/detail',
+    {
+      type,
+      pageNo,
+      pageSize,
+      month,
+    }
+  )
 }
 
 export async function fetchMyActivities(

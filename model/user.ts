@@ -1,4 +1,5 @@
 export interface UserProfile {
+  joinTime: string
   id: number
   wxName?: string
   logo?: string
@@ -7,7 +8,7 @@ export interface UserProfile {
   memberPhone?: string
   memberNumber?: string
   memberLevel?: string
-  memberTags?: string
+  memberTags?: string | string[]
   sex?: number
   desc?: string
   status?: number

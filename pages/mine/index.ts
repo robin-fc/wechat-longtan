@@ -1,6 +1,7 @@
-import { fetchMyProfile } from '../../api/mine'
+import { fetchMyProfile, fetchUserSummary } from '../../api/mine'
 import { smartNavigateTo } from '../../utils/navigation'
 import type { UserProfile } from '../../model/user'
+import { formatYMD } from '../../utils/date'
 
 interface MineState {
   profile: (UserProfile & {
@@ -12,6 +13,29 @@ interface MineState {
     tags?: string[]
     gender?: number
   }) | null
+}
+
+function parseMemberTags(v: unknown): string[] {
+  if (v === undefined || v === null) return []
+  if (Array.isArray(v)) {
+    return v.map((it) => String(it).trim()).filter(Boolean)
+  }
+  if (typeof v === 'string') {
+    return v
+      .split(',')
+      .map((it) => it.trim())
+      .filter(Boolean)
+  }
+  return []
+}
+
+function mapMemberLevelLabel(level: unknown): string {
+  const v = level === undefined || level === null ? '' : String(level)
+  if (v === '0') return '老村民'
+  if (v === '1') return '新村民'
+  if (v === '2') return '数字游民'
+  if (v === '3') return '游客'
+  return '游客'
 }
 
 Page<MineState, WechatMiniprogram.IAnyObject>({
@@ -34,25 +58,33 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
 
     // 每次显示时尝试获取最新用户信息
     try {
-      const profile = await fetchMyProfile()
+      const [profile, summary] = await Promise.all([
+        fetchMyProfile().catch(() => null),
+        fetchUserSummary().catch(() => ({
+          followingCount: 0,
+          followerCount: 0,
+          asset: 0,
+        })),
+      ])
       if (profile) {
         if (profile.logo) {
           profile.logo = profile.logo.trim()
         }
         
         // 模拟/处理扩展数据
+        const memberTags = parseMemberTags(profile.memberTags)
         const extendedProfile = {
           ...profile,
           bgImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80',
-          joinTime: '2025年04月22日',
-          followingCount: 88,
-          followerCount: 8,
-          assets: 88.99,
+          joinTime: formatYMD(profile.joinTime) || '2025年04月22日',
+          followingCount: Number(summary.followingCount || 0),
+          followerCount: Number(summary.followerCount || 0),
+          assets: Number((summary as any).asset || 0),
           gender: profile.sex || 2, // 默认为女
           tags: [
-            profile.memberLevel === '0' ? '老村民' : '新村民',
-            ...(profile.memberTags ? profile.memberTags.split(',') : ['主理人'])
-          ]
+            mapMemberLevelLabel(profile.memberLevel),
+            ...(memberTags.length ? memberTags : ['主理人']),
+          ],
         }
         
         this.setData({

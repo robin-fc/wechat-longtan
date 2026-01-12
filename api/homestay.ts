@@ -21,12 +21,13 @@ import { getData } from '../utils/request'
 
 // Helper to map tags string "0,1" to object array
 function mapTags(
-  tagsStr: string | undefined,
+  tagsStr: string | undefined | null,
   mapping: Record<number, string>
 ): HomestayFeatureTag[] {
-  if (!tagsStr) return []
-  return tagsStr.split(',').map((s) => {
-    const id = Number(s)
+  if (tagsStr === undefined || tagsStr === null || tagsStr === '') return []
+  const s = String(tagsStr)
+  return s.split(',').map((item) => {
+    const id = Number(item.trim())
     return { id, name: mapping[id] || '未知' }
   })
 }
@@ -36,9 +37,10 @@ function getCover(
   mapImages: string | undefined,
   id: number
 ): { id: string; url: string } {
-  const url = mapImages
-    ? mapImages.split(';')[0]
-    : '/assets/images/homestay.jpg'
+  let url = '/assets/images/homestay.jpg'
+  if (mapImages && typeof mapImages === 'string') {
+    url = mapImages.split(';')[0] || url
+  }
   return { id: String(id), url }
 }
 
@@ -54,7 +56,10 @@ export async function getAvailableHomestayList(params?: {
     name: it.name,
     minPrice: it.minPrice,
     address: it.address,
-    mapImages: it.mapImages ? it.mapImages.split(';') : [],
+    mapImages:
+      it.mapImages && typeof it.mapImages === 'string'
+        ? it.mapImages.split(';')
+        : [],
     featureTags: mapTags(it.tags, HOMESTAY_TAGS),
     cover: getCover(it.mapImages, it.id),
     reservedUsers: it.reservedUsers || [],
@@ -76,7 +81,10 @@ export async function fetchHomestayDetail(
     name: raw.name,
     minPrice: 0, // Detail doesn't return price?
     address: raw.address,
-    mapImages: raw.mapImages ? raw.mapImages.split(';') : [],
+    mapImages:
+      raw.mapImages && typeof raw.mapImages === 'string'
+        ? raw.mapImages.split(';')
+        : [],
     featureTags: [], // Detail doesn't return tags?
     cover: { id: String(raw.id), url: raw.logo || '' }, // Use logo as cover
     reservedUsers: [],
