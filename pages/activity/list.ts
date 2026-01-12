@@ -11,6 +11,8 @@ interface ActivityListState {
   activeGroupId: string
   activeItems: { id: string; name: string }[]
   activeItemId: string
+  pageNo: number
+  hasMore: boolean
 }
 
 Page<ActivityListState, WechatMiniprogram.IAnyObject>({
@@ -21,6 +23,8 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     activeGroupId: '',
     activeItems: [],
     activeItemId: '',
+    pageNo: 1,
+    hasMore: true,
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -51,6 +55,9 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       activeGroupId: id || '',
       activeItems: [],
       activeItemId: '',
+      pageNo: 1,
+      hasMore: true,
+      activities: [],
     })
   },
   onFilterItemTap(
@@ -61,22 +68,49 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     this.setData({
       activeItemId: id || '',
       activityType: id || '',
+      pageNo: 1,
+      hasMore: true,
+      activities: [],
     })
     this.loadActivities()
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadActivities()
   },
-  async loadActivities(this: WechatMiniprogram.Page.TrivialInstance) {
-    const type = (this.data as ActivityListState).activityType
-    const page = await getActivityList({
-      activityType: type,
-      pageNo: '1',
-      pageSize: '20',
+  // 下拉刷新
+  async onPullDownRefresh() {
+    this.setData({
+      pageNo: 1,
+      hasMore: true,
+      activities: [],
     })
-    console.log('activity list raw:', page)
+    await this.loadActivities()
+    wx.stopPullDownRefresh()
+  },
+
+  // 上拉加载更多
+  async onReachBottom() {
+    const { hasMore, pageNo } = this.data as ActivityListState
+    if (!hasMore) return
+    this.setData({
+      pageNo: pageNo + 1,
+    })
+    await this.loadActivities()
+  },
+  async loadActivities(this: WechatMiniprogram.Page.TrivialInstance) {
+    const { activityType, pageNo, activities: currentActivities } = this.data as ActivityListState
+    const pageSize = 20
+    const page = await getActivityList({
+      activityType,
+      pageNo: String(pageNo),
+      pageSize: String(pageSize),
+    })
     const list = (page && ((page as any).pageResult?.list || (page as any).list || (page as any).items || (page as any).data || (Array.isArray(page) ? page : []))) || []
-    const activities = list.map((it) => ({
+    
+    // Check if we have more data
+    const hasMore = list.length === pageSize
+    
+    const newActivities = list.map((it) => ({
       ...it,
       poster: {
         id: String(it.id),
@@ -115,13 +149,13 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         unit: '人',
       },
       companions: (() => {
-        const list = (it.companions as any)?.companions || []
-        const total = (it.companions as any)?.totalCount || 0
-        const arr = Array.isArray(list)
-          ? list.slice(0, 3).map((u: any) => ({
-              id: String(u.id || ''),
-              avatar: { url: u.logo || '/assets/images/default-avatar.png' },
-              nickname: u.nickname || u.memberName || '',
+        const rawList = (it.companions as any)?.companions || it.registeredUsers || []
+        const total = (it.companions as any)?.totalCount || it.registeredCount || 0
+        const arr = Array.isArray(rawList)
+          ? rawList.slice(0, 3).map((u: any) => ({
+              id: String(u.id || u.userId || ''),
+              avatar: { url: u.logo || u.avatar || '/assets/images/default-avatar.png' },
+              nickname: u.nickname || u.memberName || u.wxName || '',
             }))
           : []
         return {
@@ -131,8 +165,13 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       })(),
      
     }))
+    
+    const allActivities = pageNo === 1 ? newActivities : [...currentActivities, ...newActivities]
+    
+    console.log('activity list:', allActivities)
     this.setData({
-      activities,
+      activities: allActivities,
+      hasMore,
     })
   },
   onBackTap() {

@@ -67,12 +67,23 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       }
       try {
         const page = await getActivityList({ pageNo: '1', pageSize: '5' })
-        const list = (page && page.list) || []
+        const list = (page && ((page as any).pageResult?.list || (page as any).list || (page as any).items || (page as any).data || (Array.isArray(page) ? page : []))) || []
         data.hotActivities = list.map((a) => {
-          const tag =
-            typeof a.activityType === 'number'
-              ? ActivityTypeLabel[a.activityType as ActivityType]
-              : ActivityTypeLabel[Number(a.activityType) as ActivityType]
+          const tag = (() => {
+            const raw = (a as any).activityType
+            let name = ''
+            if (raw !== undefined && raw !== null && raw !== '') {
+              const s = String(raw)
+              const isNum = typeof raw === 'number' || /^\d+$/.test(s)
+              if (isNum) {
+                const n = Number(raw) as ActivityType
+                name = ActivityTypeLabel[n] ?? ''
+              } else {
+                name = s
+              }
+            }
+            return name
+          })()
           return {
             ...a,
             poster: { id: String(a.id), url: a.logo || '' },
