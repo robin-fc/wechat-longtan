@@ -74,7 +74,8 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '20',
     })
-    const list = (page && page.list) || []
+    console.log('activity list raw:', page)
+    const list = (page && ((page as any).pageResult?.list || (page as any).list || (page as any).items || (page as any).data || (Array.isArray(page) ? page : []))) || []
     const activities = list.map((it) => ({
       ...it,
       poster: {

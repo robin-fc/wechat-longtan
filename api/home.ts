@@ -37,6 +37,7 @@ export interface HomePageData {
   aboutLinks: HomeAboutLink[]
 }
 
+// todo value需要改成对应的值，不能是中文，需要等后台确定各个类型的值
 const entriesMock: HomeEntryItem[] = [
   {
     id: 'entry-photo',
@@ -78,7 +79,7 @@ const entriesMock: HomeEntryItem[] = [
     name: '徒步',
     icon: { id: 'entry-hike-icon', url: '/assets/icons/home/walking.png' },
     type: 'activityCategory',
-    value: '徒步',
+    value: '1',
   },
   {
     id: 'entry-eco',
