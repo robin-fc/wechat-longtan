@@ -42,13 +42,12 @@ export interface CreateActivityPayload {
 export interface ActivityListResponse {
   pageResult: PageResult<Activity>
   onSaleCount: number
-  detail?: string
 }
 
 export function getActivityList(
   params: ActivityListParams
-): Promise<CommonResult<ActivityListResponse>> {
-  return getData<CommonResult<ActivityListResponse>>(
+): Promise<ActivityListResponse> {
+  return getData<ActivityListResponse>(
     '/app-api/daolongtan/activity/list',
     params
   )
@@ -59,7 +58,7 @@ export function getMyActivityList(
   pageNo: string,
   pageSize: string
 ): Promise<PageResult<Activity>> {
-  return getData<PageResult<Activity>>('/app-api/daolongtan/activity/my-list', {
+  return getData('/app-api/daolongtan/activity/my-list', {
     type,
     pageNo,
     pageSize,
@@ -119,7 +118,7 @@ export async function getActivityByIdFromList(
     pageNo: '1',
     pageSize: '100',
   })
-  const it = res.data?.pageResult.list.find((x) => x.id === id)
+  const it = res.pageResult.list.find((x) => x.id === id)
   if (!it) return undefined
   return {
     ...it,

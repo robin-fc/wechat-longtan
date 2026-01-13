@@ -1,6 +1,6 @@
 import { getData } from '../../../utils/request'
 import { ActivityTypeLabel } from '../../../model/activity'
-import { formatYMDHM, formatYMD } from '../../../utils/date'
+import { formatYMDHM } from '../../../utils/date'
 
 interface UserInfoView {
   userId: string

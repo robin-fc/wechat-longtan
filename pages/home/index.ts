@@ -66,7 +66,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       }
       try {
         const res = await getActivityList({ pageNo: '1', pageSize: '5' })
-        const pageResult = res?.data?.pageResult || []
+        const pageResult = res?.pageResult || []
         data.hotActivities = pageResult.list.slice(0, 3)
       } catch (e) {
         console.error('Fetch activities failed:', e)

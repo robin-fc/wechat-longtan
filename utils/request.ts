@@ -49,7 +49,9 @@ export interface RequestOptions {
   headers?: Record<string, string>
 }
 
-function isTokenInvalid(res: WechatMiniprogram.RequestSuccessCallbackResult): boolean {
+function isTokenInvalid(
+  res: WechatMiniprogram.RequestSuccessCallbackResult
+): boolean {
   const status = res.statusCode
   if (status === 401 || status === 403) {
     return true
@@ -178,7 +180,12 @@ export function getData<T>(
     url: path + buildQuery(params || {}),
     method: 'GET',
     headers: extraHeaders,
-  }).then((res) => (res.data as T))
+  }).then((res) => {
+    if (res.code === 0) {
+      return res.data as T
+    }
+    throw new Error(res.msg || `请求失败: ${res.code}-${res.msg}`)
+  })
 }
 
 export function postData<T>(
@@ -191,7 +198,12 @@ export function postData<T>(
     method: 'POST',
     headers: extraHeaders,
     data: body ?? {},
-  }).then((res) => (res.data as T))
+  }).then((res) => {
+    if (res.code === 0) {
+      return res.data as T
+    }
+    throw new Error(res.msg || `请求失败: ${res.code}-${res.msg}`)
+  })
 }
 
 export function postDataWithRes<T>(
@@ -204,7 +216,7 @@ export function postDataWithRes<T>(
     method: 'POST',
     headers: extraHeaders,
     data: body ?? {},
-  }).then((res) => (res as T))
+  }).then((res) => res as T)
 }
 
 function buildQuery(params: Record<string, any>) {
@@ -216,8 +228,7 @@ function buildQuery(params: Record<string, any>) {
   }
   const query = keys
     .map(
-      (k) =>
-        `${encodeURIComponent(k)}=${encodeURIComponent(String(params[k]))}`
+      (k) => `${encodeURIComponent(k)}=${encodeURIComponent(String(params[k]))}`
     )
     .join('&')
   return `?${query}`
@@ -237,7 +248,7 @@ export function uploadFile<T>(
     } catch {
       // Ignore token refresh failure
     }
-    
+
     let attempt = 0
     const exec = () => {
       const headers = buildHeaders(extraHeaders)
@@ -258,11 +269,14 @@ export function uploadFile<T>(
               const rawData = res.data
               // 如果返回的是纯字符串URL（非JSON格式），直接返回
               if (typeof rawData === 'string' && rawData.startsWith('http')) {
-                 if (!rawData.trim().startsWith('{') && !rawData.trim().startsWith('"')) {
-                    console.log('图片上传成功(raw)', rawData)
-                    resolve(rawData as unknown as T)
-                    return
-                 }
+                if (
+                  !rawData.trim().startsWith('{') &&
+                  !rawData.trim().startsWith('"')
+                ) {
+                  console.log('图片上传成功(raw)', rawData)
+                  resolve(rawData as unknown as T)
+                  return
+                }
               }
 
               const data = JSON.parse(res.data)
@@ -287,27 +301,35 @@ export function uploadFile<T>(
                 if (typeof payload === 'string' && payload.startsWith('http')) {
                   console.log('图片上传成功(string)', payload)
                   resolve(payload as unknown as T)
-                } else if (payload && typeof payload === 'object' && typeof payload.url === 'string') {
+                } else if (
+                  payload &&
+                  typeof payload === 'object' &&
+                  typeof payload.url === 'string'
+                ) {
                   console.log('图片上传成功(object)', payload.url)
                   resolve(payload.url as unknown as T)
                 } else {
                   reject(new Error('上传响应缺少url'))
                 }
               } else {
-                 console.error('上传业务失败', result)
-                 reject(new Error(result.msg || `上传失败: ${result.code}`))
+                console.error('上传业务失败', result)
+                reject(new Error(result.msg || `上传失败: ${result.code}`))
               }
             } catch (e) {
-               console.error('解析响应失败', res.data, e)
-               if (typeof res.data === 'string' && res.data.startsWith('http')) {
-                 resolve(res.data as unknown as T)
-               } else {
-                 reject(new Error(`解析响应失败: ${JSON.stringify(res.data).slice(0, 100)}`))
-               }
+              console.error('解析响应失败', res.data, e)
+              if (typeof res.data === 'string' && res.data.startsWith('http')) {
+                resolve(res.data as unknown as T)
+              } else {
+                reject(
+                  new Error(
+                    `解析响应失败: ${JSON.stringify(res.data).slice(0, 100)}`
+                  )
+                )
+              }
             }
             return
           }
-          
+
           if (res.statusCode === 401 && attempt < MAX_RETRY) {
             attempt++
             const ok = await refreshAccessToken(getTokenInfo().refreshToken)
@@ -333,7 +355,9 @@ function buildMultipartBody(
   fileContentType: string,
   fields?: Record<string, string>
 ): ArrayBuffer {
-  const boundary = `----wx-e2e-${Date.now()}-${Math.random().toString(16).slice(2)}`
+  const boundary = `----wx-e2e-${Date.now()}-${Math.random()
+    .toString(16)
+    .slice(2)}`
   function utf8Encode(str: string): Uint8Array {
     const bytes: number[] = []
     let i = 0
@@ -351,7 +375,11 @@ function buildMultipartBody(
       } else if (code <= 0x7ff) {
         bytes.push(0xc0 | (code >> 6), 0x80 | (code & 0x3f))
       } else if (code <= 0xffff) {
-        bytes.push(0xe0 | (code >> 12), 0x80 | ((code >> 6) & 0x3f), 0x80 | (code & 0x3f))
+        bytes.push(
+          0xe0 | (code >> 12),
+          0x80 | ((code >> 6) & 0x3f),
+          0x80 | (code & 0x3f)
+        )
       } else {
         bytes.push(
           0xf0 | (code >> 18),
@@ -406,7 +434,8 @@ export function postImageData<T>(
   const url = BASE_URL + path
   const fileName = (options && options.fileName) || 'image.jpg'
   const fieldName = (options && options.fieldName) || 'file'
-  const contentType = (options && options.contentType) || 'application/octet-stream'
+  const contentType =
+    (options && options.contentType) || 'application/octet-stream'
   const body = buildMultipartBody(
     imageBuffer,
     fileName,
@@ -474,6 +503,3 @@ export function postImageData<T>(
     exec()
   })
 }
-
- 
-
