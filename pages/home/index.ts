@@ -4,6 +4,7 @@ import { getBannerList } from '../../api/banner'
 import { getActivityList, getActivityCollections } from '../../api/activity'
 import { getAvailableHomestayList } from '../../api/homestay'
 import { smartNavigateTo } from '../../utils/navigation'
+import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 
 interface HomeState {
   loading: boolean
@@ -66,7 +67,29 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       try {
         const res = await getActivityList({ pageNo: '1', pageSize: '5' })
         const pageResult = res?.pageResult || []
-        data.hotActivities = pageResult.list.slice(0, 3)
+        data.hotActivities = (pageResult.list || [])
+          .slice(0, 3)
+          .map((it) => ({
+            ...it,
+            secondaryTag: (() => {
+              const raw = (it as any).activityType
+              let name = ''
+              if (raw !== undefined && raw !== null && raw !== '') {
+                const s = String(raw)
+                const isNum = typeof raw === 'number' || /^\d+$/.test(s)
+                if (isNum) {
+                  const n = Number(raw) as ActivityType
+                  name = ActivityTypeLabel[n] ?? ''
+                } else {
+                  name = s
+                }
+              }
+              return {
+                name: name || it.collectionName || '活动',
+              }
+            })(),
+          }))
+        console.log('首页热门活动，hotActivities:', data.hotActivities)
       } catch (e) {
         console.error('Fetch activities failed:', e)
       }

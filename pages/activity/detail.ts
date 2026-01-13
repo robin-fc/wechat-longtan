@@ -68,6 +68,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     if (!detail) {
       return
     }
+    console.log('detail', detail)
     const baseFallback: Activity =
       base ??
       ({
@@ -77,9 +78,10 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         isFree: detail.isFree,
         startTime: formatYMDHM(detail.startTime) || '',
         endTime: formatYMDHM(detail.endTime) || '',
-        spaceId: detail.space.id,
-        spaceName: detail.space.name,
-        spaceAddress: detail.space.address,
+        space: detail.space,
+        // spaceId: detail.space.id,
+        // spaceName: detail.space.name,
+        // spaceAddress: detail.space.address,
         fee: detail.fee,
         detail: detail.detail,
         activityType: detail.activityType,
@@ -95,9 +97,10 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
           : baseFallback.activityType,
       detail: detail.detail || baseFallback.detail,
       // 活动空间
-      spaceAddress: detail.space?.address || baseFallback.spaceAddress || '',
-      spaceName: detail.space?.name || baseFallback.spaceName || '',
-      spaceId: detail.space?.id || baseFallback.spaceId,
+      space: detail.space,
+      // spaceAddress: detail.space?.address || baseFallback.spaceAddress || '',
+      // spaceName: detail.space?.name || baseFallback.spaceName || '',
+      // spaceId: detail.space?.id || baseFallback.spaceId,
        organizer: detail.organizer,
     }
     console.log('activity', activity)
@@ -178,7 +181,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-    const mapImages = [activity.logo]
+    const mapImages = activity.space?.mapImages || []
     if (mapImages && mapImages.length > 0) {
       wx.previewImage({
         current: mapImages[0], // 当前显示图片的http链接
@@ -197,7 +200,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/space/detail?id=${encodeURIComponent(String(detail.spaceId))}`
+      `/pages/space/detail?id=${encodeURIComponent(String(detail.space?.id))}`
     )
   },
   onToggleCollect(this: WechatMiniprogram.Page.TrivialInstance) {
