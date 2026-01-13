@@ -31,10 +31,10 @@
         <view class="info-row space-row">
           <view class="space-left" bindtap="onSpaceDetailTap">
             <view class="space-name-wrap">
-              <text class="space-name">{{activity.space.name}}</text>
+              <text class="space-name">{{activity.spaceName}}</text>
               <text class="arrow-right">›</text>
             </view>
-            <text class="space-address">{{activity.space.address}}</text>
+            <text class="space-address">{{activity.spaceAddress}}</text>
           </view>
           <view class="space-right" bindtap="onOpenMapTap">
             <image 

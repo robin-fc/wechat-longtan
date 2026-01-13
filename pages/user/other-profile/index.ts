@@ -61,18 +61,22 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
-    const { userId } = options as any
+    const { userId, isFollowed } = options as any
     const menuButtonInfo = wx.getMenuButtonBoundingClientRect()
     this.setData({
       menuTop: menuButtonInfo.top,
       menuHeight: menuButtonInfo.height,
       userId: String(userId || ''),
     })
-    this.loadUserInfo(String(userId || ''))
+    this.loadUserInfo(String(userId || ''), isFollowed)
     this.loadActivities(0)
   },
 
-  loadUserInfo(this: WechatMiniprogram.Page.TrivialInstance, userId: string) {
+  loadUserInfo(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    userId: string,
+    isFollowedOpt?: string
+  ) {
     if (!userId) return
     getData('/app-api/daolongtan/user/detail', { userId })
       .then((raw: any) => {
@@ -119,7 +123,12 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
           bio: (raw && (raw.introduction || raw.bio || '')) || '',
           followingCount: Number((raw && raw.followingCount) || 0),
           followerCount: Number((raw && raw.followerCount) || 0),
-          isFollowed: !!(raw && raw.isFollowed),
+          isFollowed:
+            isFollowedOpt !== undefined &&
+            isFollowedOpt !== 'undefined' &&
+            isFollowedOpt !== ''
+              ? isFollowedOpt === 'true'
+              : !!(raw && raw.isFollowed),
         }
         this.setData({ userInfo })
       })

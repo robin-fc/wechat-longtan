@@ -8,6 +8,7 @@ import {
 } from '../../api/activity'
 import {
   AppUserFollow,
+  AppUserFollow_getFollowings,
   AppUserUnfollow,
 } from '../../api/user-follow'
 import {
@@ -67,8 +68,6 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     if (!detail) {
       return
     }
-
-    const space = detail.space || {}
     const baseFallback: Activity =
       base ??
       ({
@@ -80,11 +79,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         endTime: formatYMDHM(detail.endTime) || '',
         spaceId: detail.space.id,
         spaceName: detail.space.name,
+        spaceAddress: detail.space.address,
         fee: detail.fee,
-        space: space,
         detail: detail.detail,
         activityType: detail.activityType,
         auditStatus: detail.auditStatus,
+        organizer: detail.organizer,
       } as unknown as Activity)
     const activity: Activity = {
       ...baseFallback,
@@ -94,7 +94,13 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
           ? ActivityTypeLabel[detail.activityType]
           : baseFallback.activityType,
       detail: detail.detail || baseFallback.detail,
+      // 活动空间
+      spaceAddress: detail.space?.address || baseFallback.spaceAddress || '',
+      spaceName: detail.space?.name || baseFallback.spaceName || '',
+      spaceId: detail.space?.id || baseFallback.spaceId,
+       organizer: detail.organizer,
     }
+    console.log('activity', activity)
     const menuRect = wx.getMenuButtonBoundingClientRect()
 
     const favoriteCount = detail.favoriteCount || 0
@@ -137,19 +143,19 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       })
 
     // todo
-    // if (activity.organizer) {
-    //   AppUserFollow_getFollowings()
-    //     .then((res) => {
-    //       const list = res.data || []
-    //       const isFollowing = list.some(
-    //         (u) => u.userId === activity.organizer!.userId
-    //       )
-    //       this.setData({ isFollowingOrganizer: isFollowing })
-    //     })
-    //     .catch(() => {
-    //       // Ignore error, default to false
-    //     })
-    // }
+    if (activity.organizer) {
+      AppUserFollow_getFollowings()
+        .then((res) => {
+          const list = res.data || []
+          const isFollowing = list.some(
+            (u) => u.userId === activity.organizer!.userId
+          )
+          this.setData({ isFollowingOrganizer: isFollowing })
+        })
+        .catch(() => {
+          // Ignore error, default to false
+        })
+    }
   },
 
   onBackTap() {
@@ -191,7 +197,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/space/detail?id=${encodeURIComponent(String(detail.space.id))}`
+      `/pages/space/detail?id=${encodeURIComponent(String(detail.spaceId))}`
     )
   },
   onToggleCollect(this: WechatMiniprogram.Page.TrivialInstance) {
@@ -232,11 +238,14 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   },
 
   onOrganizerTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const activity = (this.data as ActivityDetailState).activity
-    // todo，看怎么拿这个数据
+    const data = this.data as ActivityDetailState
+    const activity = data.activity
+    const isFollowing = data.isFollowingOrganizer
+
+    console.log('isFollowingOrganizer', isFollowing)
     if (!activity || !activity.organizer || !activity.organizer.userId) return
     smartNavigateTo(
-      `/pages/user/other-profile/index?userId=${activity.organizer.userId}`
+      `/pages/user/other-profile/index?userId=${activity.organizer.userId}&isFollowed=${isFollowing}`
     )
   },
 

@@ -1,6 +1,6 @@
 <view class="container">
   <block wx:for="{{userList}}" wx:key="userId">
-    <view class="user-item" bindtap="onUserTap" data-id="{{item.userId}}">
+    <view class="user-item" bindtap="onUserTap" data-id="{{item.userId}}" data-isfollowed="{{item.isFollowed}}">
       <image class="avatar" src="{{item.avatar}}" mode="aspectFill" />
       
       <view class="info">

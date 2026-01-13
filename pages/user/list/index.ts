@@ -52,9 +52,11 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
   },
 
   onUserTap(e: WechatMiniprogram.BaseEvent) {
-    const userId = e.currentTarget.dataset.id
+    const { id: userId, isfollowed } = e.currentTarget.dataset
     if (userId) {
-      smartNavigateTo(`/pages/user/other-profile/index?userId=${userId}`)
+      smartNavigateTo(
+        `/pages/user/other-profile/index?userId=${userId}&isFollowed=${isfollowed}`
+      )
     }
   },
 
