@@ -1,8 +1,9 @@
 import { getActivityByIdFromList, getActivityDetail } from '../../api/activity'
 import { createActivityOrder, generatePayParams } from '../../api/order'
-import { ActivityTypeLabel, type Activity } from '../../model/activity'
+import { type Activity } from '../../model/activity'
 import type { ActivityOrder } from '../../model/order'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
+import { ensureActivityTypeDict } from '../../api/activity'
 
 interface ConfirmOrderState {
   activity: Activity | null
@@ -46,9 +47,10 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-    const [base, detail] = await Promise.all([
+    const [base, detail, typeDict] = await Promise.all([
       getActivityByIdFromList(id).catch(() => undefined),
       getActivityDetail(id),
+      ensureActivityTypeDict(),
     ])
 
     if (!detail) return
@@ -67,14 +69,13 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
         fee: detail.fee,
         auditStatus: detail.auditStatus,
       } as unknown as Activity)
-
+   
     const activity: Activity = {
       ...baseFallback,
       auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
-       activityType:
-              detail.activityType !== undefined
-                ? ActivityTypeLabel[detail.activityType]
-                : baseFallback.activityType,
+      activityType:
+        typeDict.find((x) => x.value === detail.activityType?.value)?.label ||
+        baseFallback.activityType,
       space: detail.space,
       detail: detail.detail || baseFallback.detail,
     }

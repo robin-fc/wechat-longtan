@@ -118,7 +118,7 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
       },
       secondaryTag: (() => {
-        const name = (it as any).activityType
+        const name = typeDict.find((x) => x.value === it.activityType)?.label || (it as any).activityType
         return {
           name: name || it.collectionName || '-',
         }

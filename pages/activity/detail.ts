@@ -78,7 +78,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       ...baseFallback,
       auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
       activityType:
-        typeDict.find((x) => x.value === detail.activityType.value)?.value ||
+        typeDict.find((x) => x.value === detail.activityType?.value)?.label ||
         baseFallback.activityType,
       detail: detail.detail || baseFallback.detail,
       // 活动空间
