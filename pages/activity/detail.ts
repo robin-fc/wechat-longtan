@@ -14,9 +14,9 @@ import {
 import {
   type Activity,
   type FavoriteUser,
-  ActivityTypeLabel,
   type RegistrationUser,
 } from '../../model/activity'
+import { ensureActivityTypeDict } from '../../api/activity'
 import { formatYMDHM } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
@@ -61,47 +61,32 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-    const [base, detail] = await Promise.all([
-      getActivityByIdFromList(id).catch(() => undefined),
+    const [base, detail, typeDict] = await Promise.all([
+      getActivityByIdFromList(id),
       getActivityDetail(id),
+      ensureActivityTypeDict(),
     ])
     if (!detail) {
       return
     }
-    console.log('detail', detail)
-    const baseFallback: Activity =
-      base ??
-      ({
-        id: detail.id,
-        title: detail.title,
-        logo: detail.logo,
-        isFree: detail.isFree,
-        startTime: formatYMDHM(detail.startTime) || '',
-        endTime: formatYMDHM(detail.endTime) || '',
-        space: detail.space,
-        // spaceId: detail.space.id,
-        // spaceName: detail.space.name,
-        // spaceAddress: detail.space.address,
-        fee: detail.fee,
-        detail: detail.detail,
-        activityType: detail.activityType,
-        auditStatus: detail.auditStatus,
-        organizer: detail.organizer,
-      } as unknown as Activity)
+    const baseFallback: Activity = {
+      ...base,
+      startTime: formatYMDHM(detail.startTime) || '',
+      endTime: formatYMDHM(detail.endTime) || '',
+    }
     const activity: Activity = {
       ...baseFallback,
       auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
       activityType:
-        detail.activityType !== undefined
-          ? ActivityTypeLabel[detail.activityType]
-          : baseFallback.activityType,
+        typeDict.find((x) => x.value === detail.activityType.value)?.value ||
+        baseFallback.activityType,
       detail: detail.detail || baseFallback.detail,
       // 活动空间
       space: detail.space,
       // spaceAddress: detail.space?.address || baseFallback.spaceAddress || '',
       // spaceName: detail.space?.name || baseFallback.spaceName || '',
       // spaceId: detail.space?.id || baseFallback.spaceId,
-       organizer: detail.organizer,
+      organizer: detail.organizer,
     }
     console.log('activity', activity)
     const menuRect = wx.getMenuButtonBoundingClientRect()

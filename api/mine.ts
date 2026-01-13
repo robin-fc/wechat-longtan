@@ -1,6 +1,6 @@
 import type { UserProfile } from '../model/user'
 import type { ActivityCollection, Activity } from '../model/activity'
-import { ActivityType, ActivityTypeLabel } from '../model/activity'
+import { ensureActivityTypeDict } from './activity'
 import { getData } from '../utils/request'
 import { getMyActivityList, getMyActivityCollections } from './activity'
 import type { PageResult } from '../model/common'
@@ -62,27 +62,6 @@ export async function fetchMyActivities(
   const list = (page && page.list) || []
   return list.map((it) => ({
     ...it,
-    poster: {
-      id: String(it.id),
-      url: it.logo || '/assets/images/activity.jpg',
-    },
-    secondaryTag: (() => {
-      const raw = (it as any).activityType
-      let name = ''
-      if (raw !== undefined && raw !== null && raw !== '') {
-        const s = String(raw)
-        const isNum = typeof raw === 'number' || /^\d+$/.test(s)
-        if (isNum) {
-          const n = Number(raw) as ActivityType
-          name = ActivityTypeLabel[n] ?? ''
-        } else {
-          name = s
-        }
-      }
-      return {
-        name: name || it.collectionName || '活动',
-      }
-    })(),
     timeRange: {
       startTime: formatYMDHM(it.startTime),
       endTime: formatYMDHM(it.endTime),

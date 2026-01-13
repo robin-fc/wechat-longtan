@@ -4,7 +4,6 @@ import { getBannerList } from '../../api/banner'
 import { getActivityList, getActivityCollections } from '../../api/activity'
 import { getAvailableHomestayList } from '../../api/homestay'
 import { smartNavigateTo } from '../../utils/navigation'
-import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 
 interface HomeState {
   loading: boolean
@@ -78,8 +77,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
                 const s = String(raw)
                 const isNum = typeof raw === 'number' || /^\d+$/.test(s)
                 if (isNum) {
-                  const n = Number(raw) as ActivityType
-                  name = ActivityTypeLabel[n] ?? ''
+                  name = ensureActivityTypeLabel(Number(raw))
                 } else {
                   name = s
                 }
@@ -223,3 +221,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     }
   },
 })
+function ensureActivityTypeLabel(arg0: number): string {
+  throw new Error('Function not implemented.')
+}
+

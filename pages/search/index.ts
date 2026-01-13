@@ -1,12 +1,11 @@
 import { fetchSearchPageConfig } from '../../api/search'
-import { getActivityList, getActivityCollections } from '../../api/activity'
+import { getActivityList, getActivityCollections, ensureActivityTypeDict } from '../../api/activity'
 import { getAvailableHomestayList } from '../../api/homestay'
 import type { SearchFrom, HotSearchItem } from '../../api/search'
 import type { Activity } from '../../model/activity'
-import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { formatYMD } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
-import { AppHomestayDetail, AppHomestayListRespVO } from '../../model/homestay'
+import { AppHomestayListRespVO } from '../../model/homestay'
 
 interface SearchPageState {
   from: SearchFrom
@@ -80,14 +79,15 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     }
 
     const promises: Promise<any>[] = []
+    const typeDict = await ensureActivityTypeDict()
 
     // 1. Activity Search
     const activityPromise = getActivityList({
-      keyword: trimmed,
+      name: trimmed,
       pageNo: '1',
       pageSize: '20',
-    }).then((page) => {
-      const list = (page && page.data?.pageResult?.list) || []
+    }).then((res) => {
+      const list = res?.pageResult?.list || []
       return list.map((it) => ({
         ...it,
         poster: {
@@ -95,23 +95,14 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
           url:
             (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
         },
-        secondaryTag: (() => {
-          const raw = (it as any).activityType
-          let name = ''
-          if (raw !== undefined && raw !== null && raw !== '') {
-            const s = String(raw)
-            const isNum = typeof raw === 'number' || /^\d+$/.test(s)
-            if (isNum) {
-              const n = Number(raw) as ActivityType
-              name = ActivityTypeLabel[n] ?? ''
-            } else {
-              name = s
-            }
-          }
-          return {
-            name: name || it.collectionName || '活动',
-          }
-        })(),
+         secondaryTag: (() => {
+           const raw = (it as any).activityType
+           const s = String(raw ?? '').trim()
+           const dictName = typeDict.find((x) => x.value === s)?.label || s
+           return {
+             name: dictName || it.collectionName || '活动',
+           }
+         })(),
        
         timeRange: {
           startTime: formatYMD(it.startTime),

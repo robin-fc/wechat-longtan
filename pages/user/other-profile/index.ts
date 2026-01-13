@@ -1,5 +1,5 @@
 import { getData } from '../../../utils/request'
-import { ActivityTypeLabel } from '../../../model/activity'
+import { ensureActivityTypeDict } from '../../../api/activity'
 import { formatYMDHM } from '../../../utils/date'
 
 interface UserInfoView {
@@ -43,6 +43,7 @@ interface OtherProfileState {
   userId?: string
   pageNo?: number
   pageSize?: number
+  typeDict?: Record<string, string>
 }
 
 Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
@@ -67,6 +68,9 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
       menuTop: menuButtonInfo.top,
       menuHeight: menuButtonInfo.height,
       userId: String(userId || ''),
+    })
+    ensureActivityTypeDict().then((dict) => {
+      this.setData({ typeDict: dict })
     })
     this.loadUserInfo(String(userId || ''), isFollowed)
     this.loadActivities(0)
@@ -171,17 +175,11 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
           const typeText = (() => {
             const sec = it.secondaryTag?.name
             if (sec) return sec
+            const dict = (this.data as OtherProfileState).typeDict || {}
             const v = it.activityType
-            if (typeof v === 'number') {
-              return ActivityTypeLabel[v as keyof typeof ActivityTypeLabel] || ''
-            }
             const s = String(v ?? '').trim()
             if (s) {
-              const n = Number(s)
-              if (!Number.isNaN(n)) {
-                return ActivityTypeLabel[n as keyof typeof ActivityTypeLabel] || ''
-              }
-              return s
+              return dict[s] || s
             }
             return ''
           })()

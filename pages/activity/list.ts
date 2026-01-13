@@ -1,6 +1,6 @@
 import { getActivityList } from '../../api/activity'
 import type { Activity } from '../../model/activity'
-import { ActivityType, ActivityTypeLabel } from '../../model/activity'
+import { ensureActivityTypeDict } from '../../api/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
 
@@ -110,6 +110,7 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     // Check if we have more data
     const hasMore = list.length === pageSize
     
+    const typeDict = await ensureActivityTypeDict()
     const newActivities = list.map((it) => ({
       ...it,
       poster: {
@@ -117,20 +118,9 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
       },
       secondaryTag: (() => {
-        const raw = (it as any).activityType
-        let name = ''
-        if (raw !== undefined && raw !== null && raw !== '') {
-          const s = String(raw)
-          const isNum = typeof raw === 'number' || /^\d+$/.test(s)
-          if (isNum) {
-            const n = Number(raw) as ActivityType
-            name = ActivityTypeLabel[n] ?? ''
-          } else {
-            name = s
-          }
-        }
+        const name = (it as any).activityType
         return {
-          name: name || it.collectionName || '活动',
+          name: name || it.collectionName || '-',
         }
       })(),
       timeRange: {
