@@ -39,7 +39,7 @@ export interface AppHomestayRoomListRespVO {
   roomNumberWithPackage: string
   price: number
   logo: string
-  tags: string // "0,1"
+  tags: string[] // 房间标签（每个数字对应一个标签：0=独立卫生间, 1=山景房, 2=海景房, 3=家庭房, 4=双床房, 5=大床房）
 }
 
 export interface AppHomestayPackageRespVO {

@@ -8,7 +8,7 @@ export interface UserProfile {
   memberPhone?: string
   memberNumber?: string
   memberLevel?: string
-  memberTags?: string | string[]
+  memberTags?: string[]
   sex?: number
   desc?: string
   status?: number

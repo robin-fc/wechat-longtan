@@ -56,11 +56,6 @@ export async function getAvailableRoomList(
   )
   return (raw || []).map((it) => {
     const tagNames = it.tags
-      ? it.tags
-          .split(',')
-          .map((s) => ROOM_TAGS[Number(s)])
-          .filter(Boolean)
-      : []
     const duration = (it.roomNumberWithPackage || '').split('-')[1] || '一周起'
 
     return {
