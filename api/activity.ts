@@ -1,12 +1,12 @@
 import type {
+  ActivityType,
   Activity,
   ActivityCollection,
   ActivityDetail,
   ActivityRegistration,
   ActivityShareInfo,
-  AppActivityRespVO,
 } from '../model/activity'
-import { PageResult, CommonResult, PaginatedResult } from '../model/common'
+import { PageResult } from '../model/common'
 import { getData, postData } from '../utils/request'
 import { formatYMDHM } from '../utils/date'
 
@@ -14,7 +14,8 @@ export interface ActivityListParams {
   collectionId?: string
   spaceId?: string
   activityType?: string
-  keyword?: string
+  onlyOnSale?: boolean
+  name?: string	//活动标题（模糊搜索）,示例值(摄影)
   pageNo: string
   pageSize: string
 }
@@ -27,16 +28,17 @@ export interface CreateActivityCollectionPayload {
 
 export interface CreateActivityPayload {
   title: string
-  collectionId?: number | string
-  fee?: number
+  logo: string
+  fee: number
   isFree: boolean
-  activityType: number
   startTime: string
   endTime: string
-  spaceName: string
-  detail: string
-  logo: string
-  limit?: number
+  spaceId: number | string
+  collectionId?: number | string
+  activityType?: string
+  maxParticipants?: number
+  detail?: string
+  isLimitParticipants?: boolean
 }
 
 export interface ActivityListResponse {
@@ -113,13 +115,13 @@ export function getActivityRegistrations(
 
 export async function getActivityByIdFromList(
   id: number
-): Promise<Activity | undefined> {
+): Promise<Activity> {
   const res = await getActivityList({
     pageNo: '1',
     pageSize: '100',
   })
   const it = res.pageResult.list.find((x) => x.id === id)
-  if (!it) return undefined
+  if (!it) throw new Error('Activity not found')
   return {
     ...it,
     logo: it.logo,
@@ -174,4 +176,43 @@ export function shareActivity(activityId: number): Promise<ActivityShareInfo> {
     { activityId },
     { 'content-type': 'application/x-www-form-urlencoded' }
   )
+}
+
+/**
+ * 获取活动类型列表
+ * @param {string} onlyRelated 是否只获取系统中活动关联的类型（true=只获取已关联的类型，false/null=获取所有类型）
+ * @returns
+ */
+export function getActivityTypeList(onlyRelated: string): Promise<
+  {
+    value: string // 活动类型数值
+    label: string // 活动类型标签
+    logo: string // 活动类型logo地址
+  }[]
+> {
+  return getData<
+    {
+      value: string // 活动类型数值
+      label: string // 活动类型标签
+      logo: string // 活动类型logo地址
+    }[]
+  >(`/app-api/daolongtan/activity/type-list?onlyRelated=${onlyRelated}`)
+}
+
+let activityTypeDictCache: ActivityType[] | null = null
+
+export async function ensureActivityTypeDict(): Promise<ActivityType[]> {
+  if (activityTypeDictCache) return activityTypeDictCache
+  const list = await getActivityTypeList('false')
+  activityTypeDictCache = list.slice()
+  return list
+}
+
+export async function getActivityTypeLabelDynamic(
+  value: number | string
+): Promise<string> {
+  const dict = await ensureActivityTypeDict()
+  const key = String(value)
+  const item = dict.find((x) => x.value === key)
+  return item?.label || key
 }

@@ -1,8 +1,8 @@
 import { goBack } from '../../utils/navigation'
 import { toISO8601 } from '../../utils/isoTime'
-import { createActivity, getMyActivityCollections } from '../../api/activity'
-import { ActivityType, ActivityTypeLabel } from '../../model/activity'
+import { createActivity, getMyActivityCollections, getActivityTypeList } from '../../api/activity'
 import { uploadImage } from '../../api/common'
+import type { ActivityType as ActivityTypeItem } from '../../model/activity'
 
 interface PublishFormState {
   title: string
@@ -18,7 +18,7 @@ interface PublishFormState {
   endDate?: string
   endClock?: string
   space: string
-  spaceId?: string
+  spaceId: string
   logo: string
   description: string
 }
@@ -27,20 +27,68 @@ interface PublishPageState {
   form: PublishFormState
   collectionOptions: { id: string; name: string }[]
   collectionIndex: number
-  typeOptions: string[]
-  typeValues: number[]
+  types: ActivityTypeItem[]
   typeIndex: number
   spaceOptions: { id: number; name: string }[]
   spaceIndex: number
 }
 
-// 构造活动类型选项和对应的值
-const typeKeys = Object.keys(ActivityTypeLabel)
-  .map(k => Number(k))
-  .filter(k => !isNaN(k))
-  .sort((a, b) => a - b)
-const typeOptions = typeKeys.map(k => ActivityTypeLabel[k as ActivityType])
-const typeValues = typeKeys
+function validatePublishForm(
+  form: PublishFormState
+): { startISO: string; endISO: string } | null {
+  if (!form.title.trim()) {
+    wx.showToast({
+      title: '请填写活动标题',
+      icon: 'none',
+    })
+    return null
+  }
+  if (!form.free && !form.price.trim()) {
+    wx.showToast({
+      title: '请填写报名费或选择免费',
+      icon: 'none',
+    })
+    return null
+  }
+  if (!form.limit.trim()) {
+    wx.showToast({
+      title: '请填写人数限制',
+      icon: 'none',
+    })
+    return null
+  }
+  if (!form.startDate || !form.startClock || !form.endDate || !form.endClock) {
+    wx.showToast({
+      title: '请选择活动时间',
+      icon: 'none',
+    })
+    return null
+  }
+  const startISO = toISO8601(form.startDate || '', form.startClock || '')
+  const endISO = toISO8601(form.endDate || '', form.endClock || '')
+  if (!startISO || !endISO) {
+    wx.showToast({
+      title: '时间格式错误',
+      icon: 'none',
+    })
+    return null
+  }
+  if (!form.logo) {
+    wx.showToast({
+      title: '请上传活动海报',
+      icon: 'none',
+    })
+    return null
+  }
+  if (!form.description.trim()) {
+    wx.showToast({
+      title: '请填写活动介绍',
+      icon: 'none',
+    })
+    return null
+  }
+  return { startISO, endISO }
+}
 
 Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   data: {
@@ -49,7 +97,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       collectionId: '',
       price: '',
       free: false,
-      type: typeOptions[0],
+      type: '',
       limit: '',
       startTime: '',
       endTime: '',
@@ -62,13 +110,9 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       logo: '',
       description: '',
     },
-    collectionOptions: [
-      { id: '0', name: '不关联合集' },
-      { id: '1', name: '周末自然漫游系列' },
-    ],
+    collectionOptions: [],
     collectionIndex: 0,
-    typeOptions: typeOptions,
-    typeValues: typeValues,
+    types: [],
     typeIndex: 0,
     spaceOptions: [
       { id: 1, name: '空间A' },
@@ -80,16 +124,22 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
       const page = await getMyActivityCollections('1', '100')
-      const options = [{ id: '0', name: '不关联合集' }].concat(
-        (page.list || []).map((it) => ({
-          id: String(it.id),
-          name: it.name || '',
-        }))
-      )
+      const options = (page.list || []).map((it) => ({
+        id: String(it.id),
+        name: it.name || '',
+      }))
       this.setData({
         collectionOptions: options,
         collectionIndex: 0,
         'form.collectionId': '',
+      })
+    } catch {}
+    try {
+      const types = await getActivityTypeList('false')
+      this.setData({
+        types: (types || []) as ActivityTypeItem[],
+        typeIndex: 0,
+        'form.type': ((types || [])[0]?.label || ''),
       })
     } catch {}
   },
@@ -139,10 +189,9 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.PickerChange
   ) {
     const index = Number(e.detail.value || 0)
-    const typeOptions = (this.data as PublishPageState).typeOptions
     this.setData({
       typeIndex: index,
-      'form.type': typeOptions[index],
+      'form.type': (((this.data as PublishPageState).types[index]?.label) || ''),
     })
   },
   onLimitChange(
@@ -308,74 +357,28 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   ) {
     const state = this.data as PublishPageState
     const form = state.form
-    if (!form.title.trim()) {
-      wx.showToast({
-        title: '请填写活动标题',
-        icon: 'none',
-      })
+    const result = validatePublishForm(form)
+    if (!result) {
       return
     }
-    if (!form.free && !form.price.trim()) {
-      wx.showToast({
-        title: '请填写报名费或选择免费',
-        icon: 'none',
-      })
-      return
-    }
-    if (!form.limit.trim()) {
-      wx.showToast({
-        title: '请填写人数限制',
-        icon: 'none',
-      })
-      return
-    }
-    if (!form.startDate || !form.startClock || !form.endDate || !form.endClock) {
-      wx.showToast({
-        title: '请选择活动时间',
-        icon: 'none',
-      })
-      return
-    }
-    const startISO = toISO8601(form.startDate || '', form.startClock || '')
-    const endISO = toISO8601(form.endDate || '', form.endClock || '')
-    if (!startISO || !endISO) {
-      wx.showToast({
-        title: '时间格式错误',
-        icon: 'none',
-      })
-      return
-    }
-    if (!form.logo) {
-      wx.showToast({
-        title: '请上传活动海报',
-        icon: 'none',
-      })
-      return
-    }
-    if (!form.description.trim()) {
-      wx.showToast({
-        title: '请填写活动介绍',
-        icon: 'none',
-      })
-      return
-    }
-    const typeValue = state.typeValues[state.typeIndex]
+    const { startISO, endISO } = result
+    const typeValue = (state.types[state.typeIndex]?.value || '')
     const startTimeStr = startISO
     const endTimeStr = endISO
     const selectedSpace = state.spaceOptions[state.spaceIndex]
     const payload = {
       title: form.title.trim(),
-      collectionId: form.collectionId ? Number(form.collectionId) || form.collectionId : undefined,
       fee: form.free ? 0 : Number(form.price) || 0,
       isFree: form.free,
-      activityType: typeValue,
       startTime: startTimeStr,
       endTime: endTimeStr,
-      spaceName: form.space,
-      spaceId: selectedSpace ? selectedSpace.id : undefined,
-      detail: form.description.trim(),
       logo: form.logo,
-      limit: Number(form.limit) || undefined,
+      spaceId: selectedSpace ? selectedSpace.id : form.spaceId,
+      collectionId: form.collectionId ? Number(form.collectionId) || form.collectionId : undefined,
+      activityType: typeValue || undefined,
+      maxParticipants: Number(form.limit),
+      detail: form.description.trim(),
+      isLimitParticipants: !!Number(form.limit),
     }
     try {
       wx.showLoading({ title: '提交中...', mask: true })
@@ -389,7 +392,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
             collectionId: '',
             price: '',
             free: false,
-            type: typeOptions[0],
+            type: ((this.data as PublishPageState).types[0]?.label || ''),
             limit: '',
             startTime: '',
             endTime: '',

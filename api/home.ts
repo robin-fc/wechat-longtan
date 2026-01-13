@@ -2,6 +2,7 @@ import type { Activity, ActivityCollection } from '../model/activity'
 import type { UserProfile } from '../model/user'
 import type { ID, ImageResource } from '../model/common'
 import { AppHomestayListItem } from '../model/homestay'
+import { getActivityTypeList } from './activity'
 
 export interface HomeEntryItem {
   id: ID
@@ -37,93 +38,23 @@ export interface HomePageData {
   aboutLinks: HomeAboutLink[]
 }
 
-// todo value需要改成对应的值，不能是中文，需要等后台确定各个类型的值
-const entriesMock: HomeEntryItem[] = [
-  {
-    id: 'entry-photo',
-    name: '摄影',
-    icon: { id: 'entry-photo-icon', url: '/assets/icons/home/camera.png' },
-    type: 'activityCategory',
-    value: '摄影',
-  },
-  {
-    id: 'entry-illust',
-    name: '插画',
-    icon: { id: 'entry-illust-icon', url: '/assets/icons/home/drawing.png' },
-    type: 'activityCategory',
-    value: '插画',
-  },
-  {
-    id: 'entry-writing',
-    name: '写作',
-    icon: { id: 'entry-writing-icon', url: '/assets/icons/home/work.png' },
-    type: 'activityCategory',
-    value: '写作',
-  },
-  {
-    id: 'entry-wood',
-    name: '木工',
-    icon: { id: 'entry-wood-icon', url: '/assets/icons/home/ruler.png' },
-    type: 'activityCategory',
-    value: '木工',
-  },
-  {
-    id: 'entry-story',
-    name: '故事采集',
-    icon: { id: 'entry-story-icon', url: '/assets/icons/home/story.png' },
-    type: 'activityCategory',
-    value: '故事采集',
-  },
-  {
-    id: 'entry-hike',
-    name: '徒步',
-    icon: { id: 'entry-hike-icon', url: '/assets/icons/home/walking.png' },
-    type: 'activityCategory',
-    value: '1',
-  },
-  {
-    id: 'entry-eco',
-    name: '生态观察',
-    icon: { id: 'entry-eco-icon', url: '/assets/icons/home/ecology.png' },
-    type: 'activityCategory',
-    value: '生态观察',
-  },
-  {
-    id: 'entry-valley',
-    name: '溪谷探访',
-    icon: { id: 'entry-valley-icon', url: '/assets/icons/home/valley.png' },
-    type: 'activityCategory',
-    value: '溪谷探访',
-  },
-  {
-    id: 'entry-history',
-    name: '村史讲述',
-    icon: { id: 'entry-history-icon', url: '/assets/icons/home/history.png' },
-    type: 'activityCategory',
-    value: '村史讲述',
-  },
-  {
-    id: 'entry-market',
-    name: '手作市集',
-    icon: { id: 'entry-market-icon', url: '/assets/icons/home/market.png' },
-    type: 'activityCategory',
-    value: '手作市集',
-  },
-  {
-    id: 'entry-music',
-    name: '音乐夜',
-    icon: { id: 'entry-music-icon', url: '/assets/icons/home/music.png' },
-    type: 'activityCategory',
-    value: '音乐夜',
-  },
-  {
-    id: 'entry-artfest',
-    name: '艺术节',
-    icon: { id: 'entry-artfest-icon', url: '/assets/icons/home/art.png' },
-    type: 'activityCategory',
-    value: '艺术节',
-  },
-]
+async function buildEntriesFromApi(): Promise<HomeEntryItem[]> {
+  try {
+    const types = await getActivityTypeList('true')
+    return (types || []).map((t) => ({
+      id: `entry-${t.value}`,
+      name: t.label || String(t.value),
+      icon: {
+        id: `entry-icon-${t.value}`,
+        url: t.logo || '/assets/icons/home/default.png',
+      },
+      type: 'activityCategory',
+      value: String(t.value),
+    }))
+  } catch {
+    return []
+  }
+}
 
 const aboutLinksMock: HomeAboutLink[] = [
   {
@@ -152,15 +83,14 @@ const aboutLinksMock: HomeAboutLink[] = [
   },
 ]
 
-const homeMockData: HomePageData = {
-  carousel: [],
-  entries: entriesMock,
-  hotActivities: [],
-  collections: [],
-  homestays: [],
-  aboutLinks: aboutLinksMock,
-}
-
-export function fetchHomeData(): Promise<HomePageData> {
-  return Promise.resolve(homeMockData)
+export async function fetchHomeData(): Promise<HomePageData> {
+  const entries = await buildEntriesFromApi()
+  return {
+    carousel: [],
+    entries,
+    hotActivities: [],
+    collections: [],
+    homestays: [],
+    aboutLinks: aboutLinksMock,
+  }
 }

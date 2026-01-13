@@ -29,9 +29,9 @@
 
     <view class="form-section">
       <text class="label">活动类型*</text>
-      <picker mode="selector" range="{{typeOptions}}" value="{{typeIndex}}" bindchange="onTypeChange">
+      <picker mode="selector" range="{{types}}" range-key="label" value="{{typeIndex}}" bindchange="onTypeChange">
         <view class="picker-value">
-          <text>{{typeOptions[typeIndex]}}</text>
+          <text>{{types[typeIndex].label}}</text>
         </view>
       </picker>
     </view>
