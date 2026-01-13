@@ -3,50 +3,33 @@ import { updateUserInfo } from '../../../api/user'
 
 Page({
   data: {
-    avatar: '',
-    nickname: '',
-    gender: 2, // 1男 2女 0其他
-    bio: '',
-    loading: false
+    logo: '',
+    wxName: '',
+    sex: 2, // 1男 2女 0其他
+    desc: '',
+    loading: false,
   },
   async onLoad() {
-    try {
-      const profile = await fetchMyProfile()
-      if (profile) {
-        this.setData({
-          avatar: profile.logo || '',
-          nickname: profile.wxName || '',
-          gender: profile.sex || 2,
-          bio: profile.desc || ''
-        })
-      }
-    } catch (e) {
-      console.error(e)
+    const profile = await fetchMyProfile()
+    if (profile) {
+      this.setData(profile)
     }
   },
   onChooseAvatar(e: any) {
     const { avatarUrl } = e.detail
-    this.setData({ avatar: avatarUrl })
+    this.setData({ logo: avatarUrl })
   },
   onNicknameInput(e: any) {
-    this.setData({ nickname: e.detail.value })
+    this.setData({ wxName: e.detail.value })
   },
   onBioInput(e: any) {
-    this.setData({ bio: e.detail.value })
+    this.setData({ desc: e.detail.value })
   },
   onGenderChange(e: any) {
-    this.setData({ gender: Number(e.currentTarget.dataset.value) })
+    this.setData({ sex: Number(e.currentTarget.dataset.value) })
   },
   async onSave() {
-    const { avatar, nickname, gender, bio } = this.data
-    
-    const data = {
-      logo: avatar,
-      wxName: nickname,
-      sex: gender,
-      desc: bio
-    }
-    
+    const data = { ...this.data }
     this.setData({ loading: true })
     try {
       await updateUserInfo(data)
@@ -57,5 +40,5 @@ Page({
     } finally {
       this.setData({ loading: false })
     }
-  }
+  },
 })
