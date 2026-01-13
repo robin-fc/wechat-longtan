@@ -3,7 +3,6 @@ import type { HomePageData, HomeEntryItem } from '../../api/home'
 import { getBannerList } from '../../api/banner'
 import { getActivityList, getActivityCollections } from '../../api/activity'
 import { getAvailableHomestayList } from '../../api/homestay'
-import { ActivityType, ActivityTypeLabel } from '../../model/activity'
 import { smartNavigateTo } from '../../utils/navigation'
 
 interface HomeState {
@@ -79,7 +78,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       }
       try {
         const res = await getAvailableHomestayList()
-        data.homestays = res?.data.slice(0, 3)
+        data.homestays = res?.slice(0, 3) || []
       } catch (e) {
         console.error('Fetch homestays failed:', e)
       }

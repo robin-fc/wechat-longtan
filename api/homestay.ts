@@ -11,13 +11,13 @@ import {
   AppOrderListRespVO,
   HomestayApplicationStatus,
 } from '../model/homestay'
-import type { CommonResult, ID } from '../model/common'
+import type { ID } from '../model/common'
 import { getData } from '../utils/request'
 
 export async function getAvailableHomestayList(params?: {
   keyword?: string
-}): Promise<CommonResult<AppHomestayListRespVO[]>> {
-  return await getData<CommonResult<AppHomestayListRespVO[]>>(
+}): Promise<AppHomestayListRespVO[]> {
+  return await getData<AppHomestayListRespVO[]>(
     '/app-api/daolongtan/homestay/list',
     params
   )
