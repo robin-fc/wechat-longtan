@@ -57,11 +57,8 @@ export interface Activity {
   /*活动结束时间 */
   endTime: string
 
-  /*空间ID */
-  spaceId: number
-
-  /*空间名称 */
-  spaceName: string
+ /*空间信息*/
+  space: Space
 
   /*活动详情 */
   detail: string

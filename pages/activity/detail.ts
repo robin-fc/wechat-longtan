@@ -16,6 +16,7 @@ import {
   ActivityTypeLabel,
   type RegistrationUser,
 } from '../../model/activity'
+import { formatYMDHM } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
 interface ActivityDetailState {
@@ -67,6 +68,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
 
+    const space = detail.space || {}
     const baseFallback: Activity =
       base ??
       ({
@@ -74,11 +76,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         title: detail.title,
         logo: detail.logo,
         isFree: detail.isFree,
-        startTime: detail.startTime,
-        endTime: detail.endTime,
+        startTime: formatYMDHM(detail.startTime) || '',
+        endTime: formatYMDHM(detail.endTime) || '',
         spaceId: detail.space.id,
         spaceName: detail.space.name,
         fee: detail.fee,
+        space: space,
         detail: detail.detail,
         activityType: detail.activityType,
         auditStatus: detail.auditStatus,
@@ -188,7 +191,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/space/detail?id=${encodeURIComponent(String(detail.spaceId))}`
+      `/pages/space/detail?id=${encodeURIComponent(String(detail.space.id))}`
     )
   },
   onToggleCollect(this: WechatMiniprogram.Page.TrivialInstance) {

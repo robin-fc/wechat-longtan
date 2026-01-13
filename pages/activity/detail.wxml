@@ -9,13 +9,13 @@
   <view wx:if="{{activity}}" class="body" style="padding-top: {{menuTop + menuHeight + 10}}px;">
     <view class="moment-card">
       <view class="moment-image-wrapper">
-        <image class="moment-image" src="{{activity.poster.url}}" mode="aspectFill" />
+        <image class="moment-image" src="{{activity.logo}}" mode="aspectFill" />
         <text class="image-tag">{{activity.activityType}}</text>
       </view>
       <view class="moment-content">
         <view class="price-row">
           <text class="price-symbol">¥</text>
-          <text class="price-amount">{{activity.price.amount}}</text>
+          <text class="price-amount">{{activity.fee}}</text>
         </view>
         
         <view class="header-title-row">
@@ -25,7 +25,7 @@
 
         <view class="info-row time-row">
           <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
-          <text class="info-text">{{activity.timeRange.startTime}}-{{activity.timeRange.endTime}}</text>
+          <text class="info-text">{{activity.startTime}}-{{activity.endTime}}</text>
         </view>
 
         <view class="info-row space-row">
@@ -112,8 +112,6 @@
             />
           </block>
           <block wx:else>
-            <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
-            <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
             <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
           </block>
         </view>
