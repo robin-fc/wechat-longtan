@@ -1,7 +1,7 @@
 import type { Activity, ActivityCollection } from '../model/activity'
-import type { Homestay } from '../model/homestay'
 import type { UserProfile } from '../model/user'
 import type { ID, ImageResource } from '../model/common'
+import { AppHomestayListItem } from '../model/homestay'
 
 export interface HomeEntryItem {
   id: ID
@@ -33,7 +33,7 @@ export interface HomePageData {
   entries: HomeEntryItem[]
   hotActivities: Activity[]
   collections: ActivityCollection[]
-  homestays: Homestay[]
+  homestays: AppHomestayListItem[]
   aboutLinks: HomeAboutLink[]
 }
 
