@@ -31,7 +31,7 @@ export function refreshToken(
     method: 'POST',
     data,
     headers: {
-      Authorization: 'Bearer test1',
+      Authorization: `Bearer ${data.refreshToken}`,
     },
   }).then((res) => {
     const payload = res && (res.data as AppWeixinMiniAppLoginRespVO | null)

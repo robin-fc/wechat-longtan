@@ -41,10 +41,10 @@ Page<SpaceDetailState, WechatMiniprogram.IAnyObject>({
       // 绑定在售活动数量
       this.setData({ activityCount: res.onSaleCount || 0 })
 
-      // 绑定空间介绍 (如果接口有返回 detail)
-      if (res.detail) {
-        this.setData({ desc: res.detail })
-      }
+      // // 绑定空间介绍 (如果接口有返回 detail)
+      // if (res.detail) {
+      //   this.setData({ desc: res.detail })
+      // }
 
       const activities = res.pageResult && res.pageResult.list ? res.pageResult.list.map(it => ({
         ...it,
@@ -60,12 +60,12 @@ Page<SpaceDetailState, WechatMiniprogram.IAnyObject>({
       })) : []
 
       // 尝试从活动列表中获取空间名称等信息 (如果活动列表有数据)
-      if (activities.length > 0) {
-          const firstActivity = activities[0]
-          if (firstActivity.spaceName) {
-              this.setData({ name: firstActivity.spaceName })
-          }
-      }
+      // if (activities.length > 0) {
+      //     const firstActivity = activities[0]
+      //     if (firstActivity.spaceName) {
+      //         this.setData({ name: firstActivity.spaceName })
+      //     }
+      // }
 
       this.setData({ activities })
 

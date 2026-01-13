@@ -1,4 +1,4 @@
-import type { ImageResource, TimeRange, Price } from './common'
+import type { ImageResource, TimeRange, Price, PageResult } from './common'
 import { AppUserInfoRespVO } from './user-follow'
 
 // 民宿标签映射
@@ -23,6 +23,10 @@ export const ROOM_TAGS: Record<number, string> = {
 }
 
 // ================= API VOs =================
+export interface AppHomestayListResp {
+  pageResult: PageResult<AppHomestayListRespVO>
+  onSaleCount: number
+}
 
 export interface AppHomestayListRespVO {
   id: number

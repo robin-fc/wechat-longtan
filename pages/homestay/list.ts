@@ -1,9 +1,8 @@
-import { fetchHomestayList, getHomestayAvailableList } from '../../api/homestay'
 import {
-  AppHomestayDetail,
-  AppHomestayListItem,
-  tagMap,
-} from '../../model/homestay'
+  getAvailableHomestayList,
+  getHomestayAvailableList,
+} from '../../api/homestay'
+import { AppHomestayListItem } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
@@ -65,9 +64,12 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
         homestays: list,
       })
     } catch {
-      const list = await fetchHomestayList({  })
+      const list = await getAvailableHomestayList({
+        pageNo: '1',
+        pageSize: '10',
+      })
       this.setData({
-        homestays: list,
+        homestays: list || [],
       })
     }
   },

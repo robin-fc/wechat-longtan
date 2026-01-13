@@ -6,20 +6,22 @@ import {
   type AppHomestayDetail,
   AppHomestayListRespVO,
   AppHomestayRoomListRespVO,
-  ROOM_TAGS,
   HomestayApplication,
   AppOrderListRespVO,
   HomestayApplicationStatus,
 } from '../model/homestay'
-import type { ID } from '../model/common'
-import { getData } from '../utils/request'
+import { CommonResult, type ID, type PageResult } from '../model/common'
+import { getData, request } from '../utils/request'
 
-export async function getAvailableHomestayList(params?: {
-  keyword?: string
-}): Promise<AppHomestayListRespVO[]> {
-  return await getData<AppHomestayListRespVO[]>(
+export async function getAvailableHomestayList(data?: {
+  pageNo: string
+  pageSize: string
+  name?: string
+  checkInDate?: string
+}): Promise<PageResult<AppHomestayListRespVO>> {
+  return getData<PageResult<AppHomestayListRespVO>>(
     '/app-api/daolongtan/homestay/list',
-    params
+    data
   )
 }
 

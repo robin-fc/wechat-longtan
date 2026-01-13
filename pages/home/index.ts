@@ -45,64 +45,35 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       const data = await fetchHomeData()
       try {
         const banners = await getBannerList()
-        if (banners && banners.length > 0) {
-          data.carousel = banners.map((b) => ({
-            id: String(b.id),
-            title: b.title || '',
-            poster: {
-              id: String(b.id),
-              url: b.logo,
-            },
-            description: b.description || '',
-            category: b.category || '',
-            url: b.url,
-          }))
-        }
+        data.carousel = banners.slice()
       } catch (e) {
         console.error('Fetch banners failed:', e)
       }
       try {
         const res = await getActivityList({ pageNo: '1', pageSize: '5' })
         const pageResult = res?.pageResult || []
-        data.hotActivities = (pageResult.list || [])
-          .slice(0, 3)
-          .map((it) => ({
-            ...it,
-            secondaryTag: (() => {
-              const raw = (it as any).activityType
-              let name = ''
-              if (raw !== undefined && raw !== null && raw !== '') {
-                const s = String(raw)
-                const isNum = typeof raw === 'number' || /^\d+$/.test(s)
-                if (isNum) {
-                  name = ensureActivityTypeLabel(Number(raw))
-                } else {
-                  name = s
-                }
-              }
-              return {
-                name: name || it.collectionName || '活动',
-              }
-            })(),
-          }))
+        data.hotActivities = pageResult.list || []
       } catch (e) {
         console.error('Fetch activities failed:', e)
       }
       try {
-        const page = await getActivityCollections('1', '5')
-        data.collections = (page && page.list) || []
+        const res = await getActivityCollections('1', '5')
+        data.collections = (res && res.list) || []
       } catch (e) {
         console.error('Fetch collections failed:', e)
       }
       try {
-        const res = await getAvailableHomestayList()
-        data.homestays = res?.slice(0, 3) || []
+        const res = await getAvailableHomestayList({
+          pageNo: '1',
+          pageSize: '5',
+        })
+        data.homestays = res?.list || []
       } catch (e) {
         console.error('Fetch homestays failed:', e)
       }
       const idx = this.data.heroCurrent
       const bg =
-        data.carousel && data.carousel[idx] ? data.carousel[idx].poster.url : ''
+        data.carousel && data.carousel[idx] ? data.carousel[idx].logo : ''
       this.setData({
         pageData: data,
         loading: false,
@@ -218,7 +189,3 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     }
   },
 })
-function ensureActivityTypeLabel(arg0: number): string {
-  throw new Error('Function not implemented.')
-}
-

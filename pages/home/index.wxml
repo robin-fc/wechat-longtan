@@ -15,7 +15,7 @@
         <swiper-item class="custom-swiper-item">
           <view class="hero-card {{heroCurrent === idx ? 'selected' : ''}}" bindtap="onBannerTap" data-idx="{{idx}}">
             <view class="hero-poster-wrapper">
-              <image class="hero-poster" src="{{item.poster.url}}" mode="widthFix" />
+              <image class="hero-poster" src="{{item.logo}}" mode="widthFix" />
             </view>
           </view>
         </swiper-item>

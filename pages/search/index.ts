@@ -6,6 +6,7 @@ import type { Activity } from '../../model/activity'
 import { formatYMD } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { AppHomestayListRespVO } from '../../model/homestay'
+import { PageResult } from '../../model/common'
 
 interface SearchPageState {
   from: SearchFrom
@@ -129,7 +130,11 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     // 3. Homestay Search (only if from === 'home')
     let homestayPromise: Promise<AppHomestayListRespVO[]> = Promise.resolve([])
     if (state.from === 'home') {
-      homestayPromise = getAvailableHomestayList({ keyword: trimmed })
+      homestayPromise = getAvailableHomestayList({
+        pageNo: '1',
+        pageSize: '20',
+        name: trimmed,
+      }).then((res) => res?.list || [])
     }
     promises.push(homestayPromise)
 

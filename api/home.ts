@@ -3,6 +3,7 @@ import type { UserProfile } from '../model/user'
 import type { ID, ImageResource } from '../model/common'
 import { AppHomestayListItem } from '../model/homestay'
 import { getActivityTypeList } from './activity'
+import { Banner } from '../model/banner'
 
 export interface HomeEntryItem {
   id: ID
@@ -12,14 +13,6 @@ export interface HomeEntryItem {
   value: string
 }
 
-export interface HomeCarouselItem {
-  id: ID
-  title: string
-  poster: ImageResource
-  description: string
-  category: string
-  url?: string
-}
 
 export interface HomeAboutLink {
   id: ID
@@ -30,7 +23,7 @@ export interface HomeAboutLink {
 
 export interface HomePageData {
   currentUser?: UserProfile
-  carousel: HomeCarouselItem[]
+  carousel: Banner[]
   entries: HomeEntryItem[]
   hotActivities: Activity[]
   collections: ActivityCollection[]
