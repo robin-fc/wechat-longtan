@@ -31,15 +31,15 @@
         <view class="info-row space-row">
           <view class="space-left" bindtap="onSpaceDetailTap">
             <view class="space-name-wrap">
-              <text class="space-name">{{activity.spaceName}}</text>
+              <text class="space-name">{{activity.space.name}}</text>
               <text class="arrow-right">›</text>
             </view>
-            <text class="space-address">{{activity.spaceAddress}}</text>
+            <text class="space-address">{{activity.space.address}}</text>
           </view>
           <view class="space-right" bindtap="onOpenMapTap">
             <image 
               class="mini-map" 
-              src="{{activity.space.mapImages[0] || '/assets/images/activity.jpg'}}" 
+              src="{{activity.space.mapImages[0]}}" 
               mode="aspectFill" 
             />
             <text class="map-hint">点击查看</text>

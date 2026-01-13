@@ -66,7 +66,28 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       try {
         const res = await getActivityList({ pageNo: '1', pageSize: '5' })
         const pageResult = res?.pageResult || []
-        data.hotActivities = pageResult.list.slice(0, 3)
+        data.hotActivities = (pageResult.list || [])
+          .slice(0, 3)
+          .map((it) => ({
+            ...it,
+            secondaryTag: (() => {
+              const raw = (it as any).activityType
+              let name = ''
+              if (raw !== undefined && raw !== null && raw !== '') {
+                const s = String(raw)
+                const isNum = typeof raw === 'number' || /^\d+$/.test(s)
+                if (isNum) {
+                  name = ensureActivityTypeLabel(Number(raw))
+                } else {
+                  name = s
+                }
+              }
+              return {
+                name: name || it.collectionName || '活动',
+              }
+            })(),
+          }))
+        console.log('首页热门活动，hotActivities:', data.hotActivities)
       } catch (e) {
         console.error('Fetch activities failed:', e)
       }
@@ -200,3 +221,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     }
   },
 })
+function ensureActivityTypeLabel(arg0: number): string {
+  throw new Error('Function not implemented.')
+}
+

@@ -1,12 +1,12 @@
 <view class="activity-card {{layout}} {{compact ? 'compact' : ''}}" bindtap="onTap">
   <view class="relative">
-    <image class="poster" src="{{activity.poster.url}}" mode="aspectFill" />
+    <image class="poster" src="{{activity.logo}}" mode="aspectFill" />
     <text class="tag image-tag">{{activity.secondaryTag.name}}</text>
   </view>
 
   <view class="content">
     <view class="title-row">
-      <text class="tag title-tag" wx:if="{{layout === 'vertical'}}">{{activity.secondaryTag.name}}</text>
+      <text class="tag title-tag">{{activity.secondaryTag.name}}</text>
       <text class="title">{{activity.title}}</text>
     </view>
     
@@ -14,21 +14,22 @@
     <view class="info-row" wx:if="{{layout === 'vertical'}}">
       <view class="price-wrapper">
         <text class="currency">¥</text>
-        <text class="amount">{{activity.price.amount}}</text>
+        <text class="amount">{{activity.fee}}</text>
       </view>
       <text class="date">{{formattedDate}}</text>
     </view>
 
     <!-- Horizontal Layout Info -->
     <block wx:else>
-      <view class="time-row">
+      <view class="info-row time-row">
+        <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
         <text class="time">
           {{activity.timeRange.startTime + '-' + activity.timeRange.endTime}}
         </text>
       </view>
     
       <view class="location-row">
-        <image class="location-icon" src="/assets/icons/home.png" mode="aspectFit" />
+        <image class="location-icon" src="/assets/icons/location.png" mode="aspectFit" />
         <text class="location-text">{{activity.spaceName || activity.space.name || ''}}</text>
       </view>
       
