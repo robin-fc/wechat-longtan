@@ -52,8 +52,11 @@ export interface Activity {
   /*活动详情 */
   detail: string
 
-  /*审核状态（0待审核 1审核通过 2审核不通过） */
-  auditStatus: number
+  /*审核状态:待审核 审核通过 审核不通过） */
+  auditStatus: string
+
+  /*活动状态（报名中， 活动中， 已结束） */
+  activityStatus: string
 
   /*创建时间 */
   createTime: string
@@ -118,8 +121,9 @@ export interface ActivityDetail {
   favoriteCount: number
   favoriteUsers: FavoriteUser[]
   isFavorited: boolean
-  activityType: ActivityType
-  auditStatus?: number
+  activityType?: ActivityType
+  auditStatus?: string
+  activityStatus?: string
   maxParticipants?: number
 }
 

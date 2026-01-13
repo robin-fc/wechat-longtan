@@ -78,7 +78,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       ...baseFallback,
       auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
       activityType:
-        typeDict.find((x) => x.value === detail.activityType.value)?.value ||
+        typeDict.find((x) => x.value === detail.activityType?.value)?.label ||
         baseFallback.activityType,
       detail: detail.detail || baseFallback.detail,
       // 活动空间
@@ -305,16 +305,25 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-    if (detail.auditStatus !== 1) {
+    if (detail.auditStatus !== '审核通过') {
       let msg = '该活动未审核通过，无法报名'
-      if (detail.auditStatus === 0) {
+      if (detail.auditStatus === '待审核') {
         msg = '该活动正在审核中，暂时无法报名'
-      } else if (detail.auditStatus === 2) {
+      } else if (detail.auditStatus === '审核不通过') {
         msg = '该活动审核不通过，无法报名'
       }
       wx.showModal({
         title: '提示',
         content: msg,
+        showCancel: false,
+      })
+      return
+    }
+
+    if (detail.activityStatus === '已结束') {
+      wx.showModal({
+        title: '提示',
+        content: '该活动已结束，无法报名',
         showCancel: false,
       })
       return
