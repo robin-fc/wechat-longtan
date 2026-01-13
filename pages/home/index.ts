@@ -34,7 +34,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const win = wx.getWindowInfo()
     const ratio = 750 / (win.windowWidth || 750)
-    const halfScreenRpx = Math.round((win.windowHeight || 1334) * ratio / 2)
+    const halfScreenRpx = Math.round(((win.windowHeight || 1334) * ratio) / 2)
     this.setData({
       navPaddingTop: win.statusBarHeight || 0,
       topBgHeight: halfScreenRpx,
@@ -49,7 +49,6 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
         console.log('home 获取banner')
         console.log('banners:', banners)
         if (banners && banners.length > 0) {
-          
           data.carousel = banners.map((b) => ({
             id: String(b.id),
             title: b.title || '',
@@ -66,32 +65,9 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
         console.error('Fetch banners failed:', e)
       }
       try {
-        const page = await getActivityList({ pageNo: '1', pageSize: '5' })
-        const list = (page && ((page as any).pageResult?.list || (page as any).list || (page as any).items || (page as any).data || (Array.isArray(page) ? page : []))) || []
-        data.hotActivities = list.map((a) => {
-          const tag = (() => {
-            const raw = (a as any).activityType
-            let name = ''
-            if (raw !== undefined && raw !== null && raw !== '') {
-              const s = String(raw)
-              const isNum = typeof raw === 'number' || /^\d+$/.test(s)
-              if (isNum) {
-                const n = Number(raw) as ActivityType
-                name = ActivityTypeLabel[n] ?? ''
-              } else {
-                name = s
-              }
-            }
-            return name
-          })()
-          return {
-            ...a,
-            poster: { id: String(a.id), url: a.logo || '' },
-            timeRange: { startTime: a.startTime, endTime: a.endTime },
-            price: { amount: Number(a.fee || 0), currency: 'CNY', unit: '人' },
-            secondaryTag: { name: tag || '' },
-          }
-        })
+        const res = await getActivityList({ pageNo: '1', pageSize: '5' })
+        const pageResult = res?.data?.pageResult || []
+        data.hotActivities = pageResult.list.slice(0, 3)
       } catch (e) {
         console.error('Fetch activities failed:', e)
       }
@@ -102,17 +78,8 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
         console.error('Fetch collections failed:', e)
       }
       try {
-        const list = await getAvailableHomestayList()
-        data.homestays = (list || [])
-          .slice(0, 3)
-          .map((h) => ({
-            ...h,
-            referencePrice: {
-              amount: (h as any).minPrice || 0,
-              currency: 'CNY',
-              unit: '天',
-            },
-          }))
+        const res = await getAvailableHomestayList()
+        data.homestays = res?.data.slice(0, 3)
       } catch (e) {
         console.error('Fetch homestays failed:', e)
       }

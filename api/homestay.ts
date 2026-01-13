@@ -11,26 +11,16 @@ import {
   AppOrderListRespVO,
   HomestayApplicationStatus,
 } from '../model/homestay'
-import type { ID } from '../model/common'
+import type { CommonResult, ID } from '../model/common'
 import { getData } from '../utils/request'
-
 
 export async function getAvailableHomestayList(params?: {
   keyword?: string
-}): Promise<AppHomestayListItem[]> {
-  const raw = await getData<AppHomestayListRespVO[]>(
+}): Promise<CommonResult<AppHomestayListRespVO[]>> {
+  return await getData<CommonResult<AppHomestayListRespVO[]>>(
     '/app-api/daolongtan/homestay/list',
     params
   )
-  return (raw || []).map((it) => ({
-    id: it.id,
-    name: it.name,
-    minPrice: it.minPrice || 0,
-    address: it.address,
-    mapImages: it.mapImages,
-    tags: (it.tags || '').map((s) => s.trim()).filter(Boolean),
-    reservedUsers: it.reservedUsers || [],
-  }))
 }
 
 // Alias for compatibility or replace usages
@@ -47,7 +37,7 @@ export async function fetchHomestayDetail(
     id: raw.id,
     name: raw.name,
     address: raw.address,
-    mapImages: raw.mapImages ,
+    mapImages: raw.mapImages,
     tags: [], // Detail doesn't return tags?
     logo: raw.logo,
     images: raw.images,
@@ -115,7 +105,9 @@ export function getHomestayDetailApi(id: number): Promise<AppHomestayDetail> {
   return getData('/app-api/daolongtan/homestay/detail', { id })
 }
 
-export async function fetchHomestayApplications(): Promise<HomestayApplication[]> {
+export async function fetchHomestayApplications(): Promise<
+  HomestayApplication[]
+> {
   // type=5 means all orders
   const raw = await getData<{ list: AppOrderListRespVO[]; total: number }>(
     '/app-api/daolongtan/order/my-list',
@@ -125,7 +117,7 @@ export async function fetchHomestayApplications(): Promise<HomestayApplication[]
     id: it.orderNo,
     title: it.title,
     status: it.status as unknown as HomestayApplicationStatus,
-   // status: mapStatus(it.status),
+    // status: mapStatus(it.status),
     stayRange: {
       startTime: new Date(it.checkInDate).toISOString(),
       endTime: new Date(it.checkOutDate).toISOString(),
@@ -140,4 +132,3 @@ export async function fetchHomestayApplications(): Promise<HomestayApplication[]
     phone: '', // Not returned
   }))
 }
-
