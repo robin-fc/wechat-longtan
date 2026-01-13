@@ -106,7 +106,6 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       pageSize: String(pageSize),
     })
     const list = (res && res.pageResult && res.pageResult.list) || []
-    console.log('活动界面 activity list原始数据:', list)
     // Check if we have more data
     const hasMore = list.length === pageSize
     
@@ -136,7 +135,6 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     
     const allActivities = pageNo === 1 ? newActivities : [...currentActivities, ...newActivities]
     
-    console.log('活动界面 activity list:', allActivities)
     this.setData({
       activities: allActivities,
       hasMore,

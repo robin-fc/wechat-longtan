@@ -170,7 +170,6 @@ Page({
       wx.showToast({ title: '缺少订单信息', icon: 'none' })
       return
     }
-    console.log('发起支付请求', bizOrderNo, amount)
     try {
       const resp = await generatePayParams({ bizOrderNo, amount })
       const p = resp && resp.payParams

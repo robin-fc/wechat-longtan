@@ -328,7 +328,6 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
         try {
           wx.showLoading({ title: '上传中...' })
           const res = await uploadImage(filePath,'')
-          console.log('uploadImage', res)
           const url = res || ''
           this.setData({
             'form.logo': url,

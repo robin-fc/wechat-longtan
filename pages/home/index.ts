@@ -45,8 +45,6 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       const data = await fetchHomeData()
       try {
         const banners = await getBannerList()
-        console.log('home 获取banner')
-        console.log('banners:', banners)
         if (banners && banners.length > 0) {
           data.carousel = banners.map((b) => ({
             id: String(b.id),
@@ -87,7 +85,6 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
               }
             })(),
           }))
-        console.log('首页热门活动，hotActivities:', data.hotActivities)
       } catch (e) {
         console.error('Fetch activities failed:', e)
       }

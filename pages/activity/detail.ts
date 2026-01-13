@@ -88,7 +88,6 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       // spaceId: detail.space?.id || baseFallback.spaceId,
       organizer: detail.organizer,
     }
-    console.log('activity', activity)
     const menuRect = wx.getMenuButtonBoundingClientRect()
 
     const favoriteCount = detail.favoriteCount || 0
@@ -230,7 +229,6 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const activity = data.activity
     const isFollowing = data.isFollowingOrganizer
 
-    console.log('isFollowingOrganizer', isFollowing)
     if (!activity || !activity.organizer || !activity.organizer.userId) return
     smartNavigateTo(
       `/pages/user/other-profile/index?userId=${activity.organizer.userId}&isFollowed=${isFollowing}`

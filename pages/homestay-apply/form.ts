@@ -207,7 +207,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     wx.showLoading({ title: '创建订单中...', mask: true })
     createAccommodationOrder(params)
       .then(async (res) => {
-        console.log('createAccommodationOrder res=', res)
         if (res.code !== 0) {
           wx.hideLoading()
           if (res.code === 1001003004) {
@@ -252,7 +251,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
             paySign: p.paySign,
             success: () => {
               wx.showToast({ title: '支付成功', icon: 'success' })
-              console.log('支付成功，跳转订单详情页', bizOrderNo)
               // setTimeout(() => {
               //   smartNavigateTo('/pages/homestay-apply/status')
               // }, 600)
@@ -262,7 +260,6 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
             },
             fail: () => {
               wx.showToast({ title: '支付未完成', icon: 'none' })
-              console.log('支付未完成，跳转订单详情页', bizOrderNo)
                setTimeout(() => {
                 smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`)
               }, 600)

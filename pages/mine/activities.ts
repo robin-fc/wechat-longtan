@@ -67,7 +67,6 @@ Page<MyActivitiesState, WechatMiniprogram.IAnyObject>({
     this.setData({ collections: list })
   },
   onActivityTap(e: WechatMiniprogram.CustomEvent) {
-    console.log('onActivityTap')
     const activity = (e.detail || {}).activity as {
       id?: string
     }

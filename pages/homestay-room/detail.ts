@@ -96,10 +96,8 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       '5': '大床房',
     }
     try {
-      console.log('room/detail.ts 查询可用房间', id, checkInDate)
       const list = await getHomestayAvailableRooms({ homestayId, checkInDate })
       const item = (list || []).find((x) => String(x.id) === String(id))
-      console.log('room/detail.ts 查询可用房间结果1', item)
       if (!item) {
         return
       }

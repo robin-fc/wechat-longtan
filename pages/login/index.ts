@@ -36,8 +36,6 @@ Page({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.CheckboxGroupChange
   ) {
-    console.log('this', this)
-    console.log('e', e)
     const val = !!e.detail.value.length
     this.setData({ checked: val })
     wx.setStorageSync('privacyAccepted', val)
