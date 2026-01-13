@@ -1,6 +1,6 @@
 import { getActivityByIdFromList, getActivityDetail } from '../../api/activity'
 import { createActivityOrder, generatePayParams } from '../../api/order'
-import type { Activity } from '../../model/activity'
+import { ActivityTypeLabel, type Activity } from '../../model/activity'
 import type { ActivityOrder } from '../../model/order'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
@@ -71,16 +71,23 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     const activity: Activity = {
       ...baseFallback,
       auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
-      spaceId: baseFallback.spaceId ?? detail.space.id,
-      spaceName: detail.space.name || baseFallback.spaceName || '',
+       activityType:
+              detail.activityType !== undefined
+                ? ActivityTypeLabel[detail.activityType]
+                : baseFallback.activityType,
+      space: detail.space,
       detail: detail.detail || baseFallback.detail,
     }
 
+    console.log('活动订单activity',activity)
     const order: ActivityOrder = {
       ...emptyOrder,
       id: `order-${Date.now()}`,
       activityId: activity.id,
       title: activity.title,
+      totalPrice: activity.isFree
+        ? { amount: 0, currency: 'CNY' }
+        : { amount: activity.fee, currency: 'CNY' },
       notice: '报名成功后如需取消，请提前联系主理人确认。',
     }
     this.setData({
@@ -114,7 +121,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/space/detail?id=${encodeURIComponent(String(activity.spaceId))}`
+      `/pages/space/detail?id=${encodeURIComponent(String(activity.space?.id))}`
     )
   },
   onBackTap() {
@@ -138,6 +145,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
   },
   async onSubmitTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const order = (this.data as ConfirmOrderState).order
+    console.log('活动订单order',order)
     const activityIdRaw = order.activityId
     const activityId = Number(activityIdRaw)
     if (!Number.isFinite(activityId) || activityId <= 0) {
@@ -146,16 +154,27 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     }
 
     const activity = (this.data as ConfirmOrderState).activity
-    if (activity && activity.auditStatus !== 1) {
+
+    console.log('活动订单activity',activity)
+    if (activity && activity.auditStatus !== '审核通过') {
       let msg = '该活动未审核通过，无法报名'
-      if (activity.auditStatus === 0) {
+      if (activity.auditStatus === '待审核') {
         msg = '该活动正在审核中，暂时无法报名'
-      } else if (activity.auditStatus === 2) {
+      } else if (activity.auditStatus === '审核不通过') {
         msg = '该活动审核不通过，无法报名'
       }
       wx.showModal({
         title: '提示',
         content: msg,
+        showCancel: false,
+      })
+      return
+    }
+
+  if (activity && activity.activityStatus === '已结束') {
+      wx.showModal({
+        title: '提示',
+        content: '该活动已结束，无法报名',
         showCancel: false,
       })
       return
@@ -168,7 +187,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       })
       const bizOrderNo = res.bizOrderNo
       const amount = order.totalPrice.amount
-
+      console.log('活动订单amount',amount)
       if (amount > 0) {
         const pay = await generatePayParams({ bizOrderNo, amount })
         const p = pay && pay.payParams
@@ -200,6 +219,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
           },
         } as any)
       } else {
+        // todo  免费活动的逻辑需要修改，目前是直接跳转成功页
         wx.hideLoading()
         wx.showToast({
           title: '报名成功',

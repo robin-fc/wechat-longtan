@@ -3,14 +3,13 @@
     <view class="header-title-row">
       <text
         class="secondary-tag"
-        wx:if="{{activity.secondaryTag && activity.secondaryTag.name}}"
-      >{{activity.secondaryTag.name}}</text>
+      >{{activity.activityType}}</text>
       <text class="nickname">{{activity.title}}</text>
     </view>
 
     <view class="info-row time-row">
       <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
-      <text class="info-text">{{activity.timeRange.startTime}}-{{activity.timeRange.endTime}}
+      <text class="info-text">{{activity.startTime}}-{{activity.endTime}}
       </text>
     </view>
 
@@ -37,7 +36,7 @@
     <view class="price-info">
       <text class="price-label">报名费用</text>
       <text class="price-value">
-        ￥{{activity.price.amount}}{{activity.price.unit}}
+        ￥{{activity.fee}}{{activity.price.unit}}
       </text>
     </view>
     <view class="submit-button" bindtap="onSubmitTap">
