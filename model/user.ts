@@ -14,6 +14,22 @@ export interface UserProfile {
   status?: number
 }
 
+export interface AppUserDetailRespVO {
+  id: number
+  wxName?: string
+  logo?: string
+  openId?: string
+  memberName?: string
+  memberPhone?: string
+  memberNumber?: string
+  memberLevel?: string
+  memberTags?: string[]
+  sex?: number
+  desc?: string
+  status?: number
+  joinTime?: string
+}
+
 export interface FollowUserItem {
   userId: number
   avatar?: string

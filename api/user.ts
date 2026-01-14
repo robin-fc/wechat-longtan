@@ -1,5 +1,6 @@
 import { request, getData } from '../utils/request'
-import type { AppUpdateWeixinUserInfoReqVO } from '../model/user'
+import type { AppUpdateWeixinUserInfoReqVO, AppUserDetailRespVO } from '../model/user'
+ import type {AppUserInfoRespVO} from '../model/user-follow'
 import type { CommonResult } from '../model/common'
 
 export function updateUserInfo(data: AppUpdateWeixinUserInfoReqVO): Promise<CommonResult<boolean>> {
@@ -10,6 +11,10 @@ export function updateUserInfo(data: AppUpdateWeixinUserInfoReqVO): Promise<Comm
   })
 }
 
+export function getUserDetail(userId: string | number): Promise<AppUserDetailRespVO> {
+  return getData<AppUserDetailRespVO>('/app-api/daolongtan/user/detail', { userId })
+}
+
 export interface MockUserItem {
   userId: string
   nickname: string
@@ -17,17 +22,7 @@ export interface MockUserItem {
   tags: string[]
   bio: string
   isFollowed: boolean
-}
-
-interface FollowingsUserItem {
-  userId: number
-  logo: string
-  wxName: string
-  memberName: string
-  introduction: string | null
-  memberLevel: string
-  tags: unknown
-}
+} 
 
 function mapMemberLevelLabel(level: unknown): string {
   const v = level === undefined || level === null ? '' : String(level)
@@ -64,15 +59,15 @@ function mapMemberTags(v: unknown): string[] {
 
 export function fetchMockUserList(type: string, id?: string): Promise<MockUserItem[]> {
   if (type === 'following') {
-    return getData<FollowingsUserItem[]>(
+    return getData<AppUserInfoRespVO[]>(
       '/app-api/daolongtan/user-follow/followings'
     ).then((list) =>
       (list || []).map((u) => {
-        const nickname = (u.memberName || u.wxName || '').trim()
+        const nickname = ((u.memberName || u.wxName) || '').trim()
         const avatar = (u.logo || '').trim() || '/assets/images/default-avatar.png'
         const tags = [
           mapMemberLevelLabel(u.memberLevel),
-          ...mapMemberTags(u.tags),
+          ...mapMemberTags(u.memberTags),
         ].filter(Boolean)
         return {
           userId: String(u.userId),
@@ -87,15 +82,15 @@ export function fetchMockUserList(type: string, id?: string): Promise<MockUserIt
   }
 
   if (type === 'followers') {
-    return getData<FollowingsUserItem[]>(
+    return getData<AppUserInfoRespVO[]>(
       '/app-api/daolongtan/user-follow/followers'
     ).then((list) =>
       (list || []).map((u) => {
-        const nickname = (u.memberName || u.wxName || '').trim()
+        const nickname = ((u.memberName || u.wxName) || '').trim()
         const avatar = (u.logo || '').trim() || '/assets/images/default-avatar.png'
         const tags = [
           mapMemberLevelLabel(u.memberLevel),
-          ...mapMemberTags(u.tags),
+          ...mapMemberTags(u.memberTags),
         ].filter(Boolean)
         return {
           userId: String(u.userId),
