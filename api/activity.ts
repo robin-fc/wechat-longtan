@@ -121,7 +121,34 @@ export async function getActivityByIdFromList(
     pageSize: '100',
   })
   const it = res.pageResult.list.find((x) => x.id === id)
-  if (!it) throw new Error('Activity not found')
+  if (!it) {
+    // 从他人页面点进来的活动，有可能不在列表中，需要从详情接口获取
+    const activityDetail: ActivityDetail = await getActivityDetail(id)
+    if (!activityDetail) {
+      throw new Error('Activity not found')
+    
+    }
+    const active: Activity = {
+      id: activityDetail.id || 0,
+      title: activityDetail.title || '',
+      logo: activityDetail.logo || '',
+      fee: activityDetail.fee || 0,
+      isFree: activityDetail.isFree || false,
+      activityType: activityDetail.activityType?.label || '',
+      collectionId: 0,
+      collectionName: '',
+      createTime: '',
+      registeredCount: 0,
+      registeredUsers: [],
+      startTime: formatYMDHM(activityDetail.startTime) || '',
+      endTime: formatYMDHM(activityDetail.endTime) || '',
+      detail: activityDetail.detail || '',
+      auditStatus: activityDetail.auditStatus || '',
+      activityStatus: activityDetail.activityStatus || '',
+      organizer: activityDetail.organizer
+    }
+    return active
+  }
   return {
     ...it,
     logo: it.logo,

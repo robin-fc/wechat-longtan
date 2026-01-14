@@ -245,7 +245,9 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
   },
 
   onActivityTap(e: WechatMiniprogram.BaseEvent) {
+   
     const id = e.currentTarget.dataset.id as string
+     console.log('onActivityTap click', id)
     wx.navigateTo({
       url: `/pages/activity/detail?id=${id}`,
     })
