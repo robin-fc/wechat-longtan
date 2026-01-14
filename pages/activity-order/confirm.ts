@@ -1,9 +1,8 @@
-import { getActivityByIdFromList, getActivityDetail } from '../../api/activity'
+import { getActivityDetail } from '../../api/activity'
 import { createActivityOrder, generatePayParams } from '../../api/order'
 import { type Activity } from '../../model/activity'
 import type { ActivityOrder } from '../../model/order'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
-import { ensureActivityTypeDict } from '../../api/activity'
 
 interface ConfirmOrderState {
   activity: Activity | null
@@ -19,8 +18,6 @@ const emptyOrder: ActivityOrder = {
     startTime: '',
     endTime: '',
   },
-  participantName: '',
-  participantPhone: '',
   notice: '',
   status: 'unpaid',
   totalPrice: {
@@ -46,41 +43,8 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     if (!Number.isFinite(id) || id <= 0) {
       return
     }
-
-    const [base, detail, typeDict] = await Promise.all([
-      getActivityByIdFromList(id).catch(() => undefined),
-      getActivityDetail(id),
-      ensureActivityTypeDict(),
-    ])
-
-    if (!detail) return
-
-    const baseFallback: Activity =
-      base ??
-      ({
-        id: detail.id,
-        title: detail.title,
-        logo: detail.logo,
-        isFree: detail.isFree,
-        startTime: detail.startTime,
-        endTime: detail.endTime,
-        spaceId: detail.space.id,
-        spaceName: detail.space.name,
-        fee: detail.fee,
-        auditStatus: detail.auditStatus,
-      } as unknown as Activity)
-   
-    const activity: Activity = {
-      ...baseFallback,
-      auditStatus: detail.auditStatus ?? baseFallback.auditStatus,
-      activityType:
-        typeDict.find((x) => x.value === detail.activityType?.value)?.label ||
-        baseFallback.activityType,
-      space: detail.space,
-      detail: detail.detail || baseFallback.detail,
-    }
-
-    console.log('活动订单activity',activity)
+    const activity = await  getActivityDetail(id)
+    if (!activity) return
     const order: ActivityOrder = {
       ...emptyOrder,
       id: `order-${Date.now()}`,
@@ -122,31 +86,15 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/space/detail?id=${encodeURIComponent(String(activity.space?.id))}`
+      `/pages/space/detail?id=${encodeURIComponent(String(activity.spaceId))}`
     )
   },
   onBackTap() {
     goBack()
   },
-  onNameChange(
-    this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.Input
-  ) {
-    this.setData({
-      'order.participantName': e.detail.value,
-    })
-  },
-  onPhoneChange(
-    this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.Input
-  ) {
-    this.setData({
-      'order.participantPhone': e.detail.value,
-    })
-  },
   async onSubmitTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const order = (this.data as ConfirmOrderState).order
-    console.log('活动订单order',order)
+    console.log('活动订单order', order)
     const activityIdRaw = order.activityId
     const activityId = Number(activityIdRaw)
     if (!Number.isFinite(activityId) || activityId <= 0) {
@@ -156,7 +104,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
 
     const activity = (this.data as ConfirmOrderState).activity
 
-    console.log('活动订单activity',activity)
+    console.log('活动订单activity', activity)
     if (activity && activity.auditStatus !== '审核通过') {
       let msg = '该活动未审核通过，无法报名'
       if (activity.auditStatus === '待审核') {
@@ -172,7 +120,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-  if (activity && activity.activityStatus === '已结束') {
+    if (activity && activity.activityStatus === '已结束') {
       wx.showModal({
         title: '提示',
         content: '该活动已结束，无法报名',
@@ -188,7 +136,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       })
       const bizOrderNo = res.bizOrderNo
       const amount = order.totalPrice.amount
-      console.log('活动订单amount',amount)
+      console.log('活动订单amount', amount)
       if (amount > 0) {
         const pay = await generatePayParams({ bizOrderNo, amount })
         const p = pay && pay.payParams
