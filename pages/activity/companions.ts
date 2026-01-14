@@ -1,5 +1,5 @@
 import { getActivityRegistrations } from '../../api/activity'
-import { postData } from '../../utils/request'
+import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
 import { goBack } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
 
@@ -64,8 +64,8 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
     const followed = !!target.isFollowed
     const reqBody = { followeeId: Number(id) }
     const doReq = followed
-      ? postData<boolean>('/app-api/daolongtan/user-follow/unfollow', reqBody)
-      : postData<boolean>('/app-api/daolongtan/user-follow/follow', reqBody)
+      ? AppUserUnfollow(reqBody)
+      : AppUserFollow(reqBody)
     doReq
       .then(() => {
         list[index] = {
