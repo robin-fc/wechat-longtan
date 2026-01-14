@@ -9,6 +9,8 @@ import { fetchHomestayApplications } from './homestay'
 import type { AssetDetailResult } from '../model/wallet'
 import { formatYMDHM } from '../utils/date'
 
+const baseUrl = '/app-api/daolongtan/user'
+
 export interface MyActivityFilter {
   id: string
   name: string
@@ -27,11 +29,11 @@ export interface UserSummary {
 }
 
 export function fetchMyProfile(): Promise<UserProfile> {
-  return getData<UserProfile>('/app-api/daolongtan/user/get-info')
+  return getData<UserProfile>(`${baseUrl}/get-info`)
 }
 
 export function fetchUserSummary(): Promise<UserSummary> {
-  return getData<UserSummary>('/app-api/daolongtan/user/summary')
+  return getData<UserSummary>(`${baseUrl}/summary`)
 }
 
 export function fetchWalletRecords(
@@ -40,25 +42,16 @@ export function fetchWalletRecords(
   pageSize: number,
   month?: string
 ): Promise<AssetDetailResult> {
-  return getData<AssetDetailResult>(
-    '/app-api/daolongtan/user/asset/detail',
-    {
-      type,
-      pageNo,
-      pageSize,
-      month,
-    }
-  )
+  return getData<AssetDetailResult>(`${baseUrl}/asset/detail`, {
+    type,
+    pageNo,
+    pageSize,
+    month,
+  })
 }
 
-export async function fetchMyActivities(
-  type: string
-): Promise<Activity[]> {
-  const page: PageResult<Activity> = await getMyActivityList(
-    type,
-    '1',
-    '20'
-  )
+export async function fetchMyActivities(type: string): Promise<Activity[]> {
+  const page: PageResult<Activity> = await getMyActivityList(type, '1', '20')
   const list = (page && page.list) || []
   const typeDict = await ensureActivityTypeDict()
   return list.map((it) => ({
@@ -85,8 +78,10 @@ export async function fetchMyActivities(
 }
 
 export async function fetchMyCollections(): Promise<ActivityCollection[]> {
-  const page: PageResult<ActivityCollection> =
-  await getMyActivityCollections('1', '20')
+  const page: PageResult<ActivityCollection> = await getMyActivityCollections(
+    '1',
+    '20'
+  )
   const list = (page && page.list) || []
   return list
 }

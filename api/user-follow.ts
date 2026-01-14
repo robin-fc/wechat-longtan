@@ -2,6 +2,8 @@ import { request } from '../utils/request'
 import type { CommonResult } from '../model/common'
 import { AppUserInfoRespVO } from '../model/user-follow'
 
+const baseUrl = '/app-api/daolongtan/user-follow'
+
 /**
  * 取消关注
  * @param {object} data 用户 APP - 用户关注 Request VO
@@ -12,7 +14,7 @@ export function AppUserUnfollow(data: {
   followeeId: number
 }): Promise<CommonResult<boolean>> {
   return request<boolean>({
-    url: '/app-api/daolongtan/user-follow/unfollow',
+    url: `${baseUrl}/unfollow`,
     method: 'POST',
     data,
   })
@@ -20,7 +22,7 @@ export function AppUserUnfollow(data: {
 
 /**
  * 关注用户
- * @param {object} params 用户 APP - 用户关注 Request VO
+ * @param {object} data 用户 APP - 用户关注 Request VO
  * @param {number} params.followeeId 被关注者ID
  * @returns
  */
@@ -28,7 +30,7 @@ export function AppUserFollow(data: {
   followeeId: number
 }): Promise<CommonResult<boolean>> {
   return request<boolean>({
-    url: `/app-api/daolongtan/user-follow/follow`,
+    url: `${baseUrl}/follow`,
     method: 'POST',
     data,
   })
@@ -42,7 +44,7 @@ export function AppUserFollow_getFollowings(): Promise<
   CommonResult<AppUserInfoRespVO[]>
 > {
   return request<AppUserInfoRespVO[]>({
-    url: `/app-api/daolongtan/user-follow/followings`,
+    url: `${baseUrl}/followings`,
     method: 'GET',
   })
 }
@@ -55,7 +57,7 @@ export function AppUserFollow_getFollowers(): Promise<
   CommonResult<AppUserInfoRespVO[]>
 > {
   return request<AppUserInfoRespVO[]>({
-    url: `/app-api/daolongtan/user-follow/followers`,
+    url: `${baseUrl}/followers`,
     method: 'GET',
   })
 }

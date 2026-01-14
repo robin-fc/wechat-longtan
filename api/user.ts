@@ -3,16 +3,19 @@ import type { AppUpdateWeixinUserInfoReqVO, AppUserDetailRespVO } from '../model
  import type {AppUserInfoRespVO} from '../model/user-follow'
 import type { CommonResult } from '../model/common'
 
+const baseUrl = '/app-api/daolongtan/user'
+
+
 export function updateUserInfo(data: AppUpdateWeixinUserInfoReqVO): Promise<CommonResult<boolean>> {
   return request<boolean>({
-    url: '/app-api/daolongtan/user/update-info',
+    url: `${baseUrl}/update-info`,
     method: 'PUT',
     data,
   })
 }
 
 export function getUserDetail(userId: string | number): Promise<AppUserDetailRespVO> {
-  return getData<AppUserDetailRespVO>('/app-api/daolongtan/user/detail', { userId })
+  return getData<AppUserDetailRespVO>(`${baseUrl}/detail`, { userId })
 }
 
 export interface MockUserItem {
@@ -60,7 +63,7 @@ function mapMemberTags(v: unknown): string[] {
 export function fetchMockUserList(type: string, id?: string): Promise<MockUserItem[]> {
   if (type === 'following') {
     return getData<AppUserInfoRespVO[]>(
-      '/app-api/daolongtan/user-follow/followings'
+      `${baseUrl}-follow/followings`
     ).then((list) =>
       (list || []).map((u) => {
         const nickname = ((u.memberName || u.wxName) || '').trim()
@@ -83,7 +86,7 @@ export function fetchMockUserList(type: string, id?: string): Promise<MockUserIt
 
   if (type === 'followers') {
     return getData<AppUserInfoRespVO[]>(
-      '/app-api/daolongtan/user-follow/followers'
+      `${baseUrl}/followers`
     ).then((list) =>
       (list || []).map((u) => {
         const nickname = ((u.memberName || u.wxName) || '').trim()

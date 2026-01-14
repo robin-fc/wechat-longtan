@@ -15,7 +15,7 @@ export interface ActivityListParams {
   spaceId?: string
   activityType?: string
   onlyOnSale?: boolean
-  name?: string	//活动标题（模糊搜索）,示例值(摄影)
+  name?: string //活动标题（模糊搜索）,示例值(摄影)
   pageNo: string
   pageSize: string
 }
@@ -46,13 +46,19 @@ export interface ActivityListResponse {
   onSaleCount: number
 }
 
+export interface UserActivityListParams {
+  userId: string
+  type: number | string
+  pageNo: number | string
+  pageSize: number | string
+}
+
+const baseUrl = '/app-api/daolongtan/activity'
+
 export function getActivityList(
   params: ActivityListParams
 ): Promise<ActivityListResponse> {
-  return getData<ActivityListResponse>(
-    '/app-api/daolongtan/activity/list',
-    params
-  )
+  return getData<ActivityListResponse>(`${baseUrl}/list`, params)
 }
 
 export function getMyActivityList(
@@ -60,11 +66,17 @@ export function getMyActivityList(
   pageNo: string,
   pageSize: string
 ): Promise<PageResult<Activity>> {
-  return getData('/app-api/daolongtan/activity/my-list', {
+  return getData(`${baseUrl}/my-list`, {
     type,
     pageNo,
     pageSize,
   })
+}
+
+export function getUserActivityList(
+  params: UserActivityListParams
+): Promise<any> {
+  return getData(`${baseUrl}/user-list`, params)
 }
 
 export function getActivityCollections(
@@ -73,10 +85,12 @@ export function getActivityCollections(
   creatorId?: string,
   keyword?: string
 ): Promise<PageResult<ActivityCollection>> {
-  return getData<PageResult<ActivityCollection>>(
-    '/app-api/daolongtan/activity-collection/list',
-    { pageNo, pageSize, creatorId, keyword }
-  )
+  return getData<PageResult<ActivityCollection>>(`${baseUrl}/collection/list`, {
+    pageNo,
+    pageSize,
+    creatorId,
+    keyword,
+  })
 }
 
 export function getMyActivityCollections(
@@ -84,7 +98,7 @@ export function getMyActivityCollections(
   pageSize: string
 ): Promise<PageResult<ActivityCollection>> {
   return getData<PageResult<ActivityCollection>>(
-    '/app-api/daolongtan/activity-collection/my-list',
+    `${baseUrl}/collection/my-list`,
     { pageNo, pageSize }
   )
 }
@@ -92,30 +106,24 @@ export function getMyActivityCollections(
 export function createActivity(
   payload: CreateActivityPayload
 ): Promise<boolean> {
-  return postData<boolean>('/app-api/daolongtan/activity/create', payload)
+  return postData<boolean>(`${baseUrl}/create`, payload)
 }
 
 export function createActivityCollection(
   payload: CreateActivityCollectionPayload
 ): Promise<boolean> {
-  return postData<boolean>(
-    '/app-api/daolongtan/activity-collection/create',
-    payload
-  )
+  return postData<boolean>(`${baseUrl}/collection/create`, payload)
 }
 
 export function getActivityRegistrations(
   activityId: number
 ): Promise<ActivityRegistration> {
-  return getData<ActivityRegistration>(
-    '/app-api/daolongtan/activity/registration',
-    { activityId: String(activityId) }
-  )
+  return getData<ActivityRegistration>(`${baseUrl}/registration`, {
+    activityId: String(activityId),
+  })
 }
 
-export async function getActivityByIdFromList(
-  id: number
-): Promise<Activity> {
+export async function getActivityByIdFromList(id: number): Promise<Activity> {
   const res = await getActivityList({
     pageNo: '1',
     pageSize: '100',
@@ -126,7 +134,6 @@ export async function getActivityByIdFromList(
     const activityDetail: ActivityDetail = await getActivityDetail(id)
     if (!activityDetail) {
       throw new Error('Activity not found')
-    
     }
     const active: Activity = {
       id: activityDetail.id || 0,
@@ -145,7 +152,7 @@ export async function getActivityByIdFromList(
       detail: activityDetail.detail || '',
       auditStatus: activityDetail.auditStatus || '',
       activityStatus: activityDetail.activityStatus || '',
-      organizer: activityDetail.organizer
+      organizer: activityDetail.organizer,
     }
     return active
   }
@@ -159,10 +166,9 @@ export async function getActivityByIdFromList(
 }
 
 export async function getActivityDetail(id: number): Promise<ActivityDetail> {
-  const data = await getData<ActivityDetail>(
-    '/app-api/daolongtan/activity/detail',
-    { id: String(id) }
-  )
+  const data = await getData<ActivityDetail>(`${baseUrl}/detail`, {
+    id: String(id),
+  })
   // Mock organizer extra info if missing
   if (data && data.organizer) {
     if (!data.organizer.tags) {
@@ -176,14 +182,14 @@ export async function getActivityDetail(id: number): Promise<ActivityDetail> {
 }
 
 export function getFavoriteCount(activityId: number): Promise<number> {
-  return getData<number>('/app-api/daolongtan/activity/favorite-count', {
+  return getData<number>(`${baseUrl}/favorite-count`, {
     activityId,
   })
 }
 
 export function favoriteActivity(activityId: number): Promise<boolean> {
   return postData<boolean>(
-    `/app-api/daolongtan/activity/favorite?activityId=${activityId}`,
+    `${baseUrl}/favorite?activityId=${activityId}`,
     { activityId },
     { 'content-type': 'application/x-www-form-urlencoded' }
   )
@@ -191,7 +197,7 @@ export function favoriteActivity(activityId: number): Promise<boolean> {
 
 export function unfavoriteActivity(activityId: number): Promise<boolean> {
   return postData<boolean>(
-    `/app-api/daolongtan/activity/unfavorite?activityId=${activityId}`,
+    `${baseUrl}/unfavorite?activityId=${activityId}`,
     { activityId },
     { 'content-type': 'application/x-www-form-urlencoded' }
   )
@@ -199,7 +205,7 @@ export function unfavoriteActivity(activityId: number): Promise<boolean> {
 
 export function shareActivity(activityId: number): Promise<ActivityShareInfo> {
   return postData<ActivityShareInfo>(
-    `/app-api/daolongtan/activity/share?activityId=${activityId}`,
+    `${baseUrl}/share?activityId=${activityId}`,
     { activityId },
     { 'content-type': 'application/x-www-form-urlencoded' }
   )
@@ -223,7 +229,7 @@ export function getActivityTypeList(onlyRelated: string): Promise<
       label: string // 活动类型标签
       logo: string // 活动类型logo地址
     }[]
-  >(`/app-api/daolongtan/activity/type-list?onlyRelated=${onlyRelated}`)
+  >(`${baseUrl}/type-list?onlyRelated=${onlyRelated}`)
 }
 
 let activityTypeDictCache: ActivityType[] | null = null

@@ -13,16 +13,15 @@ import {
 import { CommonResult, type ID, type PageResult } from '../model/common'
 import { getData, request } from '../utils/request'
 
+const baseUrl = '/app-api/daolongtan/homestay'
+
 export async function getAvailableHomestayList(data?: {
   pageNo: string
   pageSize: string
   name?: string
   checkInDate?: string
 }): Promise<PageResult<AppHomestayListRespVO>> {
-  return getData<PageResult<AppHomestayListRespVO>>(
-    '/app-api/daolongtan/homestay/list',
-    data
-  )
+  return getData<PageResult<AppHomestayListRespVO>>(`${baseUrl}/list`, data)
 }
 
 // Alias for compatibility or replace usages
@@ -31,10 +30,7 @@ export const fetchHomestayList = getAvailableHomestayList
 export async function fetchHomestayDetail(
   id: number | string
 ): Promise<AppHomestayDetail> {
-  const raw = await getData<AppHomestayDetail>(
-    `/app-api/daolongtan/homestay/detail`,
-    { id }
-  )
+  const raw = await getData<AppHomestayDetail>(`${baseUrl}/detail`, { id })
   return {
     id: raw.id,
     name: raw.name,
@@ -53,7 +49,7 @@ export async function getAvailableRoomList(
   checkInDate: string
 ): Promise<HomestayRoom[]> {
   const raw = await getData<AppHomestayRoomListRespVO[]>(
-    `/app-api/daolongtan/homestay/room/list`,
+    `${baseUrl}/room/list`,
     { homestayId, checkInDate }
   )
   return (raw || []).map((it) => {
@@ -87,19 +83,19 @@ export function getHomestayAvailableRooms(params: {
   homestayId: string
   checkInDate: string
 }): Promise<AppHomestayRoomListItem[]> {
-  return getData('/app-api/daolongtan/homestay/room/list', params)
+  return getData(`${baseUrl}/room/list`, params)
 }
 
 export function getHomestayPackageList(): Promise<AppHomestayPackageItem[]> {
-  return getData('/app-api/daolongtan/homestay/package/list')
+  return getData(`${baseUrl}/package/list`)
 }
 
 export function getHomestayAvailableList(): Promise<AppHomestayListItem[]> {
-  return getData('/app-api/daolongtan/homestay/list')
+  return getData(`${baseUrl}/list`)
 }
 
 export function getHomestayDetailApi(id: number): Promise<AppHomestayDetail> {
-  return getData('/app-api/daolongtan/homestay/detail', { id })
+  return getData(`${baseUrl}/detail`, { id })
 }
 
 export async function fetchHomestayApplications(): Promise<
@@ -107,7 +103,7 @@ export async function fetchHomestayApplications(): Promise<
 > {
   // type=5 means all orders
   const raw = await getData<{ list: AppOrderListRespVO[]; total: number }>(
-    '/app-api/daolongtan/order/my-list',
+    `${baseUrl}/order/my-list`,
     { type: 5, pageNo: 1, pageSize: 100 }
   )
   return (raw.list || []).map((it) => ({
