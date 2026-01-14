@@ -28,53 +28,47 @@ export interface Activity {
   /*是否免费（false收费 true免费） */
   isFree: boolean
 
-  /*活动类型：0-摄影，1-徒步，2-绘画，3-木工，4-陶艺，5-生态观察，6-农耕体验，7-音乐，8-手工制作，9-瑜伽 */
+  /*活动类型（标签文本：摄影, 插画, 写作, 木工, 故事采集, 徒步, 生态观察, 溪谷探访, 村史讲述, 手工市集, 音乐夜, 艺术节） */
   activityType: string
 
   /*活动开始时间 */
-  startTime: string
+  startTime: Record<string, unknown>
 
   /*活动结束时间 */
-  endTime: string
+  endTime: Record<string, unknown>
 
-  // /*所属空间ID */
-  // spaceId: number
+  /*空间ID */
+  spaceId: number
 
-  // /*所属空间名称 */
-  // spaceName: string
-
-  // /*所属空间地址 */
-  // spaceAddress: string
-
-  /**所属空间信息 */
-  space?: Space
+  /*空间名称 */
+  spaceName: string
 
   /*活动详情 */
   detail: string
 
-  /*审核状态:待审核 审核通过 审核不通过） */
+  /*审核状态（审核中、审核通过、审核未通过） */
   auditStatus: string
 
-  /*活动状态（报名中， 活动中， 已结束） */
-  activityStatus: string
-
   /*创建时间 */
-  createTime: string
+  createTime: Record<string, unknown>
 
   /*报名人数 */
   registeredCount: number
+
+  /*活动状态（报名中、活动中、已结束） */
+  activityStatus: string
+
+  /*当前登录用户是否报名（未登录时为false） */
+  isRegistered: boolean
   registeredUsers: RegistrationUser[]
   organizer: AppUserInfoRespVO
 }
-
 
 export interface RegistrationUser {
   userId: number
   wxName: string
   memberName: string
   logo: string
-  tags: string
-  spaceName?: string
   introduction: string
   memberLevel: string //成员等级（字典键值：0=老村民，1=新村民，2=数字游民，3=游客）
   memberTags: string[] //成员标签（字典键值：0=空间主理人，1=活动发起人）

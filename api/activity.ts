@@ -1,6 +1,6 @@
 import type {
-  ActivityType,
   Activity,
+  ActivityType,
   ActivityDetail,
   ActivityRegistration,
   ActivityShareInfo,
@@ -18,7 +18,6 @@ export interface ActivityListParams {
   pageNo: string
   pageSize: string
 }
-
 
 export interface CreateActivityPayload {
   title: string
@@ -73,13 +72,11 @@ export function getUserActivityList(
   return getData(`${baseUrl}/user-list`, params)
 }
 
-
 export function createActivity(
   payload: CreateActivityPayload
 ): Promise<boolean> {
   return postData<boolean>(`${baseUrl}/create`, payload)
 }
-
 
 export function getActivityRegistrations(
   activityId: number
@@ -102,31 +99,18 @@ export async function getActivityByIdFromList(id: number): Promise<Activity> {
       throw new Error('Activity not found')
     }
     const active: Activity = {
-      id: activityDetail.id || 0,
-      title: activityDetail.title || '',
-      logo: activityDetail.logo || '',
-      fee: activityDetail.fee || 0,
-      isFree: activityDetail.isFree || false,
-      activityType: activityDetail.activityType?.label || '',
-      collectionId: 0,
-      collectionName: '',
-      createTime: '',
-      registeredCount: 0,
-      registeredUsers: [],
-      startTime: formatYMDHM(activityDetail.startTime) || '',
-      endTime: formatYMDHM(activityDetail.endTime) || '',
-      detail: activityDetail.detail || '',
-      auditStatus: activityDetail.auditStatus || '',
-      activityStatus: activityDetail.activityStatus || '',
-      organizer: activityDetail.organizer,
+      ...activityDetail,
+      collectionId: activityDetail?.id || 0,
+      collectionName: activityDetail?.space?.name || '',
+      spaceId: activityDetail.space?.id || 0,
+      spaceName: activityDetail.space?.name || '',
+      // todo
     }
     return active
   }
   return {
     ...it,
     logo: it.logo,
-    startTime: formatYMDHM(it.startTime) || '',
-    endTime: formatYMDHM(it.endTime) || '',
     detail: it.detail || '',
   }
 }
@@ -137,11 +121,8 @@ export async function getActivityDetail(id: number): Promise<ActivityDetail> {
   })
   // Mock organizer extra info if missing
   if (data && data.organizer) {
-    if (!data.organizer.tags) {
-      data.organizer.tags = ''
-    }
-    if (!data.organizer.spaceName) {
-      data.organizer.spaceName = ''
+    if (!data.organizer.memberTags) {
+      data.organizer.memberTags = []
     }
   }
   return data

@@ -1,7 +1,7 @@
 import type { CommonResult } from '../model/common'
 
 const BASE_URL: string =
-  (wx.getStorageSync('apiBaseUrl') as string) || "http://127.0.0.1"//'https://47.115.209.64'
+  (wx.getStorageSync('apiBaseUrl') as string) || 'https://47.115.209.64' //"http://127.0.0.1"
 
 const REFRESH_THRESHOLD_SEC = 300
 const MAX_RETRY = 2
