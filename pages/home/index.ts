@@ -1,10 +1,6 @@
 import { fetchHomeData } from '../../api/home'
-import type { HomePageData, HomeEntryItem } from '../../api/home'
-import { getBannerList } from '../../api/banner'
-import { getActivityList } from '../../api/activity'
-import { getActivityCollections } from '../../api/activity-collection'
-import { getAvailableHomestayList } from '../../api/homestay'
 import { smartNavigateTo } from '../../utils/navigation'
+import { AppActivityTypeRespVO, HomePageData } from '../../model/home'
 
 interface HomeState {
   loading: boolean
@@ -44,34 +40,6 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   async loadData(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
       const data = await fetchHomeData()
-      try {
-        const banners = await getBannerList()
-        data.carousel = banners.slice()
-      } catch (e) {
-        console.error('Fetch banners failed:', e)
-      }
-      try {
-        const res = await getActivityList({ pageNo: '1', pageSize: '5' })
-        const pageResult = res?.pageResult || []
-        data.hotActivities = pageResult.list || []
-      } catch (e) {
-        console.error('Fetch activities failed:', e)
-      }
-      try {
-        const res = await getActivityCollections('1', '5')
-        data.collections = (res && res.list) || []
-      } catch (e) {
-        console.error('Fetch collections failed:', e)
-      }
-      try {
-        const res = await getAvailableHomestayList({
-          pageNo: '1',
-          pageSize: '5',
-        })
-        data.homestays = res?.list || []
-      } catch (e) {
-        console.error('Fetch homestays failed:', e)
-      }
       const idx = this.data.heroCurrent
       const bg =
         data.carousel && data.carousel[idx] ? data.carousel[idx].logo : ''
@@ -90,31 +58,11 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     smartNavigateTo('/pages/search/index?from=home')
   },
   onEntryTap(e: WechatMiniprogram.BaseEvent) {
-    const item = e.currentTarget.dataset.item as HomeEntryItem
-    if (!item) {
-      return
-    }
-    if (item.type === 'activityCategory') {
-      try {
-        wx.setStorageSync('ACTIVITY_CATEGORY_FILTER', item.value)
-      } catch (e) {
-        console.error('Set storage failed:', e)
-      }
-      wx.switchTab({
-        url: '/pages/activity/list',
-      })
-      return
-    }
-    if (item.type === 'homestay') {
-      wx.switchTab({
-        url: '/pages/homestay/list',
-      })
-      return
-    }
-    if (item.type === 'collection') {
-      smartNavigateTo('/pages/activity-collection/list')
-      return
-    }
+    const item = e.currentTarget.dataset.item as AppActivityTypeRespVO
+    wx.setStorageSync('ACTIVITY_CATEGORY_FILTER', item.value)
+    wx.switchTab({
+      url: '/pages/activity/list',
+    })
   },
   onMoreHotActivityTap() {
     wx.switchTab({

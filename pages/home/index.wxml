@@ -28,9 +28,9 @@
     </view>
     <view class="section">
       <view class="entry-grid">
-        <block wx:for="{{pageData.entries}}" wx:key="id" wx:for-index="idx">
+        <block wx:for="{{pageData.entries}}" wx:key="value" wx:for-index="idx">
           <view class="entry-item" data-item="{{item}}" bindtap="onEntryTap">
-            <entry-card title="{{item.name}}" icon-url="{{item.icon.url}}" />
+            <entry-card title="{{item.label}}" icon-url="{{item.logo}}" />
           </view>
         </block>
       </view>

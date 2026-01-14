@@ -1,76 +1,32 @@
-import type { Activity } from '../model/activity'
-import type { ActivityCollection } from '../model/activity-collection'
-import type { UserProfile } from '../model/user'
-import type { ID, ImageResource } from '../model/common'
-import { AppHomestayListItem } from '../model/homestay'
-import { getActivityTypeList } from './activity'
-import { Banner } from '../model/banner'
-
-export interface HomeEntryItem {
-  id: ID
-  name: string
-  icon: ImageResource
-  type: 'activityCategory' | 'homestay' | 'collection' | 'space'
-  value: string
-}
 
 
-export interface HomeAboutLink {
-  id: ID
-  title: string
-  url: string
-  description?: string
-}
+import { HomePageData } from '../model/home'
+import { getActivityList, getActivityTypeList } from './activity'
+import { getActivityCollections } from './activity-collection'
+import { getBannerList } from './banner'
+import { getAvailableHomestayList } from './homestay'
 
-export interface HomePageData {
-  currentUser?: UserProfile
-  carousel: Banner[]
-  entries: HomeEntryItem[]
-  hotActivities: Activity[]
-  collections: ActivityCollection[]
-  homestays: AppHomestayListItem[]
-  aboutLinks: HomeAboutLink[]
-}
-
-async function buildEntriesFromApi(): Promise<HomeEntryItem[]> {
-  try {
-    const types = await getActivityTypeList('true')
-    return (types || []).map((t) => ({
-      id: `entry-${t.value}`,
-      name: t.label || String(t.value),
-      icon: {
-        id: `entry-icon-${t.value}`,
-        url: t.logo || '/assets/icons/home/default.png',
-      },
-      type: 'activityCategory',
-      value: String(t.value),
-    }))
-  } catch {
-    return []
-  }
-}
-
-const aboutLinksMock: HomeAboutLink[] = [
+const aboutLinksMock = [
   {
-    id: 'about-history',
+    id: 1,
     title: '龙潭史',
     url: '/assets/icons/about/history.png',
     description: '了解龙潭的历史与故事',
   },
   {
-    id: 'about-guide',
+    id: 2,
     title: '居住指南',
     url: '/assets/icons/about/lifeGuide.png',
     description: '抵达与居住的实用信息',
   },
   {
-    id: 'map-guide',
+    id: 3,
     title: '地图手册',
     url: '/assets/icons/about/map.png',
     description: '了解地图上的标志性地点',
   },
   {
-    id: 'user-level',
+    id: 4,
     title: '身份等级',
     url: '/assets/icons/about/diamond.png',
     description: '了解您的身份等级',
@@ -78,13 +34,47 @@ const aboutLinksMock: HomeAboutLink[] = [
 ]
 
 export async function fetchHomeData(): Promise<HomePageData> {
-  const entries = await buildEntriesFromApi()
-  return {
+  const data: HomePageData = {
     carousel: [],
-    entries,
+    entries: [],
     hotActivities: [],
     collections: [],
     homestays: [],
     aboutLinks: aboutLinksMock,
   }
+  try {
+    const entries = (await getActivityTypeList('false')) || []
+    data.entries = entries
+  } catch (e) {
+    console.error('Fetch entries failed:', e)
+  }
+  try {
+    const banners = await getBannerList()
+    data.carousel = banners.slice()
+  } catch (e) {
+    console.error('Fetch banners failed:', e)
+  }
+  try {
+    const res = await getActivityList({ pageNo: '1', pageSize: '5' })
+    const pageResult = res?.pageResult || []
+    data.hotActivities = pageResult.list || []
+  } catch (e) {
+    console.error('Fetch activities failed:', e)
+  }
+  try {
+    const res = await getActivityCollections('1', '5')
+    data.collections = (res && res.list) || []
+  } catch (e) {
+    console.error('Fetch collections failed:', e)
+  }
+  try {
+    const res = await getAvailableHomestayList({
+      pageNo: '1',
+      pageSize: '5',
+    })
+    data.homestays = res?.list || []
+  } catch (e) {
+    console.error('Fetch homestays failed:', e)
+  }
+  return data
 }
