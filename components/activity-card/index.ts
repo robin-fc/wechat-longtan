@@ -19,7 +19,7 @@ Component({
     formattedDate: '',
   },
   observers: {
-    'activity.timeRange.startTime': function (startTime) {
+    'activity.startTime': function (startTime) {
       if (startTime) {
         this.setData({
           formattedDate: formatMMDD(startTime),
