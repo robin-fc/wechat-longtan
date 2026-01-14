@@ -60,7 +60,7 @@
                 <text class="organizer-tag" wx:for="{{activity.organizer.tags}}" wx:key="*this">{{item}}</text>
               </view>
             </view>
-            <view class="follow-btn {{isFollowingOrganizer ? 'following' : ''}}" bindtap="onToggleFollowOrganizer">
+            <view wx:if="{{!isSelf}}" class="follow-btn {{isFollowingOrganizer ? 'following' : ''}}" bindtap="onToggleFollowOrganizer">
               <text>{{isFollowingOrganizer ? '已关注' : '关注'}}</text>
             </view>
           </view>
@@ -121,7 +121,8 @@
     </view>
     <view class="section">
       <text class="section-title">活动评价</text>
-      <text class="section-content default-content">活动还未结束，暂时还没有评价。</text>
+      <text wx:if="{{activity.activityStatus != '已结束'}}" class="section-content default-content">活动还未结束，暂时还没有评价。</text>
+      <text wx:elif="{{activity.activityStatus == '已结束'}}" class="section-content default-content">暂无评价</text>
     </view>
   </view>
   <view wx:if="{{activity}}" class="bottom-bar">

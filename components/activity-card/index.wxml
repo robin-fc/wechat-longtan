@@ -1,12 +1,12 @@
 <view class="activity-card {{layout}} {{compact ? 'compact' : ''}}" bindtap="onTap">
   <view class="relative">
     <image class="poster" src="{{activity.logo}}" mode="aspectFill" />
-    <text class="tag image-tag">{{activity.secondaryTag.name}}</text>
+    <text class="tag image-tag">{{activity.activityType}}</text>
   </view>
 
   <view class="content">
     <view class="title-row">
-      <text class="tag title-tag">{{activity.secondaryTag.name}}</text>
+      <text class="tag title-tag">{{activity.activityType}}</text>
       <text class="title">{{activity.title}}</text>
     </view>
     

@@ -60,12 +60,17 @@ export async function fetchMyActivities(
     '20'
   )
   const list = (page && page.list) || []
+  const typeDict = await ensureActivityTypeDict()
   return list.map((it) => ({
     ...it,
     timeRange: {
       startTime: formatYMDHM(it.startTime),
       endTime: formatYMDHM(it.endTime),
     },
+    activityType:
+      typeDict.find((x) => x.value === it.activityType)?.label ||
+      it.activityType ||
+      '',
     price: {
       amount: it.fee || 0,
       currency: 'CNY',
@@ -75,12 +80,7 @@ export async function fetchMyActivities(
       companions: [],
       totalCount: 0,
     },
-    space: {
-      id: it.spaceId,
-      name: it.spaceName,
-      address: '',
-      mapImages: [],
-    },
+    space: it.space,
   }))
 }
 

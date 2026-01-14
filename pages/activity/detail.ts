@@ -32,6 +32,7 @@ interface ActivityDetailState {
   registrationCount: number
   registrationLimit: number
   registrationUsers: RegistrationUser[]
+  isSelf: boolean
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -47,6 +48,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     registrationCount: 0,
     registrationLimit: 0,
     registrationUsers: [],
+    isSelf: false,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -90,6 +92,9 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
 
+    const userId = wx.getStorageSync('userId')
+    const isSelf = activity.organizer && String(activity.organizer.userId) === String(userId)
+
     const favoriteCount = detail.favoriteCount || 0
     const favoriteCountText =
       favoriteCount >= 10000
@@ -106,6 +111,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       favoriteUsers: (detail.favoriteUsers || []).slice(0, 5),
       favoriteCount,
       favoriteCountText,
+      isSelf,
     })
 
     // Fetch companions data
