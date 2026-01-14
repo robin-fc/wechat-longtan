@@ -10,7 +10,6 @@
     <view class="moment-card">
       <view class="moment-image-wrapper">
         <image class="moment-image" src="{{activity.logo}}" mode="aspectFill" />
-        <text class="image-tag">{{activity.activityType}}</text>
       </view>
       <view class="moment-content">
         <view class="price-row">

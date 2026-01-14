@@ -165,6 +165,7 @@ export interface RegistrationUser {
   memberName: string
   logo: string
   registrationTime: string
+  isFollowing: boolean
 }
 
 export interface ActivityRegistration {

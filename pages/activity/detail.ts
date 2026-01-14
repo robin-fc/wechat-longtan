@@ -10,6 +10,7 @@ import { smartNavigateTo, goBack } from '../../utils/navigation'
 
 interface ActivityDetailState {
   activity: ActivityDetail | null
+  favoriteCountText: string
   menuTop: number
   menuHeight: number
   registrationCount: number
@@ -20,6 +21,7 @@ interface ActivityDetailState {
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   data: {
     activity: null,
+    favoriteCountText: '',
     menuTop: 0,
     menuHeight: 44,
     registrationCount: 0,
@@ -66,16 +68,13 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
 
     this.setData({
       activity,
+      favoriteCountText,
       registrationCount: activity.registeredCount || 0,
       registrationLimit: activity.isLimitParticipants
         ? activity.maxParticipants
         : '无限制',
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
-      isFavorited: activity.isFavorited,
-      favoriteUsers: (activity.favoriteUsers || []).slice(0, 5),
-      favoriteCount,
-      favoriteCountText,
       isSelf,
     })
   },
@@ -122,7 +121,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     )
   },
   onToggleCollect(this: WechatMiniprogram.Page.TrivialInstance) {
-    const prev = this.data.isFavorited
+    const prev = this.data.activity?.isFavorited || false
     const detail = this.data.activity
     if (!detail) {
       return
@@ -132,7 +131,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       : favoriteActivity(detail.id)
     req
       .then(() => {
-        this.setData({ isFavorited: !prev })
+        this.setData({ activity: { ...detail, isFavorited: !prev } })
         getActivityDetail(detail.id)
           .then((freshDetail) => {
             const favoriteCount = freshDetail.favoriteCount || 0
@@ -143,9 +142,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
                   )} 万人收藏`
                 : `${favoriteCount} 人收藏`
             this.setData({
-              favoriteCount,
+              activity: {
+                ...detail,
+                favoriteCount,
+                favoriteUsers: (freshDetail.favoriteUsers || []).slice(0, 5),
+              },
               favoriteCountText,
-              favoriteUsers: (freshDetail.favoriteUsers || []).slice(0, 5),
             })
           })
           .catch(() => {})
@@ -173,9 +175,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
 
     const isFollowing = (
       this.data as ActivityDetailState
-    ).activity?.favoriteUsers?.some(
-      (it) => it.userId === wx.getStorageSync('userId')
-    )
+    ).activity?.organizer.isFollowing
     const organizerId = activity.organizer.userId
 
     if (isFollowing) {
