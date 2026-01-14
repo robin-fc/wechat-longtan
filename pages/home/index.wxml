@@ -23,11 +23,7 @@
     </swiper>
     <view class="hero-indicator" wx:if="{{pageData && pageData.carousel && pageData.carousel.length > 1}}">
       <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
-        <view
-          class="hero-indicator-item {{heroCurrent === idx ? 'active' : ''}}"
-          data-idx="{{idx}}"
-          bindtap="onHeroIndicatorTap"
-        ></view>
+        <view class="hero-indicator-item {{heroCurrent === idx ? 'active' : ''}}" data-idx="{{idx}}" bindtap="onHeroIndicatorTap"></view>
       </block>
     </view>
     <view class="section">
@@ -48,16 +44,15 @@
       </view>
     </view>
     <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
-    <view class="white-content">
-      <scroll-view scroll-x="true" class="activity-scroll">
-        <view class="activity-list">
-          <block wx:for="{{pageData.hotActivities}}" wx:key="id">
-            <view class="activity-item">
-              <activity-card activity="{{item}}" layout="vertical" bindcardtap="onActivityCardTap" />
-            </view>
-          </block>
-        </view>
-      </scroll-view>
+    <scroll-view scroll-x="true" class="activity-scroll">
+      <view class="activity-list">
+        <block wx:for="{{pageData.hotActivities}}" wx:key="id">
+          <view class="activity-item">
+            <activity-card activity="{{item}}" layout="vertical" bindcardtap="onActivityCardTap" />
+          </view>
+        </block>
+      </view>
+    </scroll-view>
     <view class="section">
       <view class="section-header">
         <image class="section-title-icon" src="/assets/icons/home/hotActivityCollection.png" mode="heightFix" />
@@ -102,7 +97,6 @@
           </view>
         </block>
       </view>
-    </view>
     </view>
   </view>
 </view>
