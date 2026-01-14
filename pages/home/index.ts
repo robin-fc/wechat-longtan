@@ -64,6 +64,9 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       url: '/pages/activity/list',
     })
   },
+  onFloatingPublishTap() {
+    smartNavigateTo('/pages/activity/publish')
+  },
   onMoreHotActivityTap() {
     wx.switchTab({
       url: '/pages/activity/list',

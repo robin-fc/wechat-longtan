@@ -99,4 +99,8 @@
       </view>
     </view>
   </view>
+  <view class="floating-publish-btn" bindtap="onFloatingPublishTap">
+    <image class="floating-publish-icon" src="/assets/icons/edit-white.png" mode="aspectFit" />
+    <text class="floating-publish-text">发布</text>
+  </view>
 </view>
