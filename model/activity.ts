@@ -1,4 +1,42 @@
+import { PageResult } from './common'
 import { AppUserInfoRespVO } from './user-follow'
+
+export interface ActivityListParams {
+  collectionId?: string
+  spaceId?: string
+  activityType?: string
+  onlyOnSale?: boolean
+  name?: string //活动标题（模糊搜索）,示例值(摄影)
+  pageNo: string
+  pageSize: string
+}
+
+export interface CreateActivityPayload {
+  title: string
+  logo: string
+  fee: number
+  isFree: boolean
+  startTime: string
+  endTime: string
+  spaceId: number | string
+  collectionId?: number | string
+  activityType?: string
+  maxParticipants?: number
+  detail?: string
+  isLimitParticipants?: boolean
+}
+
+export interface ActivityListResponse {
+  pageResult: PageResult<Activity>
+  onSaleCount: number
+}
+
+export interface UserActivityListParams {
+  userId: string
+  type: number | string
+  pageNo: number | string
+  pageSize: number | string
+}
 
 export interface ActivityType {
   value: string
@@ -32,10 +70,10 @@ export interface Activity {
   activityType: string
 
   /*活动开始时间 */
-  startTime: Record<string, unknown>
+  startTime: string
 
   /*活动结束时间 */
-  endTime: Record<string, unknown>
+  endTime: string
 
   /*空间ID */
   spaceId: number
@@ -50,7 +88,7 @@ export interface Activity {
   auditStatus: string
 
   /*创建时间 */
-  createTime: Record<string, unknown>
+  createTime: string
 
   /*报名人数 */
   registeredCount: number
@@ -75,18 +113,13 @@ export interface RegistrationUser {
 }
 
 export interface Organizer extends RegistrationUser {}
+export interface FavoriteUser extends RegistrationUser {}
 
 export interface Space {
   id: number
   name: string
   address: string
   mapImages: string[]
-}
-
-export interface FavoriteUser {
-  userId: number
-  avatar: string
-  introduction: string | null
 }
 
 export interface ActivityDetail {
@@ -102,11 +135,28 @@ export interface ActivityDetail {
   detail: string
   favoriteCount: number
   favoriteUsers: FavoriteUser[]
+  /*当前用户是否收藏（未登录时为false） */
   isFavorited: boolean
-  activityType?: ActivityType
-  auditStatus?: string
-  activityStatus?: string
-  maxParticipants?: number
+
+  /*总报名人数（活动总共可以报名的人数） */
+  maxParticipants: number
+
+  /*已报名人数 */
+  registeredCount: number
+
+  /*是否限制人数（false=不限制，true=限制） */
+  isLimitParticipants: boolean
+
+  /*活动状态（报名中、活动中、已结束） */
+  activityStatus: string
+
+  activityType: string
+
+  /*审核状态（审核中、审核通过、审核未通过） */
+  auditStatus: string
+
+  /*当前登录用户是否报名（未登录时为false） */
+  isRegistered: boolean
 }
 
 export interface RegistrationUser {
