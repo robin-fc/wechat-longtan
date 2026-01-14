@@ -86,8 +86,6 @@ export interface ActivityOrder {
     startTime: string
     endTime: string
   }
-  participantName: string
-  participantPhone: string
   notice: string
   status: string
   totalPrice: {
