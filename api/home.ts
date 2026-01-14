@@ -1,4 +1,5 @@
-import type { Activity, ActivityCollection } from '../model/activity'
+import type { Activity } from '../model/activity'
+import type { ActivityCollection } from '../model/activity-collection'
 import type { UserProfile } from '../model/user'
 import type { ID, ImageResource } from '../model/common'
 import { AppHomestayListItem } from '../model/homestay'

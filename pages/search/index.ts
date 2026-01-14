@@ -1,5 +1,6 @@
 import { fetchSearchPageConfig } from '../../api/search'
-import { getActivityList, getActivityCollections, ensureActivityTypeDict } from '../../api/activity'
+import { getActivityList, ensureActivityTypeDict } from '../../api/activity'
+import { getActivityCollections } from '../../api/activity-collection'
 import { getAvailableHomestayList } from '../../api/homestay'
 import type { SearchFrom, HotSearchItem } from '../../api/search'
 import type { Activity } from '../../model/activity'

@@ -1,6 +1,7 @@
-import { getActivityCollections, getActivityList } from '../../api/activity'
+import { getActivityList } from '../../api/activity'
+import { getActivityCollections } from '../../api/activity-collection'
 import type { Activity } from '../../model/activity'
-import type { ActivityCollection } from '../../model/activity'
+import type { ActivityCollection } from '../../model/activity-collection'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
 
@@ -41,7 +42,7 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '100',
     })
-    const list = (res && res.data?.pageResult && res.data?.pageResult.list) || []
+    const list = (res && res?.pageResult && res?.pageResult.list) || []
     const activities: Activity[] = list.map((it) => ({
       ...it,
       poster: {
@@ -65,10 +66,10 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
         }
       })(),
       space: {
-        id: it.spaceId,
-        name: it.spaceName || '',
-        address: '',
-        mapImages: [],
+        id: it.space?.id || 0,
+        name: it.space?.name || '',
+        address: it.space?.address || '',
+        mapImages: it.space?.mapImages || [],
       },
       timeRange: {
         startTime: formatYMDHM(it.startTime),

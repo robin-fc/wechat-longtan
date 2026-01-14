@@ -1,4 +1,4 @@
-import { createActivityCollection } from '../../api/activity'
+import { createActivityCollection } from '../../api/activity-collection'
 import { uploadImage } from '../../api/common'
 
 Page({

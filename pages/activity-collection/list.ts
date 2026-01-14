@@ -1,5 +1,5 @@
-import { getActivityCollections } from '../../api/activity'
-import type { ActivityCollection } from '../../model/activity'
+import { getActivityCollections } from '../../api/activity-collection'
+import type { ActivityCollection } from '../../model/activity-collection'
 import { smartNavigateTo } from '../../utils/navigation'
 
 interface CollectionListState {

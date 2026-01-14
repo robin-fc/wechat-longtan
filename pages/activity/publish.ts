@@ -1,6 +1,7 @@
 import { goBack } from '../../utils/navigation'
 import { toISO8601 } from '../../utils/isoTime'
-import { createActivity, getMyActivityCollections, getActivityTypeList } from '../../api/activity'
+import { createActivity, getActivityTypeList } from '../../api/activity'
+import { getMyActivityCollections } from '../../api/activity-collection'
 import { uploadImage } from '../../api/common'
 import type { ActivityType as ActivityTypeItem } from '../../model/activity'
 

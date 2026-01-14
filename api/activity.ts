@@ -1,7 +1,6 @@
 import type {
   ActivityType,
   Activity,
-  ActivityCollection,
   ActivityDetail,
   ActivityRegistration,
   ActivityShareInfo,
@@ -20,11 +19,6 @@ export interface ActivityListParams {
   pageSize: string
 }
 
-export interface CreateActivityCollectionPayload {
-  name: string
-  logo: string
-  description: string
-}
 
 export interface CreateActivityPayload {
   title: string
@@ -79,29 +73,6 @@ export function getUserActivityList(
   return getData(`${baseUrl}/user-list`, params)
 }
 
-export function getActivityCollections(
-  pageNo: string,
-  pageSize: string,
-  creatorId?: string,
-  keyword?: string
-): Promise<PageResult<ActivityCollection>> {
-  return getData<PageResult<ActivityCollection>>(`${baseUrl}/collection/list`, {
-    pageNo,
-    pageSize,
-    creatorId,
-    keyword,
-  })
-}
-
-export function getMyActivityCollections(
-  pageNo: string,
-  pageSize: string
-): Promise<PageResult<ActivityCollection>> {
-  return getData<PageResult<ActivityCollection>>(
-    `${baseUrl}/collection/my-list`,
-    { pageNo, pageSize }
-  )
-}
 
 export function createActivity(
   payload: CreateActivityPayload
@@ -109,11 +80,6 @@ export function createActivity(
   return postData<boolean>(`${baseUrl}/create`, payload)
 }
 
-export function createActivityCollection(
-  payload: CreateActivityCollectionPayload
-): Promise<boolean> {
-  return postData<boolean>(`${baseUrl}/collection/create`, payload)
-}
 
 export function getActivityRegistrations(
   activityId: number

@@ -2,7 +2,7 @@ import { ensureActivityTypeDict } from '../../api/activity'
 import { fetchMyActivityFilters } from '../../api/mine'
 import { fetchMyActivities, fetchMyCollections } from '../../api/mine'
 import type { Activity } from '../../model/activity'
-import type { ActivityCollection } from '../../model/activity'
+import type { ActivityCollection } from '../../model/activity-collection'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 interface FilterItem {

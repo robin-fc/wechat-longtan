@@ -1,7 +1,8 @@
 import { fetchHomeData } from '../../api/home'
 import type { HomePageData, HomeEntryItem } from '../../api/home'
 import { getBannerList } from '../../api/banner'
-import { getActivityList, getActivityCollections } from '../../api/activity'
+import { getActivityList } from '../../api/activity'
+import { getActivityCollections } from '../../api/activity-collection'
 import { getAvailableHomestayList } from '../../api/homestay'
 import { smartNavigateTo } from '../../utils/navigation'
 
