@@ -9,7 +9,7 @@ import { ActivityDetail } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 
 interface ActivityDetailState {
-  activityDetail: ActivityDetail | null
+  activity: ActivityDetail | null
   menuTop: number
   menuHeight: number
   registrationCount: number
@@ -19,7 +19,7 @@ interface ActivityDetailState {
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   data: {
-    activityDetail: null,
+    activity: null,
     menuTop: 0,
     menuHeight: 44,
     registrationCount: 0,
@@ -46,18 +46,17 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       })
       return
     }
-    const activityDetail = await   getActivityDetail(id) 
-    if (!activityDetail) {
+    const activity = await getActivityDetail(id)
+    if (!activity) {
       return
     }
 
     const menuRect = wx.getMenuButtonBoundingClientRect()
     const userId = wx.getStorageSync('userId')
     const isSelf =
-      activityDetail.organizer &&
-      String(activityDetail.organizer.userId) === String(userId)
+      activity.organizer && String(activity.organizer.userId) === String(userId)
 
-    const favoriteCount = activityDetail.favoriteCount || 0
+    const favoriteCount = activity.favoriteCount || 0
     const favoriteCountText =
       favoriteCount >= 10000
         ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(
@@ -66,15 +65,15 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         : `${favoriteCount} 人收藏`
 
     this.setData({
-      activityDetail,
-      registrationCount: activityDetail.registeredCount || 0,
-      registrationLimit: activityDetail.isLimitParticipants
-        ? activityDetail.maxParticipants
+      activity,
+      registrationCount: activity.registeredCount || 0,
+      registrationLimit: activity.isLimitParticipants
+        ? activity.maxParticipants
         : '无限制',
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
-      isFavorited: activityDetail.isFavorited,
-      favoriteUsers: (activityDetail.favoriteUsers || []).slice(0, 5),
+      isFavorited: activity.isFavorited,
+      favoriteUsers: (activity.favoriteUsers || []).slice(0, 5),
       favoriteCount,
       favoriteCountText,
       isSelf,
@@ -84,18 +83,18 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     goBack()
   },
   onCompanionsTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const detail = this.data.activityDetail
+    const detail = this.data.activity
     if (!detail) {
       return
     }
     smartNavigateTo(
-      `/pages/activityDetail/companions?activityId=${encodeURIComponent(
+      `/pages/activity/companions?activityId=${encodeURIComponent(
         String(detail.id)
       )}`
     )
   },
   onOpenMapTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const detail = this.data.activityDetail
+    const detail = this.data.activity
     if (!detail) {
       return
     }
@@ -114,7 +113,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     }
   },
   onSpaceDetailTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const detail = this.data.activityDetail
+    const detail = this.data.activity
     if (!detail) {
       return
     }
@@ -124,7 +123,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   },
   onToggleCollect(this: WechatMiniprogram.Page.TrivialInstance) {
     const prev = this.data.isFavorited
-    const detail = this.data.activityDetail
+    const detail = this.data.activity
     if (!detail) {
       return
     }
@@ -160,7 +159,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   },
 
   onOrganizerTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const detail = this.data.activityDetail as ActivityDetail
+    const detail = this.data.activity as ActivityDetail
 
     if (!detail || !detail.organizer || !detail.organizer.userId) return
     smartNavigateTo(
@@ -169,15 +168,15 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
   },
 
   async onToggleFollowOrganizer(this: WechatMiniprogram.Page.TrivialInstance) {
-    const activityDetail = (this.data as ActivityDetailState).activityDetail
-    if (!activityDetail || !activityDetail.organizer) return
+    const activity = (this.data as ActivityDetailState).activity
+    if (!activity || !activity.organizer) return
 
     const isFollowing = (
       this.data as ActivityDetailState
-    ).activityDetail?.favoriteUsers?.some(
+    ).activity?.favoriteUsers?.some(
       (it) => it.userId === wx.getStorageSync('userId')
     )
-    const organizerId = activityDetail.organizer.userId
+    const organizerId = activity.organizer.userId
 
     if (isFollowing) {
       wx.showModal({
@@ -188,7 +187,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
             await AppUserUnfollow({ followeeId: organizerId })
 
             this.setData({
-              activityDetail: { ...activityDetail, isFavorited: false },
+              activity: { ...activity, isFavorited: false },
             })
             wx.showToast({ title: '已取消关注', icon: 'none' })
           }
@@ -196,12 +195,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       })
     } else {
       await AppUserFollow({ followeeId: organizerId })
-      this.setData({ activityDetail: { ...activityDetail, isFavorited: true } })
+      this.setData({ activity: { ...activity, isFavorited: true } })
       wx.showToast({ title: '关注成功', icon: 'none' })
     }
   },
   onShareTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const detail = (this.data as ActivityDetailState).activityDetail
+    const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return
     }
@@ -211,7 +210,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     })
   },
   onShareAppMessage() {
-    const detail = (this.data as unknown as ActivityDetailState).activityDetail
+    const detail = (this.data as unknown as ActivityDetailState).activity
     if (!detail) {
       return {
         title: '龙潭村活动',
@@ -220,12 +219,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     }
     return {
       title: detail.title,
-      path: `/pages/activityDetail/detail?id=${detail.id}`,
+      path: `/pages/activity/detail?id=${detail.id}`,
       imageUrl: detail.logo,
     }
   },
   onShareTimeline() {
-    const detail = (this.data as unknown as ActivityDetailState).activityDetail
+    const detail = (this.data as unknown as ActivityDetailState).activity
     if (!detail) {
       return {
         title: '龙潭村活动',
@@ -238,7 +237,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     }
   },
   onSignupTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const detail = (this.data as ActivityDetailState).activityDetail
+    const detail = (this.data as ActivityDetailState).activity
     if (!detail) {
       return
     }
@@ -268,19 +267,19 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     }
 
     smartNavigateTo(
-      `/pages/activityDetail-order/confirm?activityId=${encodeURIComponent(
+      `/pages/activity-order/confirm?activityId=${encodeURIComponent(
         detail.id
       )}`
     )
   },
 
   onRegistrationTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const activityDetail = (this.data as ActivityDetailState).activityDetail
-    if (!activityDetail) {
+    const activity = (this.data as ActivityDetailState).activity
+    if (!activity) {
       return
     }
     smartNavigateTo(
-      `/pages/user/list/index?title=已报名用户&type=registration&id=${activityDetail.id}`
+      `/pages/user/list/index?title=已报名用户&type=registration&id=${activity.id}`
     )
   },
 })
