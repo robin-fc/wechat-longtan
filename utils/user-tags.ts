@@ -8,9 +8,7 @@ export function buildUserTagsView(
   memberTags: string[]
 ): UserTagView[] {
   const result: UserTagView[] = []
-  const levelText = memberLevel === undefined || memberLevel === null
-    ? ''
-    : String(memberLevel)
+  const levelText = (memberLevel || '').trim()
 
   if (levelText) {
     let label = levelText
@@ -36,19 +34,7 @@ export function buildUserTagsView(
     '1': { label: '活动发起人', className: 'tag-host' },
   }
 
-  const tagsArray: string[] = (() => {
-    if (memberTags === undefined || memberTags === null) return []
-    if (Array.isArray(memberTags)) return memberTags.map((it) => String(it))
-    const s = String(memberTags).trim()
-    if (!s) return []
-    if (s.startsWith('[') && s.endsWith(']')) {
-      try {
-        const arr = JSON.parse(s)
-        if (Array.isArray(arr)) return arr.map((it) => String(it))
-      } catch {}
-    }
-    return s.split(',')
-  })()
+  const tagsArray: string[] = (memberTags || [])
     .map((it) => String(it).trim().replace(/^"+|"+$/g, ''))
     .filter(Boolean)
 
@@ -69,4 +55,3 @@ export function buildUserTagsView(
     return true
   })
 }
-
