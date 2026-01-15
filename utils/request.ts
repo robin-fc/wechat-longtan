@@ -1,7 +1,8 @@
 import type { CommonResult } from '../model/common'
+import type { AppWeixinMiniAppLoginRespVO } from '../model/auth'
 
 const BASE_URL: string =
-  (wx.getStorageSync('apiBaseUrl') as string) ||  "http://127.0.0.1"  //'https://47.115.209.64'
+  (wx.getStorageSync('apiBaseUrl') as string) || 'https://47.115.209.64' //"http://127.0.0.1"
 
 const REFRESH_THRESHOLD_SEC = 300
 const MAX_RETRY = 2
@@ -50,9 +51,9 @@ export interface RequestOptions {
 }
 
 function isTokenInvalid(
-  res: WechatMiniprogram.RequestSuccessCallbackResult
+  res: CommonResult<any>
 ): boolean {
-  const status = res.statusCode
+  const status = res.code
   if (status === 401 || status === 403) {
     return true
   }
@@ -87,7 +88,7 @@ function refreshAccessToken(refreshToken: string): Promise<boolean> {
   }
   refreshingPromise = new Promise<boolean>((resolve) => {
     wx.request({
-      url: BASE_URL + '/daolongtan/auth/refresh-token',
+      url: BASE_URL + '/app-api/daolongtan/auth/refresh-token',
       method: 'POST',
       header: buildHeaders({ Authorization: 'Bearer ' + refreshToken }),
       data: { refreshToken },
@@ -96,19 +97,11 @@ function refreshAccessToken(refreshToken: string): Promise<boolean> {
           const body = (res.data || {}) as {
             code?: number
             msg?: string
-            data?: {
-              accessToken: string
-              refreshToken: string
-              expiresTime: string
-            }
+            data?: AppWeixinMiniAppLoginRespVO
           }
           const payload =
             (body && body.data) ||
-            (res.data as {
-              accessToken: string
-              refreshToken: string
-              expiresTime: string
-            })
+            (res.data as AppWeixinMiniAppLoginRespVO)
           if (
             payload &&
             payload.accessToken &&
@@ -149,18 +142,19 @@ export function request<T>(options: RequestOptions): Promise<CommonResult<T>> {
         data: options.data,
         header: buildHeaders(options.headers),
         success: async (res) => {
-          const data = (res.data || {}) as CommonResult<T>
-          if (res.statusCode >= 200 && res.statusCode < 300) {
-            resolve(data)
-            return
-          }
-          if (isTokenInvalid(res) && attempt < MAX_RETRY) {
+          const data = (res.data || {}) as any
+          const tokenInvalid = isTokenInvalid(data)
+          if (tokenInvalid && attempt < MAX_RETRY) {
             attempt++
             const ok = await refreshAccessToken(getTokenInfo().refreshToken)
             if (ok) {
               exec()
               return
             }
+          }
+          if (res.statusCode >= 200 && res.statusCode < 300 && !tokenInvalid) {
+            resolve(data)
+            return
           }
           reject(new Error(data.msg || `请求失败: ${res.statusCode}`))
         },

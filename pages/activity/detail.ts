@@ -226,7 +226,10 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
             await AppUserUnfollow({ followeeId: organizerId })
 
             this.setData({
-              activity: { ...activity, isFavorited: false },
+              activity: {
+                ...activity,
+                organizer: { ...activity.organizer, follow: false },
+              },
             })
             wx.showToast({ title: '已取消关注', icon: 'none' })
           }
@@ -234,7 +237,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       })
     } else {
       await AppUserFollow({ followeeId: organizerId })
-      this.setData({ activity: { ...activity, isFavorited: true } })
+      this.setData({
+        activity: {
+          ...activity,
+          organizer: { ...activity.organizer, follow: true },
+        },
+      })
       wx.showToast({ title: '关注成功', icon: 'none' })
     }
   },

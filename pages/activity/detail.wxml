@@ -55,8 +55,8 @@
             </view>
           </view>
         </view>
-        <view wx:if="{{!isSelf}}" class="follow-btn {{isFollowingOrganizer ? 'following' : ''}}" bindtap="onToggleFollowOrganizer">
-          <text>{{isFollowingOrganizer ? '已关注' : '关注'}}</text>
+        <view wx:if="{{!isSelf}}" class="follow-btn {{activity.organizer.follow ? 'following' : ''}}" bindtap="onToggleFollowOrganizer">
+          <text>{{activity.organizer.follow ? '已关注' : '关注'}}</text>
         </view>
       </view>
       <!-- Registration Progress -->
