@@ -24,7 +24,7 @@
       <view class="gender-options">
         <view class="gender-opt {{gender === 1 ? 'active' : ''}}" data-value="1" bindtap="onGenderChange">男</view>
         <view class="gender-opt {{gender === 2 ? 'active' : ''}}" data-value="2" bindtap="onGenderChange">女</view>
-        <view class="gender-opt {{gender === 0 ? 'active' : ''}}" data-value="0" bindtap="onGenderChange">其他</view>
+        <view class="gender-opt {{gender === 0 ? 'active' : ''}}" data-value="0" bindtap="onGenderChange">其TA</view>
       </view>
     </view>
 

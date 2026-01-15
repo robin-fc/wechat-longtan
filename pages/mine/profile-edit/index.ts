@@ -5,7 +5,7 @@ Page({
   data: {
     logo: '',
     wxName: '',
-    sex: 2, // 1男 2女 0其他
+    sex: 2, // 1男 2女 0其TA
     desc: '',
     loading: false,
   },
