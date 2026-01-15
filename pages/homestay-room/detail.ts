@@ -1,6 +1,5 @@
 import { getHomestayAvailableRooms } from '../../api/homestay'
 import type { HomestayRoom } from '../../model/homestay'
-import { formatYMD } from '../../utils/date'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 interface RoomDetailState {
@@ -96,7 +95,14 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       '5': '大床房',
     }
     try {
-      const list = await getHomestayAvailableRooms({ homestayId, checkInDate })
+      const list = await getHomestayAvailableRooms({
+        homestayId,
+        checkInDate,
+        checkOutDate: '',
+        packageType: '',
+        pageNo: '1',
+        pageSize: '10'
+       })
       const item = (list.rooms || []).find((x) => String(x.id) === String(id))
       if (!item) {
         return

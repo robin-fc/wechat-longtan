@@ -40,6 +40,15 @@ export interface AppHomestayListRespVO {
   stayedUsers: AppUserInfoRespVO[]
 }
 
+export interface AppHomestayRoomListReqVO {
+  homestayId: string
+  checkInDate: string
+  checkOutDate: string
+  packageType: string
+  pageNo: string
+  pageSize: string
+}
+
 export interface AppHomestayRoomListRespVO {
   availableRoomsCount: number // 在售房型个数
   rooms: AppHomestayRoomListItem[]

@@ -1,8 +1,10 @@
+import { getHomestayDetailApi, getHomestayAvailableRooms } from '../../api/homestay'
 import {
-  getHomestayDetailApi,
-  getHomestayAvailableRooms,
-} from '../../api/homestay'
-import { tagMap, type AppHomestayDetail, type HomestayRoom, HOMESTAY_TAGS } from '../../model/homestay'
+  tagMap,
+  type AppHomestayDetail,
+  type HomestayRoom,
+  HOMESTAY_TAGS,
+} from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
@@ -16,11 +18,36 @@ interface HomestayDetailState {
   homestay: AppHomestayDetail | null
   rooms: HomestayRoom[]
   startDate: string
+  endDate: string
   duration: DurationType
   durations: DurationOption[]
   menuTop: number
   menuHeight: number
   isDescriptionExpanded: boolean
+}
+
+const PACKAGE_TYPE_DAYS: Record<string, number> = {
+  '1': 7,
+  '2': 14,
+  '3': 30,
+  '4': 90,
+}
+
+function calcEndDate(startDate: string, packageType: string): string {
+  const parts = (startDate || '').split('-')
+  if (parts.length !== 3) {
+    return startDate
+  }
+  const year = Number(parts[0])
+  const month = Number(parts[1]) - 1
+  const day = Number(parts[2])
+  const days = PACKAGE_TYPE_DAYS[packageType] || 7
+  const dt = new Date(year, month, day)
+  dt.setDate(dt.getDate() + days)
+  const yyyy = dt.getFullYear()
+  const mm = String(dt.getMonth() + 1).padStart(2, '0')
+  const dd = String(dt.getDate()).padStart(2, '0')
+  return `${yyyy}-${mm}-${dd}`
 }
 
 // Helper to map API room response to HomestayRoom
@@ -56,6 +83,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     homestay: null,
     rooms: [],
     startDate: '',
+    endDate: '',
     duration: 'week',
     durations: [
       { label: '一周', value: 'week' },
@@ -82,10 +110,12 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     })
     try {
       const homestayDetail = await getHomestayDetailApi(Number(id))
-      
+
       // Map tags from numbers to strings
       if (homestayDetail.tags && Array.isArray(homestayDetail.tags)) {
-        homestayDetail.tags = homestayDetail.tags.map(t => HOMESTAY_TAGS[Number(t)] || t)
+        homestayDetail.tags = homestayDetail.tags.map(
+          (t) => HOMESTAY_TAGS[Number(t)] || t
+        )
       }
 
       const now = new Date()
@@ -93,9 +123,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       const mm = String(now.getMonth() + 1).padStart(2, '0')
       const dd = String(now.getDate()).padStart(2, '0')
       const startDate = `${yyyy}-${mm}-${dd}`
+      const endDate = calcEndDate(startDate, '1')
       this.setData({
         homestay: homestayDetail,
         startDate: startDate,
+        endDate: endDate,
       })
       const tagMap: Record<string, string> = {
         '0': '独立卫生间',
@@ -108,6 +140,10 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       const roomList = await getHomestayAvailableRooms({
         homestayId: String(homestayDetail.id),
         checkInDate: startDate,
+        checkOutDate: endDate,
+        packageType: '1',
+        pageNo: '1',
+        pageSize: '10',
       })
       const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
         mapApiRoomToHomestayRoom(item, homestayDetail.id, tagMap)
@@ -141,16 +177,23 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.PickerChange
   ) {
     const startDate = e.detail.value
-    this.setData({ startDate })
+    const endDate = calcEndDate(startDate, '1')
+    this.setData({ startDate, endDate })
     const data = this.data as HomestayDetailState
     const homestay = data.homestay
     if (!homestay) {
       return
     }
-    
+
+    const endDate = (this.data as HomestayDetailState).endDate
+
     getHomestayAvailableRooms({
       homestayId: String(homestay.id),
       checkInDate: startDate as string,
+      checkOutDate: endDate,
+      packageType: '1',
+      pageNo: '1',
+      pageSize: '10',
     }).then((roomList) => {
       const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
         mapApiRoomToHomestayRoom(item, homestay.id, tagMap)

@@ -65,7 +65,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       nightsCount: duration
     })
 
-    const rooms = await getHomestayAvailableRooms({homestayId, checkInDate:startDate})
+    const rooms = await getHomestayAvailableRooms({homestayId, checkInDate:startDate, checkOutDate:checkOutDate, packageType:'', pageNo:'1', pageSize:'10'})
     const room = rooms.rooms.find(r => String(r.id) === roomId)
     if (!room) return
     const display = `${room.roomNumber}`

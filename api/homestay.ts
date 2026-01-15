@@ -1,6 +1,5 @@
 import {
   type HomestayRoom,
-  type AppHomestayRoomListItem,
   type AppHomestayPackageItem,
   type AppHomestayListItem,
   type AppHomestayDetail,
@@ -9,9 +8,11 @@ import {
   HomestayApplication,
   AppOrderListRespVO,
   HomestayApplicationStatus,
+  AppHomestayRoomListReqVO,
 } from '../model/homestay'
 import { type ID, type PageResult } from '../model/common'
 import { getData } from '../utils/request'
+import { toISO8601 } from '../utils/isoTime'
 
 const baseUrl = '/app-api/daolongtan/homestay'
 
@@ -51,11 +52,14 @@ export async function fetchHomestayRoomDetail(id: ID): Promise<HomestayRoom> {
   return {} as HomestayRoom
 }
 
-export function getHomestayAvailableRooms(params: {
-  homestayId: string
-  checkInDate: string
-}): Promise<AppHomestayRoomListRespVO> {
-  return getData(`${baseUrl}/room/list`, params)
+export function getHomestayAvailableRooms(params: AppHomestayRoomListReqVO): Promise<AppHomestayRoomListRespVO> {
+  const isoCheckInDate = toISO8601(params.checkInDate, '00:00:00')
+  const isoCheckOutDate = toISO8601(params.checkOutDate, '00:00:00')
+  return getData(`${baseUrl}/room/list`, {
+    ...params,
+    checkInDate: isoCheckInDate,
+    checkOutDate: isoCheckOutDate,
+  })
 }
 
 export function getHomestayPackageList(): Promise<AppHomestayPackageItem[]> {
