@@ -80,19 +80,10 @@
         <text class="section-content">暂无活动的详细介绍、流程和注意事项。</text>
       </block>
     </view>
-    <view class="section favorite-section">
-      <view class="favorite-row">
-        <view class="favorite-avatars">
-          <block wx:if="{{favoriteUsers && favoriteUsers.length > 0}}">
-            <image wx:for="{{favoriteUsers}}" wx:key="userId" class="avatar" src="{{item.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
-          </block>
-          <block wx:else>
-            <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
-          </block>
-        </view>
-        <text class="favorite-text">{{favoriteCountText}}</text>
-        <text class="favorite-arrow">›</text>
-      </view>
+    <view class="section favorite-section" bindtap="onFavoriteUsersTap">
+      <companions-bar companions="{{favoriteCompanionsData}}" isHideCount="{{true}}"/>
+      <text class="favorite-text">{{favoriteCountText}}</text>
+      <text class="favorite-arrow">›</text>
     </view>
     <view class="section">
       <text class="section-title">活动评价</text>

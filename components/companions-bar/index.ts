@@ -7,6 +7,10 @@ Component({
         totalCount: 0,
       },
     },
+    isHideCount: {
+      type: Boolean,
+      value: false,
+    },
   },
   observers: {
     'companions.totalCount': function (newVal: number) {

@@ -25,6 +25,7 @@ interface ActivityDetailState {
   isSelf: boolean
   registeredUsers: RegistrationUser[]
   companionsData: CompanionsData
+  favoriteCompanionsData: CompanionsData
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -38,6 +39,10 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     isSelf: false,
     registeredUsers: [],
     companionsData: {
+      companions: [],
+      totalCount: 0,
+    },
+    favoriteCompanionsData: {
       companions: [],
       totalCount: 0,
     },
@@ -101,6 +106,14 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
           )} 万人收藏`
         : `${favoriteCount} 人收藏`
 
+    const favoriteCompanionsData: CompanionsData = {
+      companions: (formattedActivity.favoriteUsers || []).slice(0, 10).map((u) => ({
+        id: u.userId,
+        avatar: { url: u.logo || '/assets/images/default-avatar.png' },
+      })),
+      totalCount: favoriteCount || 0,
+    }
+
     this.setData({
       activity: formattedActivity,
       favoriteCountText,
@@ -111,10 +124,22 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
       isSelf,
+      favoriteCompanionsData,
     })
   },
   onBackTap() {
     goBack()
+  },
+  onFavoriteUsersTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const detail = this.data.activity
+    if (!detail) {
+      return
+    }
+    smartNavigateTo(
+      `/pages/activity/favorites?activityId=${encodeURIComponent(
+        String(detail.id)
+      )}`
+    )
   },
   onCompanionsTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = this.data.activity
@@ -176,6 +201,13 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
                     1
                   )} 万人收藏`
                 : `${favoriteCount} 人收藏`
+            const favoriteCompanionsData: CompanionsData = {
+              companions: (freshDetail.favoriteUsers || []).slice(0, 10).map((u) => ({
+                id: u.userId,
+                avatar: { url: u.logo || '/assets/images/default-avatar.png' },
+              })),
+              totalCount: favoriteCount || 0,
+            }
             this.setData({
               activity: {
                 ...detail,
@@ -183,6 +215,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
                 favoriteUsers: (freshDetail.favoriteUsers || []).slice(0, 5),
               },
               favoriteCountText,
+              favoriteCompanionsData,
             })
           })
           .catch(() => {
