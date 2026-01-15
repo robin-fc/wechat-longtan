@@ -10,8 +10,8 @@ import {
   AppOrderListRespVO,
   HomestayApplicationStatus,
 } from '../model/homestay'
-import { CommonResult, type ID, type PageResult } from '../model/common'
-import { getData, request } from '../utils/request'
+import { type ID, type PageResult } from '../model/common'
+import { getData } from '../utils/request'
 
 const baseUrl = '/app-api/daolongtan/homestay'
 

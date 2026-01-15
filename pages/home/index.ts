@@ -1,13 +1,14 @@
 import { fetchHomeData } from '../../api/home'
 import { smartNavigateTo } from '../../utils/navigation'
 import { AppActivityTypeRespVO, HomePageData } from '../../model/home'
+import { Banner } from '../../model/banner'
 
 interface HomeState {
   loading: boolean
   pageData: HomePageData | null
   navPaddingTop: number
   heroCurrent: number
-  heroBgUrl: string
+  hero: Banner | null
   topBgHeight: number
 }
 
@@ -17,7 +18,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     pageData: null,
     navPaddingTop: 0,
     heroCurrent: 1,
-    heroBgUrl: '',
+    hero: null,
     topBgHeight: 0,
   },
   onShow() {
@@ -41,12 +42,11 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     try {
       const data = await fetchHomeData()
       const idx = this.data.heroCurrent
-      const bg =
-        data.carousel && data.carousel[idx] ? data.carousel[idx].logo : ''
+      const hero = data.carousel[idx]
       this.setData({
         pageData: data,
         loading: false,
-        heroBgUrl: bg,
+        hero: hero,
       })
     } catch (_err) {
       this.setData({

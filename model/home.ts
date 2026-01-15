@@ -1,7 +1,7 @@
 import type { Activity } from '../model/activity'
 import type { ActivityCollection } from '../model/activity-collection'
 import type { UserProfile } from '../model/user'
-import { AppHomestayListItem } from '../model/homestay'
+import { AppHomestayListRespVO } from '../model/homestay'
 import { Banner } from '../model/banner'
 
 export interface HomePageData {
@@ -10,7 +10,7 @@ export interface HomePageData {
   entries: AppActivityTypeRespVO[]
   hotActivities: Activity[]
   collections: ActivityCollection[]
-  homestays: AppHomestayListItem[]
+  homestays: AppHomestayListRespVO[]
   aboutLinks: HomeAboutLink[]
 }
 

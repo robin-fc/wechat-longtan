@@ -35,7 +35,9 @@ export interface AppHomestayListRespVO {
   address: string
   mapImages: string[] // 民宿地图集（多张图片）
   tags: string[] // 民宿标签（每个数字对应一个标签：0=全天热水, 1=免费Wi-Fi, 2=付费停车位, 3=免费停车位, 4=洗衣机, 5=行李寄存, 6=有早餐）
-  reservedUsers: { userId: number; avatar: string }[]
+  availableRoomsCount: number // 在售房型个数
+  stayedUserCount: number // 已入住用户数
+  stayedUsers: AppUserInfoRespVO[]
 }
 
 export interface AppHomestayRoomListRespVO {
