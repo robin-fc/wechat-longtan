@@ -1,14 +1,13 @@
 import { getActivityRegistrations } from '../../api/activity'
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
 import { goBack } from '../../utils/navigation'
-import { formatYMDHM } from '../../utils/date'
 
 interface CompanionItemView {
   id: string
   avatarUrl: string
   nickname: string
   bio: string
-  isFollowed: boolean
+  follow: boolean
 }
 
 interface CompanionsPageState {
@@ -35,8 +34,8 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
         id: String(u.userId),
         avatarUrl: u.logo || '',
         nickname: u.memberName || u.wxName || `User ${u.userId}`,
-        bio: u.registrationTime ? `报名时间: ${formatYMDHM(u.registrationTime)}` : '',
-        isFollowed: false, // 默认未关注，后续如果有接口可以更新
+        bio: u.introduction || '',
+        follow: u.follow || false, // 默认未关注，后续如果有接口可以更新
       }))
 
       this.setData({
@@ -61,7 +60,7 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
       return
     }
     const target = list[index]
-    const followed = !!target.isFollowed
+    const followed = !!target.follow
     const reqBody = { followeeId: Number(id) }
     const doReq = followed
       ? AppUserUnfollow(reqBody)
@@ -70,7 +69,7 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
       .then(() => {
         list[index] = {
           ...target,
-          isFollowed: !followed,
+          follow: !followed,
         }
         this.setData({ companions: list })
       })

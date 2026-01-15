@@ -8,11 +8,11 @@
     <text class="name">{{homestay.name}}</text>
     <view class="tags">
       <block
-        wx:for="{{homestay.featureTags}}"
+        wx:for="{{homestay.tags}}"
         wx:key="id"
         wx:for-item="item"
       >
-        <text class="tag">{{item.name}}</text>
+        <text class="tag">{{item}}</text>
       </block>
     </view>
     <view class="footer">

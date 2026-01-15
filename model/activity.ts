@@ -110,6 +110,7 @@ export interface RegistrationUser {
   introduction: string
   memberLevel: string //成员等级（字典键值：0=老村民，1=新村民，2=数字游民，3=游客）
   memberTags: string[] //成员标签（字典键值：0=空间主理人，1=活动发起人）
+  follow: boolean // 是否关注
 }
 
 export interface Organizer extends RegistrationUser {

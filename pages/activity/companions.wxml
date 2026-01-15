@@ -17,9 +17,7 @@
           data-id="{{item.id}}"
           bindtap="onFollowTap"
         >
-          <text>
-            {{item.isFollowed ? '已关注' : '关注'}}
-          </text>
+          <text>{{item.isFollowed ? '已关注' : '关注'}}</text>
         </view>
       </view>
     </block>
