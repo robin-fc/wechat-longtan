@@ -6,6 +6,8 @@
         <image wx:if="{{index < 3}}" class="avatar" src="{{item.avatar.url}}" mode="aspectFill" />
       </block>
     </view>
-    <text class="count">{{companions.totalCount}}</text>
+    <view class="count-wrap">
+      <text class="count">{{companions.totalCount}}</text>
+    </view>
   </view>
 </view>

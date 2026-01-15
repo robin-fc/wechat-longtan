@@ -1,5 +1,6 @@
 import { login, postPhoneNumber } from '../../api/auth'
 import { updateUserInfo } from '../../api/user'
+import { uploadImage } from '../../api/common'
 
 Page({
   data: {
@@ -94,12 +95,30 @@ Page({
   closeProfileModal(this: WechatMiniprogram.Page.TrivialInstance) {
     this.setData({ showProfileModal: false })
   },
-  onChooseAvatarProfile(
+  async onChooseAvatarProfile(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.CustomEvent<{ avatarUrl: string }>
   ) {
     const url = (e.detail && e.detail.avatarUrl) || ''
+    if (!url) return
+
+    // 先展示临时路径，提升体验
     this.setData({ previewAvatar: url })
+
+    // 上传获取永久路径
+    try {
+      wx.showLoading({ title: '上传头像中...' })
+      const serverUrl = await uploadImage(url)
+      this.setData({ previewAvatar: serverUrl })
+      wx.hideLoading()
+    } catch (err: any) {
+      wx.hideLoading()
+      console.error('上传头像失败', err)
+      wx.showToast({
+        title: '头像上传失败，请重试',
+        icon: 'none',
+      })
+    }
   },
   onNicknameInputProfile(
     this: WechatMiniprogram.Page.TrivialInstance,
