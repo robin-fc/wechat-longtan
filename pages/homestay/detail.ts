@@ -177,15 +177,13 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.PickerChange
   ) {
     const startDate = e.detail.value
-    const endDate = calcEndDate(startDate, '1')
+    const endDate = calcEndDate(startDate as string, '1')
     this.setData({ startDate, endDate })
     const data = this.data as HomestayDetailState
     const homestay = data.homestay
     if (!homestay) {
       return
     }
-
-    const endDate = (this.data as HomestayDetailState).endDate
 
     getHomestayAvailableRooms({
       homestayId: String(homestay.id),

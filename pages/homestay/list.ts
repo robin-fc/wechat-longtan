@@ -1,20 +1,19 @@
 import {
   getAvailableHomestayList,
   getHomestayAvailableList,
+  getHomestayPackageList,
 } from '../../api/homestay'
-import { AppHomestayListItem } from '../../model/homestay'
+import { AppHomestayListItem, AppHomestayListRespVO, type AppHomestayPackageItem } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
-
-type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
 
 interface DurationOption {
   label: string
-  value: DurationType
+  value: string
 }
 
 interface HomestayListState {
   startDate: string
-  duration: DurationType
+  duration: string
   durations: DurationOption[]
   homestays: AppHomestayListItem[]
 }
@@ -22,44 +21,50 @@ interface HomestayListState {
 Page<HomestayListState, WechatMiniprogram.IAnyObject>({
   data: {
     startDate: '',
-    duration: 'week',
-    durations: [
-      { label: '一周', value: 'week' },
-      { label: '两周', value: 'twoWeeks' },
-      { label: '一个月', value: 'month' },
-      { label: '三个月', value: 'threeMonths' },
-    ],
+    duration: '',
+    durations: [],
     homestays: [],
   },
-  onShow() {
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({
-        selected: 2,
+  async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    await this.loadDurations()
+    await this.loadHomestays()
+  },
+  async loadDurations(this: WechatMiniprogram.Page.TrivialInstance) {
+    try {
+      const packages = await getHomestayPackageList()
+      const durations: DurationOption[] = (packages || []).map(
+        (item: AppHomestayPackageItem) => ({
+          label: item.packageName,
+          value: item.packageName,
+        })
+      )
+      if (durations.length > 0) {
+        this.setData({
+          durations,
+          duration: durations[0].value,
+        })
+      } else {
+        this.setData({
+          durations: [],
+        })
+      }
+    } catch {
+      const fallbackDurations: DurationOption[] = [
+        { label: '一周', value: '一周' },
+        { label: '两周', value: '两周' },
+        { label: '一个月', value: '一个月' },
+        { label: '三个月', value: '三个月' },
+      ]
+      this.setData({
+        durations: fallbackDurations,
+        duration: fallbackDurations[0].value,
       })
     }
-  },
-  async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
-    await this.loadHomestays()
   },
   async loadHomestays(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
       const apiList = await getHomestayAvailableList()
-      const list: AppHomestayListItem[] = (apiList || []).map((it) => {
-        return {
-          id: it.id,
-          name: it.name,
-          address: it.address,
-          minPrice: it.minPrice || 0,
-          mapImages: it.mapImages,
-          tags: it.tags,
-          reservedUsers: it.reservedUsers || [],
-          referencePrice: {
-            amount: it.minPrice || 0,
-            currency: 'CNY',
-            unit: '天',
-          },
-        }
-      })
+      const list:AppHomestayListRespVO[] =  apiList.list.slice()
       this.setData({
         homestays: list,
       })
@@ -89,7 +94,7 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.BaseEvent
   ) {
-    const value = e.currentTarget.dataset.value as DurationType
+    const value = e.currentTarget.dataset.value as string
     this.setData({
       duration: value,
     })

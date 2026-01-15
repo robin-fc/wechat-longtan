@@ -66,7 +66,7 @@ export function getHomestayPackageList(): Promise<AppHomestayPackageItem[]> {
   return getData(`${baseUrl}/package/list`)
 }
 
-export function getHomestayAvailableList(): Promise<AppHomestayListItem[]> {
+export function getHomestayAvailableList(): Promise<PageResult<AppHomestayListRespVO>> {
   return getData(`${baseUrl}/list`)
 }
 

@@ -33,8 +33,8 @@
       </view>
       
       <view class="bottom-row">
-        <view class="companions-wrapper">
-          <text class="companions-label">同行伙伴</text>
+        <view class="companions-wrapper" wx:if="{{activity.companions && activity.companions.length > 0}}">
+          <!-- <text class="companions-label">同行伙伴</text> -->
           <companions-bar companions="{{activity.companions}}" class="companions-bar-inline" />
         </view>
         <text class="price">
