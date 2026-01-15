@@ -112,8 +112,10 @@ export interface RegistrationUser {
   memberTags: string[] //成员标签（字典键值：0=空间主理人，1=活动发起人）
 }
 
-export interface Organizer extends RegistrationUser {}
-export interface FavoriteUser extends RegistrationUser {}
+export interface Organizer extends RegistrationUser {
+  follow: boolean
+}
+export interface FavoriteUser extends RegistrationUser { }
 
 export interface Space {
   id: number
@@ -157,15 +159,6 @@ export interface ActivityDetail {
 
   /*当前登录用户是否报名（未登录时为false） */
   isRegistered: boolean
-}
-
-export interface RegistrationUser {
-  userId: number
-  wxName: string
-  memberName: string
-  logo: string
-  registrationTime: string
-  isFollowing: boolean
 }
 
 export interface ActivityRegistration {

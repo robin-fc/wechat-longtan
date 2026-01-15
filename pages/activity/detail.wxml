@@ -16,17 +16,14 @@
           <text class="price-symbol">¥</text>
           <text class="price-amount">{{activity.fee}}</text>
         </view>
-        
         <view class="header-title-row">
           <text class="secondary-tag">{{activity.activityType}}</text>
           <text class="nickname">{{activity.title}}</text>
         </view>
-
         <view class="info-row time-row">
           <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
           <text class="info-text">{{activity.startTime}}-{{activity.endTime}}</text>
         </view>
-
         <view class="info-row space-row">
           <view class="space-left" bindtap="onSpaceDetailTap">
             <view class="space-name-wrap">
@@ -36,18 +33,12 @@
             <text class="space-address">{{activity.space.address}}</text>
           </view>
           <view class="space-right" bindtap="onOpenMapTap">
-            <image 
-              class="mini-map" 
-              src="{{activity.space.mapImages[0]}}" 
-              mode="aspectFill" 
-            />
+            <image class="mini-map" src="{{activity.space.mapImages[0]}}" mode="aspectFill" />
             <text class="map-hint">点击查看</text>
           </view>
         </view>
-
       </view>
     </view>
-
     <view class="section organizer-section" wx:if="{{activity.organizer}}">
       <view class="organizer-row">
         <image class="organizer-avatar" src="{{activity.organizer.logo}}" mode="aspectFill" bindtap="onOrganizerTap" />
@@ -55,29 +46,26 @@
           <view class="organizer-header">
             <view class="organizer-name-wrap" bindtap="onOrganizerTap">
               <text class="organizer-name">{{activity.organizer.memberName || activity.organizer.wxName}}</text>
-              <view class="organizer-tags" wx:if="{{activity.organizer.tags && activity.organizer.tags.length}}">
-                <text class="organizer-tag" wx:for="{{activity.organizer.tags}}" wx:key="*this">{{item}}</text>
+              <view class="organizer-tags" wx:if="{{activity.organizer.memberTags && activity.organizer.memberTags.length}}">
+                <text class="organizer-tag" wx:for="{{activity.organizer.memberTags}}" wx:key="*this">{{item}}</text>
               </view>
             </view>
-            <view wx:if="{{!isSelf}}" class="follow-btn {{isFollowingOrganizer ? 'following' : ''}}" bindtap="onToggleFollowOrganizer">
-              <text>{{isFollowingOrganizer ? '已关注' : '关注'}}</text>
+            <view class="organizer-space" wx-if="{{activity.organizer.introduction}}">
+              <text>{{activity.organizer.introduction}}</text>
             </view>
           </view>
-          <text class="organizer-space" wx:if="{{activity.organizer.spaceName}}">所属据点：{{activity.organizer.spaceName}}</text>
+        </view>
+        <view wx:if="{{!isSelf}}" class="follow-btn {{isFollowingOrganizer ? 'following' : ''}}" bindtap="onToggleFollowOrganizer">
+          <text>{{isFollowingOrganizer ? '已关注' : '关注'}}</text>
         </view>
       </view>
-
       <!-- Registration Progress -->
       <view class="registration-progress">
         <view class="progress-bar-wrap">
-          <view 
-            class="progress-bar" 
-            style="width: {{registrationLimit > 0 ? (registrationCount / registrationLimit * 100) : 0}}%"
-          ></view>
+          <view class="progress-bar" style="width: {{registrationLimit > 0 ? (registrationCount / registrationLimit * 100) : 0}}%"></view>
         </view>
         <text class="registration-text" wx:if="{{registrationLimit > 0}}" bindtap="onRegistrationTap">已报名 {{registrationCount}}/{{registrationLimit}}</text>
         <text class="registration-text" wx:else bindtap="onRegistrationTap">已报名 {{registrationCount}}</text>
-        
         <view class="registration-avatars" bindtap="onCompanionsTap">
           <block wx:for="{{registrationUsers}}" wx:key="userId">
             <image class="reg-avatar" src="{{item.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
@@ -88,7 +76,6 @@
         </view>
       </view>
     </view>
-
     <view class="section">
       <text class="section-title">活动详情</text>
       <block wx:if="{{activity.detail}}">
@@ -102,13 +89,7 @@
       <view class="favorite-row">
         <view class="favorite-avatars">
           <block wx:if="{{favoriteUsers && favoriteUsers.length > 0}}">
-            <image 
-              wx:for="{{favoriteUsers}}" 
-              wx:key="userId" 
-              class="avatar" 
-              src="{{item.logo || '/assets/images/default-avatar.png'}}" 
-              mode="aspectFill" 
-            />
+            <image wx:for="{{favoriteUsers}}" wx:key="userId" class="avatar" src="{{item.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
           </block>
           <block wx:else>
             <image class="avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
@@ -120,8 +101,12 @@
     </view>
     <view class="section">
       <text class="section-title">活动评价</text>
-      <text wx:if="{{activity.activityStatus != '已结束'}}" class="section-content default-content">活动还未结束，暂时还没有评价。</text>
-      <text wx:elif="{{activity.activityStatus == '已结束'}}" class="section-content default-content">暂无评价</text>
+      <text wx:if="{{activity.activityStatus != '已结束'}}" class="section-content default-content">
+        活动还未结束，暂时还没有评价。
+      </text>
+      <text wx:elif="{{activity.activityStatus == '已结束'}}" class="section-content default-content">
+        暂无评价
+      </text>
     </view>
   </view>
   <view wx:if="{{activity}}" class="bottom-bar">

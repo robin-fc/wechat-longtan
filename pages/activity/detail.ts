@@ -7,6 +7,7 @@ import {
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
 import { ActivityDetail } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
+import { formatYMDHM } from '../../utils/date'
 
 interface ActivityDetailState {
   activity: ActivityDetail | null
@@ -58,7 +59,13 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const isSelf =
       activity.organizer && String(activity.organizer.userId) === String(userId)
 
-    const favoriteCount = activity.favoriteCount || 0
+    const formattedActivity: ActivityDetail = {
+      ...activity,
+      startTime: formatYMDHM(activity.startTime),
+      endTime: formatYMDHM(activity.endTime),
+    }
+
+    const favoriteCount = formattedActivity.favoriteCount || 0
     const favoriteCountText =
       favoriteCount >= 10000
         ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(
@@ -67,11 +74,11 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
         : `${favoriteCount} 人收藏`
 
     this.setData({
-      activity,
+      activity: formattedActivity,
       favoriteCountText,
-      registrationCount: activity.registeredCount || 0,
-      registrationLimit: activity.isLimitParticipants
-        ? activity.maxParticipants
+      registrationCount: formattedActivity.registeredCount || 0,
+      registrationLimit: formattedActivity.isLimitParticipants
+        ? formattedActivity.maxParticipants
         : '无限制',
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
@@ -150,7 +157,12 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
               favoriteCountText,
             })
           })
-          .catch(() => {})
+          .catch(() => {
+            wx.showToast({
+              title: prev ? '取消收藏失败' : '收藏失败',
+              icon: 'none',
+            })
+          })
       })
       .catch((e) => {
         wx.showToast({
@@ -175,7 +187,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
 
     const isFollowing = (
       this.data as ActivityDetailState
-    ).activity?.organizer.isFollowing
+    ).activity?.organizer.follow
     const organizerId = activity.organizer.userId
 
     if (isFollowing) {

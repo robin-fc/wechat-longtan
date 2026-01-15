@@ -226,13 +226,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .organizer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   margin-bottom: 8rpx;
 }
 
@@ -240,6 +236,17 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+}
+
+.organizer-space {
+  font-size: 24rpx;
+  height: 28rpx;
+  color: #999999;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
 }
 
 .organizer-name {
@@ -254,8 +261,7 @@
   align-items: center;
   justify-content: center;
   width: 120rpx;
-  height: 56rpx;
-  border-radius: 28rpx;
+  height: 44rpx;
   background-color: #ffffff;
   border: 1rpx solid #333333;
   font-size: 24rpx;
@@ -289,11 +295,6 @@
 .organizer-tag:nth-child(even) {
   background-color: #333333;
   color: #ffffff;
-}
-
-.organizer-space {
-  font-size: 24rpx;
-  color: #999999;
 }
 
 /* Registration Progress */
@@ -378,7 +379,7 @@
 
 .section {
   margin-top: 16rpx;
-  padding: 16rpx 20rpx;
+  padding: 16rpx 32rpx;
   background-color: #ffffff;
   border-radius: 16rpx;
 }
@@ -460,6 +461,7 @@
   font-size: 22rpx;
   color: #666666;
 }
+
 .default-content {
   margin-top: 24rpx;
   text-align: center;
@@ -468,7 +470,6 @@
 
 .favorite-section {
   margin-top: 12rpx;
- 
 }
 
 .favorite-row {
@@ -505,6 +506,7 @@
   font-size: 28rpx;
   color: #999999;
 }
+
 .bottom-bar {
   position: fixed;
   z-index: 2;
@@ -563,6 +565,7 @@ button.share-btn {
   margin-right: 16rpx;
   line-height: normal;
   background-color: #ffffff;
+
   &::after {
     border: none;
   }
