@@ -75,7 +75,7 @@ export async function fetchMyActivities(type: string): Promise<Activity[]> {
       companions: [],
       totalCount: 0,
     },
-    space: it.space,
+    space: it.spaceName || '',
   }))
 }
 

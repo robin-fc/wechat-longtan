@@ -1,9 +1,8 @@
 <view class="mine-page">
   <!-- 顶部背景图 -->
   <view class="header-bg">
-    <image class="bg-image" src="{{profile.bgImage || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80'}}" mode="aspectFill" />
+    <image class="bg-image" src="{{profile.logo}}" mode="aspectFill" />
   </view>
-
   <view class="content-wrapper">
     <!-- 用户信息区域 -->
     <view class="user-info-card">
@@ -19,7 +18,7 @@
               <image class="edit-icon" src="/assets/icons/edit.png" mode="aspectFit" />
             </view>
             <view class="tags">
-              <text class="tag {{tag === '新村民' ? 'tag-new' : tag === '主理人' ? 'tag-host' : 'tag-normal'}}" wx:for="{{profile.tags}}" wx:for-item="tag" wx:key="*this">{{tag}}</text>
+              <text class="tag {{item.className}}" wx:for="{{profile.tagList}}" wx:for-item="item" wx:key="label">{{item.label}}</text>
             </view>
           </view>
           <view class="id-row">
@@ -30,11 +29,9 @@
           </view>
         </view>
       </view>
-
       <view class="bio-row">
         <text class="bio">{{profile.desc || '这个人很懒，什么都没写~'}}</text>
       </view>
-      
       <view class="stats-row">
         <view class="stat-item" bindtap="onFollowingTap">
           <text class="stat-num">{{profile.followingCount || 0}}</text>
@@ -50,7 +47,6 @@
         </view>
       </view>
     </view>
-
     <!-- 菜单列表 -->
     <view class="menu-section">
       <view class="menu-item" bindtap="onMyActivitiesTap">
@@ -70,7 +66,6 @@
         <image class="arrow-right" src="/assets/icons/arrow-down.png" mode="aspectFit" />
       </view>
     </view>
-
     <!-- 退出登录 -->
     <view class="logout-section" wx:if="{{profile}}">
       <view class="logout-btn" bindtap="onLogoutTap">

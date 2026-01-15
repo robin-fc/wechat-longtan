@@ -6,9 +6,9 @@ export interface UserProfile {
   openId?: string
   memberName?: string
   memberPhone?: string
-  memberNumber?: string
-  memberLevel?: string
-  memberTags?: string[]
+  memberNumber: string
+  memberLevel: string
+  memberTags: string[]
   sex?: number
   desc?: string
   status?: number

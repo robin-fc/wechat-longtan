@@ -50,10 +50,8 @@ export interface RequestOptions {
   headers?: Record<string, string>
 }
 
-function isTokenInvalid(
-  res: CommonResult<any>
-): boolean {
-  const status = res.code
+function isTokenInvalid(res: WechatMiniprogram.RequestSuccessCallbackResult): boolean {
+  const status = res.statusCode
   if (status === 401 || status === 403) {
     return true
   }
@@ -142,8 +140,8 @@ export function request<T>(options: RequestOptions): Promise<CommonResult<T>> {
         data: options.data,
         header: buildHeaders(options.headers),
         success: async (res) => {
-          const data = (res.data || {}) as any
-          const tokenInvalid = isTokenInvalid(data)
+          const data = (res.data || {}) as CommonResult<T>
+          const tokenInvalid = isTokenInvalid(res)
           if (tokenInvalid && attempt < MAX_RETRY) {
             attempt++
             const ok = await refreshAccessToken(getTokenInfo().refreshToken)
