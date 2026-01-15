@@ -66,13 +66,8 @@
         </view>
         <text class="registration-text" wx:if="{{registrationLimit > 0}}" bindtap="onRegistrationTap">已报名 {{registrationCount}}/{{registrationLimit}}</text>
         <text class="registration-text" wx:else bindtap="onRegistrationTap">已报名 {{registrationCount}}</text>
-        <view class="registration-avatars" bindtap="onCompanionsTap">
-          <block wx:for="{{registrationUsers}}" wx:key="userId">
-            <image class="reg-avatar" src="{{item.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
-          </block>
-          <view class="reg-count-badge" wx:if="{{registrationCount > 0}}">
-            <text>{{registrationCount}}</text>
-          </view>
+        <view class="companions-wrapper">
+          <companions-bar companions="{{companionsData}}" bindtap="onCompanionsTap" />
         </view>
       </view>
     </view>

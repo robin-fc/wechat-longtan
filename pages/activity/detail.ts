@@ -1,13 +1,19 @@
 import {
   getActivityDetail,
+  getActivityRegistrations,
   favoriteActivity,
   unfavoriteActivity,
   shareActivity,
 } from '../../api/activity'
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
-import { ActivityDetail } from '../../model/activity'
+import { ActivityDetail, RegistrationUser } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { formatYMDHM } from '../../utils/date'
+
+interface CompanionsData {
+  companions: { id: number; avatar: { url: string } }[]
+  totalCount: number
+}
 
 interface ActivityDetailState {
   activity: ActivityDetail | null
@@ -17,6 +23,8 @@ interface ActivityDetailState {
   registrationCount: number
   registrationLimit: number
   isSelf: boolean
+  registeredUsers: RegistrationUser[]
+  companionsData: CompanionsData
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -28,6 +36,11 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     registrationCount: 0,
     registrationLimit: 0,
     isSelf: false,
+    registeredUsers: [],
+    companionsData: {
+      companions: [],
+      totalCount: 0,
+    },
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -54,6 +67,21 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
 
+    // 单独请求报名列表
+    const res = await getActivityRegistrations(id)
+    const companionsData = {
+      companions: (res.userList || []).map((u) => ({
+        id: u.userId,
+        avatar: { url: u.logo || '/assets/images/default-avatar.png' },
+      })),
+      totalCount: res.count || 0,
+    }
+    this.setData({
+      registeredUsers: res.userList || [],
+      registrationCount: res.count || 0,
+      companionsData,
+    })
+
     const menuRect = wx.getMenuButtonBoundingClientRect()
     const userId = wx.getStorageSync('userId')
     const isSelf =
@@ -76,7 +104,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     this.setData({
       activity: formattedActivity,
       favoriteCountText,
-      registrationCount: formattedActivity.registeredCount || 0,
+      // registrationCount: formattedActivity.registeredCount || 0, // 使用单独接口的数据
       registrationLimit: formattedActivity.isLimitParticipants
         ? formattedActivity.maxParticipants
         : '无限制',
@@ -185,9 +213,8 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const activity = (this.data as ActivityDetailState).activity
     if (!activity || !activity.organizer) return
 
-    const isFollowing = (
-      this.data as ActivityDetailState
-    ).activity?.organizer.follow
+    const isFollowing = (this.data as ActivityDetailState).activity?.organizer
+      .follow
     const organizerId = activity.organizer.userId
 
     if (isFollowing) {
