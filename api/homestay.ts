@@ -42,35 +42,7 @@ export async function fetchHomestayDetail(
     description: raw.description,
     contact: raw.contact,
   }
-}
-
-export async function getAvailableRoomList(
-  homestayId: number | string,
-  checkInDate: string
-): Promise<HomestayRoom[]> {
-  const raw = await getData<AppHomestayRoomListRespVO[]>(
-    `${baseUrl}/room/list`,
-    { homestayId, checkInDate }
-  )
-  return (raw || []).map((it) => {
-    const tagNames = it.tags
-    const duration = (it.roomNumberWithPackage || '').split('-')[1] || '一周起'
-
-    return {
-      id: String(it.id),
-      homestayId: String(homestayId),
-      name: it.roomNumberWithPackage,
-      images: [{ id: `room-${it.id}`, url: it.logo }],
-      description: '',
-      stayDurationText: duration,
-      price: { amount: it.price, currency: 'CNY', unit: '天' },
-      capacity: 2,
-      facilities: tagNames,
-      tags: tagNames,
-      attributes: [],
-    }
-  })
-}
+} 
 
 export async function fetchHomestayRoomDetail(id: ID): Promise<HomestayRoom> {
   console.warn(
@@ -82,7 +54,7 @@ export async function fetchHomestayRoomDetail(id: ID): Promise<HomestayRoom> {
 export function getHomestayAvailableRooms(params: {
   homestayId: string
   checkInDate: string
-}): Promise<AppHomestayRoomListItem[]> {
+}): Promise<AppHomestayRoomListRespVO> {
   return getData(`${baseUrl}/room/list`, params)
 }
 

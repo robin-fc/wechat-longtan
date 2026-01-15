@@ -41,11 +41,8 @@ export interface AppHomestayListRespVO {
 }
 
 export interface AppHomestayRoomListRespVO {
-  id: number
-  roomNumberWithPackage: string
-  price: number
-  logo: string
-  tags: string[] // 房间标签（每个数字对应一个标签：0=独立卫生间, 1=山景房, 2=海景房, 3=家庭房, 4=双床房, 5=大床房）
+  availableRoomsCount: number // 在售房型个数
+  rooms: AppHomestayRoomListItem[]
 }
 
 export interface AppHomestayPackageRespVO {
@@ -127,11 +124,11 @@ export interface HomestayApplication {
 
 export interface AppHomestayRoomListItem {
   id: number
-  roomNumberWithPackage: string
-  price: number
+  roomNumber: string
   logo: string
   tags: string
-  stayedUsers: AppUserInfoRespVO[]
+  price: number
+  description: string
 }
 
 export interface AppHomestayPackageItem {

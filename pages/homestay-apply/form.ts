@@ -1,4 +1,4 @@
-import { getAvailableRoomList } from '../../api/homestay'
+import { getHomestayAvailableRooms } from '../../api/homestay'
 import { createAccommodationOrder, generatePayParams } from '../../api/order'
 import type { HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
@@ -65,11 +65,11 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       nightsCount: duration
     })
 
-    const rooms = await getAvailableRoomList(homestayId, checkInDate)
-    const room = rooms.find(r => String(r.id) === roomId)
+    const rooms = await getHomestayAvailableRooms({homestayId, checkInDate:startDate})
+    const room = rooms.rooms.find(r => String(r.id) === roomId)
     if (!room) return
-    const display = `${room.name}`
-    const totalPrice = (room.price.amount || 0) * duration
+    const display = `${room.roomNumber}`
+    const totalPrice = (room.price || 0) * duration
     this.setData({
       room,
       roomNameDisplay: display,

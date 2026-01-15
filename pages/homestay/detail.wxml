@@ -1,9 +1,26 @@
 <view class="homestay-detail-page">
   <scroll-view scroll-y="true" class="body">
+    <swiper 
+      wx:if="{{homestay && homestay.images && homestay.images.length > 0}}"
+      class="poster-swiper" 
+      indicator-dots="{{true}}" 
+      circular="{{true}}" 
+      autoplay="{{true}}" 
+      interval="5000" 
+      duration="500"
+      indicator-active-color="#ffffff"
+      indicator-color="rgba(255, 255, 255, 0.5)"
+    >
+      <block wx:for="{{homestay.images}}" wx:key="*this">
+        <swiper-item>
+          <image class="poster-image" src="{{item}}" mode="aspectFill" />
+        </swiper-item>
+      </block>
+    </swiper>
     <image
-      wx:if="{{homestay}}"
+      wx:elif="{{homestay}}"
       class="poster-image"
-      src="{{homestay.cover.url}}"
+      src="{{homestay.logo}}"
       mode="aspectFill"
     />
     <view wx:if="{{homestay}}" class="intro-card">

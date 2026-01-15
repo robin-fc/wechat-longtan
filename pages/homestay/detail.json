@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "入住详情",
+  "navigationBarTitleText": "民宿详情",
   "usingComponents": {
     "homestay-room-card": "/components/homestay-room-card/index"
   }

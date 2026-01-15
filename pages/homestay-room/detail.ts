@@ -97,7 +97,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     }
     try {
       const list = await getHomestayAvailableRooms({ homestayId, checkInDate })
-      const item = (list || []).find((x) => String(x.id) === String(id))
+      const item = (list.rooms || []).find((x) => String(x.id) === String(id))
       if (!item) {
         return
       }
@@ -120,11 +120,11 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       const facilities = codes
         .map((code) => tagMap[code])
         .filter(Boolean)
-      const duration = (item.roomNumberWithPackage || '').split('-')[1] || '一周起'
+      const duration = (item.roomNumber || '').split('-')[1] || '一周起'
       const room: HomestayRoom = {
         id: String(item.id),
         homestayId: String(homestayId),
-        name: item.roomNumberWithPackage,
+        name: item.roomNumber,
         images: [{ id: `room-${item.id}`, url: item.logo }],
         description: '',
         stayDurationText: duration,

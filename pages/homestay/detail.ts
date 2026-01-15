@@ -29,7 +29,7 @@ const mapApiRoomToHomestayRoom = (
   homestayId: number,
   tagMap: Record<string, string>
 ): HomestayRoom => {
-  const duration = (item.roomNumberWithPackage || '').split('-')[1] || ''
+  const duration = (item.roomNumber || '').split('-')[1] || ''
   const facilities = String(item.tags || '')
     .split(',')
     .map((s: string) => s.trim())
@@ -40,9 +40,9 @@ const mapApiRoomToHomestayRoom = (
   return {
     id: String(item.id),
     homestayId: String(homestayId),
-    name: item.roomNumberWithPackage,
+    name: item.roomNumber,
     images: [{ id: `room-${item.id}`, url: item.logo }],
-    description: '',
+    description: item.description || '',
     stayDurationText: duration || '一周起',
     price: { amount: item.price, currency: 'CNY', unit: '天' },
     capacity: 2,
@@ -109,7 +109,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         homestayId: String(homestayDetail.id),
         checkInDate: startDate,
       })
-      const rooms: HomestayRoom[] = (roomList || []).map((item) =>
+      const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
         mapApiRoomToHomestayRoom(item, homestayDetail.id, tagMap)
       )
       this.setData({
@@ -152,7 +152,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       homestayId: String(homestay.id),
       checkInDate: startDate as string,
     }).then((roomList) => {
-      const rooms: HomestayRoom[] = (roomList || []).map((item) =>
+      const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
         mapApiRoomToHomestayRoom(item, homestay.id, tagMap)
       )
       this.setData({ rooms })
