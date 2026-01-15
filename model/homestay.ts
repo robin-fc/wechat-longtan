@@ -28,6 +28,13 @@ export interface AppHomestayListResp {
   onSaleCount: number
 }
 
+export interface AppHomestayListReqVO {
+  name?: string
+  checkInDate?: string
+  pageNo: string
+  pageSize: string
+}
+
 export interface AppHomestayListRespVO {
   id: number
   name: string

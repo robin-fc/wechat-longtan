@@ -1,17 +1,21 @@
-import { getHomestayDetailApi, getHomestayAvailableRooms } from '../../api/homestay'
+import {
+  getHomestayDetailApi,
+  getHomestayAvailableRooms,
+  getHomestayPackageList,
+} from '../../api/homestay'
 import {
   tagMap,
   type AppHomestayDetail,
   type HomestayRoom,
   HOMESTAY_TAGS,
+  type AppHomestayPackageItem,
 } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
-type DurationType = 'week' | 'twoWeeks' | 'month' | 'threeMonths'
-
 interface DurationOption {
   label: string
-  value: DurationType
+  value: string
+  days: number
 }
 
 interface HomestayDetailState {
@@ -19,21 +23,14 @@ interface HomestayDetailState {
   rooms: HomestayRoom[]
   startDate: string
   endDate: string
-  duration: DurationType
+  duration: string
   durations: DurationOption[]
   menuTop: number
   menuHeight: number
   isDescriptionExpanded: boolean
 }
 
-const PACKAGE_TYPE_DAYS: Record<string, number> = {
-  '1': 7,
-  '2': 14,
-  '3': 30,
-  '4': 90,
-}
-
-function calcEndDate(startDate: string, packageType: string): string {
+function calcEndDate(startDate: string, days: number): string {
   const parts = (startDate || '').split('-')
   if (parts.length !== 3) {
     return startDate
@@ -41,7 +38,6 @@ function calcEndDate(startDate: string, packageType: string): string {
   const year = Number(parts[0])
   const month = Number(parts[1]) - 1
   const day = Number(parts[2])
-  const days = PACKAGE_TYPE_DAYS[packageType] || 7
   const dt = new Date(year, month, day)
   dt.setDate(dt.getDate() + days)
   const yyyy = dt.getFullYear()
@@ -84,13 +80,8 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     rooms: [],
     startDate: '',
     endDate: '',
-    duration: 'week',
-    durations: [
-      { label: '一周', value: 'week' },
-      { label: '两周', value: 'twoWeeks' },
-      { label: '一个月', value: 'month' },
-      { label: '三个月', value: 'threeMonths' },
-    ],
+    duration: '',
+    durations: [],
     menuTop: 0,
     menuHeight: 44,
     isDescriptionExpanded: false,
@@ -123,12 +114,30 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       const mm = String(now.getMonth() + 1).padStart(2, '0')
       const dd = String(now.getDate()).padStart(2, '0')
       const startDate = `${yyyy}-${mm}-${dd}`
-      const endDate = calcEndDate(startDate, '1')
+
+      const packages = await getHomestayPackageList()
+      const durations: DurationOption[] = (packages || []).map(
+        (item: AppHomestayPackageItem) => ({
+          label: item.packageName,
+          value: String(item.packageType),
+          days: item.days,
+        })
+      )
+      const activeDuration =
+        durations.length > 0
+          ? durations[0]
+          : { label: '一周', value: '1', days: 7 }
+
+      const endDate = calcEndDate(startDate, activeDuration.days)
+
       this.setData({
         homestay: homestayDetail,
-        startDate: startDate,
-        endDate: endDate,
+        startDate,
+        endDate,
+        durations,
+        duration: activeDuration.value,
       })
+
       const tagMap: Record<string, string> = {
         '0': '独立卫生间',
         '1': '山景房',
@@ -141,7 +150,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         homestayId: String(homestayDetail.id),
         checkInDate: startDate,
         checkOutDate: endDate,
-        packageType: '1',
+        packageType: activeDuration.value,
         pageNo: '1',
         pageSize: '10',
       })
@@ -177,9 +186,13 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.PickerChange
   ) {
     const startDate = e.detail.value
-    const endDate = calcEndDate(startDate as string, '1')
-    this.setData({ startDate, endDate })
     const data = this.data as HomestayDetailState
+    const durations = data.durations || []
+    const current =
+      durations.find((d) => d.value === data.duration) ||
+      durations[0] || { value: '1', days: 7, label: '一周' }
+    const endDate = calcEndDate(startDate as string, current.days)
+    this.setData({ startDate, endDate, duration: current.value })
     const homestay = data.homestay
     if (!homestay) {
       return
@@ -189,7 +202,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       homestayId: String(homestay.id),
       checkInDate: startDate as string,
       checkOutDate: endDate,
-      packageType: '1',
+      packageType: current.value,
       pageNo: '1',
       pageSize: '10',
     }).then((roomList) => {
@@ -203,9 +216,44 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.BaseEvent
   ) {
-    const value = e.currentTarget.dataset.value as DurationType
+    const value = e.currentTarget.dataset.value as string
+    const data = this.data as HomestayDetailState
+    const durations = data.durations || []
+    const selected =
+      durations.find((d) => d.value === value) ||
+      durations[0] || { value, days: 7, label: '一周' }
+
+    const startDate = data.startDate
+    if (!startDate) {
+      this.setData({
+        duration: selected.value,
+      })
+      return
+    }
+
+    const endDate = calcEndDate(startDate, selected.days)
     this.setData({
-      duration: value,
+      duration: selected.value,
+      endDate,
+    })
+
+    const homestay = data.homestay
+    if (!homestay) {
+      return
+    }
+
+    getHomestayAvailableRooms({
+      homestayId: String(homestay.id),
+      checkInDate: startDate as string,
+      checkOutDate: endDate,
+      packageType: selected.value,
+      pageNo: '1',
+      pageSize: '10',
+    }).then((roomList) => {
+      const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
+        mapApiRoomToHomestayRoom(item, homestay.id, tagMap)
+      )
+      this.setData({ rooms })
     })
   },
   onRoomTap(

@@ -9,6 +9,7 @@ import {
   AppOrderListRespVO,
   HomestayApplicationStatus,
   AppHomestayRoomListReqVO,
+  AppHomestayListReqVO,
 } from '../model/homestay'
 import { type ID, type PageResult } from '../model/common'
 import { getData } from '../utils/request'
@@ -43,7 +44,7 @@ export async function fetchHomestayDetail(
     description: raw.description,
     contact: raw.contact,
   }
-} 
+}
 
 export async function fetchHomestayRoomDetail(id: ID): Promise<HomestayRoom> {
   console.warn(
@@ -52,7 +53,9 @@ export async function fetchHomestayRoomDetail(id: ID): Promise<HomestayRoom> {
   return {} as HomestayRoom
 }
 
-export function getHomestayAvailableRooms(params: AppHomestayRoomListReqVO): Promise<AppHomestayRoomListRespVO> {
+export function getHomestayAvailableRooms(
+  params: AppHomestayRoomListReqVO
+): Promise<AppHomestayRoomListRespVO> {
   const isoCheckInDate = toISO8601(params.checkInDate, '00:00:00')
   const isoCheckOutDate = toISO8601(params.checkOutDate, '00:00:00')
   return getData(`${baseUrl}/room/list`, {
@@ -66,8 +69,10 @@ export function getHomestayPackageList(): Promise<AppHomestayPackageItem[]> {
   return getData(`${baseUrl}/package/list`)
 }
 
-export function getHomestayAvailableList(): Promise<PageResult<AppHomestayListRespVO>> {
-  return getData(`${baseUrl}/list`)
+export function getHomestayAvailableList(
+  params: AppHomestayListReqVO
+): Promise<PageResult<AppHomestayListRespVO>> {
+  return getData(`${baseUrl}/list`, params)
 }
 
 export function getHomestayDetailApi(id: number): Promise<AppHomestayDetail> {

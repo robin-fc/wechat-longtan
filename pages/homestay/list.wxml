@@ -5,19 +5,12 @@
         <text>{{startDate || '选择入住时间'}}</text>
       </view>
     </picker>
-    <view class="duration-row">
-      <block wx:for="{{durations}}" wx:key="value">
-        <view class="duration-item {{item.value === duration ? 'active' : ''}}" data-value="{{item.value}}" bindtap="onDurationTap">
-          <text>{{item.label}}</text>
-        </view>
-      </block>
-    </view>
   </view>
 
   <view class="list-wrapper">
     <block wx:for="{{homestays}}" wx:key="id">
       <view class="homestay-item">
-        <homestay-card homestay="{{item}}" layout="horizontal" bindtap="onHomestayTap" />
+        <homestay-card homestay="{{item}}" layout="vertical" bindtap="onHomestayTap" />
       </view>
     </block>
   </view>
