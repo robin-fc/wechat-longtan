@@ -2,7 +2,7 @@ Component({
   properties: {
     homestay: {
       type: Object,
-      value: null,
+      value: {},
     },
     layout: {
       type: String,

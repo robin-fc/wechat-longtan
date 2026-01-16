@@ -1,7 +1,7 @@
 <view class="homestay-card {{layout}}" bindtap="onTap">
   <image
     class="poster"
-    src="{{homestay.cover.url}}"
+    src="{{homestay.logo}}"
     mode="aspectFill"
   />
   <view class="content">
