@@ -3,7 +3,7 @@ import {
   getHomestayAvailableRooms,
   getHomestayPackageList,
 } from '../../api/homestay'
-import { 
+import {
   type AppHomestayDetail,
   HOMESTAY_TAGS,
   type AppHomestayPackageItem,
@@ -43,7 +43,7 @@ function calcEndDate(startDate: string, days: number): string {
   const mm = String(dt.getMonth() + 1).padStart(2, '0')
   const dd = String(dt.getDate()).padStart(2, '0')
   return `${yyyy}-${mm}-${dd}`
-} 
+}
 
 Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
   data: {
@@ -157,8 +157,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     const startDate = e.detail.value
     const data = this.data as HomestayDetailState
     const durations = data.durations || []
-    const current =
-      durations.find((d) => d.value === data.duration) ||
+    const current = durations.find((d) => d.value === data.duration) ||
       durations[0] || { value: '1', days: 7, label: '一周' }
     const endDate = calcEndDate(startDate as string, current.days)
     this.setData({ startDate, endDate, duration: current.value })
@@ -186,8 +185,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     const value = e.currentTarget.dataset.value as string
     const data = this.data as HomestayDetailState
     const durations = data.durations || []
-    const selected =
-      durations.find((d) => d.value === value) ||
+    const selected = durations.find((d) => d.value === value) ||
       durations[0] || { value, days: 7, label: '一周' }
 
     const startDate = data.startDate
@@ -225,6 +223,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     _e: WechatMiniprogram.CustomEvent
   ) {
+    const homestayId = this.data.homestay.id
     const room = (_e.detail || {}).room as {
       id?: string
       homestayId?: string
@@ -237,7 +236,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       `/pages/homestay-room/detail?id=${encodeURIComponent(
         room.id
       )}&homestayId=${encodeURIComponent(
-        room.homestayId || ''
+        homestayId || ''
       )}&startDate=${encodeURIComponent(
         startDate
       )}&duration=${encodeURIComponent(duration)}`

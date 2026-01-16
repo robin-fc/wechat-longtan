@@ -1,4 +1,4 @@
-import { getHomestayAvailableRooms } from '../../api/homestay'
+import { getRoomDetail } from '../../api/room'
 import type { HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
@@ -32,12 +32,11 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     const homestayId = options.homestayId as string
     const startDate = (options.startDate as string) || ''
     const duration = (options.duration as string) || ''
-
     if (!id || !homestayId) {
       return
     }
     const menuRect = wx.getMenuButtonBoundingClientRect()
-    
+
     let checkInDate = startDate
     if (!checkInDate) {
       const now = new Date()
@@ -50,10 +49,10 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     let checkOutDate = ''
     if (duration) {
       const daysMap: Record<string, number> = {
-        'week': 7,
-        'twoWeeks': 14,
-        'month': 30,
-        'threeMonths': 90
+        week: 7,
+        twoWeeks: 14,
+        month: 30,
+        threeMonths: 90,
       }
       const days = daysMap[duration] || 0
       if (days > 0) {
@@ -74,85 +73,54 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       menuHeight: menuRect ? menuRect.height : 44,
       homestayId,
       checkInDate,
-      checkOutDate
+      checkOutDate,
     })
-    
-    await this.fetchRoomDetail(homestayId, id, checkInDate)
+
+    await this.fetchRoomDetail(homestayId, id)
     this.updateNights()
   },
   async fetchRoomDetail(
     this: WechatMiniprogram.Page.TrivialInstance,
     homestayId: string,
-    id: string,
-    checkInDate: string
+    id: string
   ) {
-    const tagMap: Record<string, string> = {
-      '0': '独立卫生间',
-      '1': '山景房',
-      '2': '海景房',
-      '3': '家庭房',
-      '4': '双床房',
-      '5': '大床房',
-    }
     try {
-      const list = await getHomestayAvailableRooms({
-        homestayId,
-        checkInDate,
-        checkOutDate: '',
-        packageType: '',
-        pageNo: '1',
-        pageSize: '10'
-       })
-      const item = (list.rooms || []).find((x) => String(x.id) === String(id))
-      if (!item) {
-        return
-      }
-      const rawTags = item.tags
-      const codes = (() => {
-        if (Array.isArray(rawTags)) return rawTags.map((v) => String(v))
-        const s = String(rawTags || '').trim()
-        if (!s) return []
-        if (s.startsWith('[') && s.endsWith(']')) {
-          try {
-            const arr = JSON.parse(s)
-            if (Array.isArray(arr)) return arr.map((v) => String(v))
-          } catch {}
-        }
-        return s.split(',')
-      })()
-        .map((v) => String(v).trim().replace(/^"+|"+$/g, ''))
-        .filter(Boolean)
+      const res = await getRoomDetail({ id: Number(id) })
 
-      const facilities = codes
-        .map((code) => tagMap[code])
-        .filter(Boolean)
-      const duration = (item.roomNumber || '').split('-')[1] || '一周起'
+      const duration = (res.roomNumber || '').split('-')[1] || '一周起'
+
+      // Map API response to HomestayRoom model
       const room: HomestayRoom = {
-        id: String(item.id),
-        homestayId: String(homestayId),
-        name: item.roomNumber,
-        images: [{ id: `room-${item.id}`, url: item.logo }],
-        description: '',
+        id: String(res.id),
+        homestayId: String(res.homestayId),
+        name: res.roomNumber,
+        images: (res.photos || []).map((url, index) => ({
+          id: `photo-${index}`,
+          url,
+        })),
+        description: '', // API currently doesn't provide description
         stayDurationText: duration,
-        price: { amount: item.price || 0, currency: 'CNY', unit: '天' },
+        price: { amount: res.price || 0, currency: 'CNY', unit: '天' },
         capacity: 2,
-        facilities,
-        attributes: [
-          { label: '房型', value: '大床房' },
-          { label: '面积', value: '20m²' },
-          { label: '朝向', value: '东南' },
-          { label: '卫生间', value: '独卫' },
-          { label: '洗衣机', value: '洗烘套装' },
-          { label: '花洒', value: '有' }
-        ],
-        tags: ['温馨', '硬件顶配', '免费wifi'],
-        intro: '毫无疑问，动力电池是我们这个时代具有决定性的竞争优势之一：那些能够为电动汽车制造电池的国家和地区，将从中获得数十年的经济和地缘政治优势。而迄今为止，这一领域唯一的赢家就是中国。',
-        notice: '毫无疑问，动力电池是我们这个时代具有决定性的竞争优势之一：那些能够为电动汽车制造电池的国家和地区，将从中获得数十年的经济和地缘政治优势。而迄今为止，这一领域唯一的赢家就是中国。',
-        priceRule: '毫无疑问，动力电池是我们这个时代具有决定性的竞争优势之一：那些能够为电动汽车制造电池的国家和地区，将从中获得数十年的经济和地缘政治优势。而迄今为止，这一领域唯一的赢家就是中国。',
-        checkInProcess: '毫无疑问，动力电池是我们这个时代具有决定性的竞争优势之一：那些能够为电动汽车制造电池的国家和地区，将从中获得数十年的经济和地缘政治优势。而迄今为止，这一领域唯一的赢家就是中国。'
+        facilities: res.tags || [],
+        attributes: Array.isArray(res.attributes) ? res.attributes : [],
+        tags: res.tags || [],
+        // The following fields are not returned by the API yet, keep empty or remove if not needed
+        intro: '',
+        notice: '',
+        priceRule: '',
+        checkInProcess: '',
       }
+
+      // Fallback for images if photos are empty
+      if (room.images.length === 0 && res.logo) {
+        room.images = [{ id: 'logo', url: res.logo }]
+      }
+
       this.setData({ room })
-    } catch {}
+    } catch (e) {
+      console.error('Fetch room detail failed:', e)
+    }
   },
   onBackTap() {
     goBack()
@@ -162,17 +130,9 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.PickerChange
   ) {
     const date = e.detail.value
-    const state = this.data as RoomDetailState
-    const room = state.room
-    const homestayId = room ? String(room.homestayId) : ''
-    this.setData({ checkInDate: date })
-    if (homestayId && room) {
-      this.fetchRoomDetail(homestayId, String(room.id), date).then(() => {
-        this.updateNights()
-      })
-    } else {
+    this.setData({ checkInDate: date }, () => {
       this.updateNights()
-    }
+    })
   },
   onCheckOutChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -188,9 +148,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       }
     )
   },
-  updateNights(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  updateNights(this: WechatMiniprogram.Page.TrivialInstance) {
     const state = this.data as RoomDetailState
     if (!state.checkInDate || !state.checkOutDate) {
       this.setData({
@@ -206,16 +164,12 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       const diff = end - start
       const nights = Math.round(diff / (24 * 60 * 60 * 1000))
       const amount =
-        state.room && state.room.price
-          ? state.room.price.amount
-          : 0
+        state.room && state.room.price ? state.room.price.amount : 0
       const totalPrice = nights * amount
       const inDate = state.checkInDate
       const outDate = state.checkOutDate
       const displayDateRange =
-        inDate && outDate
-          ? `${inDate.slice(5)}至${outDate.slice(5)}`
-          : ''
+        inDate && outDate ? `${inDate.slice(5)}至${outDate.slice(5)}` : ''
       this.setData({
         nights,
         totalPrice,
@@ -229,9 +183,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       })
     }
   },
-  onApplyTap(
-    this: WechatMiniprogram.Page.TrivialInstance
-  ) {
+  onApplyTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const state = this.data as RoomDetailState
     if (!state.room) {
       return
