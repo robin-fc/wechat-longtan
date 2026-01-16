@@ -168,16 +168,6 @@ export interface AppHomestayListItem {
   reservedUsers: ReservedUser[]
 }
 
-export const tagMap: Record<string, string> = {
-  '0': '全天热水',
-  '1': '免费Wi-Fi',
-  '2': '付费停车位',
-  '3': '免费停车位',
-  '4': '洗衣机',
-  '5': '行李寄存',
-  '6': '有早餐',
-}
-
 export interface AppHomestayDetail {
   /*民宿ID */
   id: number

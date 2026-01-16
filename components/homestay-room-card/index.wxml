@@ -1,47 +1,33 @@
 <view class="room-card" bindtap="onTap">
   <view class="poster-wrap">
-    <image
-      wx:if="{{room.images && room.images.length}}"
-      class="poster"
-      src="{{room.images[0].url}}"
-      mode="aspectFill"
-    />
-    <image
-      wx:else
-      class="poster"
-      src="/assets/images/room.jpg"
-      mode="aspectFill"
-    />
+    <image wx:if="{{room.images && room.images.length}}" class="poster" src="{{room.images[0].url}}" mode="aspectFill" />
+    <image wx:else class="poster" src="/assets/images/room.jpg" mode="aspectFill" />
   </view>
   <view class="content">
     <view class="row-title">
-      <text class="name">{{room.name}}</text>
-    </view>
-    <view class="row-attributes">
-      <block wx:for="{{room.attributes}}" wx:key="label" wx:for-item="item">
-        <text class="attribute-item">{{item.label || item}}</text>
-        <text class="attribute-divider" wx:if="{{index < room.attributes.length - 1}}">|</text>
-      </block>
+      <text class="name">{{room.roomNumber}}</text>
     </view>
     <view class="row-tags">
       <!-- Mock logic for colors based on index for variety -->
-      <block wx:for="{{room.tags}}" wx:key="*this">
-        <text class="tag-outline tag-color-{{index % 3}}">{{item}}</text>
-      </block>
-      <block wx:for="{{room.facilities}}" wx:key="*this">
-        <text class="tag-outline tag-color-2">{{item}}</text>
-      </block>
+      <view wx:if="{{room.description}}">
+        <text class="description">{{room.description}}</text>
+      </view>
+      <view class="tag-wrap">
+        <view wx:for="{{room.tags}}" wx:key="*this">
+          <text class="tag-outline tag-color-{{index % 3}}">{{item}}</text>
+        </view>
+      </view>
     </view>
     <view class="footer-row">
       <view class="footer-left">
         <view class="guests-wrap" wx:if="{{room.stayedUsers && room.stayedUsers.length}}">
           <view class="avatars">
             <block wx:for="{{room.stayedUsers}}" wx:key="userId">
-              <image class="guest-avatar" src="{{item.logo}}" mode="aspectFill"/>
+              <image class="guest-avatar" src="{{item.logo}}" mode="aspectFill" />
             </block>
           </view>
           <view class="guest-count-badge" wx:if="{{room.stayedUsers.length}}">
-             <text class="guest-count-num">{{room.stayedUsers.length}}</text>
+            <text class="guest-count-num">{{room.stayedUsers.length}}</text>
           </view>
           <text class="guest-count-text">人住过</text>
         </view>
@@ -49,7 +35,7 @@
       <view class="footer-right">
         <view class="price-btn">
           <text class="price-symbol">￥</text>
-          <text class="price-amount">{{room.price.amount}}</text>
+          <text class="price-amount">{{room.price}}</text>
         </view>
       </view>
     </view>

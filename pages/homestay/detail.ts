@@ -3,12 +3,11 @@ import {
   getHomestayAvailableRooms,
   getHomestayPackageList,
 } from '../../api/homestay'
-import {
-  tagMap,
+import { 
   type AppHomestayDetail,
-  type HomestayRoom,
   HOMESTAY_TAGS,
   type AppHomestayPackageItem,
+  AppHomestayRoomListItem,
 } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
@@ -20,7 +19,7 @@ interface DurationOption {
 
 interface HomestayDetailState {
   homestay: AppHomestayDetail | null
-  rooms: HomestayRoom[]
+  rooms: AppHomestayRoomListItem[]
   startDate: string
   endDate: string
   duration: string
@@ -44,35 +43,7 @@ function calcEndDate(startDate: string, days: number): string {
   const mm = String(dt.getMonth() + 1).padStart(2, '0')
   const dd = String(dt.getDate()).padStart(2, '0')
   return `${yyyy}-${mm}-${dd}`
-}
-
-// Helper to map API room response to HomestayRoom
-const mapApiRoomToHomestayRoom = (
-  item: any,
-  homestayId: number,
-  tagMap: Record<string, string>
-): HomestayRoom => {
-  const duration = (item.roomNumber || '').split('-')[1] || ''
-  const facilities = String(item.tags || '')
-    .split(',')
-    .map((s: string) => s.trim())
-    .filter(Boolean)
-    .map((code: string) => tagMap[code])
-    .filter(Boolean)
-
-  return {
-    id: String(item.id),
-    homestayId: String(homestayId),
-    name: item.roomNumber,
-    images: [{ id: `room-${item.id}`, url: item.logo }],
-    description: item.description || '',
-    stayDurationText: duration || '一周起',
-    price: { amount: item.price, currency: 'CNY', unit: '天' },
-    capacity: 2,
-    facilities,
-    stayedUsers: item.stayedUsers || [],
-  }
-}
+} 
 
 Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
   data: {
@@ -154,9 +125,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         pageNo: '1',
         pageSize: '10',
       })
-      const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
-        mapApiRoomToHomestayRoom(item, homestayDetail.id, tagMap)
-      )
+      const rooms: AppHomestayRoomListItem[] = roomList.rooms || []
       this.setData({
         rooms,
       })
@@ -206,9 +175,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '10',
     }).then((roomList) => {
-      const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
-        mapApiRoomToHomestayRoom(item, homestay.id, tagMap)
-      )
+      const rooms: AppHomestayRoomListItem[] = roomList.rooms || []
       this.setData({ rooms })
     })
   },
@@ -250,9 +217,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '10',
     }).then((roomList) => {
-      const rooms: HomestayRoom[] = (roomList.rooms || []).map((item) =>
-        mapApiRoomToHomestayRoom(item, homestay.id, tagMap)
-      )
+      const rooms: AppHomestayRoomListItem[] = roomList.rooms || []
       this.setData({ rooms })
     })
   },
