@@ -1,11 +1,22 @@
 <view class="room-detail-page">
   <scroll-view scroll-y="true" class="body">
-    <image
-      wx:if="{{room && room.images && room.images.length}}"
-      class="poster-image"
-      src="{{room.images[0].url}}"
-      mode="aspectFill"
-    />
+    <swiper
+      wx:if="{{room && room.images && room.images.length > 0}}"
+      class="poster-swiper"
+      indicator-dots="{{true}}"
+      circular="{{true}}"
+      autoplay="{{true}}"
+      interval="5000"
+      duration="500"
+      indicator-active-color="#ffffff"
+      indicator-color="rgba(255, 255, 255, 0.5)"
+    >
+      <block wx:for="{{room.images}}" wx:key="id">
+        <swiper-item>
+          <image class="poster-image" src="{{item.url}}" mode="aspectFill" />
+        </swiper-item>
+      </block>
+    </swiper>
     <image
       wx:else
       class="poster-image"

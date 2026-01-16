@@ -80,7 +80,6 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     this.updateNights()
   },
   async fetchRoomDetail(
-    this: WechatMiniprogram.Page.TrivialInstance,
     homestayId: string,
     id: string
   ) {
@@ -92,7 +91,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       // Map API response to HomestayRoom model
       const room: HomestayRoom = {
         id: String(res.id),
-        homestayId: String(res.homestayId),
+        homestayId: homestayId,
         name: res.roomNumber,
         images: (res.photos || []).map((url, index) => ({
           id: `photo-${index}`,
