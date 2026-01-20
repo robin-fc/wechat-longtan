@@ -11,6 +11,10 @@ Component({
       type: Boolean,
       value: false,
     },
+    size: {
+      type: String,
+      value: 'normal',
+    },
   },
   observers: {
     'companions.totalCount': function (newVal: number) {

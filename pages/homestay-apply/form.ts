@@ -164,6 +164,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance
   ) {
     const state = this.data as ApplyFormState
+    debugger
     if (!state.room) {
       return
     }

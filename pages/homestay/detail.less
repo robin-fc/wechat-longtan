@@ -140,6 +140,8 @@
   padding-top: 16rpx;
 }
 
+
+
 .description {
   font-size: 26rpx;
   color: #666666;
@@ -150,12 +152,22 @@
 .description.collapsed {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   overflow: hidden;
 }
 
 .description.expanded {
   display: block;
+}
+
+.description-measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  visibility: hidden;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .expand-btn {
@@ -250,6 +262,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   &:last-child {
     margin-right: 0;
   }

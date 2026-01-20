@@ -4,9 +4,9 @@ import {
   getHomestayPackageList,
 } from '../../api/homestay'
 import {
-  type AppHomestayDetail,
+  AppHomestayDetail,
   HOMESTAY_TAGS,
-  type AppHomestayPackageItem,
+ AppHomestayPackageItem,
   AppHomestayRoomListItem,
 } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
@@ -27,6 +27,7 @@ interface HomestayDetailState {
   menuTop: number
   menuHeight: number
   isDescriptionExpanded: boolean
+  showExpandBtn: boolean
 }
 
 function calcEndDate(startDate: string, days: number): string {
@@ -56,6 +57,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     menuTop: 0,
     menuHeight: 44,
     isDescriptionExpanded: false,
+    showExpandBtn: false,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -128,10 +130,34 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       const rooms: AppHomestayRoomListItem[] = roomList.rooms || []
       this.setData({
         rooms,
+      }, () => {
+        this.calcDescriptionExpand()
       })
     } catch (e) {
       // ignore for now
     }
+  },
+  calcDescriptionExpand() {
+    // Wait for the render to complete
+    setTimeout(() => {
+      const query = this.createSelectorQuery()
+      query.select('.description-measure').boundingClientRect()
+      query.exec((res) => {
+        if (!res || !res[0]) return
+        const height = res[0].height
+        const sysInfo = wx.getSystemInfoSync()
+        // 26rpx * 1.6 * 3 lines
+        const maxHeightRpx = 26 * 1.6 * 3
+        const maxHeightPx = (maxHeightRpx * sysInfo.windowWidth) / 750
+
+        // Add a small buffer to avoid floating point issues
+        if (height > maxHeightPx + 1) {
+          this.setData({ showExpandBtn: true })
+        } else {
+          this.setData({ showExpandBtn: false })
+        }
+      })
+    }, 100)
   },
   onBackTap() {
     goBack()

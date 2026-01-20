@@ -41,15 +41,19 @@
              <text class="info-text address-text">{{homestay.address}}</text>
           </view>
         </view>
+        
         <view class="intro-map" bindtap="onOpenMap" wx:if="{{homestay.mapThumbnail}}">
            <image class="map-thumbnail" src="{{homestay.mapThumbnail.url}}" mode="aspectFill" />
            <text class="map-hint">点击查看</text>
         </view>
-      </view>
+
       
+      </view>
+
       <view class="description-box" wx:if="{{homestay.description}}">
-        <text class="description {{isDescriptionExpanded ? 'expanded' : 'collapsed'}}">{{homestay.description}}</text>
-        <view class="expand-btn" bindtap="toggleDescription">
+        <rich-text class="description {{isDescriptionExpanded ? 'expanded' : 'collapsed'}}" nodes="{{homestay.description}}"></rich-text>
+        <rich-text class="description description-measure" nodes="{{homestay.description}}"></rich-text>
+        <view class="expand-btn" bindtap="toggleDescription" wx:if="{{showExpandBtn}}">
           <text>{{isDescriptionExpanded ? '收起' : '查看更多'}}</text>
           <image class="expand-icon {{isDescriptionExpanded ? 'rotate' : ''}}" src="/assets/icons/arrow-down-green.png" mode="aspectFit" />
         </view>

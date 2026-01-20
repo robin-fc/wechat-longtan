@@ -1,4 +1,6 @@
 {
-  "component": true
+  "component": true,
+  "usingComponents": {
+    "companions-bar": "/components/companions-bar/index"
+  }
 }
-

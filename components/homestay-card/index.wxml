@@ -16,10 +16,20 @@
       </block>
     </view>
     <view class="footer">
-      <view class="price">
-        <text class="symbol">￥</text>
-        <text class="amount">{{(homestay.referencePrice && homestay.referencePrice.amount) || homestay.minPrice || 0}}</text>
-        <text class="unit">/{{(homestay.referencePrice && homestay.referencePrice.unit) || '天'}}起</text>
+      <view class="stay-price-row" wx:if="{{homestay.stayedUserCount || homestay.minPrice}}">
+        <view class="stay-left" wx:if="{{homestay.stayedUserCount && homestay.stayedUsers}}">
+          <companions-bar 
+          size="large"
+            companions="{{ { companions: homestay.stayedUsers, totalCount: homestay.stayedUserCount } }}" 
+            isHideCount="{{false}}"
+          />
+          <text class="stay-hint" wx:if="{{homestay.stayedUserCount}}">人住过</text>
+        </view>
+        <view class="price-tag-box" wx:if="{{homestay.minPrice}}">
+          <text class="price-symbol">¥</text>
+          <text class="price-value">{{homestay.minPrice}}</text>
+          <text class="price-unit">/天起</text>
+        </view>
       </view>
       <view class="address">
         <text class="address-label">地址：</text>

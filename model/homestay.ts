@@ -197,4 +197,6 @@ export interface AppHomestayDetail {
   tags: string[]
 
   onSaleCount?: number
+
+  
 }

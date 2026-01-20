@@ -17,8 +17,6 @@
 }
 
 .avatar {
-  width: 36rpx;
-  height: 36rpx;
   border-radius: 50%;
   border: 2rpx solid #ffffff;
   margin-left: -8rpx;
@@ -36,9 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #000000;
-  width: 36rpx;
-  height: 36rpx;
+  background-color: #73d13d;
   border-radius: 50%;
   border: 2rpx solid #ffffff;
   margin-left: -24rpx;
@@ -47,4 +43,31 @@
 .count {
   color: #ffffff;
   font-size: 20rpx;
+}
+
+/* Size: Normal */
+.companions-bar.size-normal {
+  .avatar {
+    width: 36rpx;
+    height: 36rpx;
+  }
+
+  .count-wrap {
+    width: 36rpx;
+    height: 36rpx;
+  }
+}
+
+/* Size: Large */
+.companions-bar.size-large {
+  .avatar {
+    width: 48rpx;
+    height: 48rpx;
+  }
+
+  .count-wrap {
+    width: 48rpx;
+    height: 48rpx;
+    margin-left: -32rpx; // Adjust overlap for larger size
+  }
 }

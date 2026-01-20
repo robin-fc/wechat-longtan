@@ -1,9 +1,9 @@
-<view class="companions-bar" bindtap="onTap">
+<view class="companions-bar size-{{size}}" bindtap="onTap">
   <view class="companions-bar-left">
     <!-- <text class="label">同行伙伴</text> -->
     <view class="avatars">
       <block wx:for="{{companions.companions}}" wx:for-item="item" wx:for-index="index" wx:key="id">
-        <image wx:if="{{index < 3}}" class="avatar" src="{{item.avatar.url}}" mode="aspectFill" />
+        <image wx:if="{{index < 3}}" class="avatar" src="{{item.avatar.url || item.logo}}" mode="aspectFill" />
       </block>
     </view>
     <view class="count-wrap" wx:if="{{!isHideCount}}">
