@@ -1,51 +1,61 @@
 <view class="apply-form-page">
   <scroll-view scroll-y="true" class="body">
-    <view wx:if="{{room}}" class="section">
-      <text class="title">{{roomNameDisplay}}</text>
-    </view>
-    <view class="section">
-      <text class="label">入住日期</text>
-      <view class="date-row">
-        <picker mode="date" value="{{checkInDate}}" bindchange="onCheckInChange">
-          <view class="date-picker">
-            <text>{{checkInDate || '选择入住日期'}}</text>
+    <view class="section header-card">
+      <view class="room-info-row">
+        <text class="room-title">{{roomNameDisplay}}</text>
+        <view class="room-detail-btn">房型详情</view>
+      </view>
+      <view class="header-divider"></view>
+      <view class="date-section">
+        <text class="section-label">入离日期</text>
+        <view class="date-display-row">
+          <picker mode="date" value="{{checkInDate}}" bindchange="onCheckInChange" class="date-picker-wrap">
+            <view class="date-item">
+              <text class="date-text">{{checkInDateDesc}}</text>
+              <text class="week-text">{{checkInWeekDesc}}</text>
+            </view>
+          </picker>
+          <view class="duration-info">
+            <view class="line"></view>
+            <text class="duration-text">共{{nightsCount}}晚</text>
+            <view class="line"></view>
           </view>
-        </picker>
-        <block wx:if="{{checkInDate && checkOutDate}}">
-          <text class="date-sep">共{{nightsCount}}晚</text>
-        </block>
-        <block wx:else>
-          <text class="date-sep">~</text>
-        </block>
-        <picker mode="date" value="{{checkOutDate}}" bindchange="onCheckOutChange">
-          <view class="date-picker">
-            <text>{{checkOutDate || '选择离开日期'}}</text>
-          </view>
-        </picker>
+          <picker mode="date" value="{{checkOutDate}}" bindchange="onCheckOutChange" class="date-picker-wrap">
+            <view class="date-item text-right">
+              <text class="date-text">{{checkOutDateDesc}}</text>
+              <text class="week-text">{{checkOutWeekDesc}}</text>
+            </view>
+          </picker>
+        </view>
+        <view class="cancel-policy-row">
+          <text>{{cancelDateDesc}} 23:59前可免费取消。</text>
+          <text class="policy-link">《相见退款政策》</text>
+        </view>
       </view>
     </view>
     <view class="section">
-      <text class="label">免费取消截至时间</text>
-      <text class="value">{{freeCancelDeadline}}</text>
-      <text class="label second">退款政策</text>
-      <text class="value">入住前7天可全额退款，之后将根据入住时长和入住规则部分退款。</text>
-    </view>
-    <view class="section">
-      <text class="label">姓名*</text>
-      <input class="input" placeholder="请输入姓名" value="{{form.name}}" bindinput="onNameChange" />
-      <text class="label second">身份证*</text>
-      <input class="input" placeholder="请输入身份证号" value="{{form.idCard}}" bindinput="onIdCardChange" />
-      <text class="label second">手机号*</text>
-      <input class="input" placeholder="请输入手机号" value="{{form.phone}}" bindinput="onPhoneChange" />
+      <view class="section-title">入住信息</view>
+      <view class="form-row">
+        <text class="label">住客姓名</text>
+        <input class="input" placeholder="请输入入住人" value="{{form.name}}" bindinput="onNameChange" />
+      </view>
+      <view class="form-row">
+        <text class="label">身份证</text>
+        <input class="input" placeholder="填写正确的身份证号码" value="{{form.idCard}}" bindinput="onIdCardChange" />
+      </view>
+      <view class="form-row no-border">
+        <text class="label">联系手机</text>
+        <input class="input" placeholder="请输入手机号" value="{{form.phone}}" bindinput="onPhoneChange" />
+      </view>
     </view>
   </scroll-view>
   <view class="bottom-bar">
     <view class="price-info" wx:if="{{room}}">
-      <text class="price-label">合计</text>
-      <text class="price-value">￥{{totalPriceDisplay}}/{{room.price.unit}}</text>
+      <text class="price-label">待支付 </text>
+      <text class="price-value">￥{{totalPriceDisplay}}</text>
     </view>
-    <view class="submit-button" bindtap="onSubmitTap">
-      <text>提交订单</text>
+    <view class="submit-button {{!isFormValid ? 'disabled' : ''}}" bindtap="onSubmitTap">
+      <text>支付</text>
     </view>
   </view>
 </view>

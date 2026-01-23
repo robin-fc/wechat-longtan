@@ -4,6 +4,8 @@ export interface AppRoomDetailReq {
 }
 
 export interface AppRoomDetailRes {
+  bookingNotice: string;
+  description: string;
   /*房间ID */
   id: number
 
@@ -36,4 +38,13 @@ export interface AppRoomDetailRes {
     /*属性值 */
     value: string
   }[]
+
+  /* 预订须知 */
+  bookNotice?: string
+
+  /* 价格规则 */
+  priceRule?: string
+
+  /* 入住流程 */
+  checkInProcess?: string
 }

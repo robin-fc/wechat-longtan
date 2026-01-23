@@ -22,15 +22,6 @@ interface OrderDetailView {
   showCancelButton: boolean
 }
 
-function mapPaymentStatusText(status: number): string {
-  if (status === 0) return '待支付'
-  if (status === 1) return '支付中'
-  if (status === 2) return '支付成功'
-  if (status === 3) return '支付失败'
-  if (status === 4) return '已关闭'
-  return ''
-}
-
 function weekText(dateStr: string): string {
   const d = new Date(dateStr)
   const w = d.getDay()
@@ -71,7 +62,7 @@ Page({
   },
   async fetchOrderDetail(bizOrderNo: string) {
     const detail: AppOrderDetailRespVO = await getOrderDetail(bizOrderNo)
-    const statusText = mapPaymentStatusText(detail.status)
+    const statusText = detail.status
     const isAccommodation = detail.bizType === 1
     const acc = detail.accommodation
     const title = detail.title || `${acc?.homestayName || ''}-${acc?.roomName || ''}`
@@ -79,12 +70,12 @@ Page({
     const inDate = acc?.checkInDate || ''
     const outDate = acc?.checkOutDate || ''
     const nights = acc?.nights || 0
-    
+
     const createDate = parseToDate(detail.createTime)
     let isWithin24Hours = false
     let isWithin10Minutes = false
     let countdownText = ''
-    
+
     if (this.timer) {
       clearInterval(this.timer)
       this.timer = null
@@ -96,7 +87,7 @@ Page({
       isWithin24Hours = diff < 24 * 60 * 60 * 1000
       isWithin10Minutes = diff < 10 * 60 * 1000
 
-      if ((detail.status === 0 || detail.status === 1) && isWithin10Minutes) { // 待支付且在10分钟内
+      if ((detail.status === '待支付' || detail.status === '支付中') && isWithin10Minutes) { // 待支付且在10分钟内
         const expireTime = createDate.getTime() + 10 * 60 * 1000
         const updateCountdown = () => {
           const remaining = expireTime - Date.now()
@@ -121,15 +112,26 @@ Page({
       }
     }
 
+    // Status class mapping
+    let statusClass = 'default'
+    if (detail.status === '支付成功') statusClass = 'success'
+    else if (detail.status === '待支付') statusClass = 'pending'
+
+    // Hint text logic
+    let hintText = ''
+    if (isAccommodation && detail.status === '支付成功') {
+      hintText = '等待DAOI龙潭民宿管家进行审核，审核完成我们将以短信的形式通知您。请耐心等待～'
+    } else if (detail.status === '待支付') {
+      hintText = '请尽快完成支付以保留预订'
+    }
+
+    const showPayButton = (detail.status === '待支付' || detail.status === '支付中') && isWithin10Minutes
+    const showCancelButton = (detail.status === '待支付' || detail.status === '支付中' || detail.status === '支付成功') && isWithin24Hours
+
     const view: OrderDetailView = {
       statusText,
-      statusClass: detail.status === 2 ? 'success' : detail.status === 0 ? 'pending' : 'default',
-      hintText:
-        isAccommodation && detail.status === 2
-          ? '等待DAOI龙潭民宿管家进行审核，审核完成我们将以短信的形式通知您。请耐心等待～'
-          : detail.status === 0
-          ? '请尽快完成支付以保留预订'
-          : '',
+      statusClass,
+      hintText,
       amountText: `￥${(detail.amountTotal || 0).toFixed(2)}`,
       amount: detail.amountTotal || 0,
       title,
@@ -141,10 +143,10 @@ Page({
       contactPhone: detail.contactPhone || '',
       orderNo: detail.bizOrderNo || '',
       createTime: formatYMDHM(detail.createTime),
-      showPayButton: (detail.status === 0 || detail.status === 1) && isWithin10Minutes,
-      showCancelButton: (detail.status === 0 || detail.status === 2 || detail.status === 1) && isWithin24Hours,
+      showPayButton,
+      showCancelButton,
     }
-    
+
     const cancelReasons = [
       '行程取消',
       '订错日期/房型',
@@ -195,18 +197,18 @@ Page({
       wx.showToast({ title: '支付失败', icon: 'none' })
     }
   },
-onCancelTap() {
-  this.setData({ showCancelModal: true })
-},
-closeCancelModal() {
-  this.setData({ showCancelModal: false })
-},
-preventBubble() {},
-onReasonSelect(e: WechatMiniprogram.TouchEvent) {
-  const index = e.currentTarget.dataset.index
-  this.setData({ selectedReasonIndex: index })
-},
-async onConfirmCancel() {
+  onCancelTap() {
+    this.setData({ showCancelModal: true })
+  },
+  closeCancelModal() {
+    this.setData({ showCancelModal: false })
+  },
+  preventBubble() { },
+  onReasonSelect(e: WechatMiniprogram.TouchEvent) {
+    const index = e.currentTarget.dataset.index
+    this.setData({ selectedReasonIndex: index })
+  },
+  async onConfirmCancel() {
     const { selectedReasonIndex, cancelReasons, view } = this.data
     if (selectedReasonIndex < 0) {
       wx.showToast({ title: '请选择取消原因', icon: 'none' })
@@ -214,7 +216,7 @@ async onConfirmCancel() {
     }
     const reason = cancelReasons[selectedReasonIndex]
     const bizOrderNo = view?.orderNo
-    
+
     if (!bizOrderNo) return
 
     try {

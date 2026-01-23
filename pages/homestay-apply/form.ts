@@ -1,4 +1,4 @@
-import { getHomestayAvailableRooms } from '../../api/homestay'
+import { getRoomDetail } from '../../api/room'
 import { createAccommodationOrder, generatePayParams } from '../../api/order'
 import type { HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
@@ -19,6 +19,12 @@ interface ApplyFormState {
   totalPrice: number
   totalPriceDisplay: string
   freeCancelDeadline: string
+  checkInDateDesc: string
+  checkInWeekDesc: string
+  checkOutDateDesc: string
+  checkOutWeekDesc: string
+  cancelDateDesc: string
+  isFormValid: boolean
   form: ApplyForm
 }
 
@@ -32,6 +38,13 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     totalPrice: 0,
     totalPriceDisplay: '0.00',
     freeCancelDeadline: '下单后24小时内可免费取消',
+    checkInDateDesc: '',
+    checkInWeekDesc: '',
+    checkOutDateDesc: '',
+    checkOutWeekDesc: '',
+
+    cancelDateDesc: '',
+    isFormValid: false,
     form: {
       name: '',
       idCard: '',
@@ -46,16 +59,17 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     const homestayId = options.homestayId as string
     const startDate = options.startDate as string
     const duration = parseInt(options.duration as string, 10) || 1
-
+    console.log(options)
     if (!roomId || !homestayId) {
       return
     }
-    
+
     let checkInDate = startDate || formatYMD1(new Date(), '-')
     let checkOutDate = ''
     if (checkInDate) {
-      const start = new Date(checkInDate)
-      const end = new Date(start.getTime() + duration * 24 * 60 * 60 * 1000)
+      const start = new Date(checkInDate.replace(/-/g, '/'))
+      const end = new Date(start)
+      end.setDate(start.getDate() + duration)
       checkOutDate = formatYMD1(end, '-')
     }
 
@@ -64,18 +78,79 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       checkOutDate,
       nightsCount: duration
     })
+    this.updateDateDisplays()
 
-    const rooms = await getHomestayAvailableRooms({homestayId, checkInDate:startDate, checkOutDate:checkOutDate, packageType:'', pageNo:'1', pageSize:'10'})
-    const room = rooms.rooms.find(r => String(r.id) === roomId)
+
+    const res = await getRoomDetail({ id: Number(roomId) })
+    const room: HomestayRoom = {
+      id: String(res.id),
+      homestayId: String(res.homestayId),
+      name: res.roomNumber,
+      images: (res.photos || []).map((url, index) => ({ id: `p-${index}`, url })),
+      description: res.description,
+      stayDurationText: '',
+      price: { amount: res.price, currency: 'CNY', unit: '天' },
+      capacity: 2,
+      facilities: res.tags,
+      tags: res.tags,
+
+      bookingNotice: res.bookNotice,
+      priceRule: res.priceRule,
+      checkInProcess: res.checkInProcess
+    }
+
     if (!room) return
-    const display = `${room.roomNumber}`
-    const totalPrice = (room.price || 0) * duration
+    const display = `${res.homestayName}-${room.name}-${duration === 7
+      ? '一周'
+      : duration === 14
+        ? '两周'
+        : duration === 30
+          ? '一月'
+          : duration === 90
+            ? '三月'
+            : ''
+      }`
+    const totalPrice = (room.price?.amount || 0) * duration
     this.setData({
       room,
       roomNameDisplay: display,
       totalPrice: totalPrice,
       totalPriceDisplay: totalPrice.toFixed(2),
     })
+
+  },
+  updateDateDisplays() {
+    const data = this.data as ApplyFormState
+    const fmtStart = this.formatDateInfo(data.checkInDate)
+    const fmtEnd = this.formatDateInfo(data.checkOutDate)
+
+    let cancelDesc = ''
+    if (data.checkInDate) {
+      const start = new Date(data.checkInDate.replace(/-/g, '/'))
+      // Cancel free 7 days before
+      const cancelDate = new Date(start.getTime() - 7 * 24 * 60 * 60 * 1000)
+      const cM = cancelDate.getMonth() + 1
+      const cD = cancelDate.getDate()
+      cancelDesc = `${cM}月${cD}日`
+    }
+
+    this.setData({
+      checkInDateDesc: fmtStart.date,
+      checkInWeekDesc: fmtStart.week,
+      checkOutDateDesc: fmtEnd.date,
+      checkOutWeekDesc: fmtEnd.week,
+      cancelDateDesc: cancelDesc,
+    })
+  },
+  formatDateInfo(dateStr: string) {
+    if (!dateStr) return { date: '', week: '' }
+    const date = new Date(dateStr.replace(/-/g, '/'))
+    if (isNaN(date.getTime())) return { date: '', week: '' }
+    const m = date.getMonth() + 1
+    const d = date.getDate()
+    const weekDays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+    const week = weekDays[date.getDay()]
+    return { date: `${m}月${d}日`, week }
   },
   onBackTap() {
     goBack()
@@ -107,6 +182,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       totalPrice: total,
       totalPriceDisplay: (Number.isFinite(total) ? total : 0).toFixed(2),
     })
+    this.updateDateDisplays()
   },
   onCheckOutChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -135,6 +211,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       totalPrice: total,
       totalPriceDisplay: (Number.isFinite(total) ? total : 0).toFixed(2),
     })
+    this.updateDateDisplays()
   },
   onNameChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -142,6 +219,8 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
   ) {
     this.setData({
       'form.name': e.detail.value,
+    }, () => {
+      this.validateForm()
     })
   },
   onIdCardChange(
@@ -150,6 +229,8 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
   ) {
     this.setData({
       'form.idCard': e.detail.value,
+    }, () => {
+      this.validateForm()
     })
   },
   onPhoneChange(
@@ -158,6 +239,15 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
   ) {
     this.setData({
       'form.phone': e.detail.value,
+    }, () => {
+      this.validateForm()
+    })
+  },
+  validateForm() {
+    const form = (this.data as ApplyFormState).form
+    const isValid = !!(form.name && form.idCard && form.phone)
+    this.setData({
+      isFormValid: isValid
     })
   },
   onSubmitTap(
@@ -190,17 +280,13 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       })
       return
     }
-    if (!form.phone.trim()) {
-      wx.showToast({
-        title: '请填写手机号',
-        icon: 'none',
-      })
+    if (!state.isFormValid) {
       return
     }
     const params = {
       roomId: Number(state.room.id),
-      checkInDate: state.checkInDate+'T00:00:00.00Z',
-      checkOutDate: state.checkOutDate+'T00:00:00.00Z',
+      checkInDate: state.checkInDate + 'T00:00:00.00Z',
+      checkOutDate: state.checkOutDate + 'T00:00:00.00Z',
       contactName: form.name.trim(),
       contactIdCard: form.idCard.trim(),
       contactPhone: form.phone.trim(),
@@ -234,7 +320,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
           return
         }
         try {
-         
+
           const amount = Number(((this.data as ApplyFormState).totalPrice || 0).toFixed(2))
           const pay = await generatePayParams({ bizOrderNo, amount })
           const p = pay && pay.payParams
@@ -255,13 +341,13 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
               // setTimeout(() => {
               //   smartNavigateTo('/pages/homestay-apply/status')
               // }, 600)
-               setTimeout(() => {
+              setTimeout(() => {
                 smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`)
               }, 600)
             },
             fail: () => {
               wx.showToast({ title: '支付未完成', icon: 'none' })
-               setTimeout(() => {
+              setTimeout(() => {
                 smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`)
               }, 600)
             },

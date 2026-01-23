@@ -95,7 +95,6 @@ export interface HomestayRoom {
   homestayId: string
   name: string
   images: ImageResource[]
-  description: string
   stayDurationText: string
   price: Price
   capacity: number
@@ -105,8 +104,8 @@ export interface HomestayRoom {
   tags?: string[] // e.g. ["温馨", "硬件顶配"]
   stayedUsers?: AppUserInfoRespVO[]
   // 详情页长文本
-  intro?: string
-  notice?: string
+  description?: string
+  bookingNotice?: string
   priceRule?: string
   checkInProcess?: string
 }
@@ -198,5 +197,5 @@ export interface AppHomestayDetail {
 
   onSaleCount?: number
 
-  
+
 }

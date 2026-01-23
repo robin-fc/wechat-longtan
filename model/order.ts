@@ -35,7 +35,7 @@ export interface AppPayOrderCreateRespVO {
 
 export interface AppOrderListRespVO {
   bizOrderNo: string
-  status: number
+  status: string
   title: string
   roomImage: string
   rootTags: string
@@ -65,7 +65,7 @@ export interface ActivityInfo {
 
 export interface AppOrderDetailRespVO {
   bizOrderNo: string
-  status: number
+  status: string
   amountTotal: number
   bizType: number
   title: string

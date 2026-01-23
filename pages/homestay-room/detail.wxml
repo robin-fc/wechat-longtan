@@ -51,15 +51,14 @@
           </view>
         </block>
       </view>
-
-      <view class="text-section" wx:if="{{room.intro}}">
+      <view class="text-section" wx:if="{{room.description}}">
         <text class="section-title">房间简介</text>
-        <text class="section-content">{{room.intro}}</text>
+        <text class="section-content">{{room.description}}</text>
       </view>
 
-      <view class="text-section" wx:if="{{room.notice}}">
+      <view class="text-section" wx:if="{{room.bookingNotice}}">
         <text class="section-title">预订须知</text>
-        <text class="section-content">{{room.notice}}</text>
+        <text class="section-content">{{room.bookingNotice}}</text>
       </view>
 
       <view class="text-section" wx:if="{{room.priceRule}}">

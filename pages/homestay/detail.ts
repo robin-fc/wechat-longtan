@@ -6,7 +6,7 @@ import {
 import {
   AppHomestayDetail,
   HOMESTAY_TAGS,
- AppHomestayPackageItem,
+  AppHomestayPackageItem,
   AppHomestayRoomListItem,
 } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
@@ -257,7 +257,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     if (!room || !room.id) {
       return
     }
-    const { startDate, duration } = this.data as HomestayDetailState
+    const { startDate, duration, endDate } = this.data as HomestayDetailState
     smartNavigateTo(
       `/pages/homestay-room/detail?id=${encodeURIComponent(
         room.id
@@ -265,7 +265,9 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         homestayId || ''
       )}&startDate=${encodeURIComponent(
         startDate
-      )}&duration=${encodeURIComponent(duration)}`
+      )}&duration=${encodeURIComponent(
+        duration
+      )}&checkOutDate=${encodeURIComponent(endDate)}`
     )
   },
 })

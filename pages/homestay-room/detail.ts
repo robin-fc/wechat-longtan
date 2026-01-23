@@ -32,6 +32,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     const homestayId = options.homestayId as string
     const startDate = (options.startDate as string) || ''
     const duration = (options.duration as string) || ''
+    const checkOutDateOption = (options.checkOutDate as string) || ''
     if (!id || !homestayId) {
       return
     }
@@ -46,20 +47,22 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       checkInDate = `${yyyy}-${mm}-${dd}`
     }
 
-    let checkOutDate = ''
+    let checkOutDate = checkOutDateOption
     if (duration) {
       const daysMap: Record<string, number> = {
         week: 7,
         twoWeeks: 14,
         month: 30,
         threeMonths: 90,
+        '1': 7,
       }
       const days = daysMap[duration] || 0
       if (days > 0) {
         // Handle date string format compatibility
         const start = new Date(checkInDate.replace(/-/g, '/'))
         if (!isNaN(start.getTime())) {
-          const end = new Date(start.getTime() + days * 24 * 60 * 60 * 1000)
+          const end = new Date(start)
+          end.setDate(start.getDate() + days)
           const y = end.getFullYear()
           const m = String(end.getMonth() + 1).padStart(2, '0')
           const d = String(end.getDate()).padStart(2, '0')
@@ -68,6 +71,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       }
     }
 
+    console.log(checkInDate, checkOutDate, duration)
     this.setData({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
@@ -97,18 +101,16 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
           id: `photo-${index}`,
           url,
         })),
-        description: '', // API currently doesn't provide description
+        description: res.description, // API currently doesn't provide description
         stayDurationText: duration,
+        bookingNotice: res.bookNotice || '',
+        priceRule: res.priceRule || '',
+        checkInProcess: res.checkInProcess || '',
         price: { amount: res.price || 0, currency: 'CNY', unit: '天' },
         capacity: 2,
         facilities: res.tags || [],
         attributes: Array.isArray(res.attributes) ? res.attributes : [],
-        tags: res.tags || [],
-        // The following fields are not returned by the API yet, keep empty or remove if not needed
-        intro: '',
-        notice: '',
-        priceRule: '',
-        checkInProcess: '',
+        tags: res.tags || []
       }
 
       // Fallback for images if photos are empty
@@ -174,6 +176,9 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
         totalPrice,
         displayDateRange,
       })
+      console.log(nights,
+        totalPrice,
+        displayDateRange,)
     } else {
       this.setData({
         nights: 0,
