@@ -2,7 +2,7 @@ import type { CommonResult } from '../model/common'
 import type { AppWeixinMiniAppLoginRespVO } from '../model/auth'
 
 const BASE_URL: string =
-  (wx.getStorageSync('apiBaseUrl') as string) || 'https://47.115.209.64' //"http://127.0.0.1"
+  (wx.getStorageSync('apiBaseUrl') as string) || 'https://daolongtan.cn' //"http://127.0.0.1"
 
 const REFRESH_THRESHOLD_SEC = 300
 const MAX_RETRY = 2
@@ -289,7 +289,7 @@ export function uploadFile<T>(
                       payload = JSON.parse(s)
                     }
                   }
-                } catch {}
+                } catch { }
                 if (typeof payload === 'string' && payload.startsWith('http')) {
                   console.log('图片上传成功(string)', payload)
                   resolve(payload as unknown as T)
