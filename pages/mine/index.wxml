@@ -13,16 +13,19 @@
         </view>
         <view class="info-content">
           <view class="name-row">
-            <text class="nickname">{{profile ? profile.wxName : '未登录用户'}}</text>
-            <view class="edit-icon-wrap" bindtap="onEditProfileTap">
-              <image class="edit-icon" src="/assets/icons/edit.png" mode="aspectFit" />
+            <view class="name-left">
+              <text class="nickname">{{profile ? profile.memberName||profile.wxName : '未登录用户'}}</text>
+              <view class="edit-icon-wrap" bindtap="onEditProfileTap">
+                <image class="edit-icon" src="/assets/icons/edit.png" mode="aspectFit" />
+              </view>
             </view>
             <view class="tags">
-              <text class="tag {{item.className}}" wx:for="{{profile.tagList}}" wx:for-item="item" wx:key="label">{{item.label}}</text>
+              <text class="tag {{item.className}}" wx:for="{{profile.tagList}}" wx:for-item="item" wx:key="label" 
+                    bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
             </view>
           </view>
           <view class="id-row">
-            <text class="user-id">ID {{profile.id || '000000'}}</text>
+            <text class="user-id">ID {{profile.memberNumber || '000000'}}</text>
           </view>
           <view class="join-row">
             <text class="join-time">{{profile.joinTime}}加入</text>

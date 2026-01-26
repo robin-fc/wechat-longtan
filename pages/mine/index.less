@@ -63,22 +63,28 @@
       .name-row {
         display: flex;
         align-items: center;
+        justify-content: space-between;
         margin-bottom: 8rpx;
 
-        .nickname {
-          font-size: 36rpx;
-          font-weight: 600;
-          color: #333333;
-          margin-right: 12rpx;
-        }
+        .name-left {
+          display: flex;
+          align-items: center;
 
-        .edit-icon-wrap {
-          padding: 8rpx;
-          margin-right: 12rpx;
+          .nickname {
+            font-size: 36rpx;
+            font-weight: 600;
+            color: #333333;
+            margin-right: 12rpx;
+          }
 
-          .edit-icon {
-            width: 28rpx;
-            height: 28rpx;
+          .edit-icon-wrap {
+            padding: 8rpx;
+            margin-right: 12rpx;
+
+            .edit-icon {
+              width: 28rpx;
+              height: 28rpx;
+            }
           }
         }
 
@@ -99,6 +105,16 @@
             &.tag-host {
               background-color: #1a1a1a;
               color: #ffffff;
+            }
+
+            &.tag-nomad-green {
+              background-color: #71BF00;
+              color: #fff;
+            }
+
+            &.tag-nomad-red {
+              background-color: #FF576A;
+              color: #fff;
             }
 
             &.tag-normal {

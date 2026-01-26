@@ -16,7 +16,7 @@
 
     <view class="form-item">
       <text class="label">您的昵称</text>
-      <input class="input" type="nickname" value="{{profile.wxName}}" placeholder="请输入昵称" bindinput="onNicknameInput" />
+      <input class="input" type="nickname" value="{{profile.memberName||profile.wxName}}" placeholder="请输入昵称" bindinput="onNicknameInput" />
     </view>
 
     <view class="form-item">

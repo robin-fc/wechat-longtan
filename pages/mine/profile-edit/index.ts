@@ -6,7 +6,7 @@ Page({
   data: {
     profile: {
       logo: '',
-      wxName: '',
+      memberName: '',
       sex: 2, // 1男 2女 0其TA
       desc: '',
     },
@@ -20,7 +20,7 @@ Page({
         profile: {
           ...profile,
           logo: profile.logo || '',
-          wxName: profile.wxName || '',
+          memberName: profile.memberName || '',
           sex: profile.sex ?? 2,
           desc: profile.desc || ''
         }
@@ -44,7 +44,7 @@ Page({
     }
   },
   onNicknameInput(e: any) {
-    this.setData({ 'profile.wxName': e.detail.value })
+    this.setData({ 'profile.memberName': e.detail.value })
   },
   onBioInput(e: any) {
     this.setData({ 'profile.desc': e.detail.value })

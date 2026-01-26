@@ -1,4 +1,5 @@
 export interface UserProfile {
+  nomadApplyStatus: string
   joinTime: string
   id: number
   wxName?: string
