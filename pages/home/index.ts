@@ -1,4 +1,5 @@
 import { fetchHomeData } from '../../api/home'
+import { fetchMyProfile } from '../../api/mine'
 import { smartNavigateTo } from '../../utils/navigation'
 import { AppActivityTypeRespVO, HomePageData } from '../../model/home'
 import { Banner } from '../../model/banner'
@@ -10,6 +11,8 @@ interface HomeState {
   heroCurrent: number
   hero: Banner | null
   topBgHeight: number
+  showDigitalNomadPopup: boolean
+  canCreateActivity: boolean
 }
 
 Page<HomeState, WechatMiniprogram.IAnyObject>({
@@ -20,13 +23,64 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     heroCurrent: 1,
     hero: null,
     topBgHeight: 0,
+    showDigitalNomadPopup: false,
+    canCreateActivity: false,
   },
-  onShow() {
+  async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({
         selected: 0,
       })
     }
+    await this.checkUserStatus()
+  },
+  async checkUserStatus() {
+    const accessToken = wx.getStorageSync('accessToken')
+    if (!accessToken) {
+      this.setData({
+        canCreateActivity: false, // Not logged in, can't create
+        showDigitalNomadPopup: false, // Don't show popup if not logged in (or maybe we should? assume no for now)
+      })
+      return
+    }
+
+    try {
+      const profile = await fetchMyProfile()
+      if (profile) {
+        // Digital Nomad is level '2'
+        const isDigitalNomad = String(profile.memberLevel) === '2'
+
+        // Activity Creator is tag '1'
+        // memberTags can be string[] or maybe string depending on API consistency, safe check handled in UI usually but here we check data
+        let tags: string[] = []
+        if (Array.isArray(profile.memberTags)) {
+          tags = profile.memberTags.map(String)
+        } else if (typeof profile.memberTags === 'string') {
+          // Handle potential string case if API is messy, similar to user.ts logic
+          // But fetchMyProfile returns UserProfile where memberTags is string[]. 
+          // We'll trust the type but map just in case.
+          tags = [String(profile.memberTags)]
+        }
+
+        const isActivityCreator = tags.includes('1')
+
+        this.setData({
+          showDigitalNomadPopup: !isDigitalNomad,
+          canCreateActivity: isActivityCreator,
+        })
+      }
+    } catch (e) {
+      console.error('Failed to fetch profile in home', e)
+    }
+  },
+  onPopupApply() {
+    this.setData({ showDigitalNomadPopup: false })
+    // Navigate to certification or profile edit
+    // User didn't specify, linking to profile edit as best guess for "Apply" (filling info)
+    smartNavigateTo('/pages/digital-nomad/apply/index')
+  },
+  onPopupSkip() {
+    this.setData({ showDigitalNomadPopup: false })
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const win = wx.getWindowInfo()

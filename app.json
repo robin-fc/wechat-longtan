@@ -28,7 +28,8 @@
     "pages/mine/assets",
     "pages/mine/activities",
     "pages/mine/stays",
-    "pages/order/detail"
+    "pages/order/detail",
+    "pages/digital-nomad/apply/index"
   ],
   "window": {
     "navigationBarTitleText": "登录",

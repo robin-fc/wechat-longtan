@@ -1,0 +1,107 @@
+<view class="page">
+  <!-- Navigation Header (Custom) -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
+    <view class="nav-left" bindtap="onBack">
+      <image class="back-icon" src="/assets/icons/arrow-left-white.png" />
+    </view>
+    <view class="nav-title">申请表</view>
+  </view>
+
+  <!-- Header Image -->
+  <image class="header-bg" src="/assets/images/home/header-bg.png" mode="aspectFill" />
+
+  <view class="content">
+    <view class="intro-section">
+      <view class="intro-title">DAO龙潭数字游民认证申请</view>
+      <view class="intro-text {{isIntroExpanded ? 'expanded' : ''}}">
+        DAO龙潭是一个数字游民、新村民、老村民共创共治共享的新型乡村社区。
+        欢迎申请入住DAO龙潭社区！我们希望以此了解您的基本情况、技能特长以及对社区生活的期待，以便为您提供更好的支持与连接。
+      </view>
+      <view class="intro-expand" bindtap="toggleIntro" wx:if="{{!isIntroExpanded}}">
+        查看更多 <text class="arrow">∨</text>
+      </view>
+    </view>
+
+    <form bindsubmit="onSubmit">
+      <!-- 1. Name -->
+      <view class="form-item">
+        <view class="label">1.您的姓名</view>
+        <input class="input" placeholder="请输入您的姓名" value="{{formData.name}}" bindinput="onInput" data-field="name" />
+      </view>
+
+      <!-- 2. Gender -->
+      <view class="form-item">
+        <view class="label">2.您的性别</view>
+        <radio-group class="radio-group" bindchange="onRadioChange" data-field="gender">
+          <label class="radio-item" wx:for="{{genderOptions}}" wx:key="value">
+            <radio value="{{item.value}}" checked="{{item.value == formData.gender}}" color="#6DBC29" />
+            <text>{{item.label}}</text>
+          </label>
+        </radio-group>
+      </view>
+
+      <!-- 3. Age -->
+      <view class="form-item">
+        <view class="label">3.您的年龄</view>
+        <input class="input" type="number" placeholder="请输入您的真实年龄" value="{{formData.age}}" bindinput="onInput" data-field="age" />
+      </view>
+
+      <!-- 4. Phone -->
+      <view class="form-item">
+        <view class="label">4.手机</view>
+        <input class="input" type="number" placeholder="13190063973" value="{{formData.phone}}" bindinput="onInput" data-field="phone" />
+      </view>
+
+      <!-- 5. WeChat -->
+      <view class="form-item">
+        <view class="label">5.微信</view>
+        <input class="input" placeholder="请输入微信号" value="{{formData.wechat}}" bindinput="onInput" data-field="wechat" />
+      </view>
+
+      <!-- 6. Interests -->
+      <view class="form-item">
+        <view class="label">6.对社区那些活动感兴趣</view>
+        <view class="tags-group">
+          <view wx:for="{{interestOptions}}" wx:key="*this" 
+                class="tag-item {{utils.includes(formData.interests, item) ? 'selected' : ''}}"
+                bindtap="onInterestToggle" data-value="{{item}}">
+            {{item}}
+          </view>
+        </view>
+      </view>
+
+      <!-- 7. Bio/Story -->
+      <view class="form-item">
+        <view class="label">7.让我们了解一些你的事情</view>
+        <view class="desc">个人背景经历/有趣的故事/希望从社区得到什么/我能给社区带去什么等</view>
+        <textarea class="textarea" placeholder="请输入" value="{{formData.bio}}" bindinput="onInput" data-field="bio" maxlength="500" />
+      </view>
+
+      <!-- 8. Source -->
+      <view class="form-item">
+        <view class="label">8.从哪看到我们的招募信息</view>
+        <radio-group class="radio-group vertical" bindchange="onRadioChange" data-field="source">
+          <label class="radio-item" wx:for="{{sourceOptions}}" wx:key="value">
+            <radio value="{{item.value}}" checked="{{item.value == formData.source}}" color="#6DBC29" />
+            <text>{{item.label}}</text>
+          </label>
+        </radio-group>
+      </view>
+
+      <!-- 9. Notice -->
+      <view class="notice-section">
+        <view class="notice-title">9.SeeDAO成员、参加过7月屏南数字游民生活周、在国内数字游民社区生活过，以及在校大学生、多年考公考研、刚离职的各类朋友，我们会提供29.9的活动优惠价。</view>
+        <view class="notice-desc">如果你属于以上情况，可以在通过申请之后添加小助手微信（DAOLT-nomad）联系我们。</view>
+      </view>
+
+      <button class="submit-btn" bindtap="onSubmit">提交</button>
+      <view class="safe-area-bottom"></view>
+    </form>
+  </view>
+</view>
+
+<wxs module="utils">
+module.exports.includes = function(arr, item) {
+  return arr.indexOf(item) > -1;
+}
+</wxs>

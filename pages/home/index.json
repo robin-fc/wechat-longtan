@@ -6,6 +6,7 @@
     "activity-card": "/components/activity-card/index",
     "collection-card": "/components/collection-card/index",
     "homestay-card": "/components/homestay-card/index",
-    "companions-bar": "/components/companions-bar/index"
+    "companions-bar": "/components/companions-bar/index",
+    "digital-nomad-popup": "/components/digital-nomad-popup/index"
   }
 }
