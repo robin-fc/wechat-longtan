@@ -1,5 +1,7 @@
 import { submitUserApply } from '../../../api/user-apply'
 import type { UserApplyReqVO } from '../../../model/user-apply'
+import { fetchMyProfile } from '../../../api/mine'
+
 
 Page({
     data: {
@@ -22,21 +24,43 @@ Page({
             { label: '其TA', value: 'other' },
         ],
         formData: {
-            name: '刘莉莉',
+            name: '',
             gender: '2',
             age: '',
-            phone: '13190063973',
+            phone: '',
             wechat: '',
             interests: [] as string[],
             bio: '',
-            source: 'wechat_moments_group'
+            source: ''
         }
+
     },
     onLoad() {
         const sys = wx.getWindowInfo()
         this.setData({
             statusBarHeight: sys.statusBarHeight
         })
+        this.initData()
+    },
+    async initData() {
+        try {
+            const profile = await fetchMyProfile()
+            if (profile) {
+                // Pre-fill available data
+                // Note: UserProfile might not have all fields like age/wechat directly matching form needs or empty
+                // Adjust mapping as per available profile fields
+                const { memberName, wxName, memberPhone, sex, desc } = profile
+
+                this.setData({
+                    'formData.name': memberName || wxName || '',
+                    'formData.gender': String(sex || '2'),
+                    'formData.phone': memberPhone || '',
+                    'formData.bio': desc || ''
+                })
+            }
+        } catch (e) {
+            console.error('Fetch profile failed', e)
+        }
     },
     onBack() {
         wx.navigateBack()
