@@ -1,9 +1,9 @@
 <view class="popup-mask">
   <view class="popup-content">
     <view class="popup-card">
-      <image class="popup-bg" src="/assets/images/home/digital-nomad-popup-bg.png" mode="widthFix" />
+      <image class="popup-bg" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/20260126/digital-nomad-popup-bg_1769439554189.png" mode="widthFix" />
       <view class="popup-body">
-         <image class="ticket-img" src="/assets/images/home/digital-nomad-popup.png" mode="widthFix" />
+         <image class="ticket-img" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/20260126/digital-nomad-popup_1769439569350.png" mode="widthFix" />
          <view class="action-btn" bindtap="onApply">立即申请</view>
          <view class="skip-btn" bindtap="onSkip">跳过</view>
       </view>

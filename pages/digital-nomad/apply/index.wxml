@@ -8,7 +8,7 @@
   </view>
 
   <!-- Header Image -->
-  <image class="header-bg" src="/assets/images/home/header-bg.png" mode="aspectFill" />
+  <image class="header-bg" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/20260126/header-bg_1769440220202.png" mode="aspectFill" />
 
   <view class="content">
     <view class="intro-section">
@@ -18,7 +18,7 @@
         欢迎申请入住DAO龙潭社区！我们希望以此了解您的基本情况、技能特长以及对社区生活的期待，以便为您提供更好的支持与连接。
       </view>
       <view class="intro-expand" bindtap="toggleIntro" wx:if="{{!isIntroExpanded}}">
-        查看更多 <text class="arrow">∨</text>
+        查看更多 <image class="intro-expand-icon" src="/assets/icons/arrow-down-green.png" mode="widthFix" />
       </view>
     </view>
 

@@ -64,8 +64,13 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
 
         const isActivityCreator = tags.includes('1')
 
+        // Check if user skipped the popup today
+        const skipDate = wx.getStorageSync('DIGITAL_NOMAD_SKIP_DATE')
+        const today = new Date().toDateString()
+        const skippedToday = skipDate === today
+
         this.setData({
-          showDigitalNomadPopup: !isDigitalNomad,
+          showDigitalNomadPopup: !isDigitalNomad && !skippedToday,
           canCreateActivity: isActivityCreator,
         })
       }
@@ -81,6 +86,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   },
   onPopupSkip() {
     this.setData({ showDigitalNomadPopup: false })
+    wx.setStorageSync('DIGITAL_NOMAD_SKIP_DATE', new Date().toDateString())
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const win = wx.getWindowInfo()
