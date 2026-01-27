@@ -9,31 +9,36 @@ Page({
         navBarHeight: 44,
         isIntroExpanded: false,
         genderOptions: [
+            { label: '未知', value: '0' },
             { label: '男性', value: '1' },
-            { label: '女性', value: '2' },
-            { label: '其TA', value: '0' },
+            { label: '女性', value: '2' }
         ],
-        interestOptions: [
-            '在地民俗', '艺术文创', '数字技能', '自然体验',
-            '手工制作', '生活美食', '身心成长', '兴趣爱好'
+        activitiesOptions: [
+            { label: '在地民俗', value: '0' },
+            { label: '艺术创作', value: '1' },
+            { label: '数字技能', value: '2' },
+            { label: '自然体验', value: '3' },
+            { label: '手工制作', value: '4' },
+            { label: '生活美食', value: '5' },
+            { label: '身心成长', value: '6' },
+            { label: '兴趣爱好', value: '7' }
         ],
         sourceOptions: [
-            { label: '小红书', value: 'xiaohongshu' },
-            { label: '朋友圈/群聊', value: 'wechat_moments_group' },
-            { label: '公众号', value: 'official_account' },
-            { label: '其TA', value: 'other' },
+            { label: '小红书', value: '0' },
+            { label: '朋友圈/群聊', value: '1' },
+            { label: '公众号', value: '2' },
+            { label: '其他', value: '3' }
         ],
         formData: {
             name: '',
-            gender: '2',
-            age: '',
+            gender: '0',
             phone: '',
-            wechat: '',
-            interests: [] as string[],
-            bio: '',
+            wechat: '微信用户',
+            age: '',
+            activities: [] as string[],
+            self_introduction: '',
             source: ''
         }
-
     },
     onLoad() {
         const sys = wx.getWindowInfo()
@@ -46,16 +51,13 @@ Page({
         try {
             const profile = await fetchMyProfile()
             if (profile) {
-                // Pre-fill available data
-                // Note: UserProfile might not have all fields like age/wechat directly matching form needs or empty
-                // Adjust mapping as per available profile fields
                 const { memberName, wxName, memberPhone, sex, desc } = profile
 
                 this.setData({
                     'formData.name': memberName || wxName || '',
-                    'formData.gender': String(sex || '2'),
+                    'formData.gender': String(sex || '0'),
                     'formData.phone': memberPhone || '',
-                    'formData.bio': desc || ''
+                    'formData.self_introduction': desc || ''
                 })
             }
         } catch (e) {
@@ -84,38 +86,53 @@ Page({
             [`formData.${field}`]: value
         })
     },
-    onInterestToggle(e: WechatMiniprogram.BaseEvent) {
+    onActivityToggle(e: WechatMiniprogram.BaseEvent) {
         const value = e.currentTarget.dataset.value
-        const { interests } = this.data.formData
-        const idx = interests.indexOf(value)
+        const { activities } = this.data.formData
+        const idx = activities.indexOf(value)
         if (idx > -1) {
-            interests.splice(idx, 1)
+            activities.splice(idx, 1)
         } else {
-            interests.push(value)
+            activities.push(value)
         }
         this.setData({
-            'formData.interests': interests
+            'formData.activities': activities
         })
     },
     async onSubmit() {
         console.log('Submit form:', this.data.formData)
 
         // Validate
-        const { name, age, phone, wechat, gender, interests, bio, source } = this.data.formData
-        if (!name || !age || !phone || !wechat) {
-            wx.showToast({ title: '请完善信息', icon: 'none' })
+        const { name, gender, phone, wechat, age, activities, self_introduction, source } = this.data.formData
+
+        if (!name) {
+            wx.showToast({ title: '请输入姓名', icon: 'none' })
+            return
+        }
+        if (!phone) {
+            wx.showToast({ title: '请输入手机号', icon: 'none' })
+            return
+        }
+        if (!wechat) {
+            wx.showToast({ title: '请输入微信号', icon: 'none' })
+            return
+        }
+        if (!age) {
+            wx.showToast({ title: '请输入年龄', icon: 'none' })
             return
         }
 
         const req: UserApplyReqVO = {
-            name,
-            age: Number(age),
-            mobile: phone,
-            wechatId: wechat,
-            sex: Number(gender),
-            interests: interests,
-            introduction: bio,
-            source: source
+            answers: [
+                { id: 'name', value: name },
+                { id: 'gender', value: gender },
+                { id: 'phone', value: phone },
+                { id: 'wechat', value: wechat },
+                { id: 'age', value: Number(age) }, // Ensure number if backend expects it, though UserApplyReqVO value can be string|number
+                { id: 'activities', value: activities }, // Now sending values '0'-'7'
+                { id: 'self_introduction', value: self_introduction },
+                { id: 'source', value: source }
+            ]
         }
 
         wx.showLoading({ title: '提交中' })

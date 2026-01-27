@@ -6,9 +6,10 @@ Page({
   data: {
     profile: {
       logo: '',
-      memberName: '',
+      wxName: '',
       sex: 2, // 1男 2女 0其TA
       desc: '',
+      memberName: '',
     },
     loading: false,
   },
@@ -18,11 +19,11 @@ Page({
       // Ensure profile has necessary fields or defaults
       this.setData({
         profile: {
-          ...profile,
           logo: profile.logo || '',
-          memberName: profile.memberName || '',
+          wxName: profile.wxName || '',
           sex: profile.sex ?? 2,
-          desc: profile.desc || ''
+          desc: profile.desc || '',
+          memberName: profile.memberName || ''
         }
       })
     }

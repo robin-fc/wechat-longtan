@@ -26,7 +26,7 @@
       <!-- 1. Name -->
       <view class="form-item">
         <view class="label">1.您的姓名</view>
-        <input class="input" placeholder="请输入您的姓名" value="{{formData.name}}" bindinput="onInput" data-field="name" />
+        <input class="input" placeholder="暂无" value="{{formData.name}}" bindinput="onInput" data-field="name" />
       </view>
 
       <!-- 2. Gender -->
@@ -40,41 +40,41 @@
         </radio-group>
       </view>
 
-      <!-- 3. Age -->
+      <!-- 3. Phone -->
       <view class="form-item">
-        <view class="label">3.您的年龄</view>
-        <input class="input" type="number" placeholder="请输入您的真实年龄" value="{{formData.age}}" bindinput="onInput" data-field="age" />
+        <view class="label">3.手机</view>
+        <input class="input" type="number" placeholder="暂无" value="{{formData.phone}}" bindinput="onInput" data-field="phone" />
       </view>
 
-      <!-- 4. Phone -->
+      <!-- 4. WeChat -->
       <view class="form-item">
-        <view class="label">4.手机</view>
-        <input class="input" type="number" placeholder="13190063973" value="{{formData.phone}}" bindinput="onInput" data-field="phone" />
-      </view>
-
-      <!-- 5. WeChat -->
-      <view class="form-item">
-        <view class="label">5.微信</view>
+        <view class="label">4.微信</view>
         <input class="input" placeholder="请输入微信号" value="{{formData.wechat}}" bindinput="onInput" data-field="wechat" />
       </view>
 
-      <!-- 6. Interests -->
+      <!-- 5. Age -->
+      <view class="form-item">
+        <view class="label">5.您的年龄</view>
+        <input class="input" type="number" placeholder="请输入您的真实年龄" value="{{formData.age}}" bindinput="onInput" data-field="age" />
+      </view>
+
+      <!-- 6. Activities -->
       <view class="form-item">
         <view class="label">6.对社区那些活动感兴趣</view>
         <view class="tags-group">
-          <view wx:for="{{interestOptions}}" wx:key="*this" 
-                class="tag-item {{utils.includes(formData.interests, item) ? 'selected' : ''}}"
-                bindtap="onInterestToggle" data-value="{{item}}">
-            {{item}}
+          <view wx:for="{{activitiesOptions}}" wx:key="*this" 
+                class="tag-item {{utils.includes(formData.activities, item.value) ? 'selected' : ''}}"
+                bindtap="onActivityToggle" data-value="{{item.value}}">
+            {{item.label}}
           </view>
         </view>
       </view>
 
-      <!-- 7. Bio/Story -->
+      <!-- 7. Self Introduction -->
       <view class="form-item">
         <view class="label">7.让我们了解一些你的事情</view>
         <view class="desc">个人背景经历/有趣的故事/希望从社区得到什么/我能给社区带去什么等</view>
-        <textarea class="textarea" placeholder="请输入" value="{{formData.bio}}" bindinput="onInput" data-field="bio" maxlength="500" />
+        <textarea class="textarea" placeholder="请输入" value="{{formData.self_introduction}}" bindinput="onInput" data-field="self_introduction" maxlength="500" />
       </view>
 
       <!-- 8. Source -->
@@ -88,7 +88,7 @@
         </radio-group>
       </view>
 
-      <!-- 9. Notice -->
+      <!-- 9. Special Status Info -->
       <view class="notice-section">
         <view class="notice-title">9.SeeDAO成员、参加过7月屏南数字游民生活周、在国内数字游民社区生活过，以及在校大学生、多年考公考研、刚离职的各类朋友，我们会提供29.9的活动优惠价。</view>
         <view class="notice-desc">如果你属于以上情况，可以在通过申请之后添加小助手微信（DAOLT-nomad）联系我们。</view>

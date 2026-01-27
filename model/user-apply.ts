@@ -1,10 +1,11 @@
 export interface UserApplyReqVO {
-    name: string
-    sex: number // 1:男 2:女 0:其他
-    age: number
-    mobile: string
-    wechatId: string
-    interests: string[]
-    introduction: string
-    source: string
+    answers: Array<{ id: string; value: string | number | string[] }>
+    // name: string
+    // sex: number // 1:男 2:女 0:其他
+    // age: number
+    // mobile: string
+    // wechatId: string
+    // interests: string[]
+    // introduction: string
+    // source: string
 }

@@ -80,6 +80,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   },
   onPopupApply() {
     this.setData({ showDigitalNomadPopup: false })
+    wx.setStorageSync('DIGITAL_NOMAD_SKIP_DATE', new Date().toDateString())
     // Navigate to certification or profile edit
     // User didn't specify, linking to profile edit as best guess for "Apply" (filling info)
     smartNavigateTo('/pages/digital-nomad/apply/index')
