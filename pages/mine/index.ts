@@ -12,7 +12,8 @@ interface MineState {
     followerCount?: number
     assets?: number
     gender?: number
-    tagList?: { label: string; className: string }[]
+    levelTags?: { label: string; className: string; action?: string }[]
+    roleTags?: { label: string; className: string; action?: string }[]
     nomadApplyStatus?: string
   })
   | null
@@ -51,6 +52,8 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
           profile.logo = profile.logo.trim()
         }
 
+        const tags = buildUserTagsView(profile.memberLevel, profile.memberTags, profile.nomadApplyStatus)
+
         // 模拟/处理扩展数据
         const extendedProfile = {
           ...profile,
@@ -60,7 +63,8 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
           followerCount: Number(summary.followerCount || 0),
           assets: Number((summary as any).asset || 0),
           gender: profile.sex || 2, // 默认为女
-          tagList: buildUserTagsView(profile.memberLevel, profile.memberTags, profile.nomadApplyStatus),
+          levelTags: tags.levelTags,
+          roleTags: tags.roleTags,
           nomadApplyStatus: profile.nomadApplyStatus,
         }
 

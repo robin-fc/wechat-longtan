@@ -33,7 +33,7 @@ Page({
             name: '',
             gender: '0',
             phone: '',
-            wechat: '微信用户',
+            wechat: '',
             age: '',
             activities: [] as string[],
             self_introduction: '',

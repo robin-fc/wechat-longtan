@@ -1,6 +1,7 @@
 import { goBack } from '../../utils/navigation'
 import { toISO8601 } from '../../utils/isoTime'
 import { createActivity, getActivityTypeList } from '../../api/activity'
+import { getSpaceList } from '../../api/space'
 import { getMyActivityCollections } from '../../api/activity-collection'
 import { uploadImage } from '../../api/common'
 import type { ActivityType as ActivityTypeItem } from '../../model/activity'
@@ -115,11 +116,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     collectionIndex: 0,
     types: [],
     typeIndex: 0,
-    spaceOptions: [
-      { id: 1, name: '空间A' },
-      { id: 2, name: '空间B' },
-      { id: 3, name: '空间C' },
-    ],
+    spaceOptions: [],
     spaceIndex: 0,
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
@@ -134,7 +131,28 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
         collectionIndex: 0,
         'form.collectionId': '',
       })
-    } catch {}
+    } catch { }
+
+    try {
+      const spaces = await getSpaceList()
+      const spaceOptions = (spaces.list || []).map((it) => ({
+        id: it.id,
+        name: it.name,
+      }))
+      if (spaceOptions.length > 0) {
+        this.setData({
+          spaceOptions,
+          spaceIndex: 0,
+          'form.space': spaceOptions[0].name,
+          'form.spaceId': String(spaceOptions[0].id),
+        })
+      } else {
+        this.setData({ spaceOptions: [] })
+      }
+    } catch (e) {
+      console.error('Fetch spaces failed', e)
+    }
+
     try {
       const types = await getActivityTypeList('false')
       this.setData({
@@ -142,7 +160,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
         typeIndex: 0,
         'form.type': ((types || [])[0]?.label || ''),
       })
-    } catch {}
+    } catch { }
   },
 
   onBackTap() {

@@ -20,7 +20,7 @@
               </view>
             </view>
             <view class="tags">
-              <text class="tag {{item.className}}" wx:for="{{profile.tagList}}" wx:for-item="item" wx:key="label" 
+              <text class="tag {{item.className}}" wx:for="{{profile.levelTags}}" wx:for-item="item" wx:key="label" 
                     bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
             </view>
           </view>
@@ -31,6 +31,10 @@
             <text class="join-time">{{profile.joinTime}}加入</text>
           </view>
         </view>
+      </view>
+      <view class="identity-tags-row" wx:if="{{profile.roleTags && profile.roleTags.length > 0}}">
+         <text class="tag {{item.className}}" wx:for="{{profile.roleTags}}" wx:for-item="item" wx:key="label" 
+               bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
       </view>
       <view class="bio-row">
         <text class="bio">{{profile.desc || '这个人很懒，什么都没写~'}}</text>

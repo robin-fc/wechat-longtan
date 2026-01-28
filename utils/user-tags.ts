@@ -8,8 +8,10 @@ export function buildUserTagsView(
   memberLevel: string,
   memberTags: string[],
   nomadApplyStatus?: string
-): UserTagView[] {
-  const result: UserTagView[] = []
+): { levelTags: UserTagView[]; roleTags: UserTagView[] } {
+  const levelTags: UserTagView[] = []
+  const roleTags: UserTagView[] = []
+
   const levelText = (memberLevel || '').trim()
 
   if (levelText) {
@@ -34,7 +36,7 @@ export function buildUserTagsView(
         // We will add a separate tag implementation below or push to result.
       }
     }
-    result.push({ label, className })
+    levelTags.push({ label, className })
 
     if ((levelText === '3' || levelText.includes('游客')) && nomadApplyStatus) {
       if (['未申请', '审核中', '再次申请'].includes(nomadApplyStatus)) {
@@ -54,7 +56,7 @@ export function buildUserTagsView(
           action = 'goApply'
         }
 
-        result.push({ label, className: statusClass, action })
+        levelTags.push({ label, className: statusClass, action })
       }
     }
   }
@@ -74,14 +76,22 @@ export function buildUserTagsView(
       (codeOrLabel.includes('主理')
         ? { label: codeOrLabel, className: 'tag-host' }
         : { label: codeOrLabel, className: 'tag-normal' })
-    result.push(mapped)
+    roleTags.push(mapped)
   })
 
-  const seen = new Set<string>()
-  return result.filter((t) => {
-    const key = `${t.label}-${t.className}`
-    if (seen.has(key)) return false
-    seen.add(key)
-    return true
-  })
+  // Dedup logic if needed, applying to each list separately
+  const uniqueTags = (tags: UserTagView[]) => {
+    const seen = new Set<string>()
+    return tags.filter((t) => {
+      const key = `${t.label}-${t.className}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  }
+
+  return {
+    levelTags: uniqueTags(levelTags),
+    roleTags: uniqueTags(roleTags),
+  }
 }

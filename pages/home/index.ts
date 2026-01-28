@@ -47,8 +47,9 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     try {
       const profile = await fetchMyProfile()
       if (profile) {
-        // Digital Nomad is level '2'
-        const isDigitalNomad = String(profile.memberLevel) === '2'
+        // Digital Nomad is level '2' or text contains '数字游民'
+        const levelStr = String(profile.memberLevel)
+        const isDigitalNomad = levelStr === '2' || levelStr.includes('数字游民')
 
         // Activity Creator is tag '1'
         // memberTags can be string[] or maybe string depending on API consistency, safe check handled in UI usually but here we check data
@@ -62,7 +63,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
           tags = [String(profile.memberTags)]
         }
 
-        const isActivityCreator = tags.includes('1')
+        const isActivityCreator = tags.some(t => t === '1' || t.includes('活动发起人'))
 
         // Check if user skipped the popup today
         const skipDate = wx.getStorageSync('DIGITAL_NOMAD_SKIP_DATE')
