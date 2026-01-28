@@ -1,0 +1,84 @@
+.companions-page {
+    padding: 32rpx;
+    min-height: 100vh;
+    background-color: #fff;
+}
+
+.list-wrapper {
+    padding-bottom: 40rpx;
+}
+
+.companion-item {
+    display: flex;
+    align-items: center;
+    padding: 24rpx 0;
+    border-bottom: 1rpx solid #f5f5f5;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .avatar {
+        width: 88rpx;
+        height: 88rpx;
+        border-radius: 50%;
+        margin-right: 24rpx;
+        background-color: #eee;
+    }
+
+    .info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        margin-right: 20rpx;
+
+        .name {
+            font-size: 30rpx;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8rpx;
+        }
+
+        .bio {
+            font-size: 24rpx;
+            color: #999;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .follow-btn {
+        width: 120rpx;
+        height: 56rpx;
+        border-radius: 28rpx;
+        background-color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+
+        text {
+            font-size: 24rpx;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        &.followed {
+            background-color: #f5f5f5;
+
+            text {
+                color: #999;
+            }
+        }
+    }
+}
+
+.empty {
+    padding: 60rpx 0;
+    text-align: center;
+    color: #999;
+    font-size: 28rpx;
+}

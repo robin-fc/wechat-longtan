@@ -17,7 +17,7 @@
     </view>
     <view class="footer">
       <view class="stay-price-row" wx:if="{{homestay.stayedUserCount || homestay.minPrice}}">
-        <view class="stay-left" wx:if="{{homestay.stayedUserCount && homestay.stayedUsers}}">
+        <view class="stay-left" wx:if="{{homestay.stayedUserCount && homestay.stayedUsers}}" catch:tap="onCompanionsTap">
           <companions-bar 
           size="large"
             companions="{{ { companions: homestay.stayedUsers, totalCount: homestay.stayedUserCount } }}" 

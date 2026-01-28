@@ -106,3 +106,12 @@ export async function fetchHomestayApplications(): Promise<
     phone: '', // Not returned
   }))
 }
+
+export function getHomestayStayedUsers(
+  homestayId: number
+): Promise<{ count: number; userList: any[] }> {
+  // Reusing the structure similar to ActivityRegistration
+  return getData<{ count: number; userList: any[] }>(`${baseUrl}/stayed-users`, {
+    homestayId: String(homestayId),
+  })
+}

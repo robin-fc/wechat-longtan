@@ -20,6 +20,7 @@
     "pages/activity-order/success",
     "pages/homestay/list",
     "pages/homestay/detail",
+    "pages/homestay/companions",
     "pages/homestay-room/detail",
     "pages/homestay-apply/form",
     "pages/homestay-apply/status",
