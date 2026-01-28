@@ -40,25 +40,13 @@
       </view>
     </view>
     <view class="section organizer-section" wx:if="{{activity.organizer}}">
-      <view class="organizer-row">
-        <image class="organizer-avatar" src="{{activity.organizer.logo}}" mode="aspectFill" bindtap="onOrganizerTap" />
-        <view class="organizer-info">
-          <view class="organizer-header">
-            <view class="organizer-name-wrap" bindtap="onOrganizerTap">
-              <text class="organizer-name">{{activity.organizer.memberName || activity.organizer.wxName}}</text>
-              <view class="organizer-tags" wx:if="{{activity.organizer.memberTags && activity.organizer.memberTags.length}}">
-                <text class="organizer-tag" wx:for="{{activity.organizer.memberTags}}" wx:key="*this">{{item}}</text>
-              </view>
-            </view>
-            <view class="organizer-space" wx-if="{{activity.organizer.introduction}}">
-              <text>{{activity.organizer.introduction}}</text>
-            </view>
-          </view>
-        </view>
-        <view wx:if="{{!isSelf}}" class="follow-btn {{activity.organizer.follow ? 'following' : ''}}" bindtap="onToggleFollowOrganizer">
-          <text>{{activity.organizer.follow ? '已关注' : '关注'}}</text>
-        </view>
-      </view>
+      <user-card 
+          user="{{activity.organizer}}" 
+          showFollow="{{true}}" 
+          isSelf="{{isSelf}}" 
+          bind:click="onOrganizerTap"
+          bind:follow="onToggleFollowOrganizer"
+      />
       <!-- Registration Progress -->
       <view class="registration-progress">
         <view class="progress-bar-wrap">

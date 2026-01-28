@@ -1,0 +1,87 @@
+.user-card-container {
+    display: flex;
+    align-items: flex-start;
+    padding: 20rpx 0;
+}
+
+.avatar {
+    width: 96rpx;
+    height: 96rpx;
+    border-radius: 50%;
+    margin-right: 24rpx;
+    flex-shrink: 0;
+}
+
+.info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 8rpx;
+}
+
+.name {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #191919;
+    margin-right: 16rpx;
+}
+
+.tags-row {
+    display: flex;
+    align-items: center;
+}
+
+.level-tag {
+    font-size: 20rpx;
+    color: #333;
+    background: #ffe58f;
+    /* 黄色背景 */
+    padding: 2rpx 8rpx;
+    border-radius: 4rpx;
+    margin-right: 8rpx;
+}
+
+.role-tag {
+    font-size: 20rpx;
+    color: #fff;
+    background: #333;
+    /* 黑色背景 */
+    padding: 2rpx 8rpx;
+    border-radius: 4rpx;
+    margin-right: 8rpx;
+}
+
+.bio {
+    font-size: 24rpx;
+    color: #999999;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.follow-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 148rpx;
+    height: 60rpx;
+    background-color: #ffffff;
+    border: 1rpx solid #000;
+    font-size: 28rpx;
+    color: #000;
+    flex-shrink: 0;
+}
+
+.follow-btn.following {
+    background-color: #f5f5f5;
+    border-color: #dddddd;
+    color: #999999;
+}

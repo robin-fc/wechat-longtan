@@ -2,6 +2,7 @@
   "navigationBarTitleText": "活动详情",
   "navigationStyle": "custom",
   "usingComponents": {
-    "companions-bar": "/components/companions-bar/index"
+    "companions-bar": "/components/companions-bar/index",
+    "user-card": "/components/user-card/index"
   }
 }

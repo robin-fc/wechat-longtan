@@ -1,0 +1,49 @@
+<view class="activity-card" bindtap="onTap">
+  <view class="top-section">
+    <view class="relative">
+      <image class="poster" src="{{activity.logo}}" mode="aspectFill" />
+    </view>
+
+    <view class="content">
+      <view class="title-row">
+        <text class="tag title-tag">{{activity.activityType}}</text>
+        <text class="title">{{activity.title}}</text>
+      </view>
+      
+      <view class="organizer-row" wx:if="{{activity.organizer}}">
+          <image class="org-avatar" src="{{activity.organizer.logo}}" mode="aspectFill" />
+          <text class="org-name">{{activity.organizer.memberName || activity.organizer.wxName}}</text>
+          <text class="org-tag" wx:if="{{activity.organizer.memberLevel}}">{{activity.organizer.memberLevel}}</text>
+      </view>
+
+      <view class="info-row time-row">
+        <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
+        <text class="time">{{formattedTimeRange}}</text>
+      </view>
+    
+      <view class="info-row location-row" wx:if="{{activity.spaceName || activity.space.name}}">
+        <image class="location-icon" src="/assets/icons/location.png" mode="aspectFit" />
+        <text class="location-text">{{activity.spaceName || activity.space.name}}</text>
+      </view>
+
+      <view class="info-row slots-row">
+          <image class="info-icon" src="/assets/icons/user-o.png" mode="aspectFit" />
+          <text class="slots-text">剩余{{remainingSlots||0}}个名额</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom">
+      <view class="companions-wrapper" wx:if="{{localCompanions && localCompanions.totalCount > 0}}">
+        <companions-bar showCount="true" size="large"  companions="{{localCompanions}}" class="companions-bar-inline" />人已报名
+      </view>
+      <view class="companions-wrapper" wx:else>
+          <text class="no-reg">暂无报名</text>
+      </view>
+      <view class="price-btn">
+        <text class="currency">¥</text>
+        <text class="amount">{{activity.fee}}</text>
+        <text class="unit">/人</text>
+      </view>
+  </view>
+</view>

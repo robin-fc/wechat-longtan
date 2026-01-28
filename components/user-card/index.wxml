@@ -1,0 +1,21 @@
+<view class="user-card-container" wx:if="{{user}}">
+  <image class="avatar" src="{{user.logo}}" mode="aspectFill" bindtap="onTap" />
+  <view class="info" bindtap="onTap">
+    <view class="header">
+      <text class="name">{{user.memberName || user.wxName}}</text>
+      <view class="tags-row">
+        <text class="level-tag" wx:if="{{user.memberLevel}}">{{user.memberLevel}}</text>
+        <block wx:for="{{user.memberTags}}" wx:key="*this">
+          <text class="role-tag">{{item}}</text>
+        </block>
+      </view>
+    </view>
+    <text class="bio">{{user.introduction || '暂无介绍'}}</text>
+  </view>
+  
+  <view wx:if="{{showFollow && !isSelf}}" 
+        class="follow-btn {{user.follow ? 'following' : ''}}" 
+        catchtap="onFollowTap">
+      <text>{{user.follow ? '已关注' : '关注'}}</text>
+  </view>
+</view>

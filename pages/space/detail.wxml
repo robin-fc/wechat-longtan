@@ -8,80 +8,65 @@
         </swiper-item>
       </block>
     </swiper>
-    <view class="image-count">
-       <text class="count-text">{{images.length}} 张图片</text>
-    </view>
+  
   </view>
 
   <!-- 空间核心信息卡片 -->
-  <view class="info-card" style="{{images.length === 0 ? 'margin-top: 24rpx;' : ''}}">
-    <view class="space-header">
+  <view class="info-card">
+    <!-- 标题与活动数量 -->
+    <view class="space-title-row">
         <text class="space-name" wx:if="{{name}}">{{name}}</text>
+        
+    </view>
+
+    <view class="space-info-container">
+        <view class="info-left">
+            <view class="meta-row">
+                <image class="meta-icon" src="/assets/icons/activity-fire.png" mode="aspectFit" />
+                <text class="meta-text">{{activities.length}}个在售活动</text>
+            </view>
+            
+            <view class="meta-row" bindtap="onMapTap" wx:if="{{address}}">
+                <image class="meta-icon" src="/assets/icons/location-grey.png" mode="aspectFit" />
+                <text class="meta-text address-text">{{address}}</text>
+            </view>
+        </view>
+        <view class="info-right" bindtap="onPreviewMap" wx:if="{{mapImage}}">
+            <image class="map-img" src="{{mapImage}}" mode="aspectFill" />
+            <view class="map-hint">点击查看</view>
+        </view>
     </view>
     
-    <view class="space-meta">
-        <text class="meta-tag">在售活动 {{activityCount}}</text>
+    
+    
+    <!-- 空间介绍 (支持富文本与展开收起) -->
+    <view class="space-description {{isExpanded ? 'expanded' : ''}}" wx:if="{{description}}">
+        <rich-text nodes="{{description}}" class="desc-content"></rich-text>
     </view>
-    
-    <view class="space-address-row" bindtap="onMapTap" wx:if="{{address}}">
-        <image class="location-icon" src="/assets/icons/location.png" mode="aspectFit" />
-        <text class="address-text">{{address}}</text>
-        <image class="arrow-icon" src="/assets/icons/arrow-black.png" mode="aspectFit" />
-    </view>
-    
-    <view class="divider" wx:if="{{address}}"></view>
-    
-    <view class="space-description" wx:if="{{desc}}">
-        <rich-text nodes="{{desc}}" class="desc-text"></rich-text>
+    <view class="expand-btn" bindtap="onToggleExpand" wx:if="{{description}}">
+        <text>{{isExpanded ? '收起' : '查看更多'}}</text>
+        <image class="arrow-down {{isExpanded ? 'rotated' : ''}}" src="/assets/icons/arrow-down-green.png" />
     </view>
     
     <!-- 主理人区域 -->
     <view class="organizer-section" wx:if="{{organizer}}">
-        <view class="organizer-left">
-            <image class="organizer-avatar" src="{{organizer.logo}}" mode="aspectFill" />
-            <view class="organizer-info">
-                <view class="organizer-name-row">
-                    <text class="organizer-name">{{organizer.memberName}}</text>
-                    <text class="organizer-badge">主理人</text>
-                </view>
-                <text class="organizer-desc">发布了 {{activityCount}} 个精彩活动</text>
-            </view>
-        </view>
-        <view class="contact-btn">
-            <text>联系TA</text>
-        </view>
+        <user-card user="{{organizer}}" />
     </view>
   </view>
 
   <!-- 活动列表区域 -->
   <view class="activity-section">
     <view class="section-header">
-        <text class="section-title">近期活动</text>
+    在售活动({{activities.length}})
     </view>
     
     <view class="activity-list">
         <block wx:for="{{activities}}" wx:key="id">
-            <view class="activity-item" bindtap="onActivityTap" data-id="{{item.id}}">
-                <view class="activity-cover-box">
-                    <image class="activity-cover" src="{{item.poster.url}}" mode="aspectFill" />
-                    <view class="activity-status-badge">报名中</view>
-                </view>
-                <view class="activity-content">
-                    <text class="activity-title">{{item.title}}</text>
-                    <view class="activity-info-row">
-                        <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
-                        <text class="info-text">{{item.startTime}}</text>
-                    </view>
-                    <view class="activity-footer">
-                        <view class="price-box">
-                             <text class="currency">¥</text>
-                             <text class="amount">{{item.price.amount}}</text>
-                             <text class="unit">/{{item.price.unit}}</text>
-                        </view>
-                        <view class="join-btn">立即报名</view>
-                    </view>
-                </view>
-            </view>
+            <activity-horizontal-card 
+                activity="{{item}}" 
+                bind:cardtap="onActivityTap" 
+                data-id="{{item.id}}" 
+            />
         </block>
         
         <view wx:if="{{activities.length === 0}}" class="empty-state">

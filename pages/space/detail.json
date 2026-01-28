@@ -1,5 +1,9 @@
 {
   "navigationBarTitleText": "活动空间",
   "navigationStyle": "default",
-  "usingComponents": {}
+  "usingComponents": {
+    "user-card": "/components/user-card/index",
+    "activity-card": "/components/activity-card/index",
+    "activity-horizontal-card": "/components/activity-horizontal-card/index"
+  }
 }
