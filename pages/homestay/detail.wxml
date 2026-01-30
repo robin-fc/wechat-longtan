@@ -33,11 +33,11 @@
             </block>
           </view>
           <view class="info-row" wx:if="{{homestay.roomCount}}">
-             <image class="info-icon" src="/assets/icons/home.png" mode="aspectFit" />
+             <image class="info-icon" src="/assets/icons/home.svg" mode="aspectFit" />
              <text class="info-text">{{homestay.roomCount}}个在售房型</text>
           </view>
           <view class="info-row" bindtap="onOpenMap">
-             <image class="info-icon" src="/assets/icons/location.png" mode="aspectFit" />
+             <image class="info-icon" src="/assets/icons/location.svg" mode="aspectFit" />
              <text class="info-text address-text">{{homestay.address}}</text>
           </view>
         </view>

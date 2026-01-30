@@ -1,4 +1,4 @@
-import { getUserDetail } from '../../../api/user'
+import { getUserDetail, getUserSummaryByUser } from '../../../api/user'
 import { ensureActivityTypeDict, getUserActivityList } from '../../../api/activity'
 import { formatYMDHM } from '../../../utils/date'
 
@@ -72,7 +72,7 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
     try {
       const dict = await ensureActivityTypeDict()
       this.setData({ typeDict: dict })
-    } catch (e) {}
+    } catch (e) { }
     this.loadUserInfo(String(userId || ''), isFollowed)
     this.loadActivities(0)
   },
@@ -84,7 +84,11 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
   ) {
     if (!userId) return
     try {
-      const raw = await getUserDetail(userId)
+      const [raw, summary] = await Promise.all([
+        getUserDetail(userId),
+        getUserSummaryByUser(userId).catch(() => ({ followerCount: 0, followingCount: 0 }))
+      ])
+
       const levelMap: Record<string, string> = {
         '0': '老村民',
         '1': '新村民',
@@ -110,12 +114,12 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
         tags: Array.from(new Set(allTags)),
         joinTime: formatYMDHM(raw?.joinTime || ''),
         bio: (raw?.desc || '') || '',
-        followingCount: 0,
-        followerCount: 0,
+        followingCount: summary.followingCount || 0,
+        followerCount: summary.followerCount || 0,
         isFollowed:
           isFollowedOpt !== undefined &&
-          isFollowedOpt !== 'undefined' &&
-          isFollowedOpt !== ''
+            isFollowedOpt !== 'undefined' &&
+            isFollowedOpt !== ''
             ? isFollowedOpt === 'true'
             : false, //todo
       }
@@ -227,9 +231,9 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
   },
 
   onActivityTap(e: WechatMiniprogram.BaseEvent) {
-   
+
     const id = e.currentTarget.dataset.id as string
-     console.log('onActivityTap click', id)
+    console.log('onActivityTap click', id)
     wx.navigateTo({
       url: `/pages/activity/detail?id=${id}`,
     })

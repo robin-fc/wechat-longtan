@@ -21,14 +21,14 @@
     <!-- Horizontal Layout Info -->
     <block wx:else>
       <view class="info-row time-row">
-        <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
+        <image class="info-icon" src="/assets/icons/time.svg" mode="aspectFit" />
         <text class="time">
           {{activity.timeRange.startTime + '-' + activity.timeRange.endTime}}
         </text>
       </view>
     
       <view class="location-row">
-        <image class="location-icon" src="/assets/icons/location.png" mode="aspectFit" />
+        <image class="location-icon" src="/assets/icons/location.svg" mode="aspectFit" />
         <text class="location-text">{{activity.spaceName || activity.space.name || ''}}</text>
       </view>
       

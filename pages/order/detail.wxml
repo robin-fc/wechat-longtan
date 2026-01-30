@@ -20,7 +20,7 @@
   <view class="section">
     <text class="title">{{view.title}}</text>
     <view class="address-row">
-      <image class="addr-icon" src="/assets/icons/location.png" mode="aspectFit" />
+      <image class="addr-icon" src="/assets/icons/location.svg" mode="aspectFit" />
       <text class="address">{{view.address}}</text>
     </view>
   </view>

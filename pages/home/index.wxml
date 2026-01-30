@@ -1,7 +1,7 @@
 <view class="home-page">
   <view class="top-bar" style="padding-top: {{navPaddingTop}}px;">
     <view class="top-bar-left" bindtap="onSearchTap">
-      <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit" />
+      <image class="search-icon" src="/assets/icons/search.svg" mode="aspectFit" />
     </view>
     <image class="top-title-img" src="/assets/images/DAO.png" mode="heightFix" />
     <view class="top-bar-right"></view>
@@ -44,7 +44,7 @@
         </view>
       </view>
     </view>
-    <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
+      <view class="section-divider-line" />
     <scroll-view scroll-x="true" class="activity-scroll">
       <view class="activity-list">
         <block wx:for="{{pageData.hotActivities}}" wx:key="id">
@@ -61,7 +61,7 @@
           <text>更多</text>
         </view>
       </view>
-      <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
+        <view class="section-divider-line" />
       <scroll-view scroll-x="true" class="collection-scroll">
         <view class="collection-row">
           <block wx:for="{{pageData.collections}}" wx:key="id">
@@ -77,7 +77,7 @@
           <text>更多</text>
         </view>
       </view>
-      <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
+        <view class="section-divider-line" />
       <view class="homestay-list">
         <block wx:for="{{pageData.homestays}}" wx:key="id">
           <view class="homestay-item">
@@ -90,7 +90,7 @@
       <view class="section-header">
         <image class="section-title-icon" src="/assets/icons/home/About.png" mode="heightFix" />
       </view>
-      <image class="section-divider" src="/assets/icons/home/line.png" mode="widthFix" />
+        <view class="section-divider-line" />
       <view class="about-list">
         <block wx:for="{{pageData.aboutLinks}}" wx:key="id" wx:for-index="idx">
           <view class="about-item" data-item="{{item}}" bindtap="onEntryTap">
@@ -101,7 +101,7 @@
     </view>
   </view>
   <view wx:if="{{canCreateActivity}}" class="floating-publish-btn" bindtap="onFloatingPublishTap">
-    <image class="floating-publish-icon" src="/assets/icons/edit-white.png" mode="aspectFit" />
+    <image class="floating-publish-icon" src="/assets/icons/edit-white.svg" mode="aspectFit" />
     <text class="floating-publish-text">发布</text>
   </view>
   

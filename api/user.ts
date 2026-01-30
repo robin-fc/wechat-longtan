@@ -1,6 +1,6 @@
 import { request, getData } from '../utils/request'
 import type { AppUpdateWeixinUserInfoReqVO, AppUserDetailRespVO } from '../model/user'
- import type {AppUserInfoRespVO} from '../model/user-follow'
+import type { AppUserInfoRespVO } from '../model/user-follow'
 import type { CommonResult } from '../model/common'
 
 const baseUrl = '/app-api/daolongtan/user'
@@ -25,7 +25,7 @@ export interface MockUserItem {
   tags: string[]
   bio: string
   isFollowed: boolean
-} 
+}
 
 function mapMemberLevelLabel(level: unknown): string {
   const v = level === undefined || level === null ? '' : String(level)
@@ -50,7 +50,7 @@ function mapMemberTags(v: unknown): string[] {
       try {
         const arr = JSON.parse(s)
         if (Array.isArray(arr)) return arr.map((it) => String(it))
-      } catch {}
+      } catch { }
     }
     return s.split(',')
   })()
@@ -109,4 +109,13 @@ export function fetchMockUserList(type: string, id?: string): Promise<MockUserIt
 
   // 其他列表类型暂沿用 mock
   return Promise.resolve([])
+}
+
+export interface AppUserSummaryByUserRespVO {
+  followerCount: number
+  followingCount: number
+}
+
+export function getUserSummaryByUser(userId: string | number): Promise<AppUserSummaryByUserRespVO> {
+  return getData<AppUserSummaryByUserRespVO>(`${baseUrl}/summary-by-user`, { userId })
 }

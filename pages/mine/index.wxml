@@ -9,14 +9,14 @@
       <view class="avatar-row">
         <view class="avatar-wrap">
           <image class="avatar" src="{{profile && profile.logo ? profile.logo : '/assets/images/default-avatar.png'}}" mode="aspectFill" />
-          <image class="gender-icon" src="{{profile.gender === 1 ? '/assets/icons/male.png' : '/assets/icons/female.png'}}" mode="aspectFit" />
+          <image class="gender-icon" src="{{profile.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
         </view>
         <view class="info-content">
           <view class="name-row">
             <view class="name-left">
               <text class="nickname">{{profile ? profile.memberName||profile.wxName : '未登录用户'}}</text>
               <view class="edit-icon-wrap" bindtap="onEditProfileTap">
-                <image class="edit-icon" src="/assets/icons/edit.png" mode="aspectFit" />
+                <image class="edit-icon" src="/assets/icons/edit.svg" mode="aspectFit" />
               </view>
             </view>
             <view class="tags">

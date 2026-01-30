@@ -8,7 +8,7 @@
     </view>
 
     <view class="info-row time-row">
-      <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
+      <image class="info-icon" src="/assets/icons/time.svg" mode="aspectFit" />
       <text class="info-text">{{activity.startTime}}-{{activity.endTime}}
       </text>
     </view>

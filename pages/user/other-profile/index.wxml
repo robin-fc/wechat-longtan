@@ -14,7 +14,7 @@
     <view class="avatar-row">
       <view class="avatar-wrap">
         <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
-        <image class="gender-icon" src="{{userInfo.gender === 1 ? '/assets/icons/male.png' : '/assets/icons/female.png'}}" mode="aspectFit" />
+        <image class="gender-icon" src="{{userInfo.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
       </view>
       <view class="action-btn">
         <button class="follow-btn {{userInfo.isFollowed ? 'followed' : ''}}" bindtap="onFollowTap">

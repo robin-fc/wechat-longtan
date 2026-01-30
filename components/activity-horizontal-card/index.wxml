@@ -17,12 +17,12 @@
       </view>
 
       <view class="info-row time-row">
-        <image class="info-icon" src="/assets/icons/time.png" mode="aspectFit" />
+        <image class="info-icon" src="/assets/icons/time.svg" mode="aspectFit" />
         <text class="time">{{formattedTimeRange}}</text>
       </view>
     
       <view class="info-row location-row" wx:if="{{activity.spaceName || activity.space.name}}">
-        <image class="location-icon" src="/assets/icons/location.png" mode="aspectFit" />
+        <image class="location-icon" src="/assets/icons/location.svg" mode="aspectFit" />
         <text class="location-text">{{activity.spaceName || activity.space.name}}</text>
       </view>
 

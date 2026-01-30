@@ -8,7 +8,7 @@
   <picker mode="time" value="{{time}}" bindchange="onTimeChange">
     <view class="dtp-field">
       <text class="dtp-text">{{time || placeholderTime}}</text>
-      <image class="dtp-icon" src="/assets/icons/time.png" mode="aspectFit" />
+      <image class="dtp-icon" src="/assets/icons/time.svg" mode="aspectFit" />
     </view>
   </picker>
 </view>

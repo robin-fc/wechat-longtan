@@ -10,25 +10,25 @@ const aboutLinksMock = [
   {
     id: 1,
     title: '龙潭史',
-    url: '/assets/icons/about/history.png',
+    url: '/assets/icons/about/history.svg',
     description: '了解龙潭的历史与故事',
   },
   {
     id: 2,
     title: '居住指南',
-    url: '/assets/icons/about/lifeGuide.png',
+    url: '/assets/icons/about/lifeGuide.svg',
     description: '抵达与居住的实用信息',
   },
   {
     id: 3,
     title: '地图手册',
-    url: '/assets/icons/about/map.png',
+    url: '/assets/icons/about/map.svg',
     description: '了解地图上的标志性地点',
   },
   {
     id: 4,
     title: '身份等级',
-    url: '/assets/icons/about/diamond.png',
+    url: '/assets/icons/about/diamond.svg',
     description: '了解您的身份等级',
   },
 ]
