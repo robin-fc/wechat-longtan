@@ -41,6 +41,7 @@
         <image class="section-title-icon" src="/assets/icons/home/hotActivity.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreHotActivityTap">
           <text>更多</text>
+          <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
         </view>
       </view>
     </view>
@@ -59,6 +60,7 @@
         <image class="section-title-icon" src="/assets/icons/home/hotActivityCollection.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreCollectionsTap">
           <text>更多</text>
+          <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
         </view>
       </view>
         <view class="section-divider-line" />
@@ -75,6 +77,7 @@
         <image class="section-title-icon" src="/assets/icons/home/hotHomestay.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreHomestaysTap">
           <text>更多</text>
+          <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
         </view>
       </view>
         <view class="section-divider-line" />
