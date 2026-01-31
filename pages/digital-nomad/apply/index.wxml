@@ -52,12 +52,13 @@
             <view
               wx:for="{{item.options}}"
               wx:key="value"
-              class="tag-item {{utils.includes(formData[item.id], item.value) ? 'selected' : ''}}"
+              wx:for-item="option"
+              class="tag-item {{utils.includes(formData[item.id], option.value) ? 'selected' : ''}}"
               bindtap="onCheckboxToggle"
               data-field="{{item.id}}"
-              data-value="{{item.value}}"
+              data-value="{{option.value}}"
             >
-              {{item.label}}
+              {{option.label}}
             </view>
           </view>
 
@@ -88,9 +89,15 @@
 
 <wxs module="utils">
 module.exports.includes = function(arr, item) {
-  if (!Array.isArray(arr)) {
+  if (!arr || typeof arr.length !== 'number') {
     return false;
   }
-  return arr.indexOf(item) > -1;
+  var strItem = item + "";
+  for (var i = 0; i < arr.length; i++) {
+    if ((arr[i] + "") === strItem) {
+      return true;
+    }
+  }
+  return false;
 }
 </wxs>

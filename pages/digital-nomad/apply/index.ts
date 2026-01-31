@@ -141,6 +141,7 @@ Page({
     onCheckboxToggle(e: WechatMiniprogram.BaseEvent) {
         const field = e.currentTarget.dataset.field
         const value = String(e.currentTarget.dataset.value || '')
+        
         const state = this.data as any
         const current = Array.isArray(state.formData?.[field]) ? [...state.formData[field]] : []
         const idx = current.indexOf(value)
