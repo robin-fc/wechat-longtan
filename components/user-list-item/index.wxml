@@ -1,0 +1,10 @@
+<view class="companion-item">
+  <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill" catchtap="onTap" />
+  <view class="info" bindtap="onTap">
+    <text class="name">{{user.nickname}}</text>
+    <text class="bio">{{user.bio}}</text>
+  </view>
+  <view wx:if="{{showFollow}}" class="follow-btn {{user.follow ? 'followed' : ''}}" catchtap="onFollowTap">
+    <text>{{user.follow ? '已关注' : '关注'}}</text>
+  </view>
+</view>

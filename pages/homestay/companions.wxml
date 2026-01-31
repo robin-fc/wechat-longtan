@@ -1,24 +1,7 @@
 <view class="companions-page">
   <view class="list-wrapper">
     <block wx:for="{{companions}}" wx:key="id">
-      <view class="companion-item">
-        <image
-          class="avatar"
-          src="{{item.avatarUrl}}"
-          mode="aspectFill"
-        />
-        <view class="info">
-          <text class="name">{{item.nickname}}</text>
-          <text class="bio">{{item.bio}}</text>
-        </view>
-        <view
-          class="follow-btn {{item.follow ? 'followed' : ''}}"
-          data-id="{{item.id}}"
-          bindtap="onFollowTap"
-        >
-          <text>{{item.follow ? '已关注' : '关注'}}</text>
-        </view>
-      </view>
+      <user-list-item user="{{item}}" bind:follow="onFollowTap" data-id="{{item.id}}" />
     </block>
     <view wx:if="{{companions.length === 0}}" class="empty">
       <text>暂无住客信息</text>

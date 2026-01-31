@@ -2,24 +2,11 @@
 
   <view class="list-wrapper">
     <block wx:for="{{companions}}" wx:key="id">
-      <view class="companion-item">
-        <image
-          class="avatar"
-          src="{{item.avatarUrl}}"
-          mode="aspectFill"
-        />
-        <view class="info">
-          <text class="name">{{item.nickname}}</text>
-          <text class="bio">{{item.bio}}</text>
-        </view>
-        <view
-          class="follow-btn {{item.isFollowed ? 'followed' : ''}}"
-          data-id="{{item.id}}"
-          bindtap="onFollowTap"
-        >
-          <text>{{item.isFollowed ? '已关注' : '关注'}}</text>
-        </view>
-      </view>
+      <user-list-item
+        user="{{item}}"
+        showFollow="{{true}}"
+        bind:follow="onFollowTap"
+      />
     </block>
   </view>
 </view>

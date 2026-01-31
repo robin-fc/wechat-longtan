@@ -9,3 +9,32 @@ export interface UserApplyReqVO {
     // introduction: string
     // source: string
 }
+
+export type AppUserApplyFormValueType =
+  | 'text'
+  | 'radio'
+  | 'number'
+  | 'tel'
+  | 'checkbox_group'
+  | 'textarea'
+  | 'info_text'
+
+export interface AppUserApplyFormOption {
+  label: string
+  value: string
+}
+
+export interface AppUserApplyFormQuestion {
+  id: string
+  label: string
+  valueType: AppUserApplyFormValueType
+  value?: string | string[]
+  des?: string
+  options?: AppUserApplyFormOption[]
+}
+
+export interface AppUserApplyFormRespVO {
+  title?: string
+  desc?: string
+  questionList?: AppUserApplyFormQuestion[]
+}

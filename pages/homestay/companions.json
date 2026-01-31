@@ -1,4 +1,6 @@
 {
     "navigationBarTitleText": "住过的人",
-    "usingComponents": {}
+    "usingComponents": {
+        "user-list-item": "/components/user-list-item/index"
+    }
 }

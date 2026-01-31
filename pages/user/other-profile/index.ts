@@ -19,19 +19,25 @@ interface UserInfoView {
 interface ActivityCardItem {
   id: string
   title: string
-  poster: string
-  type: string
+  logo: string
+  activityType: string
   organizer: {
-    name: string
-    avatar: string
-    tag: string
+    name?: string
+    memberName?: string
+    wxName?: string
+    avatar?: string
+    logo?: string
+    memberLevel?: string
+    tag?: string
   }
-  time: string
-  location: string
-  statusText: string
-  joinedUsers: string[]
-  joinedCount: number
-  price: string
+  startTime: string
+  endTime: string
+  spaceName: string
+  fee: string | number
+  registeredUsers: any[]
+  registeredCount: number
+  maxParticipants: number
+  isLimitParticipants: boolean
 }
 
 interface OtherProfileState {
@@ -171,39 +177,38 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
           }
           return ''
         })()
-        const organizerName =
-          it.organizer?.memberName ||
-          it.organizer?.wxName ||
-          it.creatorName ||
-          ''
-        const organizerAvatar = it.organizer?.logo || it.creatorAvatar || ''
-        const organizerTag = ''
+
+        // Organizer mapping
+        const organizer = {
+          name: it.organizer?.memberName || it.organizer?.wxName || it.creatorName || '',
+          memberName: it.organizer?.memberName || it.organizer?.wxName || it.creatorName || '',
+          wxName: it.organizer?.wxName,
+          avatar: it.organizer?.logo || it.creatorAvatar || '',
+          logo: it.organizer?.logo || it.creatorAvatar || '',
+          memberLevel: it.organizer?.levelLabel || '',
+          tag: ''
+        }
+
         const startRaw = it.startTime || (it.timeRange && it.timeRange.startTime) || ''
         const endRaw = it.endTime || (it.timeRange && it.timeRange.endTime) || ''
-        const startTxt = startRaw ? formatYMDHM(startRaw) : ''
-        const endTxt = endRaw ? formatYMDHM(endRaw) : ''
-        const time = startTxt && endTxt ? `${startTxt}-${endTxt}` : (startTxt || endTxt || '')
-        const location = it.spaceName || it.space?.name || ''
-        const statusText = it.statusText || it.status || ''
-        const joinedCount = Number(it.joinedCount || it.registrationCount || 0)
-        const price =
-          it.isFree ? '0' : String(it.fee || (it.price && it.price.amount) || '')
+
+        // Fee
+        const fee = it.isFree ? '0' : String(it.fee || (it.price && it.price.amount) || '')
+
         return {
           id: String(it.id),
           title,
-          poster,
-          type: typeText,
-          organizer: {
-            name: organizerName,
-            avatar: organizerAvatar,
-            tag: organizerTag,
-          },
-          time,
-          location,
-          statusText,
-          joinedUsers: [],
-          joinedCount,
-          price,
+          logo: poster,
+          activityType: typeText,
+          organizer,
+          startTime: startRaw,
+          endTime: endRaw,
+          spaceName: it.spaceName || it.space?.name || '',
+          fee,
+          registeredUsers: it.registeredUsers || [],
+          registeredCount: Number(it.joinedCount || it.registrationCount || 0),
+          maxParticipants: Number(it.maxParticipants || 0),
+          isLimitParticipants: !!(it.maxParticipants && it.maxParticipants > 0)
         }
       })
       this.setData({ currentList: mapped })
@@ -230,13 +235,14 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
     })
   },
 
-  onActivityTap(e: WechatMiniprogram.BaseEvent) {
-
-    const id = e.currentTarget.dataset.id as string
+  onActivityTap(e: any) {
+    const id = e.detail?.activity?.id || e.currentTarget.dataset.id
     console.log('onActivityTap click', id)
-    wx.navigateTo({
-      url: `/pages/activity/detail?id=${id}`,
-    })
+    if (id) {
+      wx.navigateTo({
+        url: `/pages/activity/detail?id=${id}`,
+      })
+    }
   },
 
   onFollowingTap(this: WechatMiniprogram.Page.TrivialInstance) {

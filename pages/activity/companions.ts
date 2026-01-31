@@ -51,9 +51,10 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
   },
   onFollowTap(
     this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.BaseEvent
+    e: WechatMiniprogram.CustomEvent
   ) {
-    const id = e.currentTarget.dataset.id as string
+    const { user } = e.detail
+    const id = user.id as string
     const list = (this.data as CompanionsPageState).companions.slice()
     const index = list.findIndex((item) => item.id === id)
     if (index === -1) {

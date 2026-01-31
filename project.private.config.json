@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "首页进入",
-          "pathName": "pages/login/index",
+          "name": "数字游民申请页",
+          "pathName": "pages/digital-nomad/apply/index",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "首页进入",
+          "pathName": "pages/login/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

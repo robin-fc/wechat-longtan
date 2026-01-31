@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "同行的人"
+  "navigationBarTitleText": "同行的人",
+  "usingComponents": {
+    "user-list-item": "/components/user-list-item/index"
+  }
 }
-

@@ -1,44 +1,63 @@
-import { submitUserApply } from '../../../api/user-apply'
-import type { UserApplyReqVO } from '../../../model/user-apply'
+import { fetchUserApplyForm, submitUserApply } from '../../../api/user-apply'
+import type { AppUserApplyFormQuestion, UserApplyReqVO } from '../../../model/user-apply'
 import { fetchMyProfile } from '../../../api/mine'
 
+type FormValue = string | string[]
+
+function normalizeCheckboxValue(value: unknown): string[] {
+    if (Array.isArray(value)) {
+        return value.map(String).filter(Boolean)
+    }
+    if (typeof value === 'string') {
+        const trimmed = value.trim()
+        if (!trimmed) {
+            return []
+        }
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+            try {
+                const parsed = JSON.parse(trimmed)
+                if (Array.isArray(parsed)) {
+                    return parsed.map(String).filter(Boolean)
+                }
+            } catch {
+                // Ignore JSON parse error and fallback to splitting
+            }
+        }
+        return trimmed.split(',').map((item) => item.trim()).filter(Boolean)
+    }
+    return []
+}
+
+function normalizeQuestionValue(question: AppUserApplyFormQuestion): FormValue {
+    if (question.valueType === 'checkbox_group') {
+        return normalizeCheckboxValue(question.value)
+    }
+    if (question.value === undefined || question.value === null) {
+        return ''
+    }
+    return String(question.value)
+}
+
+function buildInitialFormData(questionList: AppUserApplyFormQuestion[]) {
+    const formData: Record<string, FormValue> = {}
+    questionList.forEach((question) => {
+        if (!question || !question.id) {
+            return
+        }
+        formData[question.id] = normalizeQuestionValue(question)
+    })
+    return formData
+}
 
 Page({
     data: {
         statusBarHeight: 0,
         navBarHeight: 44,
         isIntroExpanded: false,
-        genderOptions: [
-            { label: '未知', value: '0' },
-            { label: '男性', value: '1' },
-            { label: '女性', value: '2' }
-        ],
-        activitiesOptions: [
-            { label: '在地民俗', value: '0' },
-            { label: '艺术创作', value: '1' },
-            { label: '数字技能', value: '2' },
-            { label: '自然体验', value: '3' },
-            { label: '手工制作', value: '4' },
-            { label: '生活美食', value: '5' },
-            { label: '身心成长', value: '6' },
-            { label: '兴趣爱好', value: '7' }
-        ],
-        sourceOptions: [
-            { label: '小红书', value: '0' },
-            { label: '朋友圈/群聊', value: '1' },
-            { label: '公众号', value: '2' },
-            { label: '其他', value: '3' }
-        ],
-        formData: {
-            name: '',
-            gender: '0',
-            phone: '',
-            wechat: '',
-            age: '',
-            activities: [] as string[],
-            self_introduction: '',
-            source: ''
-        }
+        formTitle: '',
+        formDesc: '',
+        questionList: [] as AppUserApplyFormQuestion[],
+        formData: {} as Record<string, FormValue>
     },
     onLoad() {
         const sys = wx.getWindowInfo()
@@ -48,17 +67,50 @@ Page({
         this.initData()
     },
     async initData() {
+        await this.loadApplyForm()
+        await this.prefillProfile()
+    },
+    async loadApplyForm() {
+        try {
+            const form = await fetchUserApplyForm()
+            const questionList = (form?.questionList || []).map((question) => ({
+                ...question,
+                options: question.options || []
+            }))
+            const formData = buildInitialFormData(questionList)
+            this.setData({
+                formTitle: form?.title || '申请表',
+                formDesc: form?.desc || '',
+                questionList,
+                formData
+            })
+        } catch (e) {
+            console.error('Fetch apply form failed', e)
+            wx.showToast({ title: '表单加载失败', icon: 'none' })
+        }
+    },
+    async prefillProfile() {
         try {
             const profile = await fetchMyProfile()
             if (profile) {
                 const { memberName, wxName, memberPhone, sex, desc } = profile
-
-                this.setData({
-                    'formData.name': memberName || wxName || '',
-                    'formData.gender': String(sex || '0'),
-                    'formData.phone': memberPhone || '',
-                    'formData.self_introduction': desc || ''
-                })
+                const updates: Record<string, any> = {}
+                const formData = (this.data as any).formData || {}
+                if (formData.name !== undefined) {
+                    updates['formData.name'] = memberName || wxName || ''
+                }
+                if (formData.gender !== undefined) {
+                    updates['formData.gender'] = String(sex || '0')
+                }
+                if (formData.phone !== undefined) {
+                    updates['formData.phone'] = memberPhone || ''
+                }
+                if (formData.self_introduction !== undefined) {
+                    updates['formData.self_introduction'] = desc || ''
+                }
+                if (Object.keys(updates).length) {
+                    this.setData(updates)
+                }
             }
         } catch (e) {
             console.error('Fetch profile failed', e)
@@ -86,53 +138,59 @@ Page({
             [`formData.${field}`]: value
         })
     },
-    onActivityToggle(e: WechatMiniprogram.BaseEvent) {
-        const value = e.currentTarget.dataset.value
-        const { activities } = this.data.formData
-        const idx = activities.indexOf(value)
+    onCheckboxToggle(e: WechatMiniprogram.BaseEvent) {
+        const field = e.currentTarget.dataset.field
+        const value = String(e.currentTarget.dataset.value || '')
+        const state = this.data as any
+        const current = Array.isArray(state.formData?.[field]) ? [...state.formData[field]] : []
+        const idx = current.indexOf(value)
         if (idx > -1) {
-            activities.splice(idx, 1)
-        } else {
-            activities.push(value)
+            current.splice(idx, 1)
+        } else if (value) {
+            current.push(value)
         }
         this.setData({
-            'formData.activities': activities
+            [`formData.${field}`]: current
         })
     },
     async onSubmit() {
-        console.log('Submit form:', this.data.formData)
-
-        // Validate
-        const { name, gender, phone, wechat, age, activities, self_introduction, source } = this.data.formData
-
-        if (!name) {
-            wx.showToast({ title: '请输入姓名', icon: 'none' })
+        const state = this.data as any
+        const questionList: AppUserApplyFormQuestion[] = state.questionList || []
+        const formData: Record<string, FormValue> = state.formData || {}
+        if (!questionList.length) {
+            wx.showToast({ title: '表单加载失败', icon: 'none' })
             return
         }
-        if (!phone) {
-            wx.showToast({ title: '请输入手机号', icon: 'none' })
-            return
-        }
-        if (!wechat) {
-            wx.showToast({ title: '请输入微信号', icon: 'none' })
-            return
-        }
-        if (!age) {
-            wx.showToast({ title: '请输入年龄', icon: 'none' })
-            return
-        }
-
         const req: UserApplyReqVO = {
-            answers: [
-                { id: 'name', value: name },
-                { id: 'gender', value: gender },
-                { id: 'phone', value: phone },
-                { id: 'wechat', value: wechat },
-                { id: 'age', value: Number(age) }, // Ensure number if backend expects it, though UserApplyReqVO value can be string|number
-                { id: 'activities', value: activities }, // Now sending values '0'-'7'
-                { id: 'self_introduction', value: self_introduction },
-                { id: 'source', value: source }
-            ]
+            answers: questionList
+                .filter((question) => question.valueType !== 'info_text')
+                .map((question) => {
+                    const value = formData[question.id]
+                    if (question.valueType === 'number') {
+                        if (typeof value === 'string') {
+                            const trimmed = value.trim()
+                            if (!trimmed) {
+                                return { id: question.id, value: '' }
+                            }
+                            const numValue = Number(trimmed)
+                            return {
+                                id: question.id,
+                                value: Number.isNaN(numValue) ? trimmed : numValue
+                            }
+                        }
+                        return { id: question.id, value: value ?? '' }
+                    }
+                    if (question.valueType === 'checkbox_group') {
+                        return {
+                            id: question.id,
+                            value: Array.isArray(value) ? value : []
+                        }
+                    }
+                    return {
+                        id: question.id,
+                        value: value === undefined || value === null ? '' : String(value)
+                    }
+                })
         }
 
         wx.showLoading({ title: '提交中' })

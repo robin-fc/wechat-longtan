@@ -86,39 +86,9 @@
   <!-- 活动列表 -->
   <view class="activity-list">
     <block wx:if="{{currentList.length > 0}}">
-      <view class="activity-item" wx:for="{{currentList}}" wx:key="id" bindtap="onActivityTap" data-id="{{item.id}}">
-        <image class="activity-poster" src="{{item.poster}}" mode="aspectFill" />
-        <view class="activity-info">
-          <view class="activity-tags">
-             <text class="activity-type-tag">{{item.type}}</text>
-          </view>
-          <text class="activity-title">{{item.title}}</text>
-          <view class="organizer-mini">
-            <image class="mini-avatar" src="{{item.organizer.avatar}}" mode="aspectFill" />
-            <text class="mini-name">{{item.organizer.name}}</text>
-            <text class="mini-tag" wx:if="{{item.organizer.tag}}">{{item.organizer.tag}}</text>
-          </view>
-          <view class="activity-meta">
-            <text class="meta-time">{{item.time}}</text>
-          </view>
-          <view class="activity-location">
-             <text class="meta-location">{{item.location}}</text>
-          </view>
-          <view class="activity-status">
-             <text class="meta-status">{{item.statusText}}</text>
-          </view>
-          <view class="activity-bottom">
-             <view class="joined-avatars">
-               <image wx:for="{{item.joinedUsers}}" wx:for-item="u" wx:key="*this" class="joined-avatar" src="{{u}}" mode="aspectFill" />
-             </view>
-             <text class="joined-count" wx:if="{{item.joinedCount}}">{{item.joinedCount}}人已报名</text>
-             <view class="price">
-               <text>¥{{item.price}}</text>
-               <text style="font-size: 20rpx; font-weight: normal;">/人</text>
-             </view>
-          </view>
-        </view>
-      </view>
+      <block wx:for="{{currentList}}" wx:key="id">
+        <activity-horizontal-card activity="{{item}}" bind:cardtap="onActivityTap" />
+      </block>
     </block>
     <block wx:else>
       <view class="empty-state">

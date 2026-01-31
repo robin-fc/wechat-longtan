@@ -12,87 +12,73 @@
 
   <view class="content">
     <view class="intro-section">
-      <view class="intro-title">DAO龙潭数字游民认证申请</view>
-      <view class="intro-text {{isIntroExpanded ? 'expanded' : ''}}">
-        DAO龙潭是一个数字游民、新村民、老村民共创共治共享的新型乡村社区。
-        欢迎申请入住DAO龙潭社区！我们希望以此了解您的基本情况、技能特长以及对社区生活的期待，以便为您提供更好的支持与连接。
+      <view class="intro-title">{{formTitle || 'DAO龙潭数字游民认证申请'}}</view>
+      <view class="intro-text {{isIntroExpanded ? 'expanded' : ''}}" wx:if="{{formDesc}}">
+        {{formDesc}}
       </view>
-      <view class="intro-expand" bindtap="toggleIntro" wx:if="{{!isIntroExpanded}}">
+      <view class="intro-expand" bindtap="toggleIntro" wx:if="{{!isIntroExpanded && formDesc}}">
         查看更多 <image class="intro-expand-icon" src="/assets/icons/arrow-down-green.png" mode="widthFix" />
       </view>
     </view>
 
     <form bindsubmit="onSubmit">
-      <!-- 1. Name -->
-      <view class="form-item">
-        <view class="label">1.您的姓名</view>
-        <input class="input" placeholder="暂无" value="{{formData.name}}" bindinput="onInput" data-field="name" />
-      </view>
+      <block wx:for="{{questionList}}" wx:key="id">
+        <view class="form-item" wx:if="{{item.valueType !== 'info_text'}}">
+          <view class="label">{{item.label}}</view>
 
-      <!-- 2. Gender -->
-      <view class="form-item">
-        <view class="label">2.您的性别</view>
-        <radio-group class="radio-group" bindchange="onRadioChange" data-field="gender">
-          <label class="radio-item" wx:for="{{genderOptions}}" wx:key="value">
-            <radio value="{{item.value}}" checked="{{item.value == formData.gender}}" color="#6DBC29" />
-            <text>{{item.label}}</text>
-          </label>
-        </radio-group>
-      </view>
+          <input
+            wx:if="{{item.valueType === 'text' || item.valueType === 'number' || item.valueType === 'tel'}}"
+            class="input"
+            type="{{item.valueType === 'number' || item.valueType === 'tel' ? 'number' : 'text'}}"
+            placeholder="{{item.des || '请输入'}}"
+            value="{{formData[item.id]}}"
+            bindinput="onInput"
+            data-field="{{item.id}}"
+          />
 
-      <!-- 3. Phone -->
-      <view class="form-item">
-        <view class="label">3.手机</view>
-        <input class="input" type="number" placeholder="暂无" value="{{formData.phone}}" bindinput="onInput" data-field="phone" />
-      </view>
+          <radio-group
+            wx:if="{{item.valueType === 'radio'}}"
+            class="radio-group"
+            bindchange="onRadioChange"
+            data-field="{{item.id}}"
+          >
+            <label class="radio-item" wx:for="{{item.options}}" wx:key="value">
+              <radio value="{{item.value}}" checked="{{item.value == formData[item.id]}}" color="#6DBC29" />
+              <text>{{item.label}}</text>
+            </label>
+          </radio-group>
 
-      <!-- 4. WeChat -->
-      <view class="form-item">
-        <view class="label">4.微信</view>
-        <input class="input" placeholder="请输入微信号" value="{{formData.wechat}}" bindinput="onInput" data-field="wechat" />
-      </view>
+          <view wx:if="{{item.valueType === 'checkbox_group'}}" class="tags-group">
+            <view
+              wx:for="{{item.options}}"
+              wx:key="value"
+              class="tag-item {{utils.includes(formData[item.id], item.value) ? 'selected' : ''}}"
+              bindtap="onCheckboxToggle"
+              data-field="{{item.id}}"
+              data-value="{{item.value}}"
+            >
+              {{item.label}}
+            </view>
+          </view>
 
-      <!-- 5. Age -->
-      <view class="form-item">
-        <view class="label">5.您的年龄</view>
-        <input class="input" type="number" placeholder="请输入您的真实年龄" value="{{formData.age}}" bindinput="onInput" data-field="age" />
-      </view>
-
-      <!-- 6. Activities -->
-      <view class="form-item">
-        <view class="label">6.对社区那些活动感兴趣</view>
-        <view class="tags-group">
-          <view wx:for="{{activitiesOptions}}" wx:key="*this" 
-                class="tag-item {{utils.includes(formData.activities, item.value) ? 'selected' : ''}}"
-                bindtap="onActivityToggle" data-value="{{item.value}}">
-            {{item.label}}
+          <view wx:if="{{item.valueType === 'textarea'}}">
+            <view class="desc" wx:if="{{item.des}}">{{item.des}}</view>
+            <textarea
+              class="textarea"
+              placeholder="{{item.des || '请输入'}}"
+              value="{{formData[item.id]}}"
+              bindinput="onInput"
+              data-field="{{item.id}}"
+              maxlength="500"
+            />
           </view>
         </view>
-      </view>
 
-      <!-- 7. Self Introduction -->
-      <view class="form-item">
-        <view class="label">7.让我们了解一些你的事情</view>
-        <view class="desc">个人背景经历/有趣的故事/希望从社区得到什么/我能给社区带去什么等</view>
-        <textarea class="textarea" placeholder="请输入" value="{{formData.self_introduction}}" bindinput="onInput" data-field="self_introduction" maxlength="500" />
-      </view>
-
-      <!-- 8. Source -->
-      <view class="form-item">
-        <view class="label">8.从哪看到我们的招募信息</view>
-        <radio-group class="radio-group vertical" bindchange="onRadioChange" data-field="source">
-          <label class="radio-item" wx:for="{{sourceOptions}}" wx:key="value">
-            <radio value="{{item.value}}" checked="{{item.value == formData.source}}" color="#6DBC29" />
-            <text>{{item.label}}</text>
-          </label>
-        </radio-group>
-      </view>
-
-      <!-- 9. Special Status Info -->
-      <view class="notice-section">
-        <view class="notice-title">9.SeeDAO成员、参加过7月屏南数字游民生活周、在国内数字游民社区生活过，以及在校大学生、多年考公考研、刚离职的各类朋友，我们会提供29.9的活动优惠价。</view>
-        <view class="notice-desc">如果你属于以上情况，可以在通过申请之后添加小助手微信（DAOLT-nomad）联系我们。</view>
-      </view>
+        <view class="notice-section" wx:if="{{item.valueType === 'info_text'}}">
+          <view class="notice-title">{{item.label}}</view>
+          <view class="notice-desc" wx:if="{{item.des || item.value}}">{{item.des || item.value}}</view>
+        </view>
+      </block>
 
       <button class="submit-btn" bindtap="onSubmit">提交</button>
       <view class="safe-area-bottom"></view>
@@ -102,6 +88,9 @@
 
 <wxs module="utils">
 module.exports.includes = function(arr, item) {
+  if (!Array.isArray(arr)) {
+    return false;
+  }
   return arr.indexOf(item) > -1;
 }
 </wxs>
