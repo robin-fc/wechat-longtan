@@ -10,7 +10,7 @@
     </view>
     
     <!-- Vertical Layout Info -->
-    <view class="info-row" wx:if="{{layout === 'vertical'}}">
+    <view class="info-row info-row-v" style="justify-content: space-between;" wx:if="{{layout === 'vertical'}}">
       <view class="price-wrapper">
         <text class="currency">¥</text>
         <text class="amount">{{activity.fee}}</text>
@@ -18,28 +18,44 @@
       <text class="date">{{formattedDate}}</text>
     </view>
 
-    <!-- Horizontal Layout Info -->
+    <!-- Horizontal Layout Info (New Design) -->
     <block wx:else>
-      <view class="info-row time-row">
+      <view class="organizer-row" wx:if="{{activity.organizer}}">
+          <image class="org-avatar" src="{{activity.organizer.logo}}" mode="aspectFill" />
+          <text class="org-name">{{activity.organizer.memberName || activity.organizer.wxName}}</text>
+          <text class="org-tag" wx:if="{{activity.organizer.memberTags && activity.organizer.memberTags[0]}}">{{activity.organizer.memberTags[0]}}</text>
+      </view>
+
+      <view class="info-row">
         <image class="info-icon" src="/assets/icons/time.svg" mode="aspectFit" />
         <text class="time">
-          {{activity.timeRange.startTime + '-' + activity.timeRange.endTime}}
+          {{formattedTimeRange}}
         </text>
       </view>
     
-      <view class="location-row">
-        <image class="location-icon" src="/assets/icons/location.svg" mode="aspectFit" />
-        <text class="location-text">{{activity.spaceName || activity.space.name || ''}}</text>
+      <view class="info-row" wx:if="{{activity.spaceName || activity.space.name}}">
+        <image class="info-icon" src="/assets/icons/location.svg" mode="aspectFit" />
+        <text class="location-text">{{activity.spaceName || activity.space.name}}</text>
+      </view>
+
+      <view class="info-row" wx:if="{{remainingSlots !== undefined}}">
+          <image class="info-icon" src="/assets/icons/people.svg" mode="aspectFit" />
+          <text class="slots-text">剩余{{remainingSlots}}个名额</text>
       </view>
       
       <view class="bottom-row">
-        <view class="companions-wrapper" wx:if="{{activity.companions && activity.companions.length > 0}}">
-          <!-- <text class="companions-label">同行伙伴</text> -->
-          <companions-bar companions="{{activity.companions}}" class="companions-bar-inline" />
+        <view class="companions-wrapper" wx:if="{{localCompanions && localCompanions.totalCount > 0}}">
+          <!-- <companions-bar companions="{{localCompanions}}" class="companions-bar-inline" /> -->
+          <image class="info-icon" src="/assets/icons/person.svg" mode="aspectFit" />
         </view>
-        <text class="price">
-          ￥{{activity.price.amount}} <text class="unit">元</text>
-        </text>
+        <view class="companions-wrapper" wx:else>
+            <text class="no-reg">暂无报名</text>
+        </view>
+        <view class="price-btn">
+          <text class="currency">¥</text>
+          <text class="amount">{{activity.fee}}</text>
+          <text class="unit">/人</text>
+        </view>
       </view>
     </block>
   </view>

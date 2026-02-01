@@ -83,10 +83,16 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
     smartNavigateTo('/pages/mine/profile-edit/index')
   },
   onFollowersTap() {
-    smartNavigateTo('/pages/user/list/index?title=粉丝&type=followers&id=mine')
+    const userId = this.data.profile?.id
+    if (userId) {
+      smartNavigateTo(`/pages/user/list/index?title=粉丝&type=2&id=${userId}`)
+    }
   },
   onFollowingTap() {
-    smartNavigateTo('/pages/user/list/index?title=关注&type=following&id=mine')
+    const userId = this.data.profile?.id
+    if (userId) {
+      smartNavigateTo(`/pages/user/list/index?title=关注&type=1&id=${userId}`)
+    }
   },
   onWalletTap() {
     smartNavigateTo('/pages/mine/assets')

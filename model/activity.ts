@@ -6,6 +6,7 @@ export interface ActivityListParams {
   spaceId?: string
   activityType?: string
   onlyOnSale?: boolean
+  activityStatus?: number
   name?: string //活动标题（模糊搜索）,示例值(摄影)
   pageNo: string
   pageSize: string

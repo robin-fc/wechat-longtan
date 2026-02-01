@@ -3,7 +3,7 @@
   "enablePullDownRefresh": true,
   "onReachBottomDistance": 50,
   "usingComponents": {
-    "activity-card": "/components/activity-card/index"
+    "activity-card": "/components/activity-card/index",
+    "activity-horizontal-card": "/components/activity-horizontal-card/index"
   }
 }
-

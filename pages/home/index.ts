@@ -197,8 +197,15 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     const data = (this.data as HomeState).pageData
     if (data && data.carousel && data.carousel[idx]) {
       const banner = data.carousel[idx]
-      if (banner.url) {
+      if (!banner.url) return
+
+      if (banner.isIner) {
         smartNavigateTo(banner.url)
+      } else {
+        // External link -> Webview
+        wx.navigateTo({
+          url: `/pages/webview/index?url=${encodeURIComponent(banner.url)}`
+        })
       }
     }
   },

@@ -29,7 +29,7 @@
         </view>
         <view class="cancel-policy-row">
           <text>{{cancelDateDesc}} 23:59前可免费取消。</text>
-          <text class="policy-link">《相见退款政策》</text>
+          <text class="policy-link">《详见退款政策》</text>
         </view>
       </view>
     </view>

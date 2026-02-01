@@ -51,10 +51,10 @@
           </view>
         </block>
       </view>
-      <view class="text-section" wx:if="{{room.description}}">
+      <!-- <view class="text-section" wx:if="{{room.description}}">
         <text class="section-title">房间简介</text>
         <text class="section-content">{{room.description}}</text>
-      </view>
+      </view> -->
 
       <view class="text-section" wx:if="{{room.bookingNotice}}">
         <text class="section-title">预订须知</text>

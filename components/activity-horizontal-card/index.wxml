@@ -27,7 +27,7 @@
       </view>
 
       <view class="info-row slots-row">
-          <image class="info-icon" src="/assets/icons/user-o.png" mode="aspectFit" />
+          <image class="info-icon" src="/assets/icons/person.svg" mode="aspectFit" />
           <text class="slots-text">剩余{{remainingSlots||0}}个名额</text>
       </view>
     </view>

@@ -1,6 +1,7 @@
 export type ID = string | number
 
 export interface PageResult<T> {
+  pageResult: any
   total: number
   list: T[]
 }

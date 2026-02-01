@@ -248,14 +248,16 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
   onFollowingTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const userId = ((this.data as OtherProfileState).userInfo as UserInfoView).userId
     wx.navigateTo({
-      url: `/pages/user/list/index?title=关注&type=following&id=${userId}`,
+      url: `/pages/user/list/index?title=关注&type=4&id=${userId}`,
     })
   },
 
   onFollowersTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const userId = ((this.data as OtherProfileState).userInfo as UserInfoView).userId
+    const userId = (this.data as OtherProfileState).userInfo?.userId
+    if (!userId) return
+
     wx.navigateTo({
-      url: `/pages/user/list/index?title=粉丝&type=followers&id=${userId}`,
+      url: `/pages/user/list/index?title=粉丝&type=5&id=${userId}`,
     })
   },
 })

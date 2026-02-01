@@ -1,10 +1,28 @@
 import { request, getData } from '../utils/request'
 import type { AppUpdateWeixinUserInfoReqVO, AppUserDetailRespVO } from '../model/user'
 import type { AppUserInfoRespVO } from '../model/user-follow'
-import type { CommonResult } from '../model/common'
+import type { CommonResult, PageResult } from '../model/common'
 
 const baseUrl = '/app-api/daolongtan/user'
 
+
+export interface AppUserPageReqVO {
+  type: string
+  bizId?: string | number
+  pageNo?: number
+  pageSize?: number
+  userId?: string | number
+  activityId?: string | number
+  homeStayId?: string | number
+}
+
+export function AppUser_getUserList(data: AppUserPageReqVO) {
+  return request<{ pageResult: PageResult<AppUserInfoRespVO> }>({
+    url: `${baseUrl}/list`,
+    method: 'GET',
+    data,
+  })
+}
 
 export function updateUserInfo(data: AppUpdateWeixinUserInfoReqVO): Promise<CommonResult<boolean>> {
   return request<boolean>({
@@ -27,7 +45,7 @@ export interface MockUserItem {
   isFollowed: boolean
 }
 
-function mapMemberLevelLabel(level: unknown): string {
+export function mapMemberLevelLabel(level: unknown): string {
   const v = level === undefined || level === null ? '' : String(level)
   if (v === '0') return '老村民'
   if (v === '1') return '新村民'
@@ -36,7 +54,7 @@ function mapMemberLevelLabel(level: unknown): string {
   return '游客'
 }
 
-function mapMemberTags(v: unknown): string[] {
+export function mapMemberTags(v: unknown): string[] {
   const MemberTagMap: Record<string, string> = {
     '0': '空间主理人',
     '1': '活动发起人',

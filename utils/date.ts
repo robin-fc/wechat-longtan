@@ -47,3 +47,29 @@ export function formatMMDD(v: any): string {
   const day = String(d.getDate()).padStart(2, '0')
   return `${m}/${day}`
 }
+
+export function formatSmartTimeRange(start: any, end: any): string {
+  const d1 = parseToDate(start)
+  const d2 = parseToDate(end)
+  if (!d1) return ''
+
+  const m1 = String(d1.getMonth() + 1).padStart(2, '0')
+  const day1 = String(d1.getDate()).padStart(2, '0')
+  const h1 = String(d1.getHours()).padStart(2, '0')
+  const min1 = String(d1.getMinutes()).padStart(2, '0')
+  const part1 = `${m1}/${day1} ${h1}:${min1}`
+
+  if (!d2) return part1
+
+  const h2 = String(d2.getHours()).padStart(2, '0')
+  const min2 = String(d2.getMinutes()).padStart(2, '0')
+
+  // Check if same day
+  if (d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate()) {
+    return `${part1}-${h2}:${min2}`
+  }
+
+  const m2 = String(d2.getMonth() + 1).padStart(2, '0')
+  const day2 = String(d2.getDate()).padStart(2, '0')
+  return `${part1}-${m2}/${day2} ${h2}:${min2}`
+}

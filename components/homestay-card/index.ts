@@ -17,12 +17,7 @@ Component({
       const homestay = this.data.homestay
       if (homestay && homestay.id) {
         wx.navigateTo({
-          url: `/pages/homestay/companions?homestayId=${homestay.id}`,
-          success: (res) => {
-            res.eventChannel.emit('acceptDataFromOpenerPage', {
-              data: homestay.stayedUsers || [],
-            })
-          },
+          url: `/pages/user/list/index?title=入住过的人&type=6&id=${homestay.id}`,
         })
       }
     },

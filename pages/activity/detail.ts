@@ -102,8 +102,8 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const favoriteCountText =
       favoriteCount >= 10000
         ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(
-            1
-          )} 万人收藏`
+          1
+        )} 万人收藏`
         : `${favoriteCount} 人收藏`
 
     const favoriteCompanionsData: CompanionsData = {
@@ -198,8 +198,8 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
             const favoriteCountText =
               favoriteCount >= 10000
                 ? `${(Math.round((favoriteCount / 10000) * 10) / 10).toFixed(
-                    1
-                  )} 万人收藏`
+                  1
+                )} 万人收藏`
                 : `${favoriteCount} 人收藏`
             const favoriteCompanionsData: CompanionsData = {
               companions: (freshDetail.favoriteUsers || []).slice(0, 10).map((u) => ({
@@ -359,7 +359,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/user/list/index?title=已报名用户&type=registration&id=${activity.id}`
+      `/pages/user/list/index?title=已报名用户&type=0&id=${activity.id}`
     )
   },
 })

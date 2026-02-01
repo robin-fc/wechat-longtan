@@ -1,4 +1,4 @@
-import { formatMMDD } from '../../utils/date'
+import { formatMMDD, formatSmartTimeRange } from '../../utils/date'
 
 Component({
   properties: {
@@ -17,14 +17,18 @@ Component({
   },
   data: {
     formattedDate: '',
+    formattedTimeRange: '',
   },
   observers: {
-    'activity.startTime': function (startTime) {
+    'activity.startTime, activity.endTime': function (startTime, endTime) {
       if (startTime) {
         this.setData({
           formattedDate: formatMMDD(startTime),
         })
       }
+      this.setData({
+        formattedTimeRange: formatSmartTimeRange(startTime, endTime)
+      })
     },
   },
   methods: {

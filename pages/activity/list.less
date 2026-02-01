@@ -1,6 +1,6 @@
 .activity-list-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
   padding: 24rpx 24rpx calc(144rpx + env(safe-area-inset-bottom));
 }
 
@@ -40,8 +40,10 @@
 .search-input-wrapper {
   flex: 1;
   height: 72rpx;
-  border-radius: 36rpx;
-  background-color: #ffffff;
+  border-radius: 8rpx;
+  /* Adjusted radius */
+  background-color: #F5F5F5;
+  /* Light grey */
   display: flex;
   align-items: center;
   padding: 0 24rpx;
@@ -56,13 +58,21 @@
   margin-left: 12rpx;
   padding: 0 24rpx;
   height: 72rpx;
-  border-radius: 36rpx;
-  background-color: #333333;
+  border-radius: 8rpx;
+  /* Rectangular */
+  background-color: #000000;
+  /* Black */
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26rpx;
+  font-size: 28rpx;
+}
+
+.publish-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 8rpx;
 }
 
 .filter-bar {
@@ -80,17 +90,30 @@
 .filter-group {
   display: inline-flex;
   align-items: center;
-  padding: 8rpx 20rpx;
-  border-radius: 32rpx;
-  background-color: #ffffff;
-  font-size: 24rpx;
-  color: #666666;
-  margin-right: 12rpx;
+  justify-content: center;
+  padding: 16rpx 32rpx;
+  font-size: 28rpx;
+  color: #717171;
+  margin-right: 0;
+  position: relative;
+  font-weight: 400;
 }
 
 .filter-group.active {
+  background-color: transparent;
+  color: #000;
+}
+
+.filter-group.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 2rpx;
   background-color: #333333;
-  color: #ffffff;
+  border-radius: 3rpx;
 }
 
 .filter-item {
@@ -109,12 +132,34 @@
   color: #ffffff;
 }
 
+.status-tab-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24rpx;
+  gap: 16rpx;
+}
+
+.status-tab-item {
+  padding: 12rpx 32rpx;
+  background: #F5F5F5;
+  border-radius: 4rpx;
+  font-size: 26rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.status-tab-item.active {
+  background: #70B603;
+  color: #FFFFFF;
+}
+
 .list-wrapper {
   display: flex;
   flex-direction: column;
-  row-gap: 16rpx;
+  row-gap: 24rpx;
+  /* Increased gap */
 }
 
 .activity-item {
+  /* No specific styles needed if card handles it, but maybe margin */
 }
-

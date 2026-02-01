@@ -1,9 +1,11 @@
 <view class="activity-list-page">
   <view class="search-row">
     <view class="search-input-wrapper" bindtap="onSearchTap">
+      <image class="search-icon" src="/assets/icons/search.svg" mode="aspectFit" />
       <text class="search-placeholder">搜索活动/活动空间</text>
     </view>
     <view class="publish-button" bindtap="onPublishTap">
+      <image class="publish-icon" src="/assets/icons/edit-white.svg" mode="aspectFit" />
       <text>发布</text>
     </view>
   </view>
@@ -33,12 +35,23 @@
     </scroll-view>
   </view>
 
+  <view class="status-tab-bar">
+    <block wx:for="{{statusList}}" wx:key="value">
+      <view 
+        class="status-tab-item {{item.value === currentStatus ? 'active' : ''}}"
+        data-value="{{item.value}}"
+        bindtap="onStatusTabTap"
+      >
+        <text>{{item.name}}</text>
+      </view>
+    </block>
+  </view>
+
   <view class="list-wrapper">
     <block wx:for="{{activities}}" wx:key="id">
       <view class="activity-item">
-        <activity-card
+        <activity-horizontal-card
           activity="{{item}}"
-          layout="horizontal"
           bindcardtap="onActivityTap"
         />
       </view>
