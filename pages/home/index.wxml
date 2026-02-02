@@ -31,7 +31,7 @@
       <view class="entry-grid">
         <block wx:for="{{pageData.entries}}" wx:key="value" wx:for-index="idx">
           <view class="entry-item" data-item="{{item}}" bindtap="onEntryTap">
-            <entry-card title="{{item.label}}" icon-url="{{item.logo}}" />
+            <entry-card size="large" title="{{item.label}}" icon-url="{{item.logo}}" />
           </view>
         </block>
       </view>
@@ -84,7 +84,7 @@
       <view class="homestay-list">
         <block wx:for="{{pageData.homestays}}" wx:key="id">
           <view class="homestay-item">
-            <homestay-card homestay="{{item}}" layout="horizontal" bindtap="onHomestayCardTap" />
+            <homestay-card homestay="{{item}}" layout="horizontal" show-companions="{{false}}" bindtap="onHomestayCardTap" />
           </view>
         </block>
       </view>
@@ -97,7 +97,7 @@
       <view class="about-list">
         <block wx:for="{{pageData.aboutLinks}}" wx:key="id" wx:for-index="idx">
           <view class="about-item" data-item="{{item}}" bindtap="onEntryTap">
-            <entry-card title="{{item.title}}" icon-url="{{item.url}}" />
+            <entry-card size="small" title="{{item.title}}" icon-url="{{item.url}}" />
           </view>
         </block>
       </view>

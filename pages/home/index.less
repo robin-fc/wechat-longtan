@@ -48,13 +48,16 @@
 }
 
 .content {
-  padding: 0 24rpx 158rpx;
+  padding: 0 0 158rpx;
+  margin: 0 48rpx;
+  // background: rgba(241, 238, 221, 0.3);
+  backdrop-filter: blur(40rpx);
+  -webkit-backdrop-filter: blur(40rpx);
 }
 
 .hero-swiper {
   height: 940rpx;
   margin-bottom: 80rpx;
-  padding: 0 28rpx;
 }
 
 .custom-swiper-item {
@@ -109,9 +112,10 @@
 .hero-type {
   position: absolute;
   display: flex;
-  width: 88px;
-  height: 30px;
-  padding: 4px 16px;
+  width: 176rpx;
+  height: 60rpx;
+  background: #428C35;
+  border-radius: 2rpx 0rpx 0rpx 0rpx;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -124,7 +128,16 @@
 }
 
 .section {
-  margin-bottom: 80rpx;
+  margin-bottom: 32rpx;
+  background: #fff;
+  padding: 24rpx 0;
+
+  &:first-of-type {
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    margin-bottom: 80rpx;
+  }
 }
 
 .section-activity {

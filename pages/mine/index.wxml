@@ -2,6 +2,9 @@
   <!-- 顶部背景图 -->
   <view class="header-bg">
     <image class="bg-image" src="{{profile.logo}}" mode="aspectFill" />
+    <view class="blur-area">
+      <image class="bg-image blurred" src="{{profile.logo}}" mode="aspectFill" />
+    </view>
   </view>
   <view class="content-wrapper">
     <!-- 用户信息区域 -->
@@ -58,19 +61,19 @@
     <view class="menu-section">
       <view class="menu-item" bindtap="onMyActivitiesTap">
         <text class="menu-title">我的活动</text>
-        <image class="arrow-right" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+        <image class="arrow-right" src="/assets/icons/arrow-right.svg" mode="aspectFit" />
       </view>
       <view class="menu-item" bindtap="onMyStaysTap">
         <text class="menu-title">我的入住</text>
-        <image class="arrow-right" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+        <image class="arrow-right" src="/assets/icons/arrow-right.svg" mode="aspectFit" />
       </view>
       <view class="menu-item" bindtap="onPrivacyTap">
         <text class="menu-title">隐私政策</text>
-        <image class="arrow-right" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+        <image class="arrow-right" src="/assets/icons/arrow-right.svg" mode="aspectFit" />
       </view>
       <view class="menu-item" bindtap="onServiceTap">
         <text class="menu-title">服务协议</text>
-        <image class="arrow-right" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+        <image class="arrow-right" src="/assets/icons/arrow-right.svg" mode="aspectFit" />
       </view>
     </view>
     <!-- 退出登录 -->

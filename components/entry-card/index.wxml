@@ -1,4 +1,4 @@
-<view class="entry-card {{align}}" bindtap="onTap">
+<view class="entry-card {{align}} {{size}}" bindtap="onTap">
   <view class="icon-wrapper">
     <image class="icon" src="{{iconUrl}}" mode="aspectFill" />
   </view>

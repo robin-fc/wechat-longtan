@@ -12,6 +12,10 @@ Component({
       type: String,
       value: 'align-center',
     },
+    size: {
+      type: String,
+      value: 'large',
+    },
   },
   methods: {
     onTap(this: WechatMiniprogram.Component.TrivialInstance) {

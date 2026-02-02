@@ -8,6 +8,10 @@ Component({
       type: String,
       value: 'horizontal',
     },
+    showCompanions: {
+      type: Boolean,
+      value: true,
+    },
   },
   methods: {
     onTap(this: WechatMiniprogram.Component.TrivialInstance) {

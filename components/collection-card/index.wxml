@@ -1,9 +1,6 @@
 <view class="collection-card" bindtap="onTap">
-  <image
-    class="cover"
-    src="{{displayLogo}}"
-    mode="aspectFill"
-  />
+<view class="cover" style="background-image: url({{displayLogo}})">
+  </view>
   <text class="name">{{collection.name}}</text>
 </view>
 

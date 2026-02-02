@@ -8,18 +8,32 @@
 
 
 .icon-wrapper {
-
-  margin-bottom: 8rpx;
-
-}
-
-.icon {
-  width: 40rpx;
-  height: 36rpx;
+  margin-bottom: 16rpx;
 }
 
 .title {
   font-size: 24rpx;
-  color: #000;
   text-align: center;
+}
+
+&.large {
+  .icon {
+    width: 80rpx;
+    height: 80rpx;
+  }
+
+  .title {
+    color: #191919;
+  }
+}
+
+&.small {
+  .icon {
+    width: 40rpx;
+    height: 40rpx;
+  }
+
+  .title {
+    color: #000000;
+  }
 }
