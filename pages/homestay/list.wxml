@@ -2,7 +2,9 @@
   <view class="filter-row">
     <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
       <view class="date-picker">
-        <text>{{startDate || '选择入住时间'}}</text>
+        <text class="label">入住时间</text>
+        <text class="date">{{startDate || '选择入住时间'}}</text>
+        <image class="arrow-down" src="/assets/icons/arrow-down.svg" mode="aspectFit" />
       </view>
     </picker>
   </view>
@@ -10,7 +12,7 @@
   <view class="list-wrapper">
     <block wx:for="{{homestays}}" wx:key="id">
       <view class="homestay-item">
-        <homestay-card homestay="{{item}}" layout="vertical" bindtap="onHomestayTap" />
+        <homestay-card-big homestay="{{item}}" bindtap="onHomestayTap" />
       </view>
     </block>
   </view>

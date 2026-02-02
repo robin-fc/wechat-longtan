@@ -1,7 +1,6 @@
 {
   "navigationBarTitleText": "入住",
   "usingComponents": {
-    "homestay-card": "/components/homestay-card/index"
+    "homestay-card-big": "/components/homestay-card-big/index"
   }
 }
-

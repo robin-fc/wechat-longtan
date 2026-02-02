@@ -1,0 +1,166 @@
+.homestay-card-big {
+    overflow: hidden;
+    margin-bottom: 24rpx;
+    padding-bottom: 24rpx;
+    border-bottom: 1rpx solid rgba(0, 0, 0, 0.1);
+}
+
+.image-wrapper {
+    width: 100%;
+    height: 514rpx;
+    /* Taller image as per design */
+    position: relative;
+}
+
+.poster {
+    width: 100%;
+    height: 514rpx;
+}
+
+.content {
+    margin: 24rpx 0;
+}
+
+.name {
+    font-size: 32rpx;
+    font-weight: 700;
+    color: #000;
+    padding-bottom: 16rpx;
+    line-height: 1.6;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 12rpx 0;
+    gap: 12rpx;
+}
+
+.tag {
+    font-size: 22rpx;
+    padding: 4rpx 12rpx;
+    border-radius: 4rpx;
+    margin-right: 0;
+    line-height: 1.4;
+    border-width: 1rpx;
+    border-style: solid;
+
+    &.green {
+        color: #70B603;
+        border-color: #70B603;
+        background-color: transparent;
+    }
+
+    &.orange {
+        color: #FF9500;
+        border-color: #FF9500;
+        background-color: transparent;
+    }
+
+    &.gray {
+        color: #666666;
+        border-color: #CCCCCC;
+        background-color: transparent;
+    }
+}
+
+.info-row-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24rpx;
+}
+
+.info-left {
+    flex: 1;
+    margin-right: 24rpx;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12rpx;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.info-icon {
+    width: 24rpx;
+    height: 24rpx;
+    margin-right: 8rpx;
+    flex-shrink: 0;
+}
+
+.info-text {
+    font-size: 24rpx;
+    color: #717171;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.map-preview {
+    width: 120rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.map-image {
+    width: 94rpx;
+    height: 54rpx;
+    border-radius: 2rpx;
+    margin-bottom: 4rpx;
+}
+
+.map-text {
+    font-size: 22rpx;
+    color: rgba(0, 0, 0, 0.25);
+
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16rpx;
+    /* Optional separator */
+}
+
+.stay-left {
+    display: flex;
+    align-items: center;
+}
+
+.stay-hint {
+    font-size: 24rpx;
+    color: #666666;
+    margin-left: 12rpx;
+}
+
+.price-tag {
+    background-color: #71BF00;
+    padding: 0rpx 24rpx;
+    height: 48rpx;
+    line-height: 48rpx;
+    border-radius: 4rpx;
+    color: #ffffff;
+    display: flex;
+    align-items: baseline;
+}
+
+.price-symbol {
+    font-size: 24rpx;
+    margin-right: 4rpx;
+}
+
+.price-value {
+    font-size: 32rpx;
+    margin-right: 4rpx;
+}
+
+.price-unit {
+    font-size: 20rpx;
+}

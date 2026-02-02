@@ -1,0 +1,52 @@
+<view class="homestay-card-big" bindtap="onTap">
+ 
+    <image
+      class="poster"
+      src="{{homestay.logo}}"
+      mode="aspectFill"
+      style="height: 514rpx;"
+    />
+  
+  <view class="content">
+    <text class="name">{{homestay.name}}</text>
+    <view class="tags">
+      <block wx:for="{{homestay.tags}}" wx:key="*this">
+        <text class="tag {{index === 0 ? 'green' : (index === 1 ? 'orange' : 'gray')}}">{{item}}</text>
+      </block>
+    </view>
+    
+    <view class="info-row-container">
+      <view class="info-left">
+        <view class="info-row">
+          <image class="info-icon" src="/assets/icons/home.svg" mode="aspectFit" />
+          <text class="info-text">{{homestay.roomCount || 3}}个在售房型</text>
+        </view>
+        <view class="info-row">
+          <image class="info-icon" src="/assets/icons/location.svg" mode="aspectFit" />
+          <text class="info-text">{{homestay.address}}</text>
+        </view>
+      </view>
+      <view class="map-preview">
+        <image class="map-image" src="/assets/images/map-thumb.png" mode="aspectFill" /> <!-- Placeholder or real map helper -->
+        <text class="map-text">点击查看</text>
+      </view>
+    </view>
+
+    <view class="footer">
+      <view class="stay-left" wx:if="{{homestay.stayedUserCount && homestay.stayedUsers}}" catch:tap="onCompanionsTap">
+        <companions-bar 
+          size="large"
+          companions="{{ { companions: homestay.stayedUsers, totalCount: homestay.stayedUserCount } }}" 
+          isHideCount="{{false}}"
+        />
+        <text class="stay-hint" wx:if="{{homestay.stayedUserCount}}">人住过</text>
+      </view>
+      
+      <view class="price-tag" wx:if="{{homestay.minPrice}}">
+        <text class="price-symbol">¥</text>
+        <text class="price-value">{{homestay.minPrice}}</text>
+        <text class="price-unit">/天起</text>
+      </view>
+    </view>
+  </view>
+</view>

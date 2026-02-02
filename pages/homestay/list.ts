@@ -7,6 +7,7 @@ import {
   AppHomestayListReqVO,
   AppHomestayListRespVO,
 } from '../../model/homestay'
+import { formatYMD1 } from '../../utils/date'
 import { toISO8601FromLocal } from '../../utils/isoTime'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
@@ -28,6 +29,11 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
     }
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    if (!this.data.startDate) {
+      this.setData({
+        startDate: formatYMD1(new Date(), '-'),
+      })
+    }
     await this.loadHomestays()
   },
   async loadHomestays(this: WechatMiniprogram.Page.TrivialInstance) {
