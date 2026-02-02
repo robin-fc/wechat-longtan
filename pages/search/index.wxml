@@ -1,20 +1,23 @@
 <view class="search-page">
   <view class="search-box">
-    <input
-      class="search-input"
-      placeholder="{{placeholder}}"
-      confirm-type="search"
-      value="{{keyword}}"
-      bindinput="onKeywordInput"
-      bindconfirm="onSearchConfirm"
-    />
+    <view class="search-input-wrapper">
+      <image class="search-icon" src="/assets/icons/search.svg" mode="aspectFit" />
+      <input
+        class="search-input"
+        placeholder="{{placeholder}}"
+        confirm-type="search"
+        value="{{keyword}}"
+        bindinput="onKeywordInput"
+        bindconfirm="onSearchConfirm"
+      />
+    </view>
     <view class="search-button" bindtap="onSearchTap">
       <text>搜索</text>
     </view>
   </view>
 
   <view wx:if="{{!hasSearched || activities.length === 0}}" class="hot-section">
-    <text class="hot-title">热门搜索</text>
+    <text class="hot-title">热门推荐</text>
     <view class="hot-grid">
       <block wx:for="{{hotKeywords}}" wx:key="id">
         <view
@@ -51,9 +54,8 @@
       <view class="section-title">活动</view>
       <block wx:for="{{activities}}" wx:key="id">
         <view class="item-wrapper">
-          <activity-card
+          <activity-horizontal-card
             activity="{{item}}"
-            layout="horizontal"
             bindcardtap="onActivityTap"
           />
         </view>
