@@ -1,6 +1,5 @@
 .assets-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
 }
@@ -40,34 +39,44 @@
   margin-bottom: 24rpx;
 }
 
+.filter-bar {
+  margin-top: 8rpx;
+}
+
 .filter-row {
-  display: flex;
-  margin-bottom: 30rpx;
-  border-bottom: 1rpx solid #eee;
+  white-space: nowrap;
+  border-bottom: 1rpx solid #eeeeee;
 }
 
 .filter-item {
-  margin-right: 40rpx;
-  padding: 16rpx 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 32rpx;
   font-size: 28rpx;
-  color: #666;
+  color: #717171;
+  margin-right: 0;
   position: relative;
+  font-weight: 400;
+  background-color: transparent;
+  border-radius: 0;
 }
 
 .filter-item.active {
-  color: #333;
-  font-weight: bold;
+  background-color: transparent;
+  color: #000;
+  font-weight: 500;
 }
 
 .filter-item.active::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: 0rpx;
   left: 50%;
   transform: translateX(-50%);
-  width: 32rpx;
+  width: 140rpx;
   height: 4rpx;
-  background-color: #333;
+  background-color: #191919;
   border-radius: 2rpx;
 }
 
@@ -166,9 +175,7 @@
   color: #999;
 }
 
-.record-row-bottom {
-  
-}
+.record-row-bottom {}
 
 .record-time {
   font-size: 24rpx;

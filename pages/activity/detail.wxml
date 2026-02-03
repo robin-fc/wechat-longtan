@@ -22,7 +22,7 @@
         </view>
         <view class="info-row time-row">
           <image class="info-icon" src="/assets/icons/time.svg" mode="aspectFit" />
-          <text class="info-text">{{activity.startTime}}-{{activity.endTime}}</text>
+          <text class="info-text">{{activity.formattedTimeRange}}</text>
         </view>
         <view class="info-row space-row">
           <view class="space-left" bindtap="onSpaceDetailTap">
@@ -84,14 +84,30 @@
     </view>
   </view>
   <view wx:if="{{activity}}" class="bottom-bar">
-    <view class="bottom-item" bindtap="onToggleCollect">
-      <text class="bottom-label">{{isFavorited ? '已收藏' : '收藏'}}</text>
-    </view>
-    <button class="bottom-item share-btn" open-type="share" bindtap="onShareTap">
-      <text class="bottom-label">分享</text>
-    </button>
-    <view class="bottom-primary" bindtap="onSignupTap">
-      <text class="bottom-primary-label">立即报名</text>
-    </view>
+    <block wx:if="{{isSelf}}">
+   
+      <view class="bottom-item heart-btn-wrap" bindtap="onToggleCollect">
+        <image class="heart-icon-solid" src="/assets/icons/heart.svg" mode="aspectFit" />
+      </view>
+       <view class="bottom-item-wrap"> 
+      <view class="bottom-item btn-white" bindtap="onEditTap">
+        <text class="bottom-label">编辑活动</text>
+      </view>
+      <view class="bottom-item btn-black" open-type="share" bindtap="onShareTap">
+        <text class="bottom-label-white">分享活动</text>
+      </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="bottom-item" bindtap="onToggleCollect">
+        <text class="bottom-label">{{isFavorited ? '已收藏' : '收藏'}}</text>
+      </view>
+      <button class="bottom-item  btn-white" open-type="share" bindtap="onShareTap">
+        <text class="bottom-label">分享</text>
+      </button>
+      <view class="bottom-item btn-black" bindtap="onSignupTap">
+        <text class="bottom-primary-label">立即报名</text>
+      </view>
+    </block>
   </view>
 </view>

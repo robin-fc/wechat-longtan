@@ -1,7 +1,6 @@
 .my-activities-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 24rpx 24rpx calc(144rpx + env(safe-area-inset-bottom));
+  padding: 24rpx 0 calc(144rpx + env(safe-area-inset-bottom));
 }
 
 .top-bar {
@@ -31,27 +30,45 @@
   color: #333333;
 }
 
-.filter-row {
+.filter-bar {
   margin-top: 8rpx;
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+}
+
+.filter-row {
+  white-space: nowrap;
+  border-bottom: 1rpx solid #eeeeee;
 }
 
 .filter-item {
-  padding: 6rpx 16rpx;
-  border-radius: 24rpx;
-  border: 1rpx solid #dddddd;
-  font-size: 22rpx;
-  color: #666666;
-  margin-right: 12rpx;
-  margin-bottom: 8rpx;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 32rpx;
+  font-size: 28rpx;
+  color: #717171;
+  margin-right: 0;
+  position: relative;
+  font-weight: 400;
+  background-color: transparent;
+  border-radius: 0;
 }
 
 .filter-item.active {
-  background-color: #333333;
-  color: #ffffff;
-  border-color: #333333;
+  background-color: transparent;
+  color: #000;
+  font-weight: 500;
+}
+
+.filter-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140rpx;
+  height: 4rpx;
+  background-color: #191919;
+  border-radius: 2rpx;
 }
 
 .bottom-bar {
@@ -61,7 +78,6 @@
   bottom: 0;
   min-height: 96rpx;
   padding: 24rpx 24rpx 0;
-  background-color: #ffffff;
   display: flex;
   align-items: center;
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
@@ -69,27 +85,26 @@
   box-sizing: border-box;
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
-  border-top: 1rpx solid #eeeeee;
 }
 
 .submit-button {
   flex: 1;
-  height: 72rpx;
-  border-radius: 36rpx;
-  background-color: #07c160;
+  height: 80rpx;
+  background-color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 2rpx;
 }
 
 .submit-button text {
   font-size: 28rpx;
   color: #ffffff;
-  font-weight: 700;
 }
 
 .list-scroll {
   margin-top: 12rpx;
+  padding: 0 24rpx;
   height: calc(100vh - 88rpx - (144rpx + env(safe-area-inset-bottom)));
 }
 
@@ -99,8 +114,7 @@
   row-gap: 12rpx;
 }
 
-.activity-item {
-}
+.activity-item {}
 
 .collection-list {
   display: flex;

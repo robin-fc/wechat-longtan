@@ -25,6 +25,7 @@ export interface AppUserDetailRespVO {
   memberNumber?: string
   memberLevel?: string
   memberTags?: string[]
+  nomadApplyStatus?: string
   sex?: number
   desc?: string
   status?: number

@@ -161,6 +161,8 @@ export interface ActivityDetail {
 
   /*当前登录用户是否报名（未登录时为false） */
   isRegistered: boolean
+
+  formattedTimeRange?: string
 }
 
 export interface ActivityRegistration {

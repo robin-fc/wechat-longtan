@@ -1,14 +1,18 @@
 <view class="profile-container">
   <!-- 顶部背景图 -->
+  <!-- 顶部背景图 -->
   <view class="header-bg">
-    <image class="bg-image" src="{{userInfo.bgImage || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1353&q=80'}}" mode="aspectFill" />
+    <image class="bg-image" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/tool/20260203/longtan_1770118540923_1_1770118540965.png" mode="aspectFill" />
+    <view class="blur-area">
+      <image class="bg-image blurred" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/tool/20260203/longtan_1770118540923_1_1770118540965.png" mode="aspectFill" />
+    </view>
     <view class="nav-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
       <view class="back-btn" bindtap="onBackTap">
         <image class="back-icon" src="/assets/icons/arrow-left-white.png" mode="aspectFit" />
       </view>
     </view>
   </view>
-
+ <view class="content-wrapper">
   <!-- 用户信息区域 -->
   <view class="user-info-card">
     <view class="avatar-row">
@@ -16,29 +20,30 @@
         <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
         <image class="gender-icon" src="{{userInfo.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
       </view>
-      <view class="action-btn">
-        <button class="follow-btn {{userInfo.isFollowed ? 'followed' : ''}}" bindtap="onFollowTap">
-          {{userInfo.isFollowed ? '已关注' : '关注'}}
-        </button>
-      </view>
-    </view>
-    
-    <view class="info-content">
-      <view class="name-row">
-        <text class="nickname">{{userInfo.nickname}}</text>
-        <view class="tags">
-          <text class="tag" wx:for="{{userInfo.tags}}" wx:key="*this">{{item}}</text>
+      <view class="info-content">
+        <view class="name-row">
+          <view class="name-left">
+            <text class="nickname">{{userInfo.nickname}}</text>
+            
+          </view>
+         
+        </view>
+       
+        <view class="id-row">
+          <text class="user-id">ID {{userInfo.userNumber}}</text>
+        </view>
+        <view class="join-row">
+          <text class="join-time">{{userInfo.joinTime}}加入</text>
         </view>
       </view>
-      <view class="id-row">
-        <text class="user-id">ID {{userInfo.userId}}</text>
-      </view>
-      <view class="join-row">
-        <text class="join-time">{{userInfo.joinTime}}加入</text>
-      </view>
-      <view class="bio-row">
-        <text class="bio">{{userInfo.bio || '这个人很懒，什么都没写~'}}</text>
-      </view>
+    </view>
+    <view class="tags">
+      <text class="tag {{item.className}}" wx:for="{{userInfo.levelTags}}" wx:key="*this">{{item.label}}</text>
+      <text class="tag {{item.className}}" wx:for="{{userInfo.roleTags}}" wx:key="*this">{{item.label}}</text>
+
+    </view>
+    <view class="bio-row">
+      <text class="bio">{{userInfo.bio || '这个人很懒，什么都没写~'}}</text>
     </view>
 
     <view class="stats-row">
@@ -50,6 +55,13 @@
         <text class="stat-num">{{userInfo.followerCount}}</text>
         <text class="stat-label">粉丝</text>
       </view>
+      <view class="stat-item">
+      <follow-button 
+        userId="{{userInfo.userId}}" 
+        isFollowed="{{userInfo.isFollowed}}" 
+        bind:change="onFollowStateChange"
+      />
+       </view>
     </view>
   </view>
 
@@ -85,15 +97,24 @@
 
   <!-- 活动列表 -->
   <view class="activity-list">
-    <block wx:if="{{currentList.length > 0}}">
-      <block wx:for="{{currentList}}" wx:key="id">
-        <activity-horizontal-card activity="{{item}}" bind:cardtap="onActivityTap" />
-      </block>
+    <block wx:if="{{loading}}">
+      <view class="loading-state">
+        <text>加载中...</text>
+      </view>
     </block>
     <block wx:else>
-      <view class="empty-state">
-        <text>暂无活动数据</text>
-      </view>
+      <block wx:if="{{currentList.length > 0}}">
+        <block wx:for="{{currentList}}" wx:key="id">
+          <activity-horizontal-card activity="{{item}}" bind:cardtap="onActivityTap" />
+        </block>
+      </block>
+      <block wx:else>
+        <view class="empty-state">
+          <text>暂无活动数据</text>
+        </view>
+      </block>
     </block>
   </view>
 </view>
+</view>
+

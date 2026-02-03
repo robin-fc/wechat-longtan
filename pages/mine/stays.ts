@@ -88,21 +88,21 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
       filter === 'all'
         ? '5'
         : filter === 'unpaid'
-        ? '1'
-        : filter === 'pending'
-        ? '2'
-        : filter === 'upcoming'
-        ? '3'
-        : '4'
+          ? '1'
+          : filter === 'pending'
+            ? '2'
+            : filter === 'upcoming'
+              ? '3'
+              : '4'
     const page = await getMyOrderList(type, '1', '20')
     const list: AppOrderListRespVO[] = (page && page.list) || []
     const items: StayItemView[] = list.map((it) => ({
       id: it.bizOrderNo,
       title: it.title,
-      statusText: mapPaymentStatusText(it.status),
+      statusText: mapPaymentStatusText(Number(it.status)),
       timeText: `${formatDateToCN(it.checkInDate)}-${formatDateToCN(it.checkOutDate)}`,
       address: '龙潭民宿',
-      showPayButton: type === '1' || (type === '5' && it.status === 0),
+      showPayButton: type === '1' || (type === '5' && Number(it.status) === 0),
       showCancelButton: type === '2' || type === '3',
       amount: it.amountTotal || 0,
       roomImage: it.roomImage || '',

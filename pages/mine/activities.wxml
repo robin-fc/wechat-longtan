@@ -1,16 +1,18 @@
 <view class="my-activities-page">
-  <view class="filter-row">
-    <block wx:for="{{filters}}" wx:key="id">
-      <view class="filter-item {{item.id === activeFilterId ? 'active' : ''}}" data-id="{{item.id}}" bindtap="onFilterTap">
-        <text>{{item.name}}</text>
-      </view>
-    </block>
+  <view class="filter-bar">
+    <scroll-view class="filter-row" scroll-x="true">
+      <block wx:for="{{filters}}" wx:key="id">
+        <view class="filter-item {{item.id === activeFilterId ? 'active' : ''}}" data-id="{{item.id}}" bindtap="onFilterTap">
+          <text>{{item.name}}</text>
+        </view>
+      </block>
+    </scroll-view>
   </view>
   <scroll-view scroll-y="true" class="list-scroll">
     <view wx:if="{{activeFilterId !== 'collections'}}" class="activity-list">
       <block wx:for="{{activities}}" wx:key="id">
         <view class="activity-item">
-          <activity-card activity="{{item}}" layout="horizontal" bindcardtap="onActivityTap" />
+          <activity-horizontal-card activity="{{item}}" layout="horizontal" bindcardtap="onActivityTap" />
         </view>
       </block>
     </view>

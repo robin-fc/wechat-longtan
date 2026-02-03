@@ -33,7 +33,7 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     statusList: [
       { name: '进行中', value: 1 },
       { name: '待开始', value: 0 },
-      { name: '历史活动', value: 3 },
+      { name: '历史活动', value: 2 },
     ],
     currentStatus: 1,
   },
@@ -59,12 +59,13 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
           activeItemId: category,
           activityType: category,
           // Reset status to default or keep? Usually default
-          currentStatus: 1
+          currentStatus: 1,
+          pageNo: 1,
+          hasMore: true,
+          activities: []
         })
-        if (this.data.rawActivities.length === 0) {
+        if (this.data.activities.length === 0) {
           this.loadActivities()
-        } else {
-          this.filterActivities()
         }
         return // Avoid double load if onLoad also calls it
       }
@@ -82,8 +83,11 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       activityType: id || '',
       activeItems: [],
       activeItemId: '',
+      pageNo: 1,
+      hasMore: true,
+      activities: [],
     })
-    this.filterActivities()
+    this.loadActivities()
   },
   onFilterItemTap(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -93,8 +97,11 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     this.setData({
       activeItemId: id || '',
       activityType: id || '',
+      pageNo: 1,
+      hasMore: true,
+      activities: [],
     })
-    this.filterActivities()
+    this.loadActivities()
   },
   onStatusTabTap(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -108,7 +115,7 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       hasMore: true,
       activities: [],
     })
-    this.filterActivities()
+    this.loadActivities()
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const typeDict = await ensureActivityTypeDict()
@@ -125,7 +132,6 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     this.setData({
       pageNo: 1,
       hasMore: true,
-      rawActivities: [],
       activities: [],
     })
     await this.loadActivities()
@@ -140,16 +146,25 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       pageNo: pageNo + 1,
     })
     // Client-side filtering only supports 100 items for now 
+    await this.loadActivities()
   },
   async loadActivities(this: WechatMiniprogram.Page.TrivialInstance) {
-    const pageSize = 100
-    // Fetch ALL activities regardless of type for client-side filtering
+    const { pageNo, activityType, currentStatus } = this.data as ActivityListState
+    const pageSize = 10
+
+    // Map currentStatus to API expected status if needed, or pass directly. 
+    // Assuming API accepts the numeric values 0, 1, 3 etc. or strings?
+    // User said "activityStatus".
+
     const res = await getActivityList({
-      activityType: '',
-      pageNo: '1', // Always fetch first page of ALL data
+      activityType: activityType || '',
+      activityStatus: currentStatus, // Check type
+      pageNo: String(pageNo),
       pageSize: String(pageSize),
     })
+
     const list = (res && res.pageResult && res.pageResult.list) || []
+    const hasMore = (res && res.pageResult && res.pageResult.total > pageNo * pageSize) || false
 
     const typeDict = await ensureActivityTypeDict()
     const formattedList = list.map((it) => ({
@@ -160,6 +175,7 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       },
       secondaryTag: (() => {
         const name = typeDict.find((x) => x.value === it.activityType)?.label || (it as any).activityType
+        // Or if backend returns friendly name now?
         return {
           name: name || it.collectionName || '-',
         }
@@ -173,51 +189,21 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
         currency: 'CNY',
         unit: '人',
       },
-      // Pass raw registeredUsers, component handles it
       registeredUsers: it.registeredUsers,
       registeredCount: it.registeredCount
     }))
 
-    this.setData({
-      rawActivities: formattedList
-    })
-
-    this.filterActivities()
-  },
-
-  filterActivities(this: WechatMiniprogram.Page.TrivialInstance) {
-    const { rawActivities, activityType, currentStatus } = this.data as ActivityListState
-
-    let filtered = rawActivities
-
-    // 1. Filter by Status
-    if (currentStatus !== undefined) {
-      filtered = filtered.filter(item => {
-        const status = item.activityStatus
-        if (currentStatus === 1) { // 进行中
-          return status === '报名中' || status === '活动中'
-        } else if (currentStatus === 0) { // 待开始
-          return status === '待开始'
-        } else if (currentStatus === 3) { // 历史活动
-          return status === '已结束'
-        }
-        return true
+    if (pageNo === 1) {
+      this.setData({
+        activities: formattedList,
+        hasMore
+      })
+    } else {
+      this.setData({
+        activities: this.data.activities.concat(formattedList),
+        hasMore
       })
     }
-
-    // 2. Filter by Category (Activity Type)
-    if (activityType) {
-      const typeDict = (this.data as any).typeDict || []
-      const targetLabel = typeDict.find((x: any) => x.value === activityType)?.label
-      filtered = filtered.filter(item => {
-        return item.activityType === activityType || (targetLabel && item.activityType === targetLabel)
-      })
-    }
-
-    this.setData({
-      activities: filtered,
-      hasMore: false
-    })
   },
   onBackTap() {
     goBack()

@@ -1,0 +1,430 @@
+.profile-container {
+  min-height: 100vh;
+  padding-bottom: 40rpx;
+}
+
+.header-bg {
+  width: 100%;
+  height: 420rpx;
+  position: relative;
+}
+
+.bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.blur-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 210rpx;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.blurred {
+  width: 100%;
+  height: 420rpx;
+  /* Match parent height to align image content */
+  filter: blur(8rpx);
+  transform-origin: top center;
+}
+
+.nav-bar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 20rpx;
+  z-index: 10;
+}
+
+.back-btn {
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon {
+  width: 32rpx;
+  height: 32rpx;
+}
+
+.content-wrapper {
+  padding: 0 32rpx;
+  position: relative;
+  z-index: 10;
+}
+
+.user-info-card {
+  padding: 40rpx 0 30rpx 0;
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+  }
+
+  .tag {
+    font-size: 24rpx;
+    padding: 6rpx 24rpx;
+    height: 36rpx;
+    line-height: 36rpx;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12rpx;
+    margin-bottom: 24rpx;
+
+    &.tag-new {
+      background-color: #fefce8;
+      color: #eab308;
+    }
+
+    &.tag-host {
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+
+    &.tag-nomad-green {
+      background-color: #71BF00;
+      color: #fff;
+    }
+
+    &.tag-nomad-red {
+      background-color: #FF576A;
+      color: #fff;
+    }
+
+    &.tag-normal {
+      background-color: #C68F35;
+      color: #fff;
+    }
+  }
+
+  .avatar-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 24rpx; // Reduced from 32rpx to handle new row spacing
+
+    .avatar-wrap {
+      position: relative;
+      margin-right: 24rpx;
+
+      .avatar {
+        width: 128rpx;
+        height: 128rpx;
+        border-radius: 50%;
+      }
+
+      .gender-icon {
+        position: absolute;
+        bottom: 0;
+        right: -5rpx;
+        width: 40rpx;
+        height: 40rpx;
+        border-radius: 50%;
+        border: 2rpx solid #fff;
+      }
+    }
+
+    .info-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .name-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .name-left {
+          display: flex;
+          align-items: center;
+
+          .nickname {
+            font-size: 32rpx;
+            font-weight: 600;
+            color: #191919;
+            margin-right: 8rpx;
+          }
+
+          .edit-icon-wrap {
+            padding: 8rpx;
+
+            .edit-icon {
+              width: 20rpx;
+              height: 24rpx;
+            }
+          }
+        }
+
+        .tags {
+          display: flex;
+          gap: 8rpx;
+        }
+      }
+
+      .id-row {
+        margin-bottom: 4rpx;
+
+        .user-id {
+          font-size: 24rpx;
+          color: #717171;
+        }
+      }
+
+      .join-row {
+        .join-time {
+          font-size: 24rpx;
+          color: #717171;
+        }
+      }
+    }
+  }
+
+  .identity-tags-row {
+
+
+    .tag {
+      font-size: 20rpx;
+      padding: 4rpx 16rpx;
+      height: 28rpx;
+      line-height: 28rpx;
+
+    }
+  }
+
+  .bio-row {
+    margin-bottom: 40rpx;
+
+    .bio {
+      font-size: 28rpx;
+      color: rgba(0, 0, 0, 0.45);
+      line-height: 44rpx;
+    }
+  }
+
+  .stats-row {
+    display: flex;
+    align-items: center;
+    /* Vertically align all items */
+    padding: 32rpx 0 0 0;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      /* First two items take more space */
+      &:nth-child(1),
+      &:nth-child(2) {
+        flex: 1;
+      }
+
+      /* Last item (button) centered */
+      &:last-child {
+        flex: 0 0 180rpx;
+        /* Fixed width for button container to ensure it doesn't squash or stretch weirdly */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .stat-num {
+        font-size: 40rpx;
+        font-weight: 600;
+        color: #000;
+        margin-bottom: 8rpx;
+      }
+
+      .stat-label {
+        font-size: 24rpx;
+        color: #717171;
+      }
+    }
+  }
+}
+
+/* Tabs */
+.tabs-container {
+  margin-top: 24rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+}
+
+.tab-item {
+  position: relative;
+  padding: 24rpx 0;
+  font-size: 30rpx;
+  color: #666;
+}
+
+.tab-item.active {
+  color: #333;
+  font-weight: bold;
+}
+
+.tab-line {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200rpx;
+  height: 2rpx;
+  background: #000;
+}
+
+/* Activity List */
+.activity-list {
+  padding: 24rpx 0;
+}
+
+.activity-item {
+
+  overflow: hidden;
+  margin-bottom: 24rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.activity-poster {
+  width: 200rpx;
+  height: 260rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.activity-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.activity-tags {
+  margin-bottom: 8rpx;
+}
+
+.activity-type-tag {
+  background: #000;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.activity-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.organizer-mini {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.mini-avatar {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  margin-right: 8rpx;
+}
+
+.mini-name {
+  font-size: 24rpx;
+  color: #666;
+  margin-right: 12rpx;
+}
+
+.mini-tag {
+  font-size: 20rpx;
+  color: #5bb531;
+  background: rgba(91, 181, 49, 0.1);
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+}
+
+.activity-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.activity-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.joined-avatars {
+  display: flex;
+  margin-right: 12rpx;
+}
+
+.joined-avatar {
+  width: 32rpx;
+  height: 32rpx;
+  border-radius: 50%;
+  margin-left: -10rpx;
+  border: 2rpx solid #fff;
+}
+
+.joined-avatar:first-child {
+  margin-left: 0;
+}
+
+.joined-count {
+  font-size: 22rpx;
+  color: #999;
+  margin-left: 8rpx;
+}
+
+.price {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+  background: #5bb531;
+  padding: 4rpx 16rpx;
+  border-radius: 4rpx;
+}
+
+.meta-location,
+.meta-status {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

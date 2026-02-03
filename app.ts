@@ -2,8 +2,8 @@ App<IAppOption>({
   globalData: {},
   onLaunch() {
     wx.loadFontFace({
-      family: 'Barlow-Medium',
-      source: 'url("https://cdn.jsdelivr.net/npm/@fontsource/barlow/files/barlow-latin-500-normal.woff2")',
+      family: 'DIN-Medium',
+      source: 'url("https://daolongtan.cn/fonts/DIN-Medium.otf")',
       global: true,
       success: console.log,
       fail: console.error

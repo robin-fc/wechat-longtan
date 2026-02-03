@@ -1,4 +1,4 @@
-import { formatYMDHM } from '../../utils/date'
+import { formatSmartTimeRange } from '../../utils/date'
 
 Component({
     properties: {
@@ -15,21 +15,7 @@ Component({
             if (activity) {
                 const updateData: any = {};
                 if (activity.startTime && activity.endTime) {
-                    const startStr = formatYMDHM(activity.startTime)
-                    const endStr = formatYMDHM(activity.endTime)
-
-                    const startDate = startStr.split(' ')[0]
-                    const endDate = endStr.split(' ')[0]
-
-                    if (startDate === endDate) {
-                        // Same date, show YYYY/MM/DD HH:mm-HH:mm
-                        const startTime = startStr.split(' ')[1]
-                        const endTime = endStr.split(' ')[1]
-                        updateData.formattedTimeRange = `${startDate} ${startTime}-${endTime}`
-                    } else {
-                        // Different date, show full range
-                        updateData.formattedTimeRange = `${startStr}-${endStr}`
-                    }
+                    updateData.formattedTimeRange = formatSmartTimeRange(activity.startTime, activity.endTime)
                 }
 
                 // Map registeredUsers to companions if companions is missing

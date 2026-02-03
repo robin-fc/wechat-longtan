@@ -9,6 +9,8 @@ interface CollectionDetailState {
   collection: ActivityCollection | null
   menuTop: number
   menuHeight: number
+  isDescriptionExpanded: boolean
+  showExpandBtn: boolean
 }
 
 Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
@@ -16,6 +18,8 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
     collection: null,
     menuTop: 0,
     menuHeight: 44,
+    isDescriptionExpanded: false,
+    showExpandBtn: false,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -66,10 +70,10 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
         }
       })(),
       space: {
-        id: it.space?.id || 0,
-        name: it.space?.name || '',
-        address: it.space?.address || '',
-        mapImages: it.space?.mapImages || [],
+        id: (it as any).space?.id || 0,
+        name: (it as any).space?.name || '',
+        address: (it as any).space?.address || '',
+        mapImages: (it as any).space?.mapImages || [],
       },
       timeRange: {
         startTime: formatYMDHM(it.startTime),
@@ -86,7 +90,36 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
       },
     }))
     const collection = { ...base, activities } as any
-    this.setData({ collection })
+    this.setData({ collection }, () => {
+      this.calcDescriptionExpand()
+    })
+  },
+  calcDescriptionExpand() {
+    // Wait for the render to complete
+    setTimeout(() => {
+      const query = this.createSelectorQuery()
+      query.select('.description-measure').boundingClientRect()
+      query.exec((res) => {
+        if (!res || !res[0]) return
+        const height = res[0].height
+        const sysInfo = wx.getSystemInfoSync()
+        // 26rpx * 1.6 * 3 lines
+        const maxHeightRpx = 26 * 1.6 * 3
+        const maxHeightPx = (maxHeightRpx * sysInfo.windowWidth) / 750
+
+        // Add a small buffer to avoid floating point issues
+        if (height > maxHeightPx + 1) {
+          this.setData({ showExpandBtn: true })
+        } else {
+          this.setData({ showExpandBtn: false })
+        }
+      })
+    }, 100)
+  },
+  toggleDescription(this: WechatMiniprogram.Page.TrivialInstance) {
+    this.setData({
+      isDescriptionExpanded: !this.data.isDescriptionExpanded,
+    })
   },
   onBackTap() {
     goBack()

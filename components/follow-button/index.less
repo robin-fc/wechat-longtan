@@ -1,0 +1,24 @@
+.follow-btn {
+    font-size: 26rpx;
+    width: 140rpx;
+    height: 60rpx;
+    line-height: 56rpx;
+    text-align: center;
+    padding: 0;
+    background: #fff;
+    color: #333;
+    border: 1rpx solid #333;
+    border-radius: 4rpx;
+    box-sizing: border-box;
+    /* Ensure border doesn't add to width if not already set globally */
+    display: flex;
+    /* Flex to center perfectly if line-height isn't enough */
+    align-items: center;
+    justify-content: center;
+}
+
+.follow-btn.followed {
+    color: #999;
+    border-color: #ccc;
+    background: #fff;
+}

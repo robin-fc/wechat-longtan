@@ -1,7 +1,6 @@
 .my-stays-page {
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding: 24rpx 24rpx;
+  padding: 24rpx 0;
 }
 
 .top-bar {
@@ -31,28 +30,67 @@
   color: #333333;
 }
 
-.filter-row {
+.filter-bar {
   margin-top: 8rpx;
-  display: flex;
+}
+
+.filter-row {
+  white-space: nowrap;
+  border-bottom: 1rpx solid #eeeeee;
+  padding: 0 24rpx;
 }
 
 .filter-item {
-  margin-right: 12rpx;
-  padding: 6rpx 16rpx;
-  border-radius: 24rpx;
-  border: 1rpx solid #dddddd;
-  font-size: 22rpx;
-  color: #666666;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 32rpx;
+  font-size: 28rpx;
+  color: #717171;
+  margin-right: 0;
+  position: relative;
+  font-weight: 400;
+  background-color: transparent;
+  border-radius: 0;
 }
 
 .filter-item.active {
-  background-color: #333333;
-  color: #ffffff;
-  border-color: #333333;
+  background-color: transparent;
+  color: #000;
+  font-weight: 500;
+}
+
+.filter-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140rpx;
+  height: 2rpx;
+  background-color: #191919;
+  border-radius: 2rpx;
+}
+
+.bottom-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 96rpx;
+  padding: 24rpx 24rpx 0;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  z-index: 1000;
+  box-sizing: border-box;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .list-scroll {
   margin-top: 12rpx;
+  padding: 0 24rpx;
   height: calc(100vh - 88rpx - 80rpx);
 }
 
@@ -153,4 +191,3 @@
   background-color: #1A1A1A;
   color: #fff;
 }
-

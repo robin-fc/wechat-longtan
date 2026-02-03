@@ -1,9 +1,9 @@
 <view class="mine-page">
   <!-- 顶部背景图 -->
   <view class="header-bg">
-    <image class="bg-image" src="{{profile.logo}}" mode="aspectFill" />
+    <image class="bg-image" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/tool/20260203/longtan_1770118540923_1_1770118540965.png" mode="aspectFill" />
     <view class="blur-area">
-      <image class="bg-image blurred" src="{{profile.logo}}" mode="aspectFill" />
+      <image class="bg-image blurred" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/tool/20260203/longtan_1770118540923_1_1770118540965.png" mode="aspectFill" />
     </view>
   </view>
   <view class="content-wrapper">

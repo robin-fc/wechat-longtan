@@ -5,7 +5,7 @@
     <view class="header-mask"></view>
     <view wx:if="{{collection}}" class="header-info">
       <text class="info-title">{{collection.name}}</text>
-      <text wx:if="{{collection.description}}" class="info-desc">{{collection.description}}</text>
+      <rich-text wx:if="{{collection.description}}" class="nfo-desc" nodes="{{collection.description}}"></rich-text>
     </view>
   </view>
   <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
@@ -20,7 +20,7 @@
       <view class="activity-list">
         <block wx:if="{{collection}}" wx:for="{{collection.activities}}" wx:key="id">
           <view class="activity-item">
-            <activity-card activity="{{item}}" layout="horizontal" compact="true" bindcardtap="onActivityTap" />
+            <activity-horizontal-card activity="{{item}}" layout="horizontal" compact="true" bindcardtap="onActivityTap" />
           </view>
         </block>
       </view>

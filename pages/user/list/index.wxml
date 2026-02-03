@@ -14,13 +14,12 @@
       </view>
       
       <view class="action-btn">
-        <button 
-          class="follow-btn {{item.isFollowed ? 'followed' : ''}}" 
-          catchtap="onFollowTap" 
+        <follow-button 
+          userId="{{item.userId}}" 
+          isFollowed="{{item.isFollowed}}" 
           data-index="{{index}}"
-        >
-          {{item.isFollowed ? '已关注' : '关注'}}
-        </button>
+          bind:change="onFollowStateChange"
+        />
       </view>
     </view>
   </block>

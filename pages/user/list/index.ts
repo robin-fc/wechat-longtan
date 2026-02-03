@@ -1,7 +1,6 @@
 import { AppUser_getUserList, mapMemberLevelLabel, mapMemberTags } from '../../../api/user'
 import type { MockUserItem } from '../../../api/user'
 import { smartNavigateTo } from '../../../utils/navigation'
-import { AppUserFollow, AppUserUnfollow } from '../../../api/user-follow'
 
 interface UserListState {
   userList: MockUserItem[]
@@ -99,7 +98,7 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
           avatar,
           tags,
           bio: u.introduction ? String(u.introduction) : '',
-          isFollowed: this.data.type === 'following',
+          isFollowed: u.followed
         }
       })
       this.setData({ userList: list })
@@ -123,69 +122,18 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
     }
   },
 
-  async onFollowTap(
-    this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.BaseEvent
-  ) {
-    const index = Number(e.currentTarget.dataset.index)
-    const list = this.data.userList || []
-    const item = list[index]
-    if (!item) return
-
-    const userIdNum = Number(item.userId)
-    if (!userIdNum) {
-      wx.showToast({ title: '用户信息缺失', icon: 'none' })
-      return
-    }
-
-    const nextFollowed = !item.isFollowed
-
-    const setFollowed = (followed: boolean) => {
-      const newList = list.slice()
-      newList[index] = { ...item, isFollowed: followed }
-      this.setData({ userList: newList })
-    }
-
-    const rollback = () => {
-      const prevList = list.slice()
-      prevList[index] = item
-      this.setData({ userList: prevList })
-    }
-
-    const doFollow = async () => {
-      setFollowed(true)
-      try {
-        await AppUserFollow({ followeeId: userIdNum })
-        wx.showToast({ title: '已关注', icon: 'none' })
-      } catch {
-        rollback()
-        wx.showToast({ title: '操作失败', icon: 'none' })
+  onFollowStateChange(e: any) {
+    const { isFollowed } = e.detail
+    // We can find item by index from dataset if passed, or by userId.
+    // The component event detail has userId.
+    // The dataset is on the component tag, e.currentTarget.dataset.index.
+    const index = e.currentTarget.dataset.index
+    if (index !== undefined) {
+      const list = this.data.userList
+      if (list[index]) {
+        const key = `userList[${index}].isFollowed`
+        this.setData({ [key]: isFollowed })
       }
     }
-
-    const doUnfollow = async () => {
-      setFollowed(false)
-      try {
-        await AppUserUnfollow({ followeeId: userIdNum })
-        wx.showToast({ title: '已取消关注', icon: 'none' })
-      } catch {
-        rollback()
-        wx.showToast({ title: '操作失败', icon: 'none' })
-      }
-    }
-
-    if (nextFollowed) {
-      await doFollow()
-      return
-    }
-
-    wx.showModal({
-      title: '取消关注',
-      content: '确定要取消关注吗？',
-      success: (res) => {
-        if (!res.confirm) return
-        doUnfollow()
-      },
-    })
   },
 })

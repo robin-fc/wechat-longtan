@@ -1,6 +1,7 @@
 import { getUserDetail, getUserSummaryByUser } from '../../../api/user'
 import { ensureActivityTypeDict, getUserActivityList } from '../../../api/activity'
 import { formatYMDHM } from '../../../utils/date'
+import { buildUserTagsView, UserTagView } from '../../../utils/user-tags'
 
 interface UserInfoView {
   userId: string
@@ -8,12 +9,14 @@ interface UserInfoView {
   bgImage: string
   nickname: string
   gender: number
-  tags: string[]
   joinTime: string
   bio: string
   followingCount: number
   followerCount: number
   isFollowed: boolean
+  levelTags: UserTagView[]
+  roleTags: UserTagView[]
+  userNumber: string
 }
 
 interface ActivityCardItem {
@@ -50,6 +53,7 @@ interface OtherProfileState {
   pageNo?: number
   pageSize?: number
   typeDict?: Record<string, string>
+  loading: boolean
 }
 
 Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
@@ -62,6 +66,7 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
     userId: '',
     pageNo: 1,
     pageSize: 20,
+    loading: false
   },
 
   async onLoad(
@@ -95,29 +100,20 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
         getUserSummaryByUser(userId).catch(() => ({ followerCount: 0, followingCount: 0 }))
       ])
 
-      const levelMap: Record<string, string> = {
-        '0': '老村民',
-        '1': '新村民',
-        '2': '数字游民',
-        '3': '游客',
-      }
-      const orgTagMap: Record<string, string> = {
-        '0': '空间主理人',
-        '1': '活动发起人',
-      }
-      const memberLevelText = String((raw?.memberLevel) ?? '')
-      const levelLabel = levelMap[memberLevelText] || (memberLevelText || '')
-      const rawTags = raw?.memberTags || []
-      const tags = Array.isArray(rawTags) ? rawTags.map((v) => String(v)) : []
-      const mappedOrgTags = tags.map((t) => orgTagMap[t] || t)
-      const allTags = [levelLabel, ...mappedOrgTags].filter(Boolean)
+      const tags = buildUserTagsView(raw?.memberLevel || '', raw?.memberTags || [])
+
+
+
+
       const userInfo: UserInfoView = {
         userId: String((raw?.id) ?? userId),
+        userNumber: String((raw?.memberNumber) ?? userId),
         avatar: raw?.logo || '',
         bgImage: '',
         nickname: (raw?.memberName || raw?.wxName) || '',
         gender: (raw?.sex !== undefined ? raw.sex : 1) || 1,
-        tags: Array.from(new Set(allTags)),
+        levelTags: tags.levelTags,
+        roleTags: tags.roleTags,
         joinTime: formatYMDHM(raw?.joinTime || ''),
         bio: (raw?.desc || '') || '',
         followingCount: summary.followingCount || 0,
@@ -145,6 +141,7 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
   },
 
   async loadActivities(this: WechatMiniprogram.Page.TrivialInstance, type: number) {
+    this.setData({ loading: true })
     const data = this.data as OtherProfileState
     const userId = data.userId || (data.userInfo && data.userInfo.userId) || ''
     if (!userId) {
@@ -215,6 +212,8 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
     } catch {
       wx.showToast({ title: '加载活动失败', icon: 'none' })
       this.setData({ currentList: [] })
+    } finally {
+      this.setData({ loading: false })
     }
   },
 
@@ -222,16 +221,12 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
     wx.navigateBack()
   },
 
-  onFollowTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const isFollowed = !((this.data as OtherProfileState).userInfo as UserInfoView).isFollowed
+  onFollowStateChange(this: WechatMiniprogram.Page.TrivialInstance, e: any) {
+    const { isFollowed } = e.detail
     const info = (this.data as OtherProfileState).userInfo as UserInfoView
     this.setData({
       'userInfo.isFollowed': isFollowed,
       'userInfo.followerCount': isFollowed ? info.followerCount + 1 : info.followerCount - 1,
-    })
-    wx.showToast({
-      title: isFollowed ? '已关注' : '已取消关注',
-      icon: 'none',
     })
   },
 

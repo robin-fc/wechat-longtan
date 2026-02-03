@@ -1,4 +1,5 @@
 export interface AppUserInfoRespVO {
+  followed: any
   userId: number
   logo: string
   wxName: string

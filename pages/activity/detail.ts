@@ -8,7 +8,7 @@ import {
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
 import { ActivityDetail, RegistrationUser } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
-import { formatYMDHM } from '../../utils/date'
+import { formatYMDHM, formatSmartTimeRange } from '../../utils/date'
 
 interface CompanionsData {
   companions: { id: number; avatar: { url: string } }[]
@@ -96,6 +96,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       ...activity,
       startTime: formatYMDHM(activity.startTime),
       endTime: formatYMDHM(activity.endTime),
+      formattedTimeRange: formatSmartTimeRange(activity.startTime, activity.endTime),
     }
 
     const favoriteCount = formattedActivity.favoriteCount || 0
@@ -136,7 +137,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
     smartNavigateTo(
-      `/pages/activity/favorites?activityId=${encodeURIComponent(
+      `/pages/user/list/index?title=活动收藏&type=3&id=${encodeURIComponent(
         String(detail.id)
       )}`
     )
@@ -279,6 +280,17 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       wx.showToast({ title: '关注成功', icon: 'none' })
     }
   },
+  onEditTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const detail = (this.data as ActivityDetailState).activity
+    if (!detail) return
+
+    wx.showToast({
+      title: '编辑功能即将上线',
+      icon: 'none'
+    })
+    // In future: smartNavigateTo(`/pages/activity/publish?id=${detail.id}`)
+  },
+
   onShareTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) {

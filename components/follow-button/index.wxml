@@ -1,0 +1,6 @@
+<view 
+  class="follow-btn custom-class {{isFollowed ? 'followed' : ''}}" 
+  catchtap="handleTap"
+>
+  {{isFollowed ? '已关注' : '关注'}}
+</view>

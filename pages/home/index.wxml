@@ -38,7 +38,7 @@
     </view>
     <view class="section-activity">
       <view class="section-header">
-        <image class="section-title-icon" src="/assets/icons/home/hotActivity.png" mode="heightFix" />
+        <image class="section-title-icon" src="/assets/images/hotActivity.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreHotActivityTap">
           <text>更多</text>
           <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
@@ -46,7 +46,7 @@
       </view>
     </view>
       <view class="section-divider-line" />
-    <scroll-view scroll-x="true" class="activity-scroll">
+    <scroll-view scroll-x="true" class="activity-scroll"> 
       <view class="activity-list">
         <block wx:for="{{pageData.hotActivities}}" wx:key="id">
           <view class="activity-item">
@@ -57,7 +57,7 @@
     </scroll-view>
     <view class="section">
       <view class="section-header">
-        <image class="section-title-icon" src="/assets/icons/home/hotActivityCollection.png" mode="heightFix" />
+        <image class="section-title-icon" src="/assets/images/collections.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreCollectionsTap">
           <text>更多</text>
           <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
@@ -74,7 +74,7 @@
     </view>
     <view class="section">
       <view class="section-header">
-        <image class="section-title-icon" src="/assets/icons/home/hotHomestay.png" mode="heightFix" />
+        <image class="section-title-icon" src="/assets/images/homestay.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreHomestaysTap">
           <text>更多</text>
           <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
@@ -91,7 +91,7 @@
     </view>
     <view class="section">
       <view class="section-header">
-        <image class="section-title-icon" src="/assets/icons/home/About.png" mode="heightFix" />
+        <image class="section-title-icon" src="/assets/images/about.png" mode="heightFix" />
       </view>
         <view class="section-divider-line" />
       <view class="about-list">

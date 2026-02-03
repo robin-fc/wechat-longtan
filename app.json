@@ -12,7 +12,6 @@
     "pages/activity-collection/detail",
     "pages/activity/list",
     "pages/activity/detail",
-    "pages/activity/favorites",
     "pages/activity/publish",
     "pages/activity/companions",
     "pages/space/detail",
