@@ -26,15 +26,16 @@
           <text class="info-text">{{homestay.address}}</text>
         </view>
       </view>
-      <view class="map-preview">
+      <view class="map-preview" bindtap="onOpenMapTap">
         <image class="map-image" src="/assets/images/map-thumb.png" mode="aspectFill" /> <!-- Placeholder or real map helper -->
         <text class="map-text">点击查看</text>
       </view>
     </view>
 
     <view class="footer">
-      <view class="stay-left" wx:if="{{homestay.stayedUserCount && homestay.stayedUsers}}" catch:tap="onCompanionsTap">
+      <view class="stay-left">
         <companions-bar 
+        wx:if="{{homestay.stayedUserCount && homestay.stayedUsers}}" catch:tap="onCompanionsTap"
           size="large"
           companions="{{ { companions: homestay.stayedUsers, totalCount: homestay.stayedUserCount } }}" 
           isHideCount="{{false}}"

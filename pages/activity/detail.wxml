@@ -87,7 +87,7 @@
     <block wx:if="{{isSelf}}">
    
       <view class="bottom-item heart-btn-wrap" bindtap="onToggleCollect">
-        <image class="heart-icon-solid" src="/assets/icons/heart.svg" mode="aspectFit" />
+        <image class="heart-icon-solid" src="{{isFavorited ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}" mode="aspectFit" />
       </view>
        <view class="bottom-item-wrap"> 
       <view class="bottom-item btn-white" bindtap="onEditTap">
@@ -99,15 +99,42 @@
       </view>
     </block>
     <block wx:else>
-      <view class="bottom-item" bindtap="onToggleCollect">
-        <text class="bottom-label">{{isFavorited ? '已收藏' : '收藏'}}</text>
+      <!-- Activity Ended & Registered: Show Review Input -->
+      <view class="bottom-bar-review" wx:if="{{activity.isRegistered && activity.activityStatus === '已结束'}}">
+         <view class="review-input-wrap">
+           <image class="edit-icon" src="/assets/icons/edit.svg" mode="aspectFit" />
+           <input 
+              class="review-input" 
+              placeholder="说点什么..." 
+              confirm-type="send" 
+              bindinput="onReviewInput" 
+              bindconfirm="onSubmitReview"
+              value="{{reviewContent}}"
+           />
+         </view>
+         <view class="bottom-item heart-btn-wrap" bindtap="onToggleCollect">
+           <image class="heart-icon-solid" src="{{activity.isFavorited ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}" mode="aspectFit" />
+         </view>
+         <button class="bottom-item share-btn-black" open-type="share" bindtap="onShareTap">
+           <text class="bottom-label-white">分享活动</text>
+         </button>
       </view>
-      <button class="bottom-item  btn-white" open-type="share" bindtap="onShareTap">
-        <text class="bottom-label">分享</text>
-      </button>
-      <view class="bottom-item btn-black" bindtap="onSignupTap">
-        <text class="bottom-primary-label">立即报名</text>
-      </view>
+
+      <!-- Default User View -->
+      <block  wx:else>
+        <view class="bottom-item" bindtap="onToggleCollect">
+          <image class="heart-icon-solid" src="{{activity.isFavorited ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}" mode="aspectFit" />
+        </view>
+        
+ <view class="bottom-item-wrap"> 
+        <button class="bottom-item  btn-white" open-type="share" bindtap="onShareTap">
+          <text class="bottom-label">分享</text>
+        </button>
+        <view class="bottom-item btn-black" bindtap="onSignupTap">
+          <text class="bottom-primary-label">立即报名</text>
+        </view>
+        </view>
+      </block>
     </block>
   </view>
 </view>

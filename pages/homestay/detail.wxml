@@ -32,9 +32,9 @@
               <text class="tag tag-{{index % 3}}">{{item}}</text>
             </block>
           </view>
-          <view class="info-row" wx:if="{{homestay.roomCount}}">
+          <view class="info-row" wx:if="{{rooms.length}}">
              <image class="info-icon" src="/assets/icons/home.svg" mode="aspectFit" />
-             <text class="info-text">{{homestay.roomCount}}个在售房型</text>
+             <text class="info-text">{{rooms.length}}个在售房型</text>
           </view>
           <view class="info-row" bindtap="onOpenMap">
              <image class="info-icon" src="/assets/icons/location.svg" mode="aspectFit" />
@@ -42,8 +42,8 @@
           </view>
         </view>
         
-        <view class="intro-map" bindtap="onOpenMap" wx:if="{{homestay.mapThumbnail}}">
-           <image class="map-thumbnail" src="{{homestay.mapThumbnail.url}}" mode="aspectFill" />
+        <view class="intro-map" bindtap="onOpenMap" wx:if="{{homestay.mapImages.length}}">
+           <image class="map-thumbnail" src="{{homestay.mapImages[0]}}" mode="aspectFill" />
            <text class="map-hint">点击查看</text>
         </view>
 

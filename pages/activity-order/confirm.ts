@@ -7,6 +7,8 @@ import { goBack, smartNavigateTo } from '../../utils/navigation'
 interface ConfirmOrderState {
   activity: Activity | null
   order: ActivityOrder
+  contactName: string
+  contactPhone: string
 }
 
 const emptyOrder: ActivityOrder = {
@@ -30,6 +32,8 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
   data: {
     activity: null,
     order: emptyOrder,
+    contactName: '',
+    contactPhone: '',
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -43,7 +47,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     if (!Number.isFinite(id) || id <= 0) {
       return
     }
-    const activity = await  getActivityDetail(id)
+    const activity = await getActivityDetail(id)
     if (!activity) return
     const order: ActivityOrder = {
       ...emptyOrder,
@@ -55,9 +59,22 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
         : { amount: activity.fee, currency: 'CNY' },
       notice: '报名成功后如需取消，请提前联系主理人确认。',
     }
+
+    // Auto-fill from storage if available
+    const userInfo = wx.getStorageSync('userInfo')
+    let contactName = ''
+    let contactPhone = ''
+    if (userInfo) {
+      // Try to make a best guess or leave empty if structure unknown
+      // Assuming simplistic structure for now
+      contactName = userInfo.nickName || ''
+    }
+
     this.setData({
       activity,
       order,
+      contactName,
+      contactPhone,
     })
   },
   onOpenMapTap(this: WechatMiniprogram.Page.TrivialInstance) {
@@ -92,8 +109,19 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
   onBackTap() {
     goBack()
   },
+  onNameChange(e: WechatMiniprogram.Input) {
+    this.setData({
+      contactName: e.detail.value
+    })
+  },
+  onPhoneChange(e: WechatMiniprogram.Input) {
+    this.setData({
+      contactPhone: e.detail.value
+    })
+  },
   async onSubmitTap(this: WechatMiniprogram.Page.TrivialInstance) {
-    const order = (this.data as ConfirmOrderState).order
+    const state = this.data as ConfirmOrderState
+    const order = state.order
     console.log('活动订单order', order)
     const activityIdRaw = order.activityId
     const activityId = Number(activityIdRaw)
@@ -102,7 +130,18 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       return
     }
 
-    const activity = (this.data as ConfirmOrderState).activity
+    const activity = state.activity
+    const contactName = state.contactName.trim()
+    const contactPhone = state.contactPhone.trim()
+
+    if (!contactName) {
+      wx.showToast({ title: '请填写姓名', icon: 'none' })
+      return
+    }
+    if (!contactPhone) {
+      wx.showToast({ title: '请填写电话', icon: 'none' })
+      return
+    }
 
     console.log('活动订单activity', activity)
     if (activity && activity.auditStatus !== '审核通过') {
@@ -116,6 +155,11 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
         title: '提示',
         content: msg,
         showCancel: false,
+        success(res) {
+          if (res.confirm) {
+            console.log('用户点击确定')
+          }
+        }
       })
       return
     }
@@ -133,6 +177,8 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     try {
       const res = await createActivityOrder({
         activityId,
+        contactName,
+        contactPhone
       })
       const bizOrderNo = res.bizOrderNo
       const amount = order.totalPrice.amount

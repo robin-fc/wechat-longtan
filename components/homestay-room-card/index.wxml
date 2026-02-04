@@ -1,6 +1,6 @@
 <view class="room-card" bindtap="onTap">
   <view class="poster-wrap">
-    <image wx:if="{{room.images && room.images.length}}" class="poster" src="{{room.images[0].url}}" mode="aspectFill" />
+    <image wx:if="{{room.logo }}" class="poster" src="{{room.logo}}" mode="aspectFill" />
     <image wx:else class="poster" src="/assets/images/room.jpg" mode="aspectFill" />
   </view>
   <view class="content">

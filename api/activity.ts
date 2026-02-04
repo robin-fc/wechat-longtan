@@ -12,6 +12,14 @@ import type {
 import { PageResult } from '../model/common'
 import { getData, postData } from '../utils/request'
 
+export interface AppReviewCreateReqVO {
+  targetId: number
+  type: number // 1=Activity, 2=Homestay
+  content: string
+  rating?: number
+  images?: string[]
+}
+
 
 const baseUrl = '/app-api/daolongtan/activity'
 
@@ -88,6 +96,10 @@ export function shareActivity(activityId: number): Promise<ActivityShareInfo> {
     { activityId },
     { 'content-type': 'application/x-www-form-urlencoded' }
   )
+}
+
+export function createReview(payload: AppReviewCreateReqVO): Promise<boolean> {
+  return postData<boolean>('/app-api/daolongtan/review/create', payload)
 }
 
 /**

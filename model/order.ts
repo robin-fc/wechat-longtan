@@ -97,6 +97,8 @@ export interface ActivityOrder {
 
 export interface AppActivityOrderCreateReqVO {
   activityId: number
+  contactName?: string
+  contactPhone?: string
 }
 
 export interface AppPayOrderCreateDataVO {

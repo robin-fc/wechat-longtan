@@ -4,6 +4,7 @@ import {
   favoriteActivity,
   unfavoriteActivity,
   shareActivity,
+  createReview,
 } from '../../api/activity'
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
 import { ActivityDetail, RegistrationUser } from '../../model/activity'
@@ -26,6 +27,7 @@ interface ActivityDetailState {
   registeredUsers: RegistrationUser[]
   companionsData: CompanionsData
   favoriteCompanionsData: CompanionsData
+  reviewContent: string
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -46,6 +48,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       companions: [],
       totalCount: 0,
     },
+    reviewContent: '',
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -373,5 +376,40 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     smartNavigateTo(
       `/pages/user/list/index?title=已报名用户&type=0&id=${activity.id}`
     )
+  },
+
+  onReviewInput(e: WechatMiniprogram.Input) {
+    this.setData({
+      reviewContent: e.detail.value,
+    })
+  },
+
+  async onSubmitReview(this: WechatMiniprogram.Page.TrivialInstance) {
+    const data = this.data as ActivityDetailState
+    const content = data.reviewContent.trim()
+    if (!content) {
+      wx.showToast({ title: '请输入评价内容', icon: 'none' })
+      return
+    }
+    if (!data.activity) return
+
+    wx.showLoading({ title: '提交中...' })
+    try {
+      const ok = await createReview({
+        targetId: data.activity.id,
+        type: 1, // 1=Activity
+        content,
+      })
+      wx.hideLoading()
+      if (ok) {
+        wx.showToast({ title: '评价成功', icon: 'success' })
+        this.setData({ reviewContent: '' })
+      } else {
+        wx.showToast({ title: '评价失败', icon: 'none' })
+      }
+    } catch (e) {
+      wx.hideLoading()
+      wx.showToast({ title: '网络错误', icon: 'none' })
+    }
   },
 })

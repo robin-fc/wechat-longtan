@@ -120,4 +120,5 @@ Page<SpaceDetailState, WechatMiniprogram.IAnyObject>({
       })
     }
   }
+
 })

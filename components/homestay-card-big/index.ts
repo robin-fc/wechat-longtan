@@ -17,5 +17,19 @@ Component({
                 })
             }
         },
+        onOpenMapTap() {
+            const homestay = this.data.homestay
+            if (homestay && homestay.mapImages && homestay.mapImages.length > 0) {
+                wx.previewImage({
+                    current: homestay.mapImages[0],
+                    urls: homestay.mapImages,
+                })
+            } else {
+                wx.showToast({
+                    title: '暂无地图信息',
+                    icon: 'none',
+                })
+            }
+        },
     },
 })

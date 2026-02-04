@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
+          "name": "活动报名",
+          "pathName": "pages/activity-order/confirm",
+          "query": "activityId=12",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
           "name": "数字游民申请页",
           "pathName": "pages/digital-nomad/apply/index",
           "query": "",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "首页进入",

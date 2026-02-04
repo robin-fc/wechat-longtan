@@ -27,7 +27,7 @@
             </view>
             
             <view class="meta-row" bindtap="onMapTap" wx:if="{{address}}">
-                <image class="meta-icon" src="/assets/icons/location-grey.png" mode="aspectFit" />
+                <image class="meta-icon" src="/assets/icons/location.svg" mode="aspectFit" />
                 <text class="meta-text address-text">{{address}}</text>
             </view>
         </view>
