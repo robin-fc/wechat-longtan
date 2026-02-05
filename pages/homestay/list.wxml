@@ -16,4 +16,13 @@
       </view>
     </block>
   </view>
+  <view class="loading-footer">
+    <block wx:if="{{isLoading}}">
+      <view class="loading-spinner"></view>
+      <text>加载中...</text>
+    </block>
+    <block wx:elif="{{!hasMore && homestays.length > 0}}">
+      <text class="no-more">没有更多民宿了</text>
+    </block>
+  </view>
 </view>

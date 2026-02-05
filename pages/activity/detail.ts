@@ -221,6 +221,10 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
               favoriteCountText,
               favoriteCompanionsData,
             })
+            wx.showToast({
+              title: prev ? '已取消收藏' : '已收藏',
+              icon: 'success',
+            })
           })
           .catch(() => {
             wx.showToast({
