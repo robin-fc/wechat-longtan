@@ -255,4 +255,18 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
       url: `/pages/user/list/index?title=粉丝&type=5&id=${userId}`,
     })
   },
+
+  onShareAppMessage(this: WechatMiniprogram.Page.TrivialInstance) {
+    const userInfo = (this.data as OtherProfileState).userInfo
+    if (!userInfo || !userInfo.userId) {
+      return {
+        title: 'DAO龙潭 - 用户主页',
+        path: '/pages/home/index',
+      }
+    }
+    return {
+      title: `${userInfo.nickname || '用户'}的主页`,
+      path: `/pages/user/other-profile/index?userId=${userInfo.userId}`,
+    }
+  }
 })

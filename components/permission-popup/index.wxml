@@ -1,0 +1,10 @@
+<view class="popup-mask" wx:if="{{visible}}">
+  <view class="popup-content">
+    <view class="popup-card">
+      <view class="popup-title">您还不是数字游民</view>
+      <view class="popup-desc">{{message}}</view>
+      <view class="popup-action-btn" bindtap="onApply">立即申请</view>
+      <view class="popup-skip-btn" bindtap="onSkip">不申请</view>
+    </view>
+  </view>
+</view>

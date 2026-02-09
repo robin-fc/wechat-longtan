@@ -25,11 +25,11 @@
           />
           <text class="stay-hint" wx:if="{{homestay.stayedUserCount}}">人住过</text>
         </view>
-        <view class="price-tag-box" wx:if="{{homestay.minPrice}}">
+        <!-- <view class="price-tag-box" wx:if="{{homestay.minPrice}}">
           <text class="price-symbol">¥</text>
           <text class="price-value">{{homestay.minPrice}}</text>
           <text class="price-unit">/天起</text>
-        </view>
+        </view> -->
       </view>
       <view class="address">
         <text class="address-label">地址：</text>

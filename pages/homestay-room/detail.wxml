@@ -78,4 +78,10 @@
       <text>申请预订</text>
     </view>
   </view>
+
+  <permission-popup
+    visible="{{showPermissionPopup}}"
+    message="完成数字游民认证申请就可以预订民宿了哦！"
+    bind:apply="onPermissionApply"
+    bind:skip="onPermissionSkip" />
 </view>

@@ -9,13 +9,13 @@ import { getAvailableHomestayList } from './homestay'
 const aboutLinksMock = [
   {
     id: 1,
-    title: '龙潭史',
+    title: '龙潭故事',
     url: '/assets/icons/about/history.svg',
-    description: '了解龙潭的历史与故事',
+    description: '了解龙潭的故事',
   },
   {
     id: 2,
-    title: '居住指南',
+    title: '生活指南',
     url: '/assets/icons/about/lifeGuide.svg',
     description: '抵达与居住的实用信息',
   },
@@ -27,9 +27,9 @@ const aboutLinksMock = [
   },
   {
     id: 4,
-    title: '身份等级',
+    title: '身份说明',
     url: '/assets/icons/about/diamond.svg',
-    description: '了解您的身份等级',
+    description: '了解您的身份标签',
   },
 ]
 

@@ -192,4 +192,15 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
       `/pages/homestay/detail?id=${encodeURIComponent(homestay.id)}`
     )
   },
+  onShareAppMessage() {
+    return {
+      title: 'DAO龙潭 - 搜索发现',
+      path: '/pages/home/index',
+    }
+  },
+  onShareTimeline() {
+    return {
+      title: 'DAO龙潭 - 搜索发现',
+    }
+  },
 })

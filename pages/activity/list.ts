@@ -235,4 +235,15 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       `/pages/activity/detail?id=${encodeURIComponent(activity.id)}`
     )
   },
+  onShareAppMessage() {
+    return {
+      title: 'DAO龙潭 - 精彩活动等你来',
+      path: '/pages/activity/list',
+    }
+  },
+  onShareTimeline() {
+    return {
+      title: 'DAO龙潭 - 精彩活动等你来',
+    }
+  },
 })

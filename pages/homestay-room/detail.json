@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "房间详情"
+  "navigationBarTitleText": "房间详情",
+  "usingComponents": {
+    "permission-popup": "/components/permission-popup/index"
+  }
 }
 

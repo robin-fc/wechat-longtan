@@ -135,4 +135,31 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
       `/pages/activity/detail?id=${encodeURIComponent(activity.id)}`
     )
   },
+  onShareAppMessage() {
+    const collection = this.data.collection
+    if (!collection) {
+      return {
+        title: 'DAO龙潭 - 活动合集',
+        path: '/pages/activity-collection/list',
+      }
+    }
+    return {
+      title: collection.name || '活动合集',
+      path: `/pages/activity-collection/detail?id=${collection.id}`,
+      imageUrl: collection.logo || '',
+    }
+  },
+  onShareTimeline() {
+    const collection = this.data.collection
+    if (!collection) {
+      return {
+        title: 'DAO龙潭 - 活动合集',
+      }
+    }
+    return {
+      title: collection.name || '活动合集',
+      query: `id=${collection.id}`,
+      imageUrl: collection.logo || '',
+    }
+  },
 })

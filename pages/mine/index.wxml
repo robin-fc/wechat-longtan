@@ -23,7 +23,7 @@
               </view>
             </view>
             <view class="tags">
-              <text class="tag {{item.className}}" wx:for="{{profile.levelTags}}" wx:for-item="item" wx:key="label" 
+              <text class="tag tag-nomad-green" wx:for="{{profile.levelTags}}" wx:for-item="item" wx:key="label" 
                     bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
             </view>
           </view>
@@ -53,7 +53,7 @@
         </view>
         <view class="stat-item" bindtap="onWalletTap">
           <text class="stat-num">{{profile.assets || 0}}</text>
-          <text class="stat-label">资产</text>
+          <text class="stat-label">活动收益</text>
         </view>
       </view>
     </view>

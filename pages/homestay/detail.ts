@@ -270,4 +270,31 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       )}&checkOutDate=${encodeURIComponent(endDate)}`
     )
   },
+  onShareAppMessage() {
+    const homestay = this.data.homestay
+    if (!homestay) {
+      return {
+        title: 'DAO龙潭 - 民宿详情',
+        path: '/pages/homestay/list',
+      }
+    }
+    return {
+      title: homestay.name || '民宿详情',
+      path: `/pages/homestay/detail?id=${homestay.id}`,
+      imageUrl: homestay.logo || '',
+    }
+  },
+  onShareTimeline() {
+    const homestay = this.data.homestay
+    if (!homestay) {
+      return {
+        title: 'DAO龙潭 - 民宿详情',
+      }
+    }
+    return {
+      title: homestay.name || '民宿详情',
+      query: `id=${homestay.id}`,
+      imageUrl: homestay.logo || '',
+    }
+  },
 })

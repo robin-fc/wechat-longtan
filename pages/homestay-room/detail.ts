@@ -1,4 +1,5 @@
 import { getRoomDetail } from '../../api/room'
+import { fetchMyProfile } from '../../api/mine'
 import type { HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
@@ -11,6 +12,7 @@ interface RoomDetailState {
   menuHeight: number
   totalPrice: number
   displayDateRange: string
+  showPermissionPopup: boolean
 }
 
 Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
@@ -23,6 +25,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     menuHeight: 44,
     totalPrice: 0,
     displayDateRange: '',
+    showPermissionPopup: false,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -192,14 +195,77 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     if (!state.room) {
       return
     }
-    smartNavigateTo(
-      `/pages/homestay-apply/form?roomId=${encodeURIComponent(
-        state.room.id
-      )}&homestayId=${encodeURIComponent(
-        state.room.homestayId
-      )}&startDate=${encodeURIComponent(
-        state.checkInDate
-      )}&duration=${encodeURIComponent(String(state.nights))}`
-    )
+
+    // 检查数字游民身份
+    this.checkDigitalNomadStatus().then((isDigitalNomad) => {
+      if (!isDigitalNomad) {
+        this.setData({ showPermissionPopup: true })
+        return
+      }
+
+      // 是数字游民，允许申请
+      smartNavigateTo(
+        `/pages/homestay-apply/form?roomId=${encodeURIComponent(
+          state.room.id
+        )}&homestayId=${encodeURIComponent(
+          state.room.homestayId
+        )}&startDate=${encodeURIComponent(
+          state.checkInDate
+        )}&duration=${encodeURIComponent(String(state.nights))}`
+      )
+    })
+  },
+  async checkDigitalNomadStatus(): Promise<boolean> {
+    const accessToken = wx.getStorageSync('accessToken')
+    if (!accessToken) {
+      return false
+    }
+
+    try {
+      const profile = await fetchMyProfile()
+      if (profile) {
+        const levelStr = String(profile.memberLevel)
+        return levelStr === '2' || levelStr.includes('数字游民')
+      }
+      return false
+    } catch (e) {
+      console.error('Failed to fetch profile', e)
+      return false
+    }
+  },
+  onPermissionApply(this: WechatMiniprogram.Page.TrivialInstance) {
+    smartNavigateTo('/pages/digital-nomad/apply/index')
+  },
+  onPermissionSkip(this: WechatMiniprogram.Page.TrivialInstance) {
+    this.setData({ showPermissionPopup: false })
+  },
+  onShareAppMessage() {
+    const state = this.data as RoomDetailState
+    const room = state.room
+    if (!room) {
+      return {
+        title: 'DAO龙潭 - 房间详情',
+        path: '/pages/homestay/list',
+      }
+    }
+    return {
+      title: room.name || '房间详情',
+      path: `/pages/homestay-room/detail?id=${room.id}&homestayId=${room.homestayId}`,
+      imageUrl: room.images && room.images.length > 0 ? room.images[0].url : '',
+    }
+  },
+  onShareTimeline() {
+    const state = this.data as RoomDetailState
+    const room = state.room
+    if (!room) {
+      return {
+        title: 'DAO龙潭 - 房间详情',
+      }
+    }
+    return {
+      title: room.name || '房间详情',
+      query: `id=${room.id}&homestayId=${room.homestayId}`,
+      imageUrl: room.images && room.images.length > 0 ? room.images[0].url : '',
+    }
   },
 })

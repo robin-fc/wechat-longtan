@@ -125,4 +125,15 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
       `/pages/homestay/detail?id=${encodeURIComponent(homestay.id)}`
     )
   },
+  onShareAppMessage() {
+    return {
+      title: 'DAO龙潭 - 发现理想民宿',
+      path: '/pages/homestay/list',
+    }
+  },
+  onShareTimeline() {
+    return {
+      title: 'DAO龙潭 - 发现理想民宿',
+    }
+  },
 })

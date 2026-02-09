@@ -29,7 +29,9 @@
     "pages/mine/activities",
     "pages/mine/stays",
     "pages/order/detail",
-    "pages/digital-nomad/apply/index"
+    "pages/digital-nomad/apply/index",
+    "pages/volunteer/apply/index",
+    "pages/co-creator/apply/index"
   ],
   "window": {
     "navigationBarTitleText": "登录",

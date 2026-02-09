@@ -72,14 +72,14 @@ Page({
     },
     async loadApplyForm() {
         try {
-            const form = await fetchUserApplyForm(0) // type=0 表示数字游民申请
+            const form = await fetchUserApplyForm(1) // type=1 表示志愿者申请
             const questionList = (form?.questionList || []).map((question) => ({
                 ...question,
                 options: question.options || []
             }))
             const formData = buildInitialFormData(questionList)
             this.setData({
-                formTitle: form?.title || '申请表',
+                formTitle: form?.title || '志愿者申请表',
                 formDesc: form?.desc || '',
                 questionList,
                 formData
@@ -141,7 +141,7 @@ Page({
     onCheckboxToggle(e: WechatMiniprogram.BaseEvent) {
         const field = e.currentTarget.dataset.field
         const value = String(e.currentTarget.dataset.value || '')
-        
+
         const state = this.data as any
         const current = Array.isArray(state.formData?.[field]) ? [...state.formData[field]] : []
         const idx = current.indexOf(value)
@@ -163,7 +163,7 @@ Page({
             return
         }
         const req: UserApplyReqVO = {
-            formType: 0, // 数字游民申请
+            formType: 1, // 志愿者申请
             answers: questionList
                 .filter((question) => question.valueType !== 'info_text')
                 .map((question) => {

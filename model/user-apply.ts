@@ -1,13 +1,6 @@
 export interface UserApplyReqVO {
+    formType: number // 表单类型（0=数字游民, 1=志愿者, 2=共创人）
     answers: Array<{ id: string; value: string | number | string[] }>
-    // name: string
-    // sex: number // 1:男 2:女 0:其他
-    // age: number
-    // mobile: string
-    // wechatId: string
-    // interests: string[]
-    // introduction: string
-    // source: string
 }
 
 export type AppUserApplyFormValueType =

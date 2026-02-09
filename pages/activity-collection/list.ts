@@ -30,4 +30,15 @@ Page<CollectionListState, WechatMiniprogram.IAnyObject>({
       `/pages/activity-collection/detail?id=${encodeURIComponent(id)}`
     )
   },
+  onShareAppMessage() {
+    return {
+      title: 'DAO龙潭 - 精选活动合集',
+      path: '/pages/activity-collection/list',
+    }
+  },
+  onShareTimeline() {
+    return {
+      title: 'DAO龙潭 - 精选活动合集',
+    }
+  },
 })

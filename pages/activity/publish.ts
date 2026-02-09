@@ -1,9 +1,10 @@
-import { goBack } from '../../utils/navigation'
+import { goBack, smartNavigateTo } from '../../utils/navigation'
 import { toISO8601 } from '../../utils/isoTime'
 import { createActivity, getActivityTypeList } from '../../api/activity'
 import { getSpaceList } from '../../api/space'
 import { getMyActivityCollections } from '../../api/activity-collection'
 import { uploadImage } from '../../api/common'
+import { fetchMyProfile } from '../../api/mine'
 import type { ActivityType as ActivityTypeItem } from '../../model/activity'
 
 interface PublishFormState {
@@ -33,6 +34,7 @@ interface PublishPageState {
   typeIndex: number
   spaceOptions: { id: number; name: string }[]
   spaceIndex: number
+  showPermissionPopup: boolean
 }
 
 function validatePublishForm(
@@ -118,8 +120,45 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     typeIndex: 0,
     spaceOptions: [],
     spaceIndex: 0,
+    showPermissionPopup: false,
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    await this.checkDigitalNomadStatus()
+  },
+  async checkDigitalNomadStatus(this: WechatMiniprogram.Page.TrivialInstance) {
+    const accessToken = wx.getStorageSync('accessToken')
+    if (!accessToken) {
+      this.setData({ showPermissionPopup: true })
+      return
+    }
+
+    try {
+      const profile = await fetchMyProfile()
+      if (profile) {
+        const levelStr = String(profile.memberLevel)
+        const isDigitalNomad = levelStr === '2' || levelStr.includes('数字游民')
+
+        if (!isDigitalNomad) {
+          this.setData({ showPermissionPopup: true })
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch profile', e)
+    }
+  },
+  onPermissionApply(this: WechatMiniprogram.Page.TrivialInstance) {
+    smartNavigateTo('/pages/digital-nomad/apply/index')
+  },
+  onPermissionSkip(this: WechatMiniprogram.Page.TrivialInstance) {
+    this.setData({ showPermissionPopup: false })
+    goBack()
+  },
+  async loadInitialData(this: WechatMiniprogram.Page.TrivialInstance) {
+    if (!this.data.showPermissionPopup) {
+      await this.loadInitialData()
+    }
+  },
+  async loadInitialData(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
       const page = await getMyActivityCollections('1', '100')
       const options = (page.list || []).map((it) => ({

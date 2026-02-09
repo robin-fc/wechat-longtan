@@ -87,4 +87,10 @@
       <text>提交审核</text>
     </view>
   </view>
+
+  <permission-popup
+    visible="{{showPermissionPopup}}"
+    message="完成数字游民认证申请就可以发布活动了哦！"
+    bind:apply="onPermissionApply"
+    bind:skip="onPermissionSkip" />
 </view>

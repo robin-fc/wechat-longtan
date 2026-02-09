@@ -27,6 +27,31 @@
         <view class="hero-indicator-item {{heroCurrent === idx ? 'active' : ''}}" data-idx="{{idx}}" bindtap="onHeroIndicatorTap"></view>
       </block>
     </view>
+    <view class="application-section">
+      <view class="application-buttons">
+        <view class="application-button" bindtap="onDigitalNomadApplyTap">
+          <image class="application-icon" src="/assets/icons/home/icon_nomad.svg" mode="aspectFit" />
+          <view class="application-text-wrapper">
+            <text class="application-label">成为</text>
+            <text class="application-label">数字游民</text>
+          </view>
+        </view>
+        <view class="application-button" bindtap="onVolunteerApplyTap">
+          <image class="application-icon" src="/assets/icons/home/icon_volunteer.svg" mode="aspectFit" />
+          <view class="application-text-wrapper">
+            <text class="application-label">成为</text>
+            <text class="application-label">志愿者</text>
+          </view>
+        </view>
+        <view class="application-button" bindtap="onCoCreatorApplyTap">
+          <image class="application-icon" src="/assets/icons/home/icon_cocreator.svg" mode="aspectFit" />
+          <view class="application-text-wrapper">
+            <text class="application-label">成为</text>
+            <text class="application-label">共创人</text>
+          </view>
+        </view>
+      </view>
+    </view>
     <view class="section">
       <view class="entry-grid">
         <block wx:for="{{pageData.entries}}" wx:key="value" wx:for-index="idx">

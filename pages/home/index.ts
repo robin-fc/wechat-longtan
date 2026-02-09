@@ -90,6 +90,15 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     this.setData({ showDigitalNomadPopup: false })
     wx.setStorageSync('DIGITAL_NOMAD_SKIP_DATE', new Date().toDateString())
   },
+  onDigitalNomadApplyTap() {
+    smartNavigateTo('/pages/digital-nomad/apply/index')
+  },
+  onVolunteerApplyTap() {
+    smartNavigateTo('/pages/volunteer/apply/index')
+  },
+  onCoCreatorApplyTap() {
+    smartNavigateTo('/pages/co-creator/apply/index')
+  },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const win = wx.getWindowInfo()
     const ratio = 750 / (win.windowWidth || 750)
@@ -207,6 +216,17 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
           url: `/pages/webview/index?url=${encodeURIComponent(banner.url)}`
         })
       }
+    }
+  },
+  onShareAppMessage() {
+    return {
+      title: 'DAO龙潭 - 发现精彩活动与民宿',
+      path: '/pages/home/index',
+    }
+  },
+  onShareTimeline() {
+    return {
+      title: 'DAO龙潭 - 发现精彩活动与民宿',
     }
   },
 })

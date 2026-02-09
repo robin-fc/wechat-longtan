@@ -5,18 +5,7 @@
   </view>
 
   <view class="list-section">
-    <view class="section-title">资产明细</view>
-    <view class="filter-row">
-      <block wx:for="{{filters}}" wx:key="value">
-        <view
-          class="filter-item {{item.value === activeFilter ? 'active' : ''}}"
-          data-value="{{item.value}}"
-          bindtap="onFilterTap"
-        >
-          <text>{{item.label}}</text>
-        </view>
-      </block>
-    </view>
+    <view class="section-title">活动收益明细</view>
 
     <scroll-view scroll-y="true" class="list-scroll">
       <block wx:for="{{groups}}" wx:key="month">
@@ -54,7 +43,7 @@
         </view>
       </block>
       <view wx:if="{{groups.length === 0}}" class="empty">
-        <text>暂无资产明细</text>
+        <text>暂无明细</text>
       </view>
     </scroll-view>
   </view>

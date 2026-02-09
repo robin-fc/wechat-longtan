@@ -1,21 +1,30 @@
 <view class="collection-detail-page">
-  <view class="header">
-    <image wx:if="{{collection}}" class="header-bg" src="{{collection.coverUrl || collection.listUrl || collection.logo || collection.cover.url}}" mode="aspectFill" />
-    <view wx:else class="header-placeholder"></view>
-    <view class="header-mask"></view>
-    <view wx:if="{{collection}}" class="header-info">
-      <text class="info-title">{{collection.name}}</text>
-      <rich-text wx:if="{{collection.description}}" class="nfo-desc" nodes="{{collection.description}}"></rich-text>
-    </view>
-  </view>
+  
   <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
     <view class="header-left" bindtap="onBackTap">
       <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
     </view>
-    <text class="header-title">{{collection ? collection.name : '活动合集详情'}}</text>
+    <text class="header-title">合集详情</text>
     <view class="header-right"></view>
   </view>
+  <view class="header " style="padding-top: {{menuTop+menuHeight+10}}px;">
+    <image wx:if="{{collection}}" class="header-bg" src="{{collection.coverUrl || collection.listUrl || collection.logo || collection.cover.url}}" mode="aspectFill" />
+  </view>
+
   <view class="body">
+    <!-- 标题和描述区域 -->
+    <view class="info-section" wx:if="{{collection}}">
+      <text class="info-title">{{collection.name}}</text>
+      <view class="description-box" wx:if="{{collection.description}}">
+        <rich-text class="description {{isDescriptionExpanded ? 'expanded' : 'collapsed'}}" nodes="{{collection.description}}"></rich-text>
+        <rich-text class="description description-measure" nodes="{{collection.description}}"></rich-text>
+        <view class="expand-btn" bindtap="toggleDescription" wx:if="{{showExpandBtn}}">
+          <text>{{isDescriptionExpanded ? '收起' : '查看更多'}}</text>
+          <image class="expand-icon {{isDescriptionExpanded ? 'rotate' : ''}}" src="/assets/icons/arrow-down-green.png" mode="aspectFit" />
+        </view>
+      </view>
+    </view>
+
     <view class="section">
       <view class="activity-list">
         <block wx:if="{{collection}}" wx:for="{{collection.activities}}" wx:key="id">

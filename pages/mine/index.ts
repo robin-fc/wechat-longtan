@@ -118,5 +118,18 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
     if (action === 'goApply') {
       smartNavigateTo('/pages/digital-nomad/apply/index')
     }
+  },
+  onShareAppMessage() {
+    const profile = this.data.profile
+    if (!profile || !profile.id) {
+      return {
+        title: 'DAO龙潭 - 用户主页',
+        path: '/pages/home/index',
+      }
+    }
+    return {
+      title: `${profile.memberName || profile.wxName || '用户'}的主页`,
+      path: `/pages/user/other-profile/index?userId=${profile.id}`,
+    }
   }
 })

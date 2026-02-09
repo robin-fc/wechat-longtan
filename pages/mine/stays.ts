@@ -10,7 +10,7 @@ function formatDateToCN(v: any): string {
 }
 
 
-type StayFilter = 'all' | 'unpaid' | 'pending' | 'upcoming' | 'checkedIn'
+type StayFilter = 'all' | 'unpaid' | 'pending' | 'upcoming' | 'checkedIn'|'refunded'
 
 interface StayFilterOption {
   label: string
@@ -59,9 +59,10 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
     filters: [
       { label: '全部', value: 'all' },
       { label: '待付款', value: 'unpaid' },
-      { label: '待审核', value: 'pending' },
+      // { label: '待审核', value: 'pending' },
       { label: '待入住', value: 'upcoming' },
       { label: '已入住', value: 'checkedIn' },
+      { label: '已退款', value: 'refunded' }
     ],
     activeFilter: 'all',
     items: [],

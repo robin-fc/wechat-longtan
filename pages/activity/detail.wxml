@@ -87,7 +87,7 @@
     <block wx:if="{{isSelf}}">
    
       <view class="bottom-item heart-btn-wrap" bindtap="onToggleCollect">
-        <image class="heart-icon-solid" src="{{isFavorited ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}" mode="aspectFit" />
+        <image class="heart-icon-solid" src="{{activity.isFavorited ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}" mode="aspectFit" />
       </view>
        <view class="bottom-item-wrap"> 
       <view class="bottom-item btn-white" bindtap="onEditTap">

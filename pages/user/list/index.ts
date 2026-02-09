@@ -88,15 +88,15 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
         const nickname = ((u.memberName || u.wxName) || '').trim()
         const avatar = (u.logo || '').trim() || '/assets/images/default-avatar.png'
         const tags = [
-          mapMemberLevelLabel(u.memberLevel),
-          ...mapMemberTags(u.memberTags),
+          mapMemberLevelLabel(u.memberLevel)
         ].filter(Boolean)
-
+        
         return {
           userId: String(u.userId),
           nickname: nickname || `User ${u.userId}`,
           avatar,
           tags,
+          memberLevel:u.memberLevel,
           bio: u.introduction ? String(u.introduction) : '',
           isFollowed: u.followed
         }
