@@ -31,7 +31,10 @@
     "pages/order/detail",
     "pages/digital-nomad/apply/index",
     "pages/volunteer/apply/index",
-    "pages/co-creator/apply/index"
+    "pages/co-creator/apply/index",
+    "pages/about/identity/index",
+    "pages/about/story/index",
+    "pages/about/travel-guide/index"
   ],
   "window": {
     "navigationBarTitleText": "登录",

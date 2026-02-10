@@ -1,0 +1,22 @@
+<view class="travel-guide-page">
+  <view class="page-header">
+    <view class="header-title">出行指南</view>
+    <view class="header-desc">抵达与居住的实用信息</view>
+  </view>
+
+  <view class="guide-content">
+    <block wx:for="{{sections}}" wx:key="title" wx:for-item="section">
+      <view class="guide-section">
+        <view class="section-title">{{section.title}}</view>
+        <view class="section-items">
+          <block wx:for="{{section.items}}" wx:key="label" wx:for-item="item">
+            <view class="guide-item">
+              <view class="item-label">{{item.label}}</view>
+              <view class="item-content">{{item.content}}</view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

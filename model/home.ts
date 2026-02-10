@@ -19,6 +19,7 @@ export interface HomeAboutLink {
   title: string
   url: string
   description?: string
+  path?: string
 }
 
 export interface AppActivityTypeRespVO {

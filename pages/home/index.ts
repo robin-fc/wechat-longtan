@@ -135,6 +135,12 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       url: '/pages/activity/list',
     })
   },
+  onAboutItemTap(e: WechatMiniprogram.BaseEvent) {
+    const item = e.currentTarget.dataset.item as { path?: string }
+    if (item && item.path) {
+      smartNavigateTo(item.path)
+    }
+  },
   onFloatingPublishTap() {
     smartNavigateTo('/pages/activity/publish')
   },

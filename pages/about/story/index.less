@@ -1,0 +1,68 @@
+.story-page {
+  min-height: 100vh;
+  background: #F5F5F5;
+  padding: 32rpx 24rpx 80rpx;
+}
+
+.page-header {
+  margin-bottom: 40rpx;
+  padding: 40rpx 24rpx;
+  background: #000;
+  border-radius: 8rpx;
+  text-align: center;
+}
+
+.header-title {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.4;
+  margin-bottom: 16rpx;
+}
+
+.header-desc {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.story-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.story-section {
+  background: #fff;
+  border-radius: 8rpx;
+  padding: 32rpx 24rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #191919;
+  margin-bottom: 20rpx;
+  line-height: 1.4;
+  position: relative;
+  padding-left: 20rpx;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6rpx;
+    height: 28rpx;
+    background: #000;
+    border-radius: 3rpx;
+  }
+}
+
+.section-content {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+  text-align: justify;
+}

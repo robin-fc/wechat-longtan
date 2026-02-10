@@ -12,24 +12,27 @@ const aboutLinksMock = [
     title: '龙潭故事',
     url: '/assets/icons/about/history.svg',
     description: '了解龙潭的故事',
+    path: '/pages/about/story/index',
   },
   {
     id: 2,
     title: '生活指南',
     url: '/assets/icons/about/lifeGuide.svg',
     description: '抵达与居住的实用信息',
+    path: '/pages/about/travel-guide/index',
   },
-  {
-    id: 3,
-    title: '地图手册',
-    url: '/assets/icons/about/map.svg',
-    description: '了解地图上的标志性地点',
-  },
+  // {
+  //   id: 3,
+  //   title: '地图手册',
+  //   url: '/assets/icons/about/map.svg',
+  //   description: '了解地图上的标志性地点',
+  // },
   {
     id: 4,
     title: '身份说明',
     url: '/assets/icons/about/diamond.svg',
     description: '了解您的身份标签',
+    path: '/pages/about/identity/index',
   },
 ]
 

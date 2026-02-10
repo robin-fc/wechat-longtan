@@ -121,7 +121,7 @@
         <view class="section-divider-line" />
       <view class="about-list">
         <block wx:for="{{pageData.aboutLinks}}" wx:key="id" wx:for-index="idx">
-          <view class="about-item" data-item="{{item}}" bindtap="onEntryTap">
+          <view class="about-item" data-item="{{item}}" bindtap="onAboutItemTap">
             <entry-card size="small" title="{{item.title}}" icon-url="{{item.url}}" />
           </view>
         </block>

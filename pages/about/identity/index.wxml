@@ -1,0 +1,30 @@
+<view class="identity-page">
+  <view class="page-header">
+    <view class="header-title">DAO龙潭小程序身份标签说明</view>
+    <view class="header-desc">这是为DAO龙潭小程序设计的身份标签说明，旨在清晰界定社区成员角色，促进协作与归属感。</view>
+  </view>
+
+  <view class="identity-list">
+    <block wx:for="{{identities}}" wx:key="title">
+      <view class="identity-card">
+        <view class="identity-header">
+          <view class="identity-title">{{item.title}}</view>
+        </view>
+        <view class="identity-content">
+          <view class="identity-section">
+            <view class="section-label">{{item.subtitle}}</view>
+            <view class="section-text">{{item.description}}</view>
+          </view>
+          <view class="identity-section">
+            <view class="section-label">在龙潭的价值</view>
+            <view class="section-text">{{item.value}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="page-footer">
+    <text>{{footer}}</text>
+  </view>
+</view>

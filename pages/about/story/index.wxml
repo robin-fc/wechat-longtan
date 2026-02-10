@@ -1,0 +1,15 @@
+<view class="story-page">
+  <view class="page-header">
+    <view class="header-title">龙潭故事</view>
+    <view class="header-desc">探寻龙潭村的历史与未来</view>
+  </view>
+
+  <view class="story-content">
+    <block wx:for="{{sections}}" wx:key="title">
+      <view class="story-section">
+        <view class="section-title">{{item.title}}</view>
+        <view class="section-content">{{item.content}}</view>
+      </view>
+    </block>
+  </view>
+</view>

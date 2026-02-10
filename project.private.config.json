@@ -23,9 +23,9 @@
     "miniprogram": {
       "list": [
         {
-          "name": "活动报名",
-          "pathName": "pages/activity-order/confirm",
-          "query": "activityId=12",
+          "name": "身份说明",
+          "pathName": "pages/about/identity/index",
+          "query": "",
           "scene": null,
           "launchMode": "default"
         },
