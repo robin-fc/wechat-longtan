@@ -24,6 +24,7 @@ export interface AppOrderCreateReqVO {
   contactName: string
   contactIdCard: string
   contactPhone: string
+  packagePrice: number
 }
 
 export interface AppPayOrderCreateRespVO {

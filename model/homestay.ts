@@ -144,6 +144,10 @@ export interface AppHomestayRoomListItem {
   tags: string
   price: number
   description: string
+  phasePrice?: Array<{
+    packageType: number
+    price: number
+  }>
 }
 
 export interface AppHomestayPackageItem {

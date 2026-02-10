@@ -8,10 +8,10 @@ export function buildUserTagsView(
   memberLevel: string,
   memberTags: string[],
   nomadApplyStatus?: string
-): { levelTags: UserTagView[]; roleTags: UserTagView[] } {
+): { levelTags: UserTagView[]; roleTags: UserTagView[]; noMadTags: UserTagView[] } {
   const levelTags: UserTagView[] = []
   const roleTags: UserTagView[] = []
-
+  const noMadTags: UserTagView[] = []
   const levelText = (memberLevel || '').trim()
 
   if (levelText) {
@@ -28,7 +28,7 @@ export function buildUserTagsView(
       className = 'tag-normal'
     } else if (levelText === '3' || levelText.includes('游客')) {
       label = '游客'
-      className = 'tag-normal'
+      className = 'tag-nomad-green'
       // If user is a visitor, check application status
       if (nomadApplyStatus) {
         // Optionally add another tag or just logic here.
@@ -45,7 +45,7 @@ export function buildUserTagsView(
         let label = nomadApplyStatus
 
         if (nomadApplyStatus === '未申请') {
-          statusClass = 'tag-nomad-green'
+          statusClass = 'tag-nomad-green big'
           action = 'goApply'
           label = '数字游民认证'
         } else if (nomadApplyStatus === '审核中') {
@@ -56,7 +56,7 @@ export function buildUserTagsView(
           action = 'goApply'
         }
 
-        levelTags.push({ label, className: statusClass, action })
+        noMadTags.push({ label, className: statusClass, action })
       }
     }
   }
@@ -93,5 +93,6 @@ export function buildUserTagsView(
   return {
     levelTags: uniqueTags(levelTags),
     roleTags: uniqueTags(roleTags),
+    noMadTags: uniqueTags(noMadTags),
   }
 }

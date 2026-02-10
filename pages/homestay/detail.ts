@@ -127,7 +127,15 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         pageNo: '1',
         pageSize: '10',
       })
-      const rooms: AppHomestayRoomListItem[] = roomList.rooms || []
+      const rooms: AppHomestayRoomListItem[] = (roomList.rooms || []).map(room => {
+        // 根据当前选择的 packageType 更新房间价格
+        const packageTypeNum = Number(activeDuration.value)
+        const priceForPackage = room.phasePrice?.find(p => p.packageType === packageTypeNum)
+        return {
+          ...room,
+          price: priceForPackage?.price ?? room.price
+        }
+      })
       this.setData({
         rooms,
       }, () => {
@@ -200,7 +208,15 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '10',
     }).then((roomList) => {
-      const rooms: AppHomestayRoomListItem[] = roomList.rooms || []
+      const packageTypeNum = Number(current.value)
+      const rooms: AppHomestayRoomListItem[] = (roomList.rooms || []).map(room => {
+        // 根据当前选择的 packageType 更新房间价格
+        const priceForPackage = room.phasePrice?.find(p => p.packageType === packageTypeNum)
+        return {
+          ...room,
+          price: priceForPackage?.price ?? room.price
+        }
+      })
       this.setData({ rooms })
     })
   },
@@ -241,7 +257,15 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       pageNo: '1',
       pageSize: '10',
     }).then((roomList) => {
-      const rooms: AppHomestayRoomListItem[] = roomList.rooms || []
+      const packageTypeNum = Number(selected.value)
+      const rooms: AppHomestayRoomListItem[] = (roomList.rooms || []).map(room => {
+        // 根据当前选择的 packageType 更新房间价格
+        const priceForPackage = room.phasePrice?.find(p => p.packageType === packageTypeNum)
+        return {
+          ...room,
+          price: priceForPackage?.price ?? room.price
+        }
+      })
       this.setData({ rooms })
     })
   },

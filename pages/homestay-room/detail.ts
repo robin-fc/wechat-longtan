@@ -13,6 +13,8 @@ interface RoomDetailState {
   totalPrice: number
   displayDateRange: string
   showPermissionPopup: boolean
+  packageType: string
+  packageName: string
 }
 
 Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
@@ -26,6 +28,8 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     totalPrice: 0,
     displayDateRange: '',
     showPermissionPopup: false,
+    packageType: '',
+    packageName: '',
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -81,19 +85,31 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       homestayId,
       checkInDate,
       checkOutDate,
+      packageType: duration,
     })
 
-    await this.fetchRoomDetail(homestayId, id)
+    await this.fetchRoomDetail(homestayId, id, duration)
     this.updateNights()
   },
   async fetchRoomDetail(
     homestayId: string,
-    id: string
+    id: string,
+    packageType?: string
   ) {
     try {
       const res = await getRoomDetail({ id: Number(id) })
 
       const duration = (res.roomNumber || '').split('-')[1] || '一周起'
+
+      // 根据 packageType 从 phasePrice 中获取对应价格
+      let roomPrice = res.price || 0
+      if (packageType && res.phasePrice && res.phasePrice.length > 0) {
+        const packageTypeNum = Number(packageType)
+        const priceItem = res.phasePrice.find(p => p.packageType === packageTypeNum)
+        if (priceItem) {
+          roomPrice = priceItem.price
+        }
+      }
 
       // Map API response to HomestayRoom model
       const room: HomestayRoom = {
@@ -109,7 +125,7 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
         bookingNotice: res.bookNotice || '',
         priceRule: res.priceRule || '',
         checkInProcess: res.checkInProcess || '',
-        price: { amount: res.price || 0, currency: 'CNY', unit: '天' },
+        price: { amount: roomPrice, currency: 'CNY', unit: '天' },
         capacity: 2,
         facilities: res.tags || [],
         attributes: Array.isArray(res.attributes) ? res.attributes : [],
@@ -167,9 +183,10 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     if (!isNaN(start) && !isNaN(end) && end > start) {
       const diff = end - start
       const nights = Math.round(diff / (24 * 60 * 60 * 1000))
+      // phasePrice 中的价格已经是总包价格，不需要乘以天数
       const amount =
         state.room && state.room.price ? state.room.price.amount : 0
-      const totalPrice = nights * amount
+      const totalPrice = amount  // 直接使用总包价格
       const inDate = state.checkInDate
       const outDate = state.checkOutDate
       const displayDateRange =
@@ -211,7 +228,9 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
           state.room.homestayId
         )}&startDate=${encodeURIComponent(
           state.checkInDate
-        )}&duration=${encodeURIComponent(String(state.nights))}`
+        )}&duration=${encodeURIComponent(String(state.nights))}&packageType=${encodeURIComponent(
+          state.packageType || ''
+        )}`
       )
     })
   },

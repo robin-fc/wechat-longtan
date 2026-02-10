@@ -36,13 +36,13 @@
             <text class="application-label">数字游民</text>
           </view>
         </view>
-        <view class="application-button" bindtap="onVolunteerApplyTap">
+        <!-- <view class="application-button" bindtap="onVolunteerApplyTap">
           <image class="application-icon" src="/assets/icons/home/icon_volunteer.svg" mode="aspectFit" />
           <view class="application-text-wrapper">
             <text class="application-label">成为</text>
             <text class="application-label">志愿者</text>
           </view>
-        </view>
+        </view> -->
         <view class="application-button" bindtap="onCoCreatorApplyTap">
           <image class="application-icon" src="/assets/icons/home/icon_cocreator.svg" mode="aspectFit" />
           <view class="application-text-wrapper">

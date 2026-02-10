@@ -42,7 +42,7 @@
 
 .user-info-card {
   padding: 40rpx 0 30rpx 0;
-
+  
   .tag {
     font-size: 24rpx;
     padding: 6rpx 24rpx;
@@ -111,10 +111,12 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: 8rpx;
 
         .name-left {
           display: flex;
           align-items: center;
+          flex: 1;
 
           .nickname {
             font-size: 32rpx;
@@ -125,17 +127,31 @@
 
           .edit-icon-wrap {
             padding: 8rpx;
+            margin-right: 8rpx;
 
             .edit-icon {
               width: 20rpx;
               height: 24rpx;
             }
           }
+
+          .name-left .level-tag {
+            font-size: 20rpx;
+            padding: 0 6rpx;
+            height: 36rpx;
+            line-height: 36rpx;
+            
+            text-align: center;
+            box-sizing: border-box;
+          }
         }
 
-        .tags {
+        .name-right {
           display: flex;
+          align-items: center;
           gap: 8rpx;
+
+         
         }
       }
 
@@ -207,7 +223,10 @@
     }
   }
 }
-
+.name-left .tag{
+  font-size: 20rpx!important;
+  padding: 0 10rpx!important;
+}
 .menu-section {
   margin-bottom: 24rpx;
 

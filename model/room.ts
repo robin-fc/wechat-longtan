@@ -30,6 +30,12 @@ export interface AppRoomDetailRes {
   /*房间价格 */
   price: number
 
+  /*阶段价格（不同套餐类型的价格） */
+  phasePrice?: Array<{
+    packageType: number
+    price: number
+  }>
+
   /*房间属性列表（label-value格式） */
   attributes: {
     /*属性标签 */

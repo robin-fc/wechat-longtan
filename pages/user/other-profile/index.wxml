@@ -24,11 +24,13 @@
         <view class="name-row">
           <view class="name-left">
             <text class="nickname">{{userInfo.nickname}}</text>
-            
+            <text class="tag level-tag {{item.className}}" wx:for="{{userInfo.levelTags}}" wx:key="*this">{{item.label}}</text>
           </view>
-         
+          <view class="name-right">
+            <text class="tag role-tag {{item.className}}" wx:for="{{userInfo.roleTags}}" wx:key="*this">{{item.label}}</text>
+          </view>
         </view>
-       
+
         <view class="id-row">
           <text class="user-id">ID {{userInfo.userNumber}}</text>
         </view>
@@ -36,11 +38,6 @@
           <text class="join-time">{{userInfo.joinTime}}加入</text>
         </view>
       </view>
-    </view>
-    <view class="tags">
-      <text class="tag {{item.className}}" wx:for="{{userInfo.levelTags}}" wx:key="*this">{{item.label}}</text>
-      <text class="tag {{item.className}}" wx:for="{{userInfo.roleTags}}" wx:key="*this">{{item.label}}</text>
-
     </view>
     <view class="bio-row">
       <text class="bio">{{userInfo.bio || '这个人很懒，什么都没写~'}}</text>

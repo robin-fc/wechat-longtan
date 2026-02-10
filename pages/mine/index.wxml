@@ -21,9 +21,11 @@
               <view class="edit-icon-wrap" bindtap="onEditProfileTap">
                 <image class="edit-icon" src="/assets/icons/edit.svg" mode="aspectFit" />
               </view>
+              <text class="tag level-tag {{item.className}}" wx:for="{{profile.levelTags}}" wx:for-item="item" wx:key="label"
+                    bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
             </view>
-            <view class="tags">
-              <text class="tag tag-nomad-green" wx:for="{{profile.levelTags}}" wx:for-item="item" wx:key="label" 
+            <view class="name-right">
+              <text class="tag role-tag {{item.className}}" wx:for="{{profile.noMadTags}}" wx:for-item="item" wx:key="label"
                     bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
             </view>
           </view>
@@ -35,7 +37,7 @@
           </view>
         </view>
       </view>
-      <view class="identity-tags-row" wx:if="{{profile.roleTags && profile.roleTags.length > 0}}">
+       <view class="identity-tags-row" wx:if="{{profile.roleTags && profile.roleTags.length > 0}}">
          <text class="tag {{item.className}}" wx:for="{{profile.roleTags}}" wx:for-item="item" wx:key="label" 
                bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
       </view>

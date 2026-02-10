@@ -59,6 +59,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     const homestayId = options.homestayId as string
     const startDate = options.startDate as string
     const duration = parseInt(options.duration as string, 10) || 1
+    const packageType = options.packageType as string
     console.log(options)
     if (!roomId || !homestayId) {
       return
@@ -82,6 +83,17 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
 
 
     const res = await getRoomDetail({ id: Number(roomId) })
+
+    // 根据 packageType 从 phasePrice 中获取对应价格
+    let roomPrice = res.price || 0
+    if (packageType && res.phasePrice && res.phasePrice.length > 0) {
+      const packageTypeNum = Number(packageType)
+      const priceItem = res.phasePrice.find(p => p.packageType === packageTypeNum)
+      if (priceItem) {
+        roomPrice = priceItem.price
+      }
+    }
+
     const room: HomestayRoom = {
       id: String(res.id),
       homestayId: String(res.homestayId),
@@ -89,7 +101,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       images: (res.photos || []).map((url, index) => ({ id: `p-${index}`, url })),
       description: res.description,
       stayDurationText: '',
-      price: { amount: res.price, currency: 'CNY', unit: '天' },
+      price: { amount: roomPrice, currency: 'CNY', unit: '天' },
       capacity: 2,
       facilities: res.tags,
       tags: res.tags,
@@ -110,7 +122,8 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
             ? '三月'
             : ''
       }`
-    const totalPrice = (room.price?.amount || 0) * duration
+    // phasePrice 中的价格已经是总包价格，不需要乘以天数
+    const totalPrice = room.price?.amount || 0
     this.setData({
       room,
       roomNameDisplay: display,
@@ -175,8 +188,8 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     this.setData({ checkInDate: inDate })
     const nights = inDate && outDate ? Math.max(1, Math.ceil((new Date(outDate).getTime() - new Date(inDate).getTime()) / (24 * 60 * 60 * 1000))) : 1
     const room = (this.data as ApplyFormState).room
-    const amount = room ? room.price.amount : 0
-    const total = amount * nights
+    // phasePrice 中的价格已经是总包价格，不需要乘以天数
+    const total = room ? room.price.amount : 0
     this.setData({
       nightsCount: nights,
       totalPrice: total,
@@ -204,8 +217,8 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     this.setData({ checkOutDate: outDate })
     const nights = inDate && outDate ? Math.max(1, Math.ceil((new Date(outDate).getTime() - new Date(inDate).getTime()) / (24 * 60 * 60 * 1000))) : 1
     const room = (this.data as ApplyFormState).room
-    const amount = room ? room.price.amount : 0
-    const total = amount * nights
+    // phasePrice 中的价格已经是总包价格，不需要乘以天数
+    const total = room ? room.price.amount : 0
     this.setData({
       nightsCount: nights,
       totalPrice: total,
@@ -290,6 +303,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       contactName: form.name.trim(),
       contactIdCard: form.idCard.trim(),
       contactPhone: form.phone.trim(),
+      packagePrice: state.totalPrice,
     }
     wx.showLoading({ title: '创建订单中...', mask: true })
     createAccommodationOrder(params)

@@ -65,6 +65,7 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
           gender: profile.sex || 2, // 默认为女
           levelTags: tags.levelTags,
           roleTags: tags.roleTags,
+          noMadTags: tags.noMadTags,
           nomadApplyStatus: profile.nomadApplyStatus,
         }
 

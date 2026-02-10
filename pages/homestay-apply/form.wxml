@@ -9,7 +9,7 @@
       <view class="date-section">
         <text class="section-label">入离日期</text>
         <view class="date-display-row">
-          <picker mode="date" value="{{checkInDate}}" bindchange="onCheckInChange" class="date-picker-wrap">
+          <picker mode="date" value="{{checkInDate}}" class="date-picker-wrap" disabled="{{true}}">
             <view class="date-item">
               <text class="date-text">{{checkInDateDesc}}</text>
               <text class="week-text">{{checkInWeekDesc}}</text>
@@ -20,7 +20,7 @@
             <text class="duration-text">共{{nightsCount}}晚</text>
             <view class="line"></view>
           </view>
-          <picker mode="date" value="{{checkOutDate}}" bindchange="onCheckOutChange" class="date-picker-wrap">
+          <picker mode="date" value="{{checkOutDate}}" class="date-picker-wrap" disabled="{{true}}">
             <view class="date-item text-right">
               <text class="date-text">{{checkOutDateDesc}}</text>
               <text class="week-text">{{checkOutWeekDesc}}</text>

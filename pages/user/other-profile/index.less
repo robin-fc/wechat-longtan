@@ -142,16 +142,28 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-bottom: 8rpx;
 
         .name-left {
           display: flex;
           align-items: center;
+          flex: 1;
 
           .nickname {
             font-size: 32rpx;
             font-weight: 600;
             color: #191919;
             margin-right: 8rpx;
+          }
+
+          .level-tag {
+            font-size: 20rpx;
+            padding: 0 12rpx;
+            height: 36rpx;
+            line-height: 36rpx;
+            width: 76rpx;
+            text-align: center;
+            box-sizing: border-box;
           }
 
           .edit-icon-wrap {
@@ -164,9 +176,19 @@
           }
         }
 
-        .tags {
+        .name-right {
           display: flex;
+          align-items: center;
           gap: 8rpx;
+
+          .role-tag {
+            font-size: 20rpx;
+            padding: 0 12rpx;
+            height: 36rpx;
+            line-height: 36rpx;
+            text-align: center;
+            white-space: nowrap;
+          }
         }
       }
 
