@@ -10,7 +10,7 @@ function formatDateToCN(v: any): string {
 }
 
 
-type StayFilter = 'all' | 'unpaid' | 'pending' | 'upcoming' | 'checkedIn'|'refunded'
+type StayFilter = 'all' | 'unpaid' | 'pending' | 'upcoming' | 'checkedIn' | 'refunded'
 
 interface StayFilterOption {
   label: string
@@ -36,14 +36,6 @@ interface MyStaysState {
   items: StayItemView[]
 }
 
-function mapPaymentStatusText(status: number): string {
-  if (status === 0) return '待支付'
-  if (status === 1) return '支付中'
-  if (status === 2) return '支付成功'
-  if (status === 3) return '支付失败'
-  if (status === 4) return '已关闭'
-  return ''
-}
 
 const RoomTagMap: Record<string, string> = {
   '0': '独立卫生间',
@@ -58,7 +50,7 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
   data: {
     filters: [
       { label: '全部', value: 'all' },
-      { label: '待付款', value: 'unpaid' },
+      // { label: '待付款', value: 'unpaid' },
       // { label: '待审核', value: 'pending' },
       { label: '待入住', value: 'upcoming' },
       { label: '已入住', value: 'checkedIn' },
@@ -94,13 +86,15 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
             ? '2'
             : filter === 'upcoming'
               ? '3'
-              : '4'
+              : filter === 'refunded'
+                ? '6'
+                : '4'
     const page = await getMyOrderList(type, '1', '20')
     const list: AppOrderListRespVO[] = (page && page.list) || []
     const items: StayItemView[] = list.map((it) => ({
       id: it.bizOrderNo,
       title: it.title,
-      statusText: mapPaymentStatusText(Number(it.status)),
+      statusText: it.status,
       timeText: `${formatDateToCN(it.checkInDate)}-${formatDateToCN(it.checkOutDate)}`,
       address: '龙潭民宿',
       showPayButton: type === '1' || (type === '5' && Number(it.status) === 0),

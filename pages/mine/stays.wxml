@@ -16,7 +16,7 @@
       <view class="card" data-biz="{{item.id}}" bindtap="onItemTap">
         <view class="card-header">
           <text class="date-range">入离日期：{{item.timeText}}</text>
-          <view class="status-tag {{item.statusText === '待审核' ? 'pending' : ''}}">
+          <view class="status-tag">
             <text>{{item.statusText}}</text>
           </view>
         </view>
@@ -40,14 +40,7 @@
           >
             <text>立即支付</text>
           </view>
-          <view
-            wx:if="{{item.showCancelButton}}"
-            class="btn cancel-btn"
-            data-biz="{{item.id}}"
-            catchtap="onCancelTap"
-          >
-            <text>取消订单</text>
-          </view>
+          
         </view>
       </view>
     </block>
