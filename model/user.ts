@@ -16,6 +16,7 @@ export interface UserProfile {
 }
 
 export interface AppUserDetailRespVO {
+  followed: boolean;
   id: number
   wxName?: string
   logo?: string

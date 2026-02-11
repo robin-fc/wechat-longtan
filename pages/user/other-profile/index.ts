@@ -90,8 +90,7 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
 
   async loadUserInfo(
     this: WechatMiniprogram.Page.TrivialInstance,
-    userId: string,
-    isFollowedOpt?: string
+    userId: string
   ) {
     if (!userId) return
     try {
@@ -101,7 +100,6 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
       ])
 
       const tags = buildUserTagsView(raw?.memberLevel || '', raw?.memberTags || [])
-
 
 
 
@@ -118,12 +116,7 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
         bio: (raw?.desc || '') || '',
         followingCount: summary.followingCount || 0,
         followerCount: summary.followerCount || 0,
-        isFollowed:
-          isFollowedOpt !== undefined &&
-            isFollowedOpt !== 'undefined' &&
-            isFollowedOpt !== ''
-            ? isFollowedOpt === 'true'
-            : false, //todo
+        isFollowed:raw.followed
       }
       this.setData({ userInfo })
     } catch {
@@ -183,6 +176,7 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
           avatar: it.organizer?.logo || it.creatorAvatar || '',
           logo: it.organizer?.logo || it.creatorAvatar || '',
           memberLevel: it.organizer?.levelLabel || '',
+       
           tag: ''
         }
 

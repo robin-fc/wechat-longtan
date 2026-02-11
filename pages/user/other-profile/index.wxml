@@ -24,10 +24,11 @@
         <view class="name-row">
           <view class="name-left">
             <text class="nickname">{{userInfo.nickname}}</text>
-            <text class="tag level-tag {{item.className}}" wx:for="{{userInfo.levelTags}}" wx:key="*this">{{item.label}}</text>
+            
           </view>
           <view class="name-right">
-            <text class="tag role-tag {{item.className}}" wx:for="{{userInfo.roleTags}}" wx:key="*this">{{item.label}}</text>
+            <text class="tag level-tag tag-nomad-green" wx:for="{{userInfo.levelTags}}" wx:for-item="item" wx:key="label"
+                    bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
           </view>
         </view>
 
@@ -39,6 +40,12 @@
         </view>
       </view>
     </view>
+    
+    <view class="identity-tags-row" wx:if="{{userInfo.roleTags}}" >
+    
+         <text class="tag {{item.className}}" wx:for="{{userInfo.roleTags}}" wx:for-item="item" wx:key="label" 
+          >{{item.label}}</text>
+      </view>
     <view class="bio-row">
       <text class="bio">{{userInfo.bio || '这个人很懒，什么都没写~'}}</text>
     </view>
