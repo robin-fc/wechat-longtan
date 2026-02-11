@@ -255,7 +255,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     if (!activity || !activity.organizer) return
 
     const isFollowing = (this.data as ActivityDetailState).activity?.organizer
-      .follow
+      .followed;
     const organizerId = activity.organizer.userId
 
     if (isFollowing) {
@@ -269,7 +269,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
             this.setData({
               activity: {
                 ...activity,
-                organizer: { ...activity.organizer, follow: false },
+                organizer: { ...activity.organizer, followed: false },
               },
             })
             wx.showToast({ title: '已取消关注', icon: 'none' })
@@ -281,7 +281,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       this.setData({
         activity: {
           ...activity,
-          organizer: { ...activity.organizer, follow: true },
+          organizer: { ...activity.organizer, followed: true },
         },
       })
       wx.showToast({ title: '关注成功', icon: 'none' })

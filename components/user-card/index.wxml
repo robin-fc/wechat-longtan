@@ -14,8 +14,8 @@
   </view>
   
   <view wx:if="{{showFollow && !isSelf}}" 
-        class="follow-btn {{user.follow ? 'following' : ''}}" 
+        class="follow-btn {{user.followed ? 'following' : ''}}" 
         catchtap="onFollowTap">
-      <text>{{user.follow ? '已关注' : '关注'}}</text>
+      <text>{{user.followed ? '已关注' : '关注'}}</text>
   </view>
 </view>

@@ -116,6 +116,7 @@ export interface RegistrationUser {
 
 export interface Organizer extends RegistrationUser {
   follow: boolean
+  followed: boolean
 }
 export interface FavoriteUser extends RegistrationUser { }
 
