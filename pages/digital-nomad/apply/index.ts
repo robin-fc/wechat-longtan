@@ -141,7 +141,7 @@ Page({
     onCheckboxToggle(e: WechatMiniprogram.BaseEvent) {
         const field = e.currentTarget.dataset.field
         const value = String(e.currentTarget.dataset.value || '')
-        
+
         const state = this.data as any
         const current = Array.isArray(state.formData?.[field]) ? [...state.formData[field]] : []
         const idx = current.indexOf(value)
@@ -207,5 +207,16 @@ Page({
             wx.hideLoading()
             wx.showToast({ title: e.message || '提交失败', icon: 'none' })
         }
-    }
+    },
+    onShareAppMessage() {
+        return {
+            title: 'DAO龙潭 - 数字游民申请表',
+            path: '/pages/digital-nomad/apply/index',
+        }
+    },
+    onShareTimeline() {
+        return {
+            title: 'DAO龙潭 - 数字游民申请表',
+        }
+    },
 })

@@ -1,7 +1,74 @@
 <view class="container">
-  <view class="content">
-    欢迎来到“DAO龙潭”（以下简称“本社区”）。我们是一个由数字游民共建、共治、共享的去中心化自治社区。保护您的隐私和数据安全是我们核心原则之一。
-本协议旨在向您说明，当您参与本社区（包括但不限于访问我们的网站、使用Discord/Slack等通讯服务器、参与线下活动、使用社区开发的工具或参与DAO治理）时，我们如何收集、使用、披露和保护您的个人信息。
+  <scroll-view scroll-y class="policy-content">
+    <view class="header">
+      <view class="title">DAO龙潭服务协议</view>
+    </view>
+    
+    <view class="section">
+      <view class="p">欢迎您使用“DAO龙潭”小程序（以下简称“本小程序”）。本协议是您与屏南众创文旅产业发展有限公司（以下简称“我们”）之间关于您使用本小程序及相关服务的协议。</view>
+      <view class="p">请您务必审慎阅读、充分理解各条款内容，特别是免除或者限制责任的条款，以及开通或使用某项服务的单独协议，并选择接受或不接受。限制、免责条款可能以加粗形式提示您注意。</view>
+      <view class="p">除非您已阅读并接受本协议所有条款，否则您无权使用本小程序提供的服务。您对本小程序的登录、查看、使用等行为即视为您已阅读并同意本协议的约束。</view>
+    </view>
+
+    <view class="section">
+      <view class="h2">一、服务内容</view>
+      <view class="p">本小程序提供的服务包括但不限于：</view>
+      <view class="ul">
+        <view class="li">社区资讯浏览与互动；</view>
+        <view class="li">民宿预订与管理；</view>
+        <view class="li">社区活动报名与组织；</view>
+        <view class="li">共创者、数字游民身份认证与申请；</view>
+        <view class="li">志愿者招募与协作；</view>
+        <view class="li">其他社区共建相关功能。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="h2">二、用户行为规范</view>
+      <view class="p">您在使用本服务时，必须遵守中华人民共和国相关法律法规的规定，不得利用本服务进行任何违法或不正当的活动，包括但不限于：</view>
+      <view class="ul">
+        <view class="li">以任何方式危害国家安全、泄露国家秘密、颠覆国家政权、破坏国家统一；</view>
+        <view class="li">散布谣言、扰乱社会秩序、破坏社会稳定；</view>
+        <view class="li">散布淫秽、色情、赌博、暴力、凶杀、恐怖或者教唆犯罪；</view>
+        <view class="li">侮辱或者诽谤他人，侵害他人合法权益；</view>
+        <view class="li">利用本服务从事洗钱、窃取商业秘密、窃取个人信息等违法犯罪活动；</view>
+        <view class="li">干扰本小程序的正常运营，侵入本小程序及国家计算机信息系统。</view>
+      </view>
+    </view>
+
+    <view class="section">
+      <view class="h2">三、用户个人信息保护</view>
+      <view class="p">保护用户个人信息是我们的基本原则。我们将按照本协议及《隐私政策》的规定收集、使用、储存和分享您的个人信息。本协议对个人信息保护相关内容未作明确规定的，均应以《隐私政策》的内容为准。</view>
+    </view>
+
+    <view class="section">
+      <view class="h2">四、知识产权声明</view>
+      <view class="p">本小程序所有内容（包括但不限于文字、图片、音频、视频、图表、界面设计、版面框架、数据和电子文档等）的知识产权均归我们或相关权利人所有。未经书面许可，您不得以任何方式擅自使用或通过任何机器人、蜘蛛等程序或设备监视、复制、传播、展示、镜像、上载、下载。</view>
+      <view class="p">您在使用本社区服务时发布的内容（如共创故事、活动记录等），您承诺拥有该内容的知识产权或已获得合法授权，并授权我们在社区宣传推广范围内非独家使用。</view>
+    </view>
+
+    <view class="section">
+      <view class="h2">五、免责声明</view>
+      <view class="p">鉴于网络服务的特殊性，您同意我们有权随时变更、中断或终止部分或全部的网络服务。如因系统维护或升级的需要而需暂停网络服务，我们将尽可能事先进行通告。</view>
+      <view class="p">我们不保证服务一定能满足您的要求，也不保证服务不会中断，对服务的及时性、安全性、准确性也都不作保证。</view>
+      <view class="p">对于因不可抗力或我们不能控制的原因造成的网络服务中断或其它缺陷，我们不承担任何责任，但将尽力减少因此而给您造成的损失和影响。</view>
+    </view>
+
+    <view class="section">
+      <view class="h2">六、协议的修改</view>
+      <view class="p">我们需要根据国家法律法规变化及社区运营需要，不时修改本协议。本协议条款变更后，如果您继续使用本服务，即视为您已接受修改后的协议。如果您不接受修改后的协议，应当停止使用本服务。</view>
+    </view>
+
+    <view class="section">
+      <view class="h2">七、其他</view>
+      <view class="p">本协议的订立、执行和解释及争议的解决均应适用中华人民共和国法律。</view>
+      <view class="p">如双方就本协议内容或其执行发生任何争议，双方应尽量友好协商解决；协商不成时，任何一方均可向我们所在地人民法院提起诉讼。</view>
+    </view>
+
+    <view class="footer-space"></view>
+  </scroll-view>
+
+  <view class="footer-btn">
+    <button class="agree-btn" bindtap="onAgree" disabled="{{isAgreed}}">{{isAgreed ? '已同意并阅读' : '我已阅读并同意'}}</button>
   </view>
-  <button class="agree-btn" bindtap="onAgree" disabled="{{isAgreed}}">{{isAgreed ? '已同意' : '同意'}}</button>
 </view>

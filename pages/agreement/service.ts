@@ -3,12 +3,12 @@ Page({
     isAgreed: false,
   },
   onLoad() {
-    const isAgreed = wx.getStorageSync('privacyAccepted') || false
+    const isAgreed = wx.getStorageSync('serviceAccepted') || false
     this.setData({ isAgreed })
   },
   onAgree(this: WechatMiniprogram.Page.TrivialInstance) {
     if (this.data.isAgreed) return
-    wx.setStorageSync('privacyAccepted', true)
+    wx.setStorageSync('serviceAccepted', true)
     this.setData({ isAgreed: true })
     wx.navigateBack()
   },

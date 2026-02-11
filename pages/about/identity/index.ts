@@ -10,7 +10,7 @@ interface IdentityPageData {
   footer: string
 }
 
-Page<IdentityPageData>({
+Page<IdentityPageData, WechatMiniprogram.IAnyObject>({
   data: {
     identities: [
       {
@@ -29,7 +29,7 @@ Page<IdentityPageData>({
         title: '老村民',
         subtitle: '核心定义',
         description: '龙潭村原住居民，乡村文化与记忆的承载者。熟知本地历史、习俗与自然生态，拥有传统生计经验。',
-        value: '是社区文脉的"活地图"与稳定基石，其知识、经验与包容为新旧融合提供土壤。',
+        value: '是社区文脉的“活地图”与稳定基石，其知识、经验与包容为新旧融合提供土壤。',
       },
       {
         title: '空间主理人',

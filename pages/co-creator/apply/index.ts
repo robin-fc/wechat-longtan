@@ -207,5 +207,16 @@ Page({
             wx.hideLoading()
             wx.showToast({ title: e.message || '提交失败', icon: 'none' })
         }
-    }
+    },
+    onShareAppMessage() {
+        return {
+            title: 'DAO龙潭 - 共创人申请表',
+            path: '/pages/co-creator/apply/index',
+        }
+    },
+    onShareTimeline() {
+        return {
+            title: 'DAO龙潭 - 共创人申请表',
+        }
+    },
 })

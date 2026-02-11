@@ -8,7 +8,23 @@
     <block wx:for="{{sections}}" wx:key="title">
       <view class="story-section">
         <view class="section-title">{{item.title}}</view>
-        <view class="section-content">{{item.content}}</view>
+        <view class="section-content" wx:if="{{item.content}}">
+          <block wx:for="{{item.content}}" wx:key="*this" wx:for-item="p">
+            <view class="paragraph">{{p}}</view>
+          </block>
+        </view>
+        <view class="subsections" wx:if="{{item.subsections}}">
+          <block wx:for="{{item.subsections}}" wx:key="title" wx:for-item="sub">
+            <view class="subsection">
+              <view class="subsection-title" wx:if="{{sub.title}}">{{sub.title}}</view>
+              <view class="subsection-content">
+                <block wx:for="{{sub.content}}" wx:key="*this" wx:for-item="p">
+                  <view class="paragraph">{{p}}</view>
+                </block>
+              </view>
+            </view>
+          </block>
+        </view>
       </view>
     </block>
   </view>

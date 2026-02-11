@@ -25,7 +25,7 @@ export function buildUserTagsView(
       className = 'tag-new'
     } else if (levelText === '2' || levelText.includes('数字游民')) {
       label = '数字游民'
-      className = 'tag-normal'
+      className = 'tag-nomad-green'
     } else if (levelText === '3' || levelText.includes('游客')) {
       label = '游客'
       className = 'tag-nomad-green'

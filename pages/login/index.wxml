@@ -3,10 +3,10 @@
     <image src="/assets/images/DAO.png" class="logo-img" />
   </view>
 
-  <button wx:if="{{!checked}}" class="login-btn" bindtap="onLoginTap">微信授权登录</button>
-  <button wx:elif="{{checked && !isLoggedIn}}" class="login-btn" bindtap="onWeChatLoginTap">微信授权登录</button>
-  <button wx:elif="{{checked && isLoggedIn && !phoneBound}}" class="login-btn" open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">微信授权绑定手机号</button>
-  <button wx:elif="{{checked && isLoggedIn && phoneBound && !profileCompleted}}" class="login-btn" bindtap="onAuthorizeTap">微信授权头像昵称</button>
+  <button wx:if="{{!checked}}" class="login-btn" bindtap="onLoginTap">授权登录</button>
+  <button wx:elif="{{checked && !isLoggedIn}}" class="login-btn" bindtap="onWeChatLoginTap">授权登录</button>
+  <button wx:elif="{{checked && isLoggedIn && !phoneBound}}" class="login-btn" open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">绑定手机号</button>
+  <button wx:elif="{{checked && isLoggedIn && phoneBound && !profileCompleted}}" class="login-btn" bindtap="onAuthorizeTap">授权头像昵称</button>
 
   <view class="agree-row">
     <checkbox-group bindchange="onCheckChange">

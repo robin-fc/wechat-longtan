@@ -1,6 +1,6 @@
 <view class="travel-guide-page">
   <view class="page-header">
-    <view class="header-title">出行指南</view>
+    <view class="header-title">龙潭村在地生活指南</view>
     <view class="header-desc">抵达与居住的实用信息</view>
   </view>
 
@@ -12,7 +12,12 @@
           <block wx:for="{{section.items}}" wx:key="label" wx:for-item="item">
             <view class="guide-item">
               <view class="item-label">{{item.label}}</view>
-              <view class="item-content">{{item.content}}</view>
+              <view class="item-content">
+                <block wx:for="{{item.content}}" wx:key="index" wx:for-item="segment">
+                  <text wx:if="{{segment.type === 'text'}}" user-select>{{segment.text}}</text>
+                  <text wx:if="{{segment.type === 'phone'}}" class="phone-link" bindtap="onPhoneTap" data-phone="{{segment.phoneNumber}}">{{segment.text}}</text>
+                </block>
+              </view>
             </view>
           </block>
         </view>
