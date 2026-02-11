@@ -1,11 +1,11 @@
-import { goBack, smartNavigateTo } from '../../utils/navigation'
-import { toISO8601 } from '../../utils/isoTime'
 import { createActivity, getActivityTypeList } from '../../api/activity'
-import { getSpaceList } from '../../api/space'
-import { getMyActivityCollections } from '../../api/activity-collection'
+import { getActivityCollections } from '../../api/activity-collection'
 import { uploadImage } from '../../api/common'
 import { fetchMyProfile } from '../../api/mine'
+import { getSpaceList } from '../../api/space'
 import type { ActivityType as ActivityTypeItem } from '../../model/activity'
+import { toISO8601 } from '../../utils/isoTime'
+import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 interface PublishFormState {
   title: string
@@ -140,11 +140,15 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
 
         if (!isDigitalNomad) {
           this.setData({ showPermissionPopup: true })
+          return
         }
       }
     } catch (e) {
       console.error('Failed to fetch profile', e)
     }
+
+    // 权限检查通过，加载初始数据
+    await this.loadInitialData()
   },
   onPermissionApply(this: WechatMiniprogram.Page.TrivialInstance) {
     smartNavigateTo('/pages/digital-nomad/apply/index')
@@ -154,13 +158,9 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     goBack()
   },
   async loadInitialData(this: WechatMiniprogram.Page.TrivialInstance) {
-    if (!this.data.showPermissionPopup) {
-      await this.loadInitialData()
-    }
-  },
-  async loadInitialData(this: WechatMiniprogram.Page.TrivialInstance) {
     try {
-      const page = await getMyActivityCollections('1', '100')
+      const page = await getActivityCollections('1', '100')
+      console.log('page', page)
       const options = (page.list || []).map((it) => ({
         id: String(it.id),
         name: it.name || '',

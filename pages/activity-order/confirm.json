@@ -1,4 +1,6 @@
 {
-  "navigationBarTitleText": "确认订单"
+  "navigationBarTitleText": "确认订单",
+  "usingComponents": {
+    "phone-auth": "/components/phone-auth/index"
+  }
 }
-

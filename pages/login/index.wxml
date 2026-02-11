@@ -5,8 +5,16 @@
 
   <button wx:if="{{!checked}}" class="login-btn" bindtap="onLoginTap">授权登录</button>
   <button wx:elif="{{checked && !isLoggedIn}}" class="login-btn" bindtap="onWeChatLoginTap">授权登录</button>
-  <button wx:elif="{{checked && isLoggedIn && !phoneBound}}" class="login-btn" open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">绑定手机号</button>
-  <button wx:elif="{{checked && isLoggedIn && phoneBound && !profileCompleted}}" class="login-btn" bindtap="onAuthorizeTap">授权头像昵称</button>
+  <!-- <phone-auth 
+    wx:elif="{{checked && isLoggedIn && !phoneBound}}" 
+    checked="{{checked}}"
+    className="login-btn"
+    bindsuccess="onPhoneAuthSuccess"
+    binddenied="onPhoneAuthDenied"
+  >
+    绑定手机号
+  </phone-auth> -->
+  <button wx:elif="{{checked && isLoggedIn && !profileCompleted}}" class="login-btn" bindtap="onAuthorizeTap">授权头像昵称</button>
 
   <view class="agree-row">
     <checkbox-group bindchange="onCheckChange">
@@ -21,7 +29,7 @@
     <view class="modal-mask" bindtap="closeProfileModal"></view>
     <view class="modal-content">
       <view class="modal-header">
-        <text class="modal-title">请授权头像与昵称</text>
+        <text class="modal-title">完善个人信息</text>
         <view class="close-btn" bindtap="closeProfileModal">✕</view>
       </view>
       <view class="modal-body">

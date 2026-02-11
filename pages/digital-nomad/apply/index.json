@@ -3,5 +3,7 @@
     "navigationBarBackgroundColor": "#ffffff",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom",
-    "usingComponents": {}
+    "usingComponents": {
+        "phone-auth": "/components/phone-auth/index"
+    }
 }

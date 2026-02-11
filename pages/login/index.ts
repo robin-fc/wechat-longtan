@@ -1,5 +1,5 @@
-import { login, postPhoneNumber } from '../../api/auth'
-import { updateUserInfo } from '../../api/user'
+import { login } from '../../api/auth'
+import { updateUserInfo, getUserDetail } from '../../api/user'
 import { uploadImage } from '../../api/common'
 
 Page({
@@ -51,14 +51,14 @@ Page({
     }
   },
   /**
-   * 头像昵称授权入口：需已登录且已绑定手机号
+   * 头像昵称授权入口
    */
   onAuthorizeTap(this: WechatMiniprogram.Page.TrivialInstance) {
     if (!this.data.checked) {
       this.setData({ showModal: true })
       return
     }
-    if (this.data.isLoggedIn && this.data.phoneBound && !this.data.profileCompleted) {
+    if (this.data.isLoggedIn && !this.data.profileCompleted) {
       this.setData({ showProfileModal: true })
       return
     }
@@ -85,7 +85,30 @@ Page({
       wx.setStorageSync('userId', data.userId)
       wx.setStorageSync('isLoggedIn', true)
       this.setData({ isLoggedIn: true })
-      wx.showToast({ title: '登录成功', icon: 'success' })
+
+
+      // 获取用户信息，判断是否已完善头像昵称
+      try {
+        const userInfo = await getUserDetail(data.userId)
+        const hasProfile = !!(userInfo.wxName && userInfo.logo)
+
+        wx.setStorageSync('profileCompleted', hasProfile)
+
+        if (hasProfile) {
+          wx.showToast({ title: '登录成功', icon: 'success' })
+          setTimeout(() => {
+            wx.switchTab({ url: '/pages/home/index' })
+          }, 500)
+        } else {
+          this.setData({ isLoggedIn: true, profileCompleted: false })
+          // 提示用户完善资料
+          wx.showToast({ title: '请完善头像昵称', icon: 'none' })
+        }
+      } catch (err) {
+        console.error('获取用户信息失败', err)
+        // 获取失败 fallback
+        this.setData({ isLoggedIn: true, profileCompleted: false })
+      }
     } catch (error) {
       const msg = (error && (error as any).message) || '登录失败'
       wx.showToast({ title: msg, icon: 'none' })
@@ -156,32 +179,24 @@ Page({
   /**
    * 绑定手机号：处理 getPhoneNumber 授权码，调用后端换取手机号并缓存
    */
-  async onGetPhoneNumber(
-    this: WechatMiniprogram.Page.TrivialInstance,
-    e: WechatMiniprogram.ButtonGetPhoneNumber
-  ) {
+  /**
+   * 手机号授权成功回调
+   */
+  onPhoneAuthSuccess(this: WechatMiniprogram.Page.TrivialInstance, e: any) {
+    const { phoneCode } = e.detail
+    this.setData({
+      phoneCode,
+      phoneBound: true
+    })
+    wx.showToast({ title: '手机号绑定成功', icon: 'success' })
+  },
+
+  /**
+   * 手机号授权被拒绝/未勾选协议
+   */
+  onPhoneAuthDenied(this: WechatMiniprogram.Page.TrivialInstance) {
     if (!this.data.checked) {
       this.setData({ showModal: true })
-      return
-    }
-    const detail = e.detail || {}
-    if (detail.errMsg && detail.errMsg.indexOf('ok') !== -1 && detail.code) {
-      const phoneCode = detail.code
-      try {
-        const phone = await postPhoneNumber({ phoneCode })
-        wx.setStorageSync('phoneNumber', phone.phoneNumber)
-        wx.setStorageSync('purePhoneNumber', phone.purePhoneNumber)
-        wx.setStorageSync('countryCode', phone.countryCode)
-        wx.setStorageSync('phoneBound', true)
-        this.setData({ phoneCode, phoneBound: true })
-        wx.showToast({ title: '手机号绑定成功', icon: 'success' })
-      } catch (error) {
-        const msg = (error && (error as any).message) || '绑定失败'
-        wx.showToast({ title: msg, icon: 'none' })
-        console.error(error)
-      }
-    } else {
-      // 用户取消了手机号授权，保持当前状态
     }
   },
   onModalAgree(this: WechatMiniprogram.Page.TrivialInstance) {

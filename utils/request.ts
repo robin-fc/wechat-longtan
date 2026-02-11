@@ -1,5 +1,6 @@
 import type { CommonResult } from '../model/common'
 import type { AppWeixinMiniAppLoginRespVO } from '../model/auth'
+import { smartNavigateTo } from './navigation'
 
 const BASE_URL: string =
   (wx.getStorageSync('apiBaseUrl') as string) || 'https://daolongtan.cn' //"http://127.0.0.1"
@@ -142,13 +143,23 @@ export function request<T>(options: RequestOptions): Promise<CommonResult<T>> {
         success: async (res) => {
           const data = (res.data || {}) as CommonResult<T>
           const tokenInvalid = isTokenInvalid(res)
-          if (tokenInvalid && attempt < MAX_RETRY) {
-            attempt++
-            const ok = await refreshAccessToken(getTokenInfo().refreshToken)
-            if (ok) {
-              exec()
-              return
+          if (tokenInvalid) {
+            if (attempt < MAX_RETRY) {
+              attempt++
+              const ok = await refreshAccessToken(getTokenInfo().refreshToken)
+              if (ok) {
+                exec()
+                return
+              }
             }
+
+            // Token invalid and refresh failed/exhausted
+            wx.showToast({ title: '请先登录', icon: 'none' })
+            setTimeout(() => {
+              smartNavigateTo('/pages/login/index')
+            }, 1500)
+            reject(new Error('Unauthorized'))
+            return
           }
           if (res.statusCode >= 200 && res.statusCode < 300 && !tokenInvalid) {
             resolve(data)
@@ -322,13 +333,22 @@ export function uploadFile<T>(
             return
           }
 
-          if (res.statusCode === 401 && attempt < MAX_RETRY) {
-            attempt++
-            const ok = await refreshAccessToken(getTokenInfo().refreshToken)
-            if (ok) {
-              exec()
-              return
+          if (res.statusCode === 401) {
+            if (attempt < MAX_RETRY) {
+              attempt++
+              const ok = await refreshAccessToken(getTokenInfo().refreshToken)
+              if (ok) {
+                exec()
+                return
+              }
             }
+            // Token invalid and refresh failed/exhausted
+            wx.showToast({ title: '请先登录', icon: 'none' })
+            setTimeout(() => {
+              smartNavigateTo('/pages/login/index')
+            }, 1500)
+            reject(new Error('Unauthorized'))
+            return
           }
           console.error('上传HTTP失败', res)
           reject(new Error(`上传失败: ${res.statusCode} ${res.errMsg || ''}`))

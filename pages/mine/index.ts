@@ -1,4 +1,5 @@
 import { fetchMyProfile, fetchUserSummary } from '../../api/mine'
+import { updateUserInfo } from '../../api/user'
 import { smartNavigateTo } from '../../utils/navigation'
 import type { UserProfile } from '../../model/user'
 import { formatYMD } from '../../utils/date'
@@ -17,11 +18,13 @@ interface MineState {
     nomadApplyStatus?: string
   })
   | null
+  showPhoneAuthModal: boolean
 }
 
 Page<MineState, WechatMiniprogram.IAnyObject>({
   data: {
     profile: null,
+    showPhoneAuthModal: false,
   },
   async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -34,6 +37,10 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
       this.setData({ profile: null })
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      setTimeout(() => {
+        smartNavigateTo('/pages/login/index')
+      }, 1500)
       return
     }
 
@@ -48,6 +55,12 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
         })),
       ])
       if (profile) {
+        if (!profile.memberPhone) {
+          setTimeout(() => {
+            this.setData({ showPhoneAuthModal: true })
+          }, 1000)
+        }
+
         if (profile.logo) {
           profile.logo = profile.logo.trim()
         }
@@ -132,5 +145,29 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
       title: `${profile.memberName || profile.wxName || '用户'}的主页`,
       path: `/pages/user/other-profile/index?userId=${profile.id}`,
     }
-  }
+  },
+  closePhoneAuthModal() {
+    this.setData({ showPhoneAuthModal: false })
+  },
+  async onPhoneAuthSuccess(e: any) {
+    const { phone } = e.detail
+    this.setData({ showPhoneAuthModal: false })
+
+    // Update user info with phone number
+    if (phone && phone.phoneNumber) {
+      try {
+        await updateUserInfo({
+          memberPhone: phone.phoneNumber
+        })
+        wx.showToast({ title: '绑定成功', icon: 'success' })
+        // Refresh profile to update UI if needed
+        this.onShow()
+      } catch (error) {
+        console.error('Failed to update phone number', error)
+        wx.showToast({ title: '更新手机号失败', icon: 'none' })
+      }
+    } else {
+      wx.showToast({ title: '绑定成功', icon: 'success' })
+    }
+  },
 })

@@ -7,6 +7,7 @@
     "collection-card": "/components/collection-card/index",
     "homestay-card": "/components/homestay-card/index",
     "companions-bar": "/components/companions-bar/index",
-    "digital-nomad-popup": "/components/digital-nomad-popup/index"
+    "digital-nomad-popup": "/components/digital-nomad-popup/index",
+    "phone-auth": "/components/phone-auth/index"
   }
 }

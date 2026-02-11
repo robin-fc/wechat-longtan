@@ -1,4 +1,6 @@
 import { getActivityDetail } from '../../api/activity'
+import { fetchMyProfile } from '../../api/mine'
+import { updateUserInfo } from '../../api/user'
 import { createActivityOrder, generatePayParams } from '../../api/order'
 import { type Activity } from '../../model/activity'
 import type { ActivityOrder } from '../../model/order'
@@ -9,6 +11,7 @@ interface ConfirmOrderState {
   order: ActivityOrder
   contactName: string
   contactPhone: string
+  showPhoneAuthModal: boolean
 }
 
 const emptyOrder: ActivityOrder = {
@@ -34,6 +37,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     order: emptyOrder,
     contactName: '',
     contactPhone: '',
+    showPhoneAuthModal: false,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -76,6 +80,71 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       contactName,
       contactPhone,
     })
+
+    this.checkUserStatus()
+  },
+
+  async checkUserStatus() {
+    const accessToken = wx.getStorageSync('accessToken')
+    if (!accessToken) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      setTimeout(() => {
+        smartNavigateTo('/pages/login/index')
+      }, 1500)
+      return
+    }
+
+    try {
+      const profile = await fetchMyProfile()
+      if (profile) {
+        if (!profile.memberPhone) {
+          setTimeout(() => {
+            this.setData({ showPhoneAuthModal: true })
+          }, 1000)
+        } else {
+          // Auto-fill phone if available
+          this.setData({
+            contactPhone: profile.memberPhone
+          })
+        }
+
+        // Auto-fill name if available and empty
+        if (!this.data.contactName) {
+          this.setData({
+            contactName: profile.memberName || profile.wxName || ''
+          })
+        }
+      }
+    } catch (e) {
+      console.error('Fetch profile failed', e)
+    }
+  },
+
+  closePhoneAuthModal() {
+    this.setData({ showPhoneAuthModal: false })
+  },
+
+  async onPhoneAuthSuccess(e: any) {
+    const { phone } = e.detail
+    this.setData({ showPhoneAuthModal: false })
+
+    // Update user info with phone number
+    if (phone && phone.phoneNumber) {
+      try {
+        await updateUserInfo({
+          memberPhone: phone.phoneNumber
+        })
+        wx.showToast({ title: '绑定成功', icon: 'success' })
+        this.setData({
+          contactPhone: phone.phoneNumber
+        })
+      } catch (error) {
+        console.error('Failed to update phone number', error)
+        wx.showToast({ title: '更新手机号失败', icon: 'none' })
+      }
+    } else {
+      wx.showToast({ title: '绑定成功', icon: 'success' })
+    }
   },
   onOpenMapTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const activity = (this.data as ConfirmOrderState).activity
@@ -119,6 +188,7 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
       contactPhone: e.detail.value
     })
   },
+
   async onSubmitTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const state = this.data as ConfirmOrderState
     const order = state.order
@@ -135,13 +205,10 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     const contactPhone = state.contactPhone.trim()
 
     if (!contactName) {
-      wx.showToast({ title: '请填写姓名', icon: 'none' })
+      wx.showToast({ title: '请填写称谓', icon: 'none' })
       return
     }
-    if (!contactPhone) {
-      wx.showToast({ title: '请填写电话', icon: 'none' })
-      return
-    }
+
 
     console.log('活动订单activity', activity)
     if (activity && activity.auditStatus !== '审核通过') {

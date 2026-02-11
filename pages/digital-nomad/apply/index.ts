@@ -1,4 +1,5 @@
 import { fetchUserApplyForm, submitUserApply } from '../../../api/user-apply'
+import { updateUserInfo } from '../../../api/user'
 import type { AppUserApplyFormQuestion, UserApplyReqVO } from '../../../model/user-apply'
 import { fetchMyProfile } from '../../../api/mine'
 
@@ -57,7 +58,8 @@ Page({
         formTitle: '',
         formDesc: '',
         questionList: [] as AppUserApplyFormQuestion[],
-        formData: {} as Record<string, FormValue>
+        formData: {} as Record<string, FormValue>,
+        showPhoneAuthModal: false
     },
     onLoad() {
         const sys = wx.getWindowInfo()
@@ -110,6 +112,12 @@ Page({
                 }
                 if (Object.keys(updates).length) {
                     this.setData(updates)
+                }
+
+                if (!memberPhone) {
+                    setTimeout(() => {
+                        this.setData({ showPhoneAuthModal: true })
+                    }, 1000)
                 }
             }
         } catch (e) {
@@ -217,6 +225,30 @@ Page({
     onShareTimeline() {
         return {
             title: 'DAO龙潭 - 数字游民申请表',
+        }
+    },
+    closePhoneAuthModal() {
+        this.setData({ showPhoneAuthModal: false })
+    },
+    async onPhoneAuthSuccess(e: any) {
+        const { phone } = e.detail
+        this.setData({ showPhoneAuthModal: false })
+
+        // Update user info with phone number
+        if (phone && phone.phoneNumber) {
+            try {
+                await updateUserInfo({
+                    memberPhone: phone.phoneNumber
+                })
+                wx.showToast({ title: '绑定成功', icon: 'success' })
+                // Refresh profile to update UI if needed
+                this.prefillProfile()
+            } catch (error) {
+                console.error('Failed to update phone number', error)
+                wx.showToast({ title: '更新手机号失败', icon: 'none' })
+            }
+        } else {
+            wx.showToast({ title: '绑定成功', icon: 'success' })
         }
     },
 })

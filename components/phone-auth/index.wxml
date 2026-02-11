@@ -1,0 +1,8 @@
+<button 
+  class="login-btn {{className}}" 
+  open-type="getPhoneNumber" 
+  bindgetphonenumber="onGetPhoneNumber"
+  bindtap="onTap"
+>
+  <slot>绑定手机号</slot>
+</button>

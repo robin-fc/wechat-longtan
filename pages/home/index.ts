@@ -1,5 +1,6 @@
 import { fetchHomeData } from '../../api/home'
 import { fetchMyProfile } from '../../api/mine'
+import { updateUserInfo } from '../../api/user'
 import { smartNavigateTo } from '../../utils/navigation'
 import { AppActivityTypeRespVO, HomePageData } from '../../model/home'
 import { Banner } from '../../model/banner'
@@ -13,6 +14,7 @@ interface HomeState {
   topBgHeight: number
   showDigitalNomadPopup: boolean
   canCreateActivity: boolean
+  showPhoneAuthModal: boolean
 }
 
 Page<HomeState, WechatMiniprogram.IAnyObject>({
@@ -25,6 +27,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     topBgHeight: 0,
     showDigitalNomadPopup: false,
     canCreateActivity: false,
+    showPhoneAuthModal: false,
   },
   async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -37,10 +40,11 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   async checkUserStatus() {
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
-      this.setData({
-        canCreateActivity: false, // Not logged in, can't create
-        showDigitalNomadPopup: false, // Don't show popup if not logged in (or maybe we should? assume no for now)
-      })
+      this.setData({ profile: null })
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      setTimeout(() => {
+        smartNavigateTo('/pages/login/index')
+      }, 1500)
       return
     }
 
@@ -74,7 +78,16 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
           showDigitalNomadPopup: !isDigitalNomad && !skippedToday,
           canCreateActivity: isActivityCreator,
         })
+
+        // Check phone number
+        if (!profile.memberPhone) {
+
+          setTimeout(() => {
+            this.setData({ showPhoneAuthModal: true })
+          }, 5000)
+        }
       }
+
     } catch (e) {
       console.error('Failed to fetch profile in home', e)
     }
@@ -233,6 +246,28 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   onShareTimeline() {
     return {
       title: 'DAO龙潭 - 发现精彩活动与民宿',
+    }
+  },
+  closePhoneAuthModal() {
+    this.setData({ showPhoneAuthModal: false })
+  },
+  async onPhoneAuthSuccess(e: any) {
+    const { phone } = e.detail
+    this.setData({ showPhoneAuthModal: false })
+
+    // Update user info with phone number
+    if (phone && phone.phoneNumber) {
+      try {
+        await updateUserInfo({
+          memberPhone: phone.phoneNumber
+        })
+        wx.showToast({ title: '绑定成功', icon: 'success' })
+      } catch (error) {
+        console.error('Failed to update phone number', error)
+        wx.showToast({ title: '更新手机号失败', icon: 'none' })
+      }
+    } else {
+      wx.showToast({ title: '绑定成功', icon: 'success' })
     }
   },
 })

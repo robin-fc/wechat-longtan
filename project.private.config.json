@@ -23,11 +23,25 @@
     "miniprogram": {
       "list": [
         {
+          "name": "分享进入活动",
+          "pathName": "pages/activity/detail",
+          "query": "id=6",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
+          "name": "用户分享进入民宿",
+          "pathName": "pages/homestay/detail",
+          "query": "id=6",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "身份说明",
           "pathName": "pages/about/identity/index",
           "query": "",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "数字游民申请页",

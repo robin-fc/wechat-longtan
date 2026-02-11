@@ -1,6 +1,7 @@
 {
   "navigationBarTitleText": "登录",
   "usingComponents": {
-    "privacy-modal": "/components/privacy-modal/index"
+    "privacy-modal": "/components/privacy-modal/index",
+    "phone-auth": "/components/phone-auth/index"
   }
 }

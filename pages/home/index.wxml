@@ -134,4 +134,25 @@
   </view>
   
   <digital-nomad-popup wx:if="{{showDigitalNomadPopup}}" bind:apply="onPopupApply" bind:skip="onPopupSkip" />
+  
+  <view class="login-modal" wx:if="{{showPhoneAuthModal}}">
+    <view class="modal-mask" bindtap="closePhoneAuthModal"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">请绑定手机号</text>
+        <view class="close-btn" bindtap="closePhoneAuthModal">✕</view>
+      </view>
+      <view class="modal-body">
+        <view class="modal-tip">为了更好地为您服务，请绑定手机号</view>
+        <phone-auth 
+          checked="{{true}}"
+          className="phone-auth-btn"
+          bindsuccess="onPhoneAuthSuccess"
+          binddenied="closePhoneAuthModal"
+        >
+          立即绑定
+        </phone-auth>
+      </view>
+    </view>
+  </view>
 </view>

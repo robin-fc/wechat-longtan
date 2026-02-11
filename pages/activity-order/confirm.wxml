@@ -46,12 +46,34 @@
 
   <view class="form-section">
     <view class="input-item">
-      <text class="label">姓名</text>
-      <input class="input" placeholder="请输入姓名" value="{{contactName}}" bindinput="onNameChange" />
+      <text class="label">称谓</text>
+      <input class="input" placeholder="请填写称谓" value="{{contactName}}" bindinput="onNameChange" />
     </view>
     <view class="input-item">
-      <text class="label">电话</text>
-      <input class="input" placeholder="请输入电话" value="{{contactPhone}}" type="number" bindinput="onPhoneChange" />
+      <text class="label">联系电话</text>
+      <input class="input" placeholder="请输入联系电话" value="{{contactPhone}}" bindinput="onPhoneChange" type="number" maxlength="11" />
+    </view>
+    
+  </view>
+</view>
+
+<view class="login-modal" wx:if="{{showPhoneAuthModal}}">
+  <view class="modal-mask" bindtap="closePhoneAuthModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">请绑定手机号</text>
+      <view class="close-btn" bindtap="closePhoneAuthModal">✕</view>
+    </view>
+    <view class="modal-body">
+      <view class="modal-tip">报名活动需要绑定手机号</view>
+      <phone-auth 
+        checked="{{true}}"
+        className="phone-auth-btn"
+        bindsuccess="onPhoneAuthSuccess"
+        binddenied="closePhoneAuthModal"
+      >
+        立即绑定
+      </phone-auth>
     </view>
   </view>
 </view>

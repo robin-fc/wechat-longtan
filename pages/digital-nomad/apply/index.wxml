@@ -87,6 +87,27 @@
   </view>
 </view>
 
+<view class="login-modal" wx:if="{{showPhoneAuthModal}}">
+  <view class="modal-mask" bindtap="closePhoneAuthModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">请绑定手机号</text>
+      <view class="close-btn" bindtap="closePhoneAuthModal">✕</view>
+    </view>
+    <view class="modal-body">
+      <view class="modal-tip">申请数字游民认证需要绑定手机号</view>
+      <phone-auth 
+        checked="{{true}}"
+        className="phone-auth-btn"
+        bindsuccess="onPhoneAuthSuccess"
+        binddenied="closePhoneAuthModal"
+      >
+        立即绑定
+      </phone-auth>
+    </view>
+  </view>
+</view>
+
 <wxs module="utils">
 module.exports.includes = function(arr, item) {
   if (!arr || typeof arr.length !== 'number') {
