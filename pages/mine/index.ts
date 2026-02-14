@@ -39,7 +39,7 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
       this.setData({ profile: null })
       wx.showToast({ title: '请先登录', icon: 'none' })
       setTimeout(() => {
-        smartNavigateTo('/pages/login/index')
+        smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent('/pages/mine/index')}`)
       }, 1500)
       return
     }

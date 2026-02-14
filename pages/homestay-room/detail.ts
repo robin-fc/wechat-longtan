@@ -209,12 +209,13 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
   },
   onApplyTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const state = this.data as RoomDetailState
-    if (!state.room) {
+    const room = state.room
+    if (!room) {
       return
     }
 
     // 检查数字游民身份
-    this.checkDigitalNomadStatus().then((isDigitalNomad) => {
+    this.checkDigitalNomadStatus().then((isDigitalNomad: boolean) => {
       if (!isDigitalNomad) {
         this.setData({ showPermissionPopup: true })
         return
@@ -223,9 +224,9 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       // 是数字游民，允许申请
       smartNavigateTo(
         `/pages/homestay-apply/form?roomId=${encodeURIComponent(
-          state.room.id
+          room.id
         )}&homestayId=${encodeURIComponent(
-          state.room.homestayId
+          room.homestayId
         )}&startDate=${encodeURIComponent(
           state.checkInDate
         )}&duration=${encodeURIComponent(String(state.nights))}&packageType=${encodeURIComponent(
@@ -237,6 +238,13 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
   async checkDigitalNomadStatus(): Promise<boolean> {
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
+      const state = this.data as RoomDetailState
+      if (state.room) {
+        const returnUrl = `/pages/homestay-room/detail?id=${state.room.id}&homestayId=${state.room.homestayId}&startDate=${state.checkInDate}&duration=${state.packageType}&checkOutDate=${state.checkOutDate}`
+        wx.navigateTo({
+          url: `/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`,
+        })
+      }
       return false
     }
 

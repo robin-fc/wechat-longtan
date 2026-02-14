@@ -40,11 +40,11 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   async checkUserStatus() {
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
-      this.setData({ profile: null })
-      wx.showToast({ title: '请先登录', icon: 'none' })
-      setTimeout(() => {
-        smartNavigateTo('/pages/login/index')
-      }, 1500)
+      this.setData({
+        showDigitalNomadPopup: false,
+        canCreateActivity: false,
+        showPhoneAuthModal: false,
+      })
       return
     }
 
@@ -55,19 +55,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
         const levelStr = String(profile.memberLevel)
         const isDigitalNomad = levelStr === '2' || levelStr.includes('数字游民')
 
-        // Activity Creator is tag '1'
-        // memberTags can be string[] or maybe string depending on API consistency, safe check handled in UI usually but here we check data
-        let tags: string[] = []
-        if (Array.isArray(profile.memberTags)) {
-          tags = profile.memberTags.map(String)
-        } else if (typeof profile.memberTags === 'string') {
-          // Handle potential string case if API is messy, similar to user.ts logic
-          // But fetchMyProfile returns UserProfile where memberTags is string[]. 
-          // We'll trust the type but map just in case.
-          tags = [String(profile.memberTags)]
-        }
-
-        const isActivityCreator = tags.some(t => t === '1' || t.includes('活动发起人'))
+        const isActivityCreator = isDigitalNomad || ['新村民', '老村民'].some(s => levelStr.includes(s))
 
         // Check if user skipped the popup today
         const skipDate = wx.getStorageSync('DIGITAL_NOMAD_SKIP_DATE')

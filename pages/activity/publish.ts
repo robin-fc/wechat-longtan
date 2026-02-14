@@ -136,7 +136,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       const profile = await fetchMyProfile()
       if (profile) {
         const levelStr = String(profile.memberLevel)
-        const isDigitalNomad = levelStr === '2' || levelStr.includes('数字游民')
+        const isDigitalNomad = levelStr === '2' || levelStr.includes('数字游民') || levelStr.includes('新村民') || levelStr.includes('老村民')
 
         if (!isDigitalNomad) {
           this.setData({ showPermissionPopup: true })

@@ -17,12 +17,23 @@ Page({
   /**
    * 页面加载：同步隐私勾选、登录与手机号绑定、资料完成状态
    */
-  onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+  onLoad(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    options: WechatMiniprogram.Page.InstanceProperties['options']
+  ) {
     const logged = !!wx.getStorageSync('isLoggedIn')
     const phoneBound = !!wx.getStorageSync('phoneBound')
     const completed = !!wx.getStorageSync('profileCompleted')
+
+    const returnUrl = options.returnUrl ? decodeURIComponent(options.returnUrl as string) : ''
+    this.setData({ returnUrl })
+
     if (logged && completed) {
-      wx.switchTab({ url: '/pages/home/index' })
+      if (returnUrl) {
+        wx.reLaunch({ url: returnUrl })
+      } else {
+        wx.switchTab({ url: '/pages/home/index' })
+      }
       return
     }
     const accepted = !!wx.getStorageSync('privacyAccepted')
@@ -96,8 +107,13 @@ Page({
 
         if (hasProfile) {
           wx.showToast({ title: '登录成功', icon: 'success' })
+          const returnUrl = this.data.returnUrl
           setTimeout(() => {
-            wx.switchTab({ url: '/pages/home/index' })
+            if (returnUrl) {
+              wx.reLaunch({ url: returnUrl })
+            } else {
+              wx.switchTab({ url: '/pages/home/index' })
+            }
           }, 500)
         } else {
           this.setData({ isLoggedIn: true, profileCompleted: false })
@@ -170,7 +186,13 @@ Page({
       })
       wx.setStorageSync('profileCompleted', true)
       this.setData({ showProfileModal: false, profileCompleted: true })
-      wx.switchTab({ url: '/pages/home/index' })
+
+      const returnUrl = this.data.returnUrl
+      if (returnUrl) {
+        wx.reLaunch({ url: returnUrl })
+      } else {
+        wx.switchTab({ url: '/pages/home/index' })
+      }
     } catch (error) {
       wx.showToast({ title: '登录失败', icon: 'none' })
       console.error(error)

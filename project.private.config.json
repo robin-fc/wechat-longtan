@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
+          "name": "首页进入",
+          "pathName": "pages/home/index",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
           "name": "分享进入活动",
           "pathName": "pages/activity/detail",
           "query": "id=6",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "用户分享进入民宿",
@@ -46,13 +53,6 @@
         {
           "name": "数字游民申请页",
           "pathName": "pages/digital-nomad/apply/index",
-          "query": "",
-          "launchMode": "default",
-          "scene": null
-        },
-        {
-          "name": "首页进入",
-          "pathName": "pages/login/index",
           "query": "",
           "launchMode": "default",
           "scene": null

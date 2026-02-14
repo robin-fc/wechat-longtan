@@ -10,21 +10,25 @@
     <text>加载中...</text>
   </view>
   <view wx:else class="content">
-    <swiper class="hero-swiper" indicator-dots="{{false}}" circular="true" autoplay="{{false}}" interval="5000" duration="350" easing-function="easeInOutCubic" current="{{heroCurrent}}" bindchange="onHeroChange">
+    <swiper class="hero-swiper" indicator-dots="{{false}}" circular="true" autoplay="{{false}}" interval="5000"
+      duration="350" easing-function="easeInOutCubic" current="{{heroCurrent}}" bindchange="onHeroChange">
       <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
-        <swiper-item class="custom-swiper-item">
+         <swiper-item class="custom-swiper-item">
           <view class="hero-card {{heroCurrent === idx ? 'selected' : ''}}" bindtap="onBannerTap" data-idx="{{idx}}">
             <view class="hero-poster-wrapper">
               <image class="hero-poster" src="{{item.logo}}" mode="widthFix" />
               <view class="hero-type">{{item.bannerType}}</view>
+              
             </view>
           </view>
         </swiper-item>
+       
       </block>
     </swiper>
     <view class="hero-indicator" wx:if="{{pageData && pageData.carousel && pageData.carousel.length > 1}}">
       <block wx:for="{{pageData.carousel}}" wx:key="id" wx:for-index="idx">
-        <view class="hero-indicator-item {{heroCurrent === idx ? 'active' : ''}}" data-idx="{{idx}}" bindtap="onHeroIndicatorTap"></view>
+        <view class="hero-indicator-item {{heroCurrent === idx ? 'active' : ''}}" data-idx="{{idx}}"
+          bindtap="onHeroIndicatorTap"></view>
       </block>
     </view>
     <view class="application-section">
@@ -70,8 +74,8 @@
         </view>
       </view>
     </view>
-      <view class="section-divider-line" />
-    <scroll-view scroll-x="true" class="activity-scroll"> 
+    <view class="section-divider-line" />
+    <scroll-view scroll-x="true" class="activity-scroll">
       <view class="activity-list">
         <block wx:for="{{pageData.hotActivities}}" wx:key="id">
           <view class="activity-item">
@@ -88,7 +92,7 @@
           <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
         </view>
       </view>
-        <view class="section-divider-line" />
+      <view class="section-divider-line" />
       <scroll-view scroll-x="true" class="collection-scroll">
         <view class="collection-row">
           <block wx:for="{{pageData.collections}}" wx:key="id">
@@ -105,11 +109,12 @@
           <image class="more-icon" src="/api/more.svg" mode="aspectFit" />
         </view>
       </view>
-        <view class="section-divider-line" />
+      <view class="section-divider-line" />
       <view class="homestay-list">
         <block wx:for="{{pageData.homestays}}" wx:key="id">
           <view class="homestay-item">
-            <homestay-card homestay="{{item}}" layout="horizontal" show-companions="{{false}}" bindtap="onHomestayCardTap" />
+            <homestay-card homestay="{{item}}" layout="horizontal" show-companions="{{false}}"
+              bindtap="onHomestayCardTap" />
           </view>
         </block>
       </view>
@@ -118,7 +123,7 @@
       <view class="section-header">
         <image class="section-title-icon" src="/assets/images/about.png" mode="heightFix" />
       </view>
-        <view class="section-divider-line" />
+      <view class="section-divider-line" />
       <view class="about-list">
         <block wx:for="{{pageData.aboutLinks}}" wx:key="id" wx:for-index="idx">
           <view class="about-item" data-item="{{item}}" bindtap="onAboutItemTap">
@@ -132,9 +137,9 @@
     <image class="floating-publish-icon" src="/assets/icons/edit-white.svg" mode="aspectFit" />
     <text class="floating-publish-text">发布</text>
   </view>
-  
+
   <digital-nomad-popup wx:if="{{showDigitalNomadPopup}}" bind:apply="onPopupApply" bind:skip="onPopupSkip" />
-  
+
   <view class="login-modal" wx:if="{{showPhoneAuthModal}}">
     <view class="modal-mask" bindtap="closePhoneAuthModal"></view>
     <view class="modal-content">
@@ -144,12 +149,8 @@
       </view>
       <view class="modal-body">
         <view class="modal-tip">为了更好地为您服务，请绑定手机号</view>
-        <phone-auth 
-          checked="{{true}}"
-          className="phone-auth-btn"
-          bindsuccess="onPhoneAuthSuccess"
-          binddenied="closePhoneAuthModal"
-        >
+        <phone-auth checked="{{true}}" className="phone-auth-btn" bindsuccess="onPhoneAuthSuccess"
+          binddenied="closePhoneAuthModal">
           立即绑定
         </phone-auth>
       </view>
