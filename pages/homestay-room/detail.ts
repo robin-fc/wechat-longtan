@@ -252,7 +252,8 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       const profile = await fetchMyProfile()
       if (profile) {
         const levelStr = String(profile.memberLevel)
-        return levelStr === '2' || levelStr.includes('数字游民')
+     
+        return  levelStr.includes('数字游民') || levelStr.includes('新村民') || levelStr.includes('老村民')
       }
       return false
     } catch (e) {

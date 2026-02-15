@@ -13,6 +13,24 @@ import { formatYMDHM } from '../utils/date'
 
 const baseUrl = '/app-api/daolongtan/user'
 
+export interface TransferWaitConfirmResult {
+  hasWaitConfirm: boolean
+  list: {
+    id: number
+    transferNo: string
+    bizType: number
+    bizId: number
+    amountYuan: number
+    transferRemark: string
+    packageInfo: string
+    requestedAt: string
+  }[]
+}
+
+export function fetchTransferWaitConfirmList(): Promise<TransferWaitConfirmResult> {
+  return getData<TransferWaitConfirmResult>('/app-api/daolongtan/transfer/wait-confirm-list')
+}
+
 export interface MyActivityFilter {
   id: string
   name: string

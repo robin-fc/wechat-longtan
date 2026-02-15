@@ -19,7 +19,7 @@
       <view class="info-left">
         <view class="info-row">
           <image class="info-icon" src="/assets/icons/home.svg" mode="aspectFit" />
-          <text class="info-text">{{homestay.roomCount || 3}}个在售房型</text>
+          <text class="info-text">{{homestay.availableRoomsCount || 3}}个在售房型</text>
         </view>
         <view class="info-row">
           <image class="info-icon" src="/assets/icons/location.svg" mode="aspectFit" />

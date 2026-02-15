@@ -19,7 +19,9 @@ Component({
                 }
 
                 // Map registeredUsers to companions if companions is missing
-                if (!activity.companions && activity.registeredUsers) {
+                
+
+                if ((!activity.companions||!activity.companions.companions.length) && activity.registeredUsers) {
                     updateData.localCompanions = {
                         companions: activity.registeredUsers.map((u: any) => ({
                             avatar: { url: u.logo }
@@ -31,7 +33,9 @@ Component({
                 }
 
                 // Calculate remaining slots
-                if (activity.isLimitParticipants && activity.maxParticipants) {
+                
+                if (activity.maxParticipants) {
+                  
                     updateData.remainingSlots = Math.max(0, activity.maxParticipants - (activity.registeredCount || 0));
                 }
 

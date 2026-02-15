@@ -1,4 +1,4 @@
-import { fetchMyProfile, fetchUserSummary } from '../../api/mine'
+import { fetchMyProfile, fetchUserSummary, fetchTransferWaitConfirmList } from '../../api/mine'
 import { updateUserInfo } from '../../api/user'
 import { smartNavigateTo } from '../../utils/navigation'
 import type { UserProfile } from '../../model/user'
@@ -40,7 +40,7 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
       wx.showToast({ title: '请先登录', icon: 'none' })
       setTimeout(() => {
         smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent('/pages/mine/index')}`)
-      }, 1500)
+      }, 50)
       return
     }
 
@@ -85,6 +85,37 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
         this.setData({
           profile: extendedProfile,
         })
+
+        // Check for merchant transfer confirmation
+        if (profile) {
+          fetchTransferWaitConfirmList().then(res => {
+
+            if (res.hasWaitConfirm && res.list && res.list.length > 0) {
+              const item = res.list[0] // Process the first item
+              // wx.requestMerchantTransfer might not be in the type definition
+              if ((wx as any).canIUse('requestMerchantTransfer')) {
+                (wx as any).requestMerchantTransfer({
+                  mchId: '1104693914',
+                  appId: 'wxf60fc5c32017bf2f',
+                  package: item.packageInfo,
+                  success: (res: any) => {
+                    console.log('success:', res)
+                  },
+                  fail: (res: any) => {
+                    console.error('fail:', res)
+                  },
+                })
+              } else {
+                wx.showModal({
+                  content: '你的微信版本过低，请更新至最新版本。',
+                  showCancel: false,
+                })
+              }
+            }
+          }).catch(err => {
+            console.error('Fetch transfer wait confirm list failed', err)
+          })
+        }
       }
     } catch (e) {
       console.error('Fetch profile failed', e)

@@ -138,7 +138,7 @@
     <text class="floating-publish-text">发布</text>
   </view>
 
-  <digital-nomad-popup wx:if="{{showDigitalNomadPopup}}" bind:apply="onPopupApply" bind:skip="onPopupSkip" />
+  <digital-nomad-popup wx:if="{{isActivityCreator}}" bind:apply="onPopupApply" bind:skip="onPopupSkip" />
 
   <view class="login-modal" wx:if="{{showPhoneAuthModal}}">
     <view class="modal-mask" bindtap="closePhoneAuthModal"></view>

@@ -35,7 +35,7 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       { name: '待开始', value: 0 },
       { name: '历史活动', value: 2 },
     ],
-    currentStatus: 1,
+    currentStatus: 0,
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -49,17 +49,12 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       const category = wx.getStorageSync('ACTIVITY_CATEGORY_FILTER')
       if (category) {
         wx.removeStorageSync('ACTIVITY_CATEGORY_FILTER')
+        
         this.setData({
           activeItemId: category,
           activityType: category,
           // Reset status to default or keep? Usually default
-          currentStatus: 1
-        })
-        this.setData({
-          activeItemId: category,
-          activityType: category,
-          // Reset status to default or keep? Usually default
-          currentStatus: 1,
+          currentStatus: 0,
           pageNo: 1,
           hasMore: true,
           activities: []
