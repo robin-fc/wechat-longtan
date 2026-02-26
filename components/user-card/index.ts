@@ -13,9 +13,23 @@ Component({
             value: false
         }
     },
-    data: {},
+    data: {
+        currentUserId: ''
+    },
+    attached() {
+        const userIdStorage = wx.getStorageSync('userId')
+        if (userIdStorage) {
+            this.setData({ currentUserId: String(userIdStorage) })
+        }
+    },
     methods: {
         onTap() {
+            const user = this.data.user || {}
+            const userId = String(user.userId || user.id || '')
+            if (userId && userId === this.data.currentUserId) {
+                wx.switchTab({ url: '/pages/mine/index' })
+                return
+            }
             this.triggerEvent('click', { user: this.data.user })
         },
         onFollowTap() {

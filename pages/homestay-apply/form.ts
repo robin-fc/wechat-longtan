@@ -3,6 +3,7 @@ import { createAccommodationOrder, generatePayParams } from '../../api/order'
 import type { HomestayRoom } from '../../model/homestay'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 import { formatYMD1 } from '../../utils/date'
+import { isValidCnPhone } from '../../utils/validator'
 
 interface ApplyForm {
   name: string
@@ -37,7 +38,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     nightsCount: 1,
     totalPrice: 0,
     totalPriceDisplay: '0.00',
-    freeCancelDeadline: '下单后24小时内可免费取消',
+    freeCancelDeadline: '入住日期7天前退款扣除30%,7天内不退款',
     checkInDateDesc: '',
     checkInWeekDesc: '',
     checkOutDateDesc: '',
@@ -289,6 +290,13 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     if (!form.idCard.trim()) {
       wx.showToast({
         title: '请填写身份证',
+        icon: 'none',
+      })
+      return
+    }
+    if (!isValidCnPhone(form.phone.trim())) {
+      wx.showToast({
+        title: '请输入正确的手机号码',
         icon: 'none',
       })
       return

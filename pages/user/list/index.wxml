@@ -13,7 +13,7 @@
         <text class="bio">{{item.bio}}</text>
       </view>
       
-      <view class="action-btn">
+      <view class="action-btn" wx:if="{{item.userId !== currentUserId}}">
         <follow-button 
           userId="{{item.userId}}" 
           isFollowed="{{item.isFollowed}}" 

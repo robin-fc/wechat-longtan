@@ -1,4 +1,4 @@
-import { AppUser_getUserList, mapMemberLevelLabel, mapMemberTags } from '../../../api/user'
+import { AppUser_getUserList, mapMemberLevelLabel } from '../../../api/user'
 import type { MockUserItem } from '../../../api/user'
 import { smartNavigateTo } from '../../../utils/navigation'
 
@@ -8,6 +8,7 @@ interface UserListState {
   title: string
   type: string // 0=活动报名人员, 1=我的关注列表, 2=我的粉丝列表, 3=活动收藏人员, 4=他人关注列表, 5=他人粉丝列表, 6=民宿入住过的人列表
   relatedId?: string // userId or activityId
+  currentUserId?: string
 }
 
 Page<UserListState, WechatMiniprogram.IAnyObject>({
@@ -16,7 +17,8 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
     loading: false,
     title: '用户列表',
     type: '',
-    relatedId: ''
+    relatedId: '',
+    currentUserId: ''
   },
 
   onLoad(options: { title?: string; type?: string; id?: string }) {
@@ -46,6 +48,12 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
 
     if (type) {
       this.loadData()
+    }
+
+    // Capture the current user's profile ID to hide "following" interactions out of oneself
+    const userIdStorage = wx.getStorageSync('userId')
+    if (userIdStorage) {
+      this.setData({ currentUserId: String(userIdStorage) })
     }
   },
 
@@ -90,13 +98,13 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
         const tags = [
           mapMemberLevelLabel(u.memberLevel)
         ].filter(Boolean)
-        
+
         return {
           userId: String(u.userId),
           nickname: nickname || `User ${u.userId}`,
           avatar,
           tags,
-          memberLevel:u.memberLevel,
+          memberLevel: u.memberLevel,
           bio: u.introduction ? String(u.introduction) : '',
           isFollowed: u.followed
         }
@@ -116,6 +124,10 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
   onUserTap(e: WechatMiniprogram.BaseEvent) {
     const { id: userId, isfollowed } = e.currentTarget.dataset
     if (userId) {
+      if (userId === this.data.currentUserId) {
+        wx.switchTab({ url: '/pages/mine/index' })
+        return
+      }
       smartNavigateTo(
         `/pages/user/other-profile/index?userId=${userId}&isFollowed=${isfollowed}`
       )

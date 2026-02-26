@@ -8,6 +8,7 @@ import type {
   ActivityListResponse,
   UserActivityListParams,
   CreateActivityPayload,
+  UpdateActivityPayload,
 } from '../model/activity'
 import { PageResult } from '../model/common'
 import { getData, postData } from '../utils/request'
@@ -51,6 +52,12 @@ export function createActivity(
   payload: CreateActivityPayload
 ): Promise<boolean> {
   return postData<boolean>(`${baseUrl}/create`, payload)
+}
+
+export function updateActivity(
+  payload: UpdateActivityPayload
+): Promise<boolean> {
+  return postData<boolean>(`${baseUrl}/update`, payload)
 }
 
 export function getActivityRegistrations(

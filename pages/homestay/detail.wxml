@@ -63,7 +63,7 @@
       <view class="filter-row">
         <view class="date-selection-row">
           <text class="filter-label">入住时间</text>
-          <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+          <picker mode="date" value="{{startDate}}" start="{{minDate}}" bindchange="onStartDateChange">
             <view class="date-picker">
               <text class="picker-text">{{startDate || '选择入住时间'}}</text>
               <image class="picker-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
@@ -83,7 +83,12 @@
       </view>
     </view>
     <view class="section">
-      <view class="room-list" wx:if="{{rooms && rooms.length > 0}}">
+      <view class="room-list" wx:if="{{isRoomsLoading}}">
+         <view class="loading-state">
+           <text class="loading-text">数据加载中...</text>
+         </view>
+      </view>
+      <view class="room-list" wx:elif="{{rooms && rooms.length > 0}}">
         <block wx:for="{{rooms}}" wx:key="id">
           <view class="room-item">
             <homestay-room-card room="{{item}}" bindtap="onRoomTap" />

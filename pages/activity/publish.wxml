@@ -18,7 +18,7 @@
       <view class="inline-left">
         <text class="label">报名费*</text>
         <view class="inline-right">
-          <input class="input" type="number" placeholder="请输入金额" value="{{form.price}}" bindinput="onPriceChange" disabled="{{form.free}}" />
+          <input class="input" type="digit" placeholder="请输入金额" value="{{form.price}}" bindinput="onPriceChange" disabled="{{form.free}}" />
           <checkbox-group bindchange="onFreeChange">
             <checkbox value="free" checked="{{form.free}}">免费</checkbox>
           </checkbox-group>
@@ -84,7 +84,7 @@
 
   <view class="bottom-bar">
     <view class="submit-button" bindtap="onSubmitTap">
-      <text>提交审核</text>
+      <text>{{isEdit ? '保存修改' : '提交审核'}}</text>
     </view>
   </view>
 

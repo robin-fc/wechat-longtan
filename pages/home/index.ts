@@ -131,9 +131,21 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   },
   onEntryTap(e: WechatMiniprogram.BaseEvent) {
     const item = e.currentTarget.dataset.item as AppActivityTypeRespVO
-    wx.setStorageSync('ACTIVITY_CATEGORY_FILTER', item.value)
-    wx.switchTab({
-      url: '/pages/activity/list',
+    wx.setStorage({
+      key: 'ACTIVITY_CATEGORY_FILTER',
+      data: item.value,
+      success: () => {
+        wx.switchTab({
+          url: '/pages/activity/list',
+        })
+      },
+      fail: (err) => {
+        console.error('Save to storage failed', err)
+        // Fallback navigate anyway
+        wx.switchTab({
+          url: '/pages/activity/list',
+        })
+      }
     })
   },
   onAboutItemTap(e: WechatMiniprogram.BaseEvent) {

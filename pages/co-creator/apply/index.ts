@@ -1,6 +1,7 @@
 import { fetchUserApplyForm, submitUserApply } from '../../../api/user-apply'
 import type { AppUserApplyFormQuestion, UserApplyReqVO } from '../../../model/user-apply'
 import { fetchMyProfile } from '../../../api/mine'
+import { isValidCnPhone } from '../../../utils/validator'
 
 type FormValue = string | string[]
 
@@ -162,6 +163,16 @@ Page({
             wx.showToast({ title: '表单加载失败', icon: 'none' })
             return
         }
+
+        const phoneQuestion = questionList.find(q => String(q.label || '').includes('手机') || q.valueType === 'tel')
+        if (phoneQuestion) {
+            const phoneVal = formData[phoneQuestion.id]
+            if (typeof phoneVal === 'string' && !isValidCnPhone(phoneVal)) {
+                wx.showToast({ title: '请输入正确的手机号码', icon: 'none' })
+                return
+            }
+        }
+
         const req: UserApplyReqVO = {
             formType: 2, // 共创者申请
             answers: questionList

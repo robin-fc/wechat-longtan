@@ -1,9 +1,9 @@
-import { createActivity, getActivityTypeList } from '../../api/activity'
+import { createActivity, updateActivity, getActivityDetail, getActivityTypeList } from '../../api/activity'
 import { getActivityCollections } from '../../api/activity-collection'
 import { uploadImage } from '../../api/common'
 import { fetchMyProfile } from '../../api/mine'
 import { getSpaceList } from '../../api/space'
-import type { ActivityType as ActivityTypeItem } from '../../model/activity'
+import type { ActivityType as ActivityTypeItem, UpdateActivityPayload } from '../../model/activity'
 import { toISO8601 } from '../../utils/isoTime'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
 
@@ -35,6 +35,8 @@ interface PublishPageState {
   spaceOptions: { id: number; name: string }[]
   spaceIndex: number
   showPermissionPopup: boolean
+  isEdit: boolean
+  editId: number
 }
 
 function validatePublishForm(
@@ -121,8 +123,19 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     spaceOptions: [],
     spaceIndex: 0,
     showPermissionPopup: false,
+    isEdit: false,
+    editId: 0,
   },
-  async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+  async onLoad(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    options: WechatMiniprogram.Page.InstanceProperties['options']
+  ) {
+    if (options.id) {
+      this.setData({
+        isEdit: true,
+        editId: Number(options.id),
+      })
+    }
     await this.checkDigitalNomadStatus()
   },
   async checkDigitalNomadStatus(this: WechatMiniprogram.Page.TrivialInstance) {
@@ -200,6 +213,81 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
         'form.type': ((types || [])[0]?.label || ''),
       })
     } catch { }
+
+    if (this.data.isEdit && this.data.editId) {
+      await this.loadActivityDetail(this.data.editId)
+    }
+  },
+
+  async loadActivityDetail(this: WechatMiniprogram.Page.TrivialInstance, id: number) {
+    try {
+      wx.showLoading({ title: '加载中...' })
+      const detail = await getActivityDetail(id)
+
+      const form: PublishFormState = { ...this.data.form }
+
+      form.title = detail.title || ''
+      form.price = detail.fee ? String(detail.fee) : ''
+      form.free = detail.isFree || false
+      form.limit = detail.maxParticipants ? String(detail.maxParticipants) : ''
+      form.logo = detail.logo || ''
+      form.description = detail.detail || ''
+
+      // 时间处理
+      if (detail.startTime) {
+        const parts = detail.startTime.split(/[ T]/)
+        form.startDate = parts[0] || ''
+        form.startClock = parts[1] ? parts[1].substring(0, 5) : ''
+        form.startTime = `${form.startDate} ${form.startClock}:00`
+      }
+      if (detail.endTime) {
+        const parts = detail.endTime.split(/[ T]/)
+        form.endDate = parts[0] || ''
+        form.endClock = parts[1] ? parts[1].substring(0, 5) : ''
+        form.endTime = `${form.endDate} ${form.endClock}:00`
+      }
+
+      let collectionIndex = 0
+      if (detail.collectionId) {
+        form.collectionId = String(detail.collectionId)
+        const idx = this.data.collectionOptions.findIndex((c: any) => String(c.id) === String(detail.collectionId))
+        if (idx !== -1) collectionIndex = idx
+      }
+
+      let spaceIndex = 0
+      if (detail.space && detail.space.id) {
+        form.spaceId = String(detail.space.id)
+        form.space = detail.space.name || ''
+        const idx = this.data.spaceOptions.findIndex((s: any) => String(s.id) === String(detail.space.id))
+        if (idx !== -1) spaceIndex = idx
+      }
+
+      let typeIndex = 0
+      if (detail.activityType) {
+        form.type = detail.activityType
+        const idx = this.data.types.findIndex((t: any) => t.value === detail.activityType || t.label === detail.activityType)
+        if (idx !== -1) typeIndex = idx
+      }
+
+      this.setData({
+        form,
+        collectionIndex,
+        spaceIndex,
+        typeIndex
+      })
+
+      wx.setNavigationBarTitle({
+        title: '编辑活动'
+      })
+
+      wx.hideLoading()
+    } catch (e) {
+      wx.hideLoading()
+      wx.showToast({
+        title: '获取活动信息失败',
+        icon: 'none'
+      })
+    }
   },
 
   onBackTap() {
@@ -423,7 +511,8 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     const startTimeStr = startISO
     const endTimeStr = endISO
     const selectedSpace = state.spaceOptions[state.spaceIndex]
-    const payload = {
+    const payload: UpdateActivityPayload = {
+      id: state.editId,
       title: form.title.trim(),
       fee: form.free ? 0 : Number(form.price) || 0,
       isFree: form.free,
@@ -437,9 +526,17 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       detail: form.description.trim(),
       isLimitParticipants: !!Number(form.limit),
     }
+
     try {
       wx.showLoading({ title: '提交中...', mask: true })
-      const ok = await createActivity(payload)
+
+      let ok = false
+      if (state.isEdit) {
+        ok = await updateActivity(payload)
+      } else {
+        ok = await createActivity(payload)
+      }
+
       wx.hideLoading()
       if (ok) {
         // 清空表单
@@ -458,6 +555,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
             endDate: '',
             endClock: '',
             space: '空间A',
+            spaceId: '1',
             logo: '',
             description: '',
           },
@@ -466,7 +564,7 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
           spaceIndex: 0,
         })
         wx.showToast({
-          title: '已提交，待审核',
+          title: state.isEdit ? '已修改并提交' : '已提交，待审核',
           icon: 'success',
         })
         // 返回并刷新列表页
@@ -478,6 +576,9 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
               prePage.loadActivities()
             } else if (typeof prePage.refreshData === 'function') {
               prePage.refreshData()
+            } else if (typeof prePage.onLoad === 'function' && prePage.options) {
+              // Detail page reload
+              prePage.onLoad(prePage.options)
             }
           }
         }
@@ -490,10 +591,10 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
           icon: 'none',
         })
       }
-    } catch (e) {
+    } catch (e: any) {
       wx.hideLoading()
       wx.showToast({
-        title: '网络错误',
+        title: e.message || '网络错误',
         icon: 'none',
       })
     }

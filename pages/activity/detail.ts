@@ -94,9 +94,11 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const userId = wx.getStorageSync('userId')
     const isSelf =
       activity.organizer && String(activity.organizer.userId) === String(userId)
+    const isRegistered = activity.isRegistered || (res.userList || []).some((u: any) => String(u.userId) === String(userId))
 
     const formattedActivity: ActivityDetail = {
       ...activity,
+      isRegistered,
       startTime: formatYMDHM(activity.startTime),
       endTime: formatYMDHM(activity.endTime),
       formattedTimeRange: formatSmartTimeRange(activity.startTime, activity.endTime),
@@ -291,11 +293,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const detail = (this.data as ActivityDetailState).activity
     if (!detail) return
 
-    wx.showToast({
-      title: '编辑功能即将上线',
-      icon: 'none'
-    })
-    // In future: smartNavigateTo(`/pages/activity/publish?id=${detail.id}`)
+    smartNavigateTo(`/pages/activity/publish?id=${detail.id}`)
   },
 
   onShareTap(this: WechatMiniprogram.Page.TrivialInstance) {
@@ -411,9 +409,9 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       } else {
         wx.showToast({ title: '评价失败', icon: 'none' })
       }
-    } catch (e) {
+    } catch (e: any) {
       wx.hideLoading()
-      wx.showToast({ title: '网络错误', icon: 'none' })
+      wx.showToast({ title: e.message || '网络错误', icon: 'none' })
     }
   },
 })

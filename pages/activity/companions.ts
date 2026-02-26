@@ -1,6 +1,6 @@
 import { getActivityRegistrations } from '../../api/activity'
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
-import { goBack } from '../../utils/navigation'
+import { goBack, smartNavigateTo } from '../../utils/navigation'
 
 interface CompanionItemView {
   id: string
@@ -12,11 +12,13 @@ interface CompanionItemView {
 
 interface CompanionsPageState {
   companions: CompanionItemView[]
+  currentUserId: string
 }
 
 Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
   data: {
     companions: [],
+    currentUserId: '',
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -41,6 +43,11 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
       this.setData({
         companions,
       })
+
+      const userIdStorage = wx.getStorageSync('userId')
+      if (userIdStorage) {
+        this.setData({ currentUserId: String(userIdStorage) })
+      }
     } catch (e) {
       console.error('获取同行人员失败', e)
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -48,6 +55,22 @@ Page<CompanionsPageState, WechatMiniprogram.IAnyObject>({
   },
   onBackTap() {
     goBack()
+  },
+  onUserTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.CustomEvent
+  ) {
+    const { user } = e.detail
+    const userId = user.id
+    if (userId) {
+      if (userId === this.data.currentUserId) {
+        wx.switchTab({ url: '/pages/mine/index' })
+        return
+      }
+      smartNavigateTo(
+        `/pages/user/other-profile/index?userId=${userId}&isFollowed=${user.follow}`
+      )
+    }
   },
   onFollowTap(
     this: WechatMiniprogram.Page.TrivialInstance,

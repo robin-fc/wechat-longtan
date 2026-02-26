@@ -4,7 +4,7 @@
     <text class="name">{{user.nickname}}</text>
     <text class="bio">{{user.bio}}</text>
   </view>
-  <view wx:if="{{showFollow}}" class="follow-btn {{user.follow ? 'followed' : ''}}" catchtap="onFollowTap">
+  <view wx:if="{{showFollow && (user.userId || user.id) != currentUserId}}" class="follow-btn {{user.follow ? 'followed' : ''}}" catchtap="onFollowTap">
     <text>{{user.follow ? '已关注' : '关注'}}</text>
   </view>
 </view>

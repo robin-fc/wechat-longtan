@@ -4,7 +4,8 @@
     <block wx:for="{{companions}}" wx:key="id">
       <user-list-item
         user="{{item}}"
-        showFollow="{{true}}"
+        showFollow="{{item.id !== currentUserId}}"
+        bind:tap="onUserTap"
         bind:follow="onFollowTap"
       />
     </block>

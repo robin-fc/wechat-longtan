@@ -19,11 +19,19 @@ Component({
   data: {
     date: '',
     time: '',
+    minDate: '',
   },
   lifetimes: {
     attached() {
       const v = (this.data as any).value as string
       this.initFromValue(v)
+
+      // Calculate today's date for limiting the date picker
+      const today = new Date()
+      const year = today.getFullYear()
+      const month = String(today.getMonth() + 1).padStart(2, '0')
+      const day = String(today.getDate()).padStart(2, '0')
+      this.setData({ minDate: `${year}-${month}-${day}` })
     },
   },
   methods: {

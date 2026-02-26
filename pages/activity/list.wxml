@@ -48,12 +48,28 @@
   </view>
 
   <view class="list-wrapper">
-    <block wx:for="{{activities}}" wx:key="id">
-      <view class="activity-item">
-        <activity-horizontal-card
-          activity="{{item}}"
-          bindcardtap="onActivityTap"
-        />
+    <!-- Show Loading -->
+    <view class="loading-state" wx:if="{{isLoading && pageNo === 1}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+    
+    <!-- Show Empty when loaded but no data -->
+    <view class="empty-state" wx:elif="{{!isLoading && activities.length === 0}}">
+      <text class="empty-text">当前分类暂无活动</text>
+    </view>
+
+    <!-- Show Activities -->
+    <block wx:else>
+      <block wx:for="{{activities}}" wx:key="id">
+        <view class="activity-item">
+          <activity-horizontal-card
+            activity="{{item}}"
+            bindcardtap="onActivityTap"
+          />
+        </view>
+      </block>
+      <view class="loading-more" wx:if="{{isLoading && pageNo > 1}}">
+        <text class="loading-text">加载更多中...</text>
       </view>
     </block>
   </view>

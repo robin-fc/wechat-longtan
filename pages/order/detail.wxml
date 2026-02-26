@@ -33,7 +33,8 @@
       <text class="date">{{view.checkOutText}}</text>
     </view>
     <view class="cancel-row">
-      <text class="cancel-text">下单后24小时内可免费取消。</text><text  class="cancel-policy">《详见退款政策》</text>
+      <text class="cancel-text">入住日期7天前退款扣除30%，7天内不退款</text>
+      <!-- <text  class="cancel-policy">《详见退款政策》</text> -->
     </view>
   </view>
 

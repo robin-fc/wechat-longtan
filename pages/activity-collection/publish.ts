@@ -34,7 +34,7 @@ Page({
       success: async (res) => {
         const filePath = (res.tempFilePaths || [])[0]
         if (!filePath) return
-        
+
         try {
           wx.showLoading({ title: '上传中...' })
           const url = await uploadImage(filePath)
@@ -62,7 +62,7 @@ Page({
       success: async (res) => {
         const filePath = (res.tempFilePaths || [])[0]
         if (!filePath) return
-        
+
         try {
           wx.showLoading({ title: '上传中...' })
           const url = await uploadImage(filePath)
@@ -145,10 +145,10 @@ Page({
           icon: 'none',
         })
       }
-    } catch (e) {
+    } catch (e: any) {
       wx.hideLoading()
       wx.showToast({
-        title: '网络错误',
+        title: e.message || '网络错误',
         icon: 'none',
       })
     }

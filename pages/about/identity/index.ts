@@ -16,7 +16,7 @@ Page<IdentityPageData, WechatMiniprogram.IAnyObject>({
       {
         title: '数字游民',
         subtitle: '核心定义',
-        description: '通过DAO龙潭认证，旅居于龙潭，依托互联网技术实现地理自由、远程工作或创业的；或是处于gap year人生探索阶段的；又或者是对DAO龙潭社区抱有极大探索兴趣的各类朋友。',
+        description: '通过DAO龙潭认证，旅居于龙潭，依托互联网技术实现地理自由、远程工作或创业的人群；或是处于Gap Year人生探索阶段的旅者；又或者是对DAO龙潭社区抱有极大探索兴趣的各类朋友。',
         value: '为乡村带来新技术、新视角与跨地域资源，是社区活力的重要来源和创意连接器。',
       },
       {
@@ -44,7 +44,7 @@ Page<IdentityPageData, WechatMiniprogram.IAnyObject>({
         value: '通过持续策划高质量活动，激发社区互动，保持龙潭的吸引力与凝聚力。',
       },
     ],
-    footer: 'Ps：一个人在DAO龙潭这个数字空间里可以同时拥有多重身份。',
+    footer: 'PS：一个人在DAO龙潭这个数字空间里可以同时拥有多重身份。',
   },
 
   onLoad() {

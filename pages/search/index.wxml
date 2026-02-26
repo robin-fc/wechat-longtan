@@ -36,18 +36,7 @@
       <text>未找到相关结果</text>
     </view>
 
-    <!-- Activity Collections -->
-    <view wx:if="{{collections.length > 0}}" class="section">
-      <view class="section-title">活动合集</view>
-      <block wx:for="{{collections}}" wx:key="id">
-        <view class="item-wrapper">
-          <collection-card
-            collection="{{item}}"
-            bindtap="onCollectionTap"
-          />
-        </view>
-      </block>
-    </view>
+    
 
     <!-- Activities -->
     <view wx:if="{{activities.length > 0}}" class="section">
@@ -61,7 +50,18 @@
         </view>
       </block>
     </view>
-
+<!-- Activity Collections -->
+<view wx:if="{{collections.length > 0}}" class="section">
+      <view class="section-title">活动合集</view>
+      <block wx:for="{{collections}}" wx:key="id">
+        <view class="item-wrapper">
+          <collection-card
+            collection="{{item}}"
+            bindtap="onCollectionTap"
+          />
+        </view>
+      </block>
+    </view>
     <!-- Homestays -->
     <view wx:if="{{homestays.length > 0}}" class="section">
       <view class="section-title">民宿</view>

@@ -13,7 +13,7 @@
     <text class="bio">{{user.introduction || '暂无介绍'}}</text>
   </view>
   
-  <view wx:if="{{showFollow && !isSelf}}" 
+  <view wx:if="{{showFollow && !isSelf && (user.userId || user.id) != currentUserId}}" 
         class="follow-btn {{user.followed ? 'following' : ''}}" 
         catchtap="onFollowTap">
       <text>{{user.followed ? '已关注' : '关注'}}</text>

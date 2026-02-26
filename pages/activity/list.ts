@@ -17,6 +17,7 @@ interface ActivityListState {
   currentStatus: number
   rawActivities: any[]
   typeDict?: any[]
+  isLoading: boolean
 }
 
 Page<ActivityListState, WechatMiniprogram.IAnyObject>({
@@ -36,8 +37,9 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
       { name: '历史活动', value: 2 },
     ],
     currentStatus: 0,
+    isLoading: false,
   },
-  onShow() {
+  async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({
         selected: 1,
@@ -47,22 +49,38 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     // For now keep existing logic but be careful not to overwrite initial load
     try {
       const category = wx.getStorageSync('ACTIVITY_CATEGORY_FILTER')
+
       if (category) {
         wx.removeStorageSync('ACTIVITY_CATEGORY_FILTER')
-        
+
+        const typeDict = await ensureActivityTypeDict()
+        const selectedItem = typeDict.find(item => item.value === category)
+        const otherItems = typeDict.filter(item => item.value !== category)
+
+        const filterGroups = [
+          { id: '', name: '全部' }
+        ]
+        if (selectedItem) {
+          filterGroups.push({ id: selectedItem.value, name: selectedItem.label })
+        }
+        filterGroups.push(...otherItems.map(item => ({ id: item.value, name: item.label })))
+
         this.setData({
-          activeItemId: category,
+          activeGroupId: category,
+          activeItemId: '',
           activityType: category,
-          // Reset status to default or keep? Usually default
+          activeItems: [],
           currentStatus: 0,
           pageNo: 1,
           hasMore: true,
-          activities: []
+          activities: [],
+          filterGroups,
+          typeDict
         })
         if (this.data.activities.length === 0) {
           this.loadActivities()
         }
-        return // Avoid double load if onLoad also calls it
+        return
       }
     } catch (e) {
       console.error('Read storage failed:', e)
@@ -114,11 +132,47 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
     const typeDict = await ensureActivityTypeDict()
-    const filterGroups = [
-      { id: '', name: '全部' },
-      ...typeDict.map(item => ({ id: item.value, name: item.label }))
-    ]
-    this.setData({ filterGroups, typeDict })
+    try {
+      const category = wx.getStorageSync('ACTIVITY_CATEGORY_FILTER')
+      if (category) {
+        wx.removeStorageSync('ACTIVITY_CATEGORY_FILTER')
+        const selectedItem = typeDict.find(item => item.value === category)
+        const otherItems = typeDict.filter(item => item.value !== category)
+
+        const filterGroups = [
+          { id: '', name: '全部' }
+        ]
+        if (selectedItem) {
+          filterGroups.push({ id: selectedItem.value, name: selectedItem.label })
+        }
+        filterGroups.push(...otherItems.map(item => ({ id: item.value, name: item.label })))
+
+        this.setData({
+          activeGroupId: category,
+          activeItemId: '',
+          activityType: category,
+          activeItems: [],
+          currentStatus: 0,
+          pageNo: 1,
+          hasMore: true,
+          activities: [],
+          filterGroups,
+          typeDict
+        })
+      } else {
+        const filterGroups = [
+          { id: '', name: '全部' },
+          ...typeDict.map(item => ({ id: item.value, name: item.label }))
+        ]
+        this.setData({ filterGroups, typeDict })
+      }
+    } catch (e) {
+      const filterGroups = [
+        { id: '', name: '全部' },
+        ...typeDict.map(item => ({ id: item.value, name: item.label }))
+      ]
+      this.setData({ filterGroups, typeDict })
+    }
 
     await this.loadActivities()
   },
@@ -151,53 +205,59 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
     // Assuming API accepts the numeric values 0, 1, 3 etc. or strings?
     // User said "activityStatus".
 
-    const res = await getActivityList({
-      activityType: activityType || '',
-      activityStatus: currentStatus, // Check type
-      pageNo: String(pageNo),
-      pageSize: String(pageSize),
-    })
+    this.setData({ isLoading: true })
 
-    const list = (res && res.pageResult && res.pageResult.list) || []
-    const hasMore = (res && res.pageResult && res.pageResult.total > pageNo * pageSize) || false
-
-    const typeDict = await ensureActivityTypeDict()
-    const formattedList = list.map((it) => ({
-      ...it,
-      poster: {
-        id: String(it.id),
-        url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
-      },
-      secondaryTag: (() => {
-        const name = typeDict.find((x) => x.value === it.activityType)?.label || (it as any).activityType
-        // Or if backend returns friendly name now?
-        return {
-          name: name || it.collectionName || '-',
-        }
-      })(),
-      timeRange: {
-        startTime: formatYMDHM(it.startTime),
-        endTime: formatYMDHM(it.endTime),
-      },
-      price: {
-        amount: it.fee || 0,
-        currency: 'CNY',
-        unit: '人',
-      },
-      registeredUsers: it.registeredUsers,
-      registeredCount: it.registeredCount
-    }))
-
-    if (pageNo === 1) {
-      this.setData({
-        activities: formattedList,
-        hasMore
+    try {
+      const res = await getActivityList({
+        activityType: activityType || '',
+        activityStatus: currentStatus, // Check type
+        pageNo: String(pageNo),
+        pageSize: String(pageSize),
       })
-    } else {
-      this.setData({
-        activities: this.data.activities.concat(formattedList),
-        hasMore
-      })
+
+      const list = (res && res.pageResult && res.pageResult.list) || []
+      const hasMore = (res && res.pageResult && res.pageResult.total > pageNo * pageSize) || false
+
+      const typeDict = await ensureActivityTypeDict()
+      const formattedList = list.map((it) => ({
+        ...it,
+        poster: {
+          id: String(it.id),
+          url: (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
+        },
+        secondaryTag: (() => {
+          const name = typeDict.find((x) => x.value === it.activityType)?.label || (it as any).activityType
+          // Or if backend returns friendly name now?
+          return {
+            name: name || it.collectionName || '-',
+          }
+        })(),
+        timeRange: {
+          startTime: formatYMDHM(it.startTime),
+          endTime: formatYMDHM(it.endTime),
+        },
+        price: {
+          amount: it.fee || 0,
+          currency: 'CNY',
+          unit: '人',
+        },
+        registeredUsers: it.registeredUsers,
+        registeredCount: it.registeredCount
+      }))
+
+      if (pageNo === 1) {
+        this.setData({
+          activities: formattedList,
+          hasMore
+        })
+      } else {
+        this.setData({
+          activities: this.data.activities.concat(formattedList),
+          hasMore
+        })
+      }
+    } finally {
+      this.setData({ isLoading: false })
     }
   },
   onBackTap() {

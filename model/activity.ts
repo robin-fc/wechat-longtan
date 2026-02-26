@@ -27,6 +27,10 @@ export interface CreateActivityPayload {
   isLimitParticipants?: boolean
 }
 
+export interface UpdateActivityPayload extends CreateActivityPayload {
+  id: number
+}
+
 export interface ActivityListResponse {
   pageResult: PageResult<Activity>
   onSaleCount: number
@@ -164,6 +168,9 @@ export interface ActivityDetail {
   isRegistered: boolean
 
   formattedTimeRange?: string
+
+  /*集合ID（可为空） */
+  collectionId?: number
 }
 
 export interface ActivityRegistration {

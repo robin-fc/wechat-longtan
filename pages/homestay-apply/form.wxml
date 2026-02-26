@@ -28,8 +28,8 @@
           </picker>
         </view>
         <view class="cancel-policy-row">
-          <text>{{cancelDateDesc}} 23:59前可免费取消。</text>
-          <text class="policy-link">《详见退款政策》</text>
+          <text>入住日期7天前退款扣除30%，7天内不退款</text>
+          <!-- <text class="policy-link">《详见退款政策》</text> -->
         </view>
       </view>
     </view>

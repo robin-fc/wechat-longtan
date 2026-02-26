@@ -1,6 +1,6 @@
 <view class="homestay-list-page">
   <view class="filter-row">
-    <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+    <picker mode="date" value="{{startDate}}" start="{{minDate}}" bindchange="onStartDateChange">
       <view class="date-picker">
         <text class="label">入住时间</text>
         <text class="date">{{startDate || '选择入住时间'}}</text>

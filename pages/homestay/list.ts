@@ -18,6 +18,7 @@ interface HomestayListState {
   pageSize: number
   hasMore: boolean
   isLoading: boolean
+  minDate: string
 }
 
 Page<HomestayListState, WechatMiniprogram.IAnyObject>({
@@ -28,6 +29,7 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
     pageSize: 10,
     hasMore: true,
     isLoading: false,
+    minDate: '',
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -37,11 +39,15 @@ Page<HomestayListState, WechatMiniprogram.IAnyObject>({
     }
   },
   async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+    const todayStr = formatYMD1(new Date(), '-')
     if (!this.data.startDate) {
       this.setData({
-        startDate: formatYMD1(new Date(), '-'),
+        startDate: todayStr,
       })
     }
+    this.setData({
+      minDate: todayStr,
+    })
     await this.loadHomestays(true)
   },
   async loadHomestays(

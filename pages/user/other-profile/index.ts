@@ -1,6 +1,6 @@
 import { getUserDetail, getUserSummaryByUser } from '../../../api/user'
 import { ensureActivityTypeDict, getUserActivityList } from '../../../api/activity'
-import { formatYMDHM } from '../../../utils/date'
+import { formatYMD } from '../../../utils/date'
 import { buildUserTagsView, UserTagView } from '../../../utils/user-tags'
 
 interface UserInfoView {
@@ -112,11 +112,11 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
         gender: (raw?.sex !== undefined ? raw.sex : 1) || 1,
         levelTags: tags.levelTags,
         roleTags: tags.roleTags,
-        joinTime: formatYMDHM(raw?.joinTime || ''),
+        joinTime: formatYMD(raw?.joinTime || '') || '2025年04月22日',
         bio: (raw?.desc || '') || '',
         followingCount: summary.followingCount || 0,
         followerCount: summary.followerCount || 0,
-        isFollowed:raw.followed
+        isFollowed: raw.followed
       }
       this.setData({ userInfo })
     } catch {
@@ -176,7 +176,7 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
           avatar: it.organizer?.logo || it.creatorAvatar || '',
           logo: it.organizer?.logo || it.creatorAvatar || '',
           memberLevel: it.organizer?.levelLabel || '',
-       
+
           tag: ''
         }
 

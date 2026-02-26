@@ -28,6 +28,8 @@ interface HomestayDetailState {
   menuHeight: number
   isDescriptionExpanded: boolean
   showExpandBtn: boolean
+  isRoomsLoading: boolean
+  minDate: string
 }
 
 function calcEndDate(startDate: string, days: number): string {
@@ -58,6 +60,8 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     menuHeight: 44,
     isDescriptionExpanded: false,
     showExpandBtn: false,
+    isRoomsLoading: false,
+    minDate: '',
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -73,6 +77,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       menuHeight: menuRect ? menuRect.height : 44,
     })
     try {
+      wx.showLoading({ title: '加载中...', mask: true })
       const homestayDetail = await getHomestayDetailApi(Number(id))
 
       // Map tags from numbers to strings
@@ -109,16 +114,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         endDate,
         durations,
         duration: activeDuration.value,
+        isRoomsLoading: true,
+        minDate: startDate,
       })
 
-      const tagMap: Record<string, string> = {
-        '0': '独立卫生间',
-        '1': '山景房',
-        '2': '海景房',
-        '3': '家庭房',
-        '4': '双床房',
-        '5': '大床房',
-      }
+
       const roomList = await getHomestayAvailableRooms({
         homestayId: String(homestayDetail.id),
         checkInDate: startDate,
@@ -138,10 +138,14 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       })
       this.setData({
         rooms,
+        isRoomsLoading: false,
       }, () => {
         this.calcDescriptionExpand()
       })
+      wx.hideLoading()
     } catch (e) {
+      wx.hideLoading()
+      this.setData({ isRoomsLoading: false })
       // ignore for now
     }
   },
@@ -194,12 +198,13 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     const current = durations.find((d) => d.value === data.duration) ||
       durations[0] || { value: '1', days: 7, label: '一周' }
     const endDate = calcEndDate(startDate as string, current.days)
-    this.setData({ startDate, endDate, duration: current.value })
+    this.setData({ startDate, endDate, duration: current.value, isRoomsLoading: true })
     const homestay = data.homestay
     if (!homestay) {
       return
     }
 
+    wx.showLoading({ title: '加载房源中...', mask: true })
     getHomestayAvailableRooms({
       homestayId: String(homestay.id),
       checkInDate: startDate as string,
@@ -217,7 +222,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
           price: priceForPackage?.price ?? room.price
         }
       })
-      this.setData({ rooms })
+      this.setData({ rooms, isRoomsLoading: false })
+    }).catch(() => {
+      this.setData({ isRoomsLoading: false })
+    }).finally(() => {
+      wx.hideLoading()
     })
   },
   onDurationTap(
@@ -242,6 +251,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     this.setData({
       duration: selected.value,
       endDate,
+      isRoomsLoading: true,
     })
 
     const homestay = data.homestay
@@ -249,6 +259,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       return
     }
 
+    wx.showLoading({ title: '加载房源中...', mask: true })
     getHomestayAvailableRooms({
       homestayId: String(homestay.id),
       checkInDate: startDate as string,
@@ -266,7 +277,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
           price: priceForPackage?.price ?? room.price
         }
       })
-      this.setData({ rooms })
+      this.setData({ rooms, isRoomsLoading: false })
+    }).catch(() => {
+      this.setData({ isRoomsLoading: false })
+    }).finally(() => {
+      wx.hideLoading()
     })
   },
   onRoomTap(

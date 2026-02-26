@@ -130,8 +130,11 @@
         <button class="bottom-item  btn-white" open-type="share" bindtap="onShareTap">
           <text class="bottom-label">分享</text>
         </button>
-        <view class="bottom-item btn-black" bindtap="onSignupTap">
+        <view class="bottom-item btn-black" bindtap="onSignupTap" wx:if="{{!activity.isRegistered}}">
           <text class="bottom-primary-label">立即报名</text>
+        </view>
+        <view class="bottom-item btn-black btn-disabled" wx:else>
+          <text class="bottom-primary-label">已报名</text>
         </view>
         </view>
       </block>
