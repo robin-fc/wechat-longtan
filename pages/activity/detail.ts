@@ -5,6 +5,8 @@ import {
   unfavoriteActivity,
   shareActivity,
   createReview,
+  getReviewList,
+  AppReviewRespVO
 } from '../../api/activity'
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
 import { ActivityDetail, RegistrationUser } from '../../model/activity'
@@ -28,6 +30,8 @@ interface ActivityDetailState {
   companionsData: CompanionsData
   favoriteCompanionsData: CompanionsData
   reviewContent: string
+  reviews: AppReviewRespVO[]
+  showHomeButton: boolean
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -49,11 +53,18 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       totalCount: 0,
     },
     reviewContent: '',
+    reviews: [],
+    showHomeButton: false
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
+    // 判断是否是分享直接进入（没有前一页）
+    const pages = getCurrentPages()
+    const showHomeButton = pages.length === 1
+    this.setData({ showHomeButton })
+
     const idRaw = options.id as string
     if (!idRaw) {
       wx.showToast({
@@ -89,6 +100,8 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       registrationCount: res.count || 0,
       companionsData,
     })
+
+    this.fetchReviews(id)
 
     const menuRect = wx.getMenuButtonBoundingClientRect()
     const userId = wx.getStorageSync('userId')
@@ -133,8 +146,31 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       favoriteCompanionsData,
     })
   },
+  async fetchReviews(activityId: number) {
+    try {
+      const res = await getReviewList({
+        targetType: '0', // 0 = Activity
+        targetId: String(activityId),
+        pageNo: '1',
+        pageSize: '10' // 暂取前10条
+      })
+      this.setData({
+        reviews: (res.list || []).map(item => ({
+          ...item,
+          createTime: formatYMDHM(item.createTime)
+        }))
+      })
+    } catch (e) {
+      console.error('Failed to fetch reviews', e)
+    }
+  },
   onBackTap() {
-    goBack()
+    if (this.data.showHomeButton) {
+      // 分享进入，返回首页
+      wx.switchTab({ url: '/pages/home/index' })
+    } else {
+      goBack()
+    }
   },
   onFavoriteUsersTap(this: WechatMiniprogram.Page.TrivialInstance) {
     const detail = this.data.activity
@@ -406,6 +442,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       if (ok) {
         wx.showToast({ title: '评价成功', icon: 'success' })
         this.setData({ reviewContent: '' })
+        this.fetchReviews(data.activity.id)
       } else {
         wx.showToast({ title: '评价失败', icon: 'none' })
       }

@@ -1,7 +1,12 @@
 <view class="activity-detail-page">
   <view wx:if="{{activity}}" class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
     <view class="header-left" bindtap="onBackTap">
-      <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+      <block wx:if="{{showHomeButton}}">
+        <image class="home-icon" src="/assets/icons/home.svg" mode="aspectFit" />
+      </block>
+      <block wx:else>
+        <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+      </block>
     </view>
     <text class="header-title">活动详情</text>
     <view class="header-right"></view>
@@ -75,12 +80,34 @@
     </view>
     <view class="section">
       <text class="section-title">活动评价</text>
-      <text wx:if="{{activity.activityStatus != '已结束'}}" class="section-content default-content">
-        活动还未结束，暂时还没有评价。
-      </text>
-      <text wx:elif="{{activity.activityStatus == '已结束'}}" class="section-content default-content">
-        暂无评价
-      </text>
+      <block wx:if="{{reviews && reviews.length > 0}}">
+        <view class="review-list">
+          <block wx:for="{{reviews}}" wx:key="id">
+            <view class="review-item">
+              <view class="review-header">
+                <image class="review-avatar" src="{{item.user.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+                <view class="review-info">
+                  <text class="review-name">{{item.user.memberName || item.user.wxName || '匿名用户'}}</text>
+                  <text class="review-time">{{item.createTime}}</text>
+                </view>
+                <view class="review-rating" wx:if="{{item.rating}}">
+                  <text class="rating-star">★</text>
+                  <text class="rating-score">{{item.rating}}</text>
+                </view>
+              </view>
+              <view class="review-content-text">{{item.content}}</view>
+            </view>
+          </block>
+        </view>
+      </block>
+      <block wx:else>
+        <text wx:if="{{activity.activityStatus != '已结束'}}" class="section-content default-content">
+          活动还未结束，暂时还没有评价。
+        </text>
+        <text wx:elif="{{activity.activityStatus == '已结束'}}" class="section-content default-content">
+          暂无评价
+        </text>
+      </block>
     </view>
   </view>
   <view wx:if="{{activity}}" class="bottom-bar">

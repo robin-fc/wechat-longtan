@@ -1,13 +1,10 @@
-import { fetchSearchPageConfig } from '../../api/search'
-import { getActivityList, ensureActivityTypeDict } from '../../api/activity'
-import { getActivityCollections } from '../../api/activity-collection'
-import { getAvailableHomestayList } from '../../api/homestay'
+import { fetchSearchPageConfig, globalSearch } from '../../api/search'
+import { ensureActivityTypeDict } from '../../api/activity'
 import type { SearchFrom, HotSearchItem } from '../../api/search'
 import type { Activity } from '../../model/activity'
 import { formatYMD } from '../../utils/date'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
 import { AppHomestayListRespVO } from '../../model/homestay'
-import { PageResult } from '../../model/common'
 
 interface SearchPageState {
   from: SearchFrom
@@ -15,6 +12,10 @@ interface SearchPageState {
   placeholder: string
   hotKeywords: HotSearchItem[]
   activities: Activity[]
+  collections: any[]
+  homestays: AppHomestayListRespVO[]
+  spaces: any[]
+  users: any[]
   hasSearched: boolean
 }
 
@@ -25,6 +26,10 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     placeholder: '',
     hotKeywords: [],
     activities: [],
+    collections: [],
+    homestays: [],
+    spaces: [],
+    users: [],
     hasSearched: false,
   },
   onLoad(
@@ -73,39 +78,35 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     if (!trimmed) {
       this.setData({
         activities: [],
-        collections: [],
+        spaces: [],
         homestays: [],
+        users: [],
+        collections: [],
         hasSearched: true,
       })
       return
     }
 
-    const promises: Promise<any>[] = []
-    const typeDict = await ensureActivityTypeDict()
+    wx.showLoading({ title: '搜索中...' })
+    try {
+      const typeDict = await ensureActivityTypeDict()
+      const res = await globalSearch(trimmed)
 
-    // 1. Activity Search
-    const activityPromise = getActivityList({
-      name: trimmed,
-      pageNo: '1',
-      pageSize: '20',
-    }).then((res) => {
-      const list = res?.pageResult?.list || []
-      return list.map((it) => ({
+      const activities = (res.activities || []).map((it: any) => ({
         ...it,
         poster: {
           id: String(it.id),
           url:
-            (it as any).posterUrl || it.logo || '/assets/images/activity.jpg',
+            it.posterUrl || it.logo || '/assets/images/activity.jpg',
         },
-         secondaryTag: (() => {
-           const raw = (it as any).activityType
-           const s = String(raw ?? '').trim()
-           const dictName = typeDict.find((x) => x.value === s)?.label || s
-           return {
-             name: dictName || it.collectionName || '活动',
-           }
-         })(),
-       
+        secondaryTag: (() => {
+          const raw = it.activityType
+          const s = String(raw ?? '').trim()
+          const dictName = typeDict.find((x) => x.value === s)?.label || s
+          return {
+            name: dictName || it.collectionName || '活动',
+          }
+        })(),
         timeRange: {
           startTime: formatYMD(it.startTime),
           endTime: formatYMD(it.endTime),
@@ -116,37 +117,21 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
           unit: '人',
         },
       }))
-    })
-    promises.push(activityPromise)
 
-    // 2. Collection Search
-    const collectionPromise = getActivityCollections(
-      '1',
-      '20',
-      undefined,
-      trimmed
-    ).then((page) => page.list || [])
-    promises.push(collectionPromise)
-
-    // 3. Homestay Search (only if from === 'home')
-    let homestayPromise: Promise<AppHomestayListRespVO[]> = Promise.resolve([])
-    if (state.from === 'home') {
-      homestayPromise = getAvailableHomestayList({
-        pageNo: '1',
-        pageSize: '20',
-        name: trimmed,
-      }).then((res) => res?.list || [])
+      this.setData({
+        activities,
+        spaces: res.spaces || [],
+        homestays: res.homestays || [],
+        users: res.users || [],
+        collections: [],
+        hasSearched: true,
+      })
+    } catch (e) {
+      console.error(e)
+      wx.showToast({ title: '搜索失败', icon: 'none' })
+    } finally {
+      wx.hideLoading()
     }
-    promises.push(homestayPromise)
-
-    const [activities, collections, homestays] = await Promise.all(promises)
-
-    this.setData({
-      activities,
-      collections,
-      homestays,
-      hasSearched: true,
-    })
   },
   onActivityTap(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -191,6 +176,23 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
     smartNavigateTo(
       `/pages/homestay/detail?id=${encodeURIComponent(homestay.id)}`
     )
+  },
+  onSpaceTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.CustomEvent
+  ) {
+    const id = e.currentTarget.dataset.id
+    if (!id) return
+    smartNavigateTo(`/pages/space/detail?id=${encodeURIComponent(String(id))}`)
+  },
+  onUserTap(
+    this: WechatMiniprogram.Page.TrivialInstance,
+    e: WechatMiniprogram.CustomEvent
+  ) {
+    const user = (e.detail || {}).user as { userId?: string; id?: string }
+    const id = user?.userId || user?.id
+    if (!id) return
+    smartNavigateTo(`/pages/user/other-profile/index?userId=${encodeURIComponent(String(id))}`)
   },
   onShareAppMessage() {
     return {

@@ -59,9 +59,29 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     const roomId = options.roomId as string
     const homestayId = options.homestayId as string
     const startDate = options.startDate as string
-    const duration = parseInt(options.duration as string, 10) || 1
     const packageType = options.packageType as string
-    console.log(options)
+
+    console.log('homestay-apply form options:', options)
+    console.log('packageType:', packageType)
+    console.log('duration option:', options.duration)
+
+    // 优先使用 duration 参数（来自 state.nights），因为它是正确计算的天数
+    // 如果没有 duration 参数，再从 packageType 映射
+    let duration = parseInt(options.duration as string, 10) || 0
+    if (duration === 0 && packageType) {
+      const daysMap: Record<string, number> = {
+        week: 7,
+        twoWeeks: 14,
+        month: 30,
+        threeMonths: 90,
+        '1': 7,
+        '2': 14,
+        '3': 30,
+        '4': 90,
+      }
+      duration = daysMap[packageType] || 7
+    }
+    console.log('calculated duration:', duration)
     if (!roomId || !homestayId) {
       return
     }
@@ -95,13 +115,26 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       }
     }
 
+    // 根据 packageType 生成入住时长文本
+    const durationTextMap: Record<string, string> = {
+      week: '一周',
+      twoWeeks: '两周',
+      month: '一月',
+      threeMonths: '三月',
+      '1': '一周',
+      '2': '两周',
+      '3': '一月',
+      '4': '三月',
+    }
+    const stayDurationText = durationTextMap[packageType] || ''
+
     const room: HomestayRoom = {
       id: String(res.id),
       homestayId: String(res.homestayId),
       name: res.roomNumber,
       images: (res.photos || []).map((url, index) => ({ id: `p-${index}`, url })),
       description: res.description,
-      stayDurationText: '',
+      stayDurationText,
       price: { amount: roomPrice, currency: 'CNY', unit: '天' },
       capacity: 2,
       facilities: res.tags,
@@ -113,7 +146,7 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     }
 
     if (!room) return
-    const display = `${res.homestayName}-${room.name}-${duration === 7
+    const display = `${res.homestayName} | ${room.name} | ${duration === 7
       ? '一周'
       : duration === 14
         ? '两周'

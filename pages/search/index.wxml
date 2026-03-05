@@ -32,7 +32,7 @@
   </view>
 
   <view wx:if="{{hasSearched}}" class="result-container">
-    <view wx:if="{{activities.length === 0 && collections.length === 0 && homestays.length === 0}}" class="empty-state">
+    <view wx:if="{{activities.length === 0 && collections.length === 0 && homestays.length === 0 && spaces.length === 0 && users.length === 0}}" class="empty-state">
       <text>未找到相关结果</text>
     </view>
 
@@ -70,6 +70,35 @@
           <homestay-card
             homestay="{{item}}"
             bindtap="onHomestayTap"
+          />
+        </view>
+      </block>
+    </view>
+
+    <!-- Spaces -->
+    <view wx:if="{{spaces.length > 0}}" class="section">
+      <view class="section-title">活动空间</view>
+      <block wx:for="{{spaces}}" wx:key="id">
+        <view class="item-wrapper" bindtap="onSpaceTap" data-id="{{item.id}}">
+          <view class="space-card-simple">
+            <image src="{{item.logo || '/assets/images/default-avatar.png'}}" class="space-logo-simple" mode="aspectFill" />
+            <view class="space-info-simple">
+              <view class="space-name-simple">{{item.name}}</view>
+              <view class="space-address-simple">{{item.address}}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- Users -->
+    <view wx:if="{{users.length > 0}}" class="section">
+      <view class="section-title">用户</view>
+      <block wx:for="{{users}}" wx:key="userId">
+        <view class="item-wrapper">
+          <user-list-item
+            user="{{item}}"
+            bindtap="onUserTap"
           />
         </view>
       </block>

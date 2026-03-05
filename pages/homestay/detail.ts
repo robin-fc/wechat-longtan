@@ -117,6 +117,8 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
         isRoomsLoading: true,
         minDate: startDate,
       })
+      console.log('homestay detail onLoad - durations:', durations)
+      console.log('homestay detail onLoad - activeDuration:', activeDuration)
 
 
       const roomList = await getHomestayAvailableRooms({
@@ -236,8 +238,11 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     const value = e.currentTarget.dataset.value as string
     const data = this.data as HomestayDetailState
     const durations = data.durations || []
+    console.log('onDurationTap - clicked value:', value)
+    console.log('onDurationTap - durations:', durations)
     const selected = durations.find((d) => d.value === value) ||
       durations[0] || { value, days: 7, label: '一周' }
+    console.log('onDurationTap - selected:', selected)
 
     const startDate = data.startDate
     if (!startDate) {
@@ -265,6 +270,7 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       checkInDate: startDate as string,
       checkOutDate: endDate,
       packageType: selected.value,
+      duration: selected.days,  // 添加 days 参数
       pageNo: '1',
       pageSize: '10',
     }).then((roomList) => {
@@ -296,7 +302,13 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
     if (!room || !room.id) {
       return
     }
-    const { startDate, duration, endDate } = this.data as HomestayDetailState
+    const { startDate, duration, endDate, durations } = this.data as HomestayDetailState
+    console.log('onRoomTap - duration:', duration, 'startDate:', startDate, 'endDate:', endDate)
+
+    // 从 durations 中找到当前选中套餐的 days 值
+    const selectedDuration = durations.find(d => d.value === duration) || durations[0]
+    const days = selectedDuration?.days || 7
+
     smartNavigateTo(
       `/pages/homestay-room/detail?id=${encodeURIComponent(
         room.id
@@ -305,8 +317,8 @@ Page<HomestayDetailState, WechatMiniprogram.IAnyObject>({
       )}&startDate=${encodeURIComponent(
         startDate
       )}&duration=${encodeURIComponent(
-        duration
-      )}&checkOutDate=${encodeURIComponent(endDate)}`
+        days
+      )}&checkOutDate=${encodeURIComponent(endDate)}&packageType=${encodeURIComponent(duration)}`
     )
   },
   onShareAppMessage() {

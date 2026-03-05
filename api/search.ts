@@ -2,6 +2,15 @@ import type { Activity } from '../model/activity'
 import type { Homestay } from '../model/homestay'
 import type { ID } from '../model/common'
 import { fetchHomeData } from './home'
+import { getData } from '../utils/request'
+import type { AppHomestayListRespVO } from '../model/homestay'
+
+export interface AppGlobalSearchRespVO {
+  activities?: Activity[];
+  spaces?: any[];
+  homestays?: AppHomestayListRespVO[];
+  users?: any[];
+}
 
 export type SearchFrom = 'home' | 'activity'
 
@@ -73,14 +82,18 @@ export async function searchAll(
   )
   const users: SearchResultItem[] = home.currentUser
     ? [
-        {
-          id: home.currentUser.id,
-          type: 'user',
-          title: home.currentUser.memberName,
-        } as SearchResultItem,
-      ]
+      {
+        id: home.currentUser.id,
+        type: 'user',
+        title: home.currentUser.memberName,
+      } as SearchResultItem,
+    ]
     : []
   const all = [...activities, ...homestays, ...users]
   return all.filter((item) => item.title.indexOf(keyword) !== -1)
+}
+
+export function globalSearch(keyword: string): Promise<AppGlobalSearchRespVO> {
+  return getData<AppGlobalSearchRespVO>('/app-api/daolongtan/search/global', { keyword })
 }
 

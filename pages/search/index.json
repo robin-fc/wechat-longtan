@@ -4,6 +4,7 @@
     "activity-card": "/components/activity-card/index",
     "collection-card": "/components/collection-card/index",
     "homestay-card": "/components/homestay-card/index",
-    "activity-horizontal-card": "/components/activity-horizontal-card/index"
+    "activity-horizontal-card": "/components/activity-horizontal-card/index",
+    "user-list-item": "/components/user-list-item/index"
   }
 }

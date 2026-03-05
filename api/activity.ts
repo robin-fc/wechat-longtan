@@ -21,6 +21,31 @@ export interface AppReviewCreateReqVO {
   images?: string[]
 }
 
+export interface AppReviewRespVO {
+  id: number
+  userId: number
+  user: {
+    userId: number
+    logo: string
+    wxName: string
+    memberName: string
+    introduction: string
+    memberLevel: string
+    memberTags: string[]
+    followed: boolean
+  }
+  rating: number
+  content: string
+  images: string[]
+  createTime: string
+}
+
+export interface AppReviewListReqVO {
+  targetType: string // '0': 活动, '1': 住宿房间
+  targetId: string
+  pageNo: string
+  pageSize: string
+}
 
 const baseUrl = '/app-api/daolongtan/activity'
 
@@ -107,6 +132,10 @@ export function shareActivity(activityId: number): Promise<ActivityShareInfo> {
 
 export function createReview(payload: AppReviewCreateReqVO): Promise<boolean> {
   return postData<boolean>('/app-api/daolongtan/review/create', payload)
+}
+
+export function getReviewList(params: AppReviewListReqVO): Promise<PageResult<AppReviewRespVO>> {
+  return getData<PageResult<AppReviewRespVO>>('/app-api/daolongtan/review/list', params)
 }
 
 /**

@@ -35,11 +35,14 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
+    console.log('homestay-room detail onLoad options:', options)
     const id = options.id as string
     const homestayId = options.homestayId as string
     const startDate = (options.startDate as string) || ''
-    const duration = (options.duration as string) || ''
+    const durationParam = (options.duration as string) || ''
+    const packageType = (options.packageType as string) || ''
     const checkOutDateOption = (options.checkOutDate as string) || ''
+    console.log('homestay-room detail - durationParam:', durationParam, 'packageType:', packageType)
     if (!id || !homestayId) {
       return
     }
@@ -55,21 +58,18 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
     }
 
     let checkOutDate = checkOutDateOption
-    if (duration) {
-      const daysMap: Record<string, number> = {
-        week: 7,
-        twoWeeks: 14,
-        month: 30,
-        threeMonths: 90,
-        '1': 7,
-      }
-      const days = daysMap[duration] || 0
-      if (days > 0) {
-        // Handle date string format compatibility
+    let nights = 7
+
+    // durationParam 现在传入的是天数（7, 14, 30, 90），而不是 packageType
+    const durationDays = parseInt(durationParam, 10)
+    if (!isNaN(durationDays) && durationDays > 0) {
+      nights = durationDays
+      // 如果没有传入 checkOutDate，则根据天数计算
+      if (!checkOutDate && checkInDate) {
         const start = new Date(checkInDate.replace(/-/g, '/'))
         if (!isNaN(start.getTime())) {
           const end = new Date(start)
-          end.setDate(start.getDate() + days)
+          end.setDate(start.getDate() + durationDays)
           const y = end.getFullYear()
           const m = String(end.getMonth() + 1).padStart(2, '0')
           const d = String(end.getDate()).padStart(2, '0')
@@ -78,17 +78,18 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       }
     }
 
-    console.log(checkInDate, checkOutDate, duration)
+    console.log(checkInDate, checkOutDate, nights, packageType)
     this.setData({
       menuTop: menuRect ? menuRect.top : 0,
       menuHeight: menuRect ? menuRect.height : 44,
       homestayId,
       checkInDate,
       checkOutDate,
-      packageType: duration,
+      packageType: packageType || durationParam,
+      nights,
     })
 
-    await this.fetchRoomDetail(homestayId, id, duration)
+    await this.fetchRoomDetail(homestayId, id, packageType)
     this.updateNights()
   },
   async fetchRoomDetail(
@@ -109,7 +110,9 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
         if (priceItem) {
           roomPrice = priceItem.price
         }
+        console.log('fetchRoomDetail - packageType:', packageType, 'packageTypeNum:', packageTypeNum, 'priceItem:', priceItem, 'roomPrice:', roomPrice)
       }
+      console.log('fetchRoomDetail - phasePrice:', res.phasePrice)
 
       // Map API response to HomestayRoom model
       const room: HomestayRoom = {
