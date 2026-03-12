@@ -1,9 +1,10 @@
 import { getRoomDetail } from '../../api/room'
 import { createAccommodationOrder, generatePayParams } from '../../api/order'
 import type { HomestayRoom } from '../../model/homestay'
-import { goBack, smartNavigateTo } from '../../utils/navigation'
+import { goBack } from '../../utils/navigation'
 import { formatYMD1 } from '../../utils/date'
 import { isValidCnPhone } from '../../utils/validator'
+import { fetchMyProfile } from '../../api/mine'
 
 interface ApplyForm {
   name: string
@@ -27,6 +28,7 @@ interface ApplyFormState {
   cancelDateDesc: string
   isFormValid: boolean
   form: ApplyForm
+  showHomeButton: boolean
 }
 
 Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
@@ -51,11 +53,16 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       idCard: '',
       phone: '',
     },
+    showHomeButton: false
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
+    // 判断是否是分享直接进入（没有前一页）
+    const pages = getCurrentPages()
+    const showHomeButton = pages.length === 1
+    this.setData({ showHomeButton })
     const roomId = options.roomId as string
     const homestayId = options.homestayId as string
     const startDate = options.startDate as string
@@ -165,6 +172,18 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
       totalPriceDisplay: totalPrice.toFixed(2),
     })
 
+    try {
+      const profile = await fetchMyProfile()
+      if (profile && profile.memberPhone) {
+        this.setData({
+          'form.phone': profile.memberPhone,
+        }, () => {
+          this.validateForm() 
+        })
+      }
+    } catch (e) {
+      console.error('Fetch profile failed', e)
+    }
   },
   updateDateDisplays() {
     const data = this.data as ApplyFormState
@@ -200,7 +219,12 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
     return { date: `${m}月${d}日`, week }
   },
   onBackTap() {
-    goBack()
+    if (this.data.showHomeButton) {
+      // 分享进入，返回首页
+      wx.switchTab({ url: '/pages/home/index' })
+    } else {
+      goBack()
+    }
   },
   onCheckInChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -397,13 +421,17 @@ Page<ApplyFormState, WechatMiniprogram.IAnyObject>({
               //   smartNavigateTo('/pages/homestay-apply/status')
               // }, 600)
               setTimeout(() => {
-                smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`)
+                wx.redirectTo({
+                  url: `/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`
+                })
               }, 600)
             },
             fail: () => {
               wx.showToast({ title: '支付未完成', icon: 'none' })
               setTimeout(() => {
-                smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`)
+                wx.redirectTo({
+                  url: `/pages/order/detail?bizOrderNo=${encodeURIComponent(bizOrderNo)}`
+                })
               }, 600)
             },
           } as any)

@@ -28,7 +28,7 @@ export interface TransferWaitConfirmResult {
 }
 
 export function fetchTransferWaitConfirmList(): Promise<TransferWaitConfirmResult> {
-  return getData<TransferWaitConfirmResult>('/app-api/daolongtan/transfer/wait-confirm-list')
+  return getData<TransferWaitConfirmResult>('/app-api/daolongtan/transfer/unfinished-package-list')
 }
 
 export interface MyActivityFilter {

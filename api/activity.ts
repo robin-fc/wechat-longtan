@@ -15,7 +15,7 @@ import { getData, postData } from '../utils/request'
 
 export interface AppReviewCreateReqVO {
   targetId: number
-  type: number // 1=Activity, 2=Homestay
+  type: number // 0=Activity, 1=Homestay
   content: string
   rating?: number
   images?: string[]

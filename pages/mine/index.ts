@@ -19,12 +19,16 @@ interface MineState {
   })
   | null
   showPhoneAuthModal: boolean
+  showTransferPopup: boolean
+  transferList: { packageInfo: string; index: number }[]
 }
 
 Page<MineState, WechatMiniprogram.IAnyObject>({
   data: {
     profile: null,
     showPhoneAuthModal: false,
+    showTransferPopup: false,
+    transferList: [],
   },
   async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -89,28 +93,15 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
         // Check for merchant transfer confirmation
         if (profile) {
           fetchTransferWaitConfirmList().then(res => {
-
-            if (res.hasWaitConfirm && res.list && res.list.length > 0) {
-              const item = res.list[0] // Process the first item
-              // wx.requestMerchantTransfer might not be in the type definition
-              if ((wx as any).canIUse('requestMerchantTransfer')) {
-                (wx as any).requestMerchantTransfer({
-                  mchId: '1104693914',
-                  appId: 'wxf60fc5c32017bf2f',
-                  package: item.packageInfo,
-                  success: (res: any) => {
-                    console.log('success:', res)
-                  },
-                  fail: (res: any) => {
-                    console.error('fail:', res)
-                  },
-                })
-              } else {
-                wx.showModal({
-                  content: '你的微信版本过低，请更新至最新版本。',
-                  showCancel: false,
-                })
-              }
+            // API response: { code: 0, data: [{packageInfo: '...'}] }
+            const list: { packageInfo: string }[] = Array.isArray(res)
+              ? res
+              : (res as any).data || []
+            if (list.length > 0) {
+              this.setData({
+                transferList: list.map((item, index) => ({ ...item, index: index + 1 })),
+                showTransferPopup: true,
+              })
             }
           }).catch(err => {
             console.error('Fetch transfer wait confirm list failed', err)
@@ -179,6 +170,38 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
   },
   closePhoneAuthModal() {
     this.setData({ showPhoneAuthModal: false })
+  },
+  closeTransferPopup() {
+    this.setData({ showTransferPopup: false })
+  },
+  onTransferItemTap(this: WechatMiniprogram.Page.TrivialInstance, e: WechatMiniprogram.BaseEvent) {
+    const packageInfo = e.currentTarget.dataset.package as string
+    if (!(wx as any).canIUse('requestMerchantTransfer')) {
+      wx.showModal({
+        content: '你的微信版本过低，请更新至最新版本。',
+        showCancel: false,
+      })
+      return
+    }
+    ;(wx as any).requestMerchantTransfer({
+      mchId: '1104693914',
+      appId: 'wxf60fc5c32017bf2f',
+      package: packageInfo,
+      success: (res: any) => {
+        console.log('requestMerchantTransfer success:', res)
+        // Remove the successfully collected item from list
+        const list = (this.data as MineState).transferList.filter(
+          (item) => item.packageInfo !== packageInfo
+        )
+        this.setData({
+          transferList: list,
+          showTransferPopup: list.length > 0,
+        })
+      },
+      fail: (res: any) => {
+        console.error('requestMerchantTransfer fail:', res)
+      },
+    })
   },
   async onPhoneAuthSuccess(e: any) {
     const { phone } = e.detail

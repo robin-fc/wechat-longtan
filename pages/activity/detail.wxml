@@ -87,12 +87,11 @@
               <view class="review-header">
                 <image class="review-avatar" src="{{item.user.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
                 <view class="review-info">
-                  <text class="review-name">{{item.user.memberName || item.user.wxName || '匿名用户'}}</text>
+                  <view class="review-name-row">
+                    <text class="review-name">{{item.user.memberName || item.user.wxName || '匿名用户'}}</text>
+                    <text class="level-tag" wx:if="{{item.user.memberLevel}}">{{item.user.memberLevel}}</text>
+                  </view>
                   <text class="review-time">{{item.createTime}}</text>
-                </view>
-                <view class="review-rating" wx:if="{{item.rating}}">
-                  <text class="rating-star">★</text>
-                  <text class="rating-score">{{item.rating}}</text>
                 </view>
               </view>
               <view class="review-content-text">{{item.content}}</view>
@@ -157,12 +156,14 @@
         <button class="bottom-item  btn-white" open-type="share" bindtap="onShareTap">
           <text class="bottom-label">分享</text>
         </button>
-        <view class="bottom-item btn-black" bindtap="onSignupTap" wx:if="{{!activity.isRegistered}}">
-          <text class="bottom-primary-label">立即报名</text>
-        </view>
-        <view class="bottom-item btn-black btn-disabled" wx:else>
-          <text class="bottom-primary-label">已报名</text>
-        </view>
+        <block wx:if="{{activity.status !== 'ended'}}">
+          <view class="bottom-item btn-black" bindtap="onSignupTap" wx:if="{{!activity.isRegistered}}">
+            <text class="bottom-primary-label">立即报名</text>
+          </view>
+          <view class="bottom-item btn-black btn-disabled" wx:else>
+            <text class="bottom-primary-label">已报名</text>
+          </view>
+        </block>
         </view>
       </block>
     </block>

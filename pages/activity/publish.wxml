@@ -38,7 +38,7 @@
 
     <view class="form-section">
       <text class="label">人数限制*</text>
-      <input class="input" type="number" placeholder="请输入人数" value="{{form.limit}}" bindinput="onLimitChange" />
+      <input class="input" type="number" maxlength="3" placeholder="请输入人数" value="{{form.limit}}" bindinput="onLimitChange" />
     </view>
 
     <view class="form-section">

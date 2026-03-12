@@ -12,7 +12,7 @@
         wx:key="id"
         wx:for-item="item"
       >
-        <text class="tag">{{item}}</text>
+        <text class="tag tag-{{index % 3}}">{{item}}</text>
       </block>
     </view>
     <view class="footer">

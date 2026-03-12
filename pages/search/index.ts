@@ -122,7 +122,18 @@ Page<SearchPageState, WechatMiniprogram.IAnyObject>({
         activities,
         spaces: res.spaces || [],
         homestays: res.homestays || [],
-        users: res.users || [],
+        users: (res.users || []).map((u: any) => {
+          return {
+            ...u,
+            userId: String(u.id || u.userId),
+            avatarUrl: u.logo || u.avatar || '/assets/images/default-avatar.png',
+            nickname: u.memberName || u.wxName || u.nickname || '匿名用户',
+            bio: u.bio || u.description || u.introduction || '这个人很懒，什么都没写~',
+            follow: u.isFollowed || false,
+            gender: u.sex || u.gender,
+            memberLevel: u.levelLabel || u.memberLevel || ''
+          }
+        }),
         collections: [],
         hasSearched: true,
       })

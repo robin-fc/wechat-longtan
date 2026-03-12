@@ -105,4 +105,28 @@
       </view>
     </view>
   </view>
+
+  <!-- 待收款弹窗 -->
+  <view class="login-modal" wx:if="{{showTransferPopup}}">
+    <view class="modal-mask" bindtap="closeTransferPopup"></view>
+    <view class="modal-content transfer-popup">
+      <view class="modal-header">
+        <text class="modal-title">您有 {{transferList.length}} 笔待收款</text>
+        <view class="close-btn" bindtap="closeTransferPopup">✕</view>
+      </view>
+      <view class="modal-body transfer-body">
+        <view class="transfer-tip">以下款项已由平台转入您的微信，请点击"收款"完成确认</view>
+        <view class="transfer-list">
+          <view class="transfer-item" wx:for="{{transferList}}" wx:key="index">
+            <view class="transfer-item-info">
+              <text class="transfer-item-label">待收款 {{item.index}}</text>
+            </view>
+            <view class="transfer-collect-btn" bindtap="onTransferItemTap" data-package="{{item.packageInfo}}">
+              <text>收款</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>

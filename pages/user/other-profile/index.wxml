@@ -18,7 +18,7 @@
     <view class="avatar-row">
       <view class="avatar-wrap">
         <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
-        <image class="gender-icon" src="{{userInfo.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
+        <image wx:if="{{userInfo.gender === 1 || userInfo.gender === 2}}" class="gender-icon" src="{{userInfo.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
       </view>
       <view class="info-content">
         <view class="name-row">

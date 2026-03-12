@@ -1,7 +1,13 @@
 <view class="companion-item">
   <image class="avatar" src="{{user.avatarUrl}}" mode="aspectFill" catchtap="onTap" />
   <view class="info" bindtap="onTap">
-    <text class="name">{{user.nickname}}</text>
+    <view class="name-row">
+      <text class="name">{{user.nickname}}</text>
+      <image wx:if="{{user.gender === 1 || user.gender === 2}}" class="gender-icon" src="{{user.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
+      <view class="tags" wx:if="{{user.memberLevel}}">
+        <text class="tag tag-nomad">{{user.memberLevel}}</text>
+      </view>
+    </view>
     <text class="bio">{{user.bio}}</text>
   </view>
   <view wx:if="{{showFollow && (user.userId || user.id) != currentUserId}}" class="follow-btn {{user.follow ? 'followed' : ''}}" catchtap="onFollowTap">

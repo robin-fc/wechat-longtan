@@ -1,4 +1,5 @@
 <view class="apply-form-page">
+
   <scroll-view scroll-y="true" class="body">
     <view class="section header-card">
       <view class="room-info-row">

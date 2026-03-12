@@ -2,7 +2,12 @@
   <!-- Navigation Header (Custom) -->
   <view class="nav-bar" style="padding-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
     <view class="nav-left" bindtap="onBack">
-      <image class="back-icon" src="/assets/icons/arrow-left-white.png" />
+      <block wx:if="{{showHomeButton}}">
+        <image class="home-icon" src="/assets/icons/home.svg" mode="aspectFit" />
+      </block>
+      <block wx:else>
+        <image class="back-icon" src="/assets/icons/arrow-left-white.png" />
+      </block>
     </view>
     <view class="nav-title">共创者申请</view>
   </view>

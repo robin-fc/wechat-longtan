@@ -5,6 +5,7 @@ import { createActivityOrder, generatePayParams } from '../../api/order'
 import { type Activity } from '../../model/activity'
 import type { ActivityOrder } from '../../model/order'
 import { goBack, smartNavigateTo } from '../../utils/navigation'
+import { formatYMDHM } from '../../utils/date'
 
 interface ConfirmOrderState {
   activity: Activity | null
@@ -53,6 +54,11 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
     }
     const activity = await getActivityDetail(id)
     if (!activity) return
+    
+    // Format the time range 
+    activity.startTime = formatYMDHM(activity.startTime)
+    activity.endTime = formatYMDHM(activity.endTime)
+    
     const order: ActivityOrder = {
       ...emptyOrder,
       id: `order-${Date.now()}`,
@@ -273,11 +279,11 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
           success: () => {
             wx.showToast({ title: '报名成功', icon: 'success' })
             setTimeout(() => {
-              smartNavigateTo(
-                `/pages/activity-order/success?orderId=${encodeURIComponent(
+              wx.redirectTo({
+                url: `/pages/activity-order/success?orderId=${encodeURIComponent(
                   bizOrderNo || String(order.id)
                 )}`
-              )
+              })
             }, 800)
           },
           fail: () => {
@@ -292,11 +298,11 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
           icon: 'success',
         })
         setTimeout(() => {
-          smartNavigateTo(
-            `/pages/activity-order/success?orderId=${encodeURIComponent(
+          wx.redirectTo({
+            url: `/pages/activity-order/success?orderId=${encodeURIComponent(
               bizOrderNo || String(order.id)
             )}`
-          )
+          })
         }, 800)
       }
     } catch (error) {

@@ -326,9 +326,13 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     e: WechatMiniprogram.CheckboxGroupChange
   ) {
     const checked = e.detail.value.indexOf('free') !== -1
-    this.setData({
+    const updateData: any = {
       'form.free': checked,
-    })
+    }
+    if (checked) {
+      updateData['form.price'] = ''
+    }
+    this.setData(updateData)
   },
   onTypeChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -347,6 +351,10 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     let value = e.detail.value
     // 只允许输入数字
     value = value.replace(/[^\d]/g, '')
+    // 限制最大值为 999
+    if (value && Number(value) > 999) {
+      value = '999'
+    }
     this.setData({
       'form.limit': value,
     })

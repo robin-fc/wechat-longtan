@@ -60,13 +60,20 @@ Page({
         formDesc: '',
         questionList: [] as AppUserApplyFormQuestion[],
         formData: {} as Record<string, FormValue>,
-        showPhoneAuthModal: false
+        showPhoneAuthModal: false,
+        showHomeButton: false
     },
     onLoad() {
         const sys = wx.getWindowInfo()
         this.setData({
             statusBarHeight: sys.statusBarHeight
         })
+
+        // 判断是否是分享直接进入（没有前一页）
+        const pages = getCurrentPages()
+        const showHomeButton = pages.length === 1
+        this.setData({ showHomeButton })
+
         this.initData()
     },
     async initData() {
@@ -126,7 +133,12 @@ Page({
         }
     },
     onBack() {
-        wx.navigateBack()
+        if (this.data.showHomeButton) {
+            // 分享进入，返回首页
+            wx.switchTab({ url: '/pages/home/index' })
+        } else {
+            wx.navigateBack()
+        }
     },
     toggleIntro() {
         this.setData({

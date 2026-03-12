@@ -11,7 +11,7 @@ import {
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
 import { ActivityDetail, RegistrationUser } from '../../model/activity'
 import { smartNavigateTo, goBack } from '../../utils/navigation'
-import { formatYMDHM, formatSmartTimeRange } from '../../utils/date'
+import { formatYMD, formatYMDHM, formatSmartTimeRange } from '../../utils/date'
 
 interface CompanionsData {
   companions: { id: number; avatar: { url: string } }[]
@@ -31,7 +31,8 @@ interface ActivityDetailState {
   favoriteCompanionsData: CompanionsData
   reviewContent: string
   reviews: AppReviewRespVO[]
-  showHomeButton: boolean
+  showHomeButton: boolean,
+  shareImgUrl?:String
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -146,6 +147,28 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       favoriteCompanionsData,
     })
   },
+  async onShow() {
+    const id = this.data.activity?.id
+    if (id) {
+      this.refreshRegistrationStatus(Number(id))
+    }
+  },
+  async refreshRegistrationStatus(id: number) {
+    try {
+      const activity = await getActivityDetail(id)
+      if (!activity) return
+      const res = await getActivityRegistrations(id)
+      const userId = wx.getStorageSync('userId')
+      const isRegistered = activity.isRegistered || (res.userList || []).some((u: any) => String(u.userId) === String(userId))
+      this.setData({
+        'activity.isRegistered': isRegistered,
+        registeredUsers: res.userList || [],
+        registrationCount: res.count || 0,
+      })
+    } catch (e) {
+      console.error('Failed to refresh registration status', e)
+    }
+  },
   async fetchReviews(activityId: number) {
     try {
       const res = await getReviewList({
@@ -157,7 +180,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
       this.setData({
         reviews: (res.list || []).map(item => ({
           ...item,
-          createTime: formatYMDHM(item.createTime)
+          createTime: formatYMD(item.createTime)
         }))
       })
     } catch (e) {
@@ -253,6 +276,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
             this.setData({
               activity: {
                 ...detail,
+                isFavorited: freshDetail.isFavorited,
                 favoriteCount,
                 favoriteUsers: (freshDetail.favoriteUsers || []).slice(0, 5),
               },
@@ -353,7 +377,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     return {
       title: detail.title,
       path: `/pages/activity/detail?id=${detail.id}`,
-      imageUrl: detail.logo,
+      imageUrl: detail.shareImgUrl||detail.logo,
     }
   },
   onShareTimeline() {
@@ -366,7 +390,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     return {
       title: detail.title,
       query: `id=${detail.id}`,
-      imageUrl: detail.logo,
+      imageUrl:  detail.shareImgUrl||detail.logo,
     }
   },
   onSignupTap(this: WechatMiniprogram.Page.TrivialInstance) {
@@ -435,7 +459,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     try {
       const ok = await createReview({
         targetId: data.activity.id,
-        type: 1, // 1=Activity
+        type: 0, // 0=Activity
         content,
       })
       wx.hideLoading()

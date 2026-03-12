@@ -22,11 +22,39 @@
         flex-direction: column;
         margin-right: 20rpx;
 
-        .name {
-            font-size: 30rpx;
-            font-weight: 500;
-            color: #333;
+        .name-row {
+            display: flex;
+            align-items: center;
             margin-bottom: 8rpx;
+
+            .name {
+                font-size: 30rpx;
+                font-weight: 500;
+                color: #333;
+            }
+
+            .gender-icon {
+                width: 24rpx;
+                height: 24rpx;
+                margin-left: 8rpx;
+            }
+
+            .tags {
+                display: flex;
+                margin-left: 12rpx;
+
+                .tag {
+                    font-size: 20rpx;
+                    padding: 2rpx 8rpx;
+                    border-radius: 4rpx;
+                    
+                    &.tag-nomad {
+                        color: #1a1a1a;
+                        background-color: #ffe58f;
+                        border: 1rpx solid #ffe58f;
+                    }
+                }
+            }
         }
 
         .bio {
@@ -35,6 +63,7 @@
             display: -webkit-box;
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 1;
+            line-clamp: 1;
             overflow: hidden;
             text-overflow: ellipsis;
         }

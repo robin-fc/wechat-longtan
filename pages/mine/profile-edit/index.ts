@@ -45,7 +45,30 @@ Page({
     }
   },
   onNicknameInput(e: any) {
-    this.setData({ 'profile.memberName': e.detail.value })
+    const value = e.detail.value || ''
+    let weight = 0
+    let newValue = ''
+    
+    for (let i = 0; i < value.length; i++) {
+      const char = value[i]
+      // 汉字的 charCode 大于 255
+      const charWeight = char.charCodeAt(0) > 255 ? 5 : 3
+      if (weight + charWeight > 60) {
+        break
+      }
+      weight += charWeight
+      newValue += char
+    }
+    
+    this.setData({ 'profile.memberName': newValue })
+    
+    // 如果发生了截断，强制返回截断后的值给输入框
+    if (value !== newValue) {
+      return newValue
+    }
+    
+    // 满足 ts 要求：Not all code paths return a value
+    return value
   },
   onBioInput(e: any) {
     this.setData({ 'profile.desc': e.detail.value })
