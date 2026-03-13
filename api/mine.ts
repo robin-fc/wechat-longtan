@@ -116,6 +116,7 @@ export function fetchMyActivityFilters(): MyActivityFilter[] {
     { id: 'published', name: '我发布的', type: '2' },
     { id: 'collected', name: '我收藏的', type: '3' },
     { id: 'to-comment', name: '待评价', type: '4' },
+    { id: 'commented', name: '已评价', type: '5' },
     { id: 'collections', name: '活动合集' },
   ]
 }

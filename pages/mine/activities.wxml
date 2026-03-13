@@ -13,6 +13,9 @@
       <block wx:for="{{activities}}" wx:key="id">
         <view class="activity-item">
           <activity-horizontal-card activity="{{item}}" layout="horizontal" bindcardtap="onActivityTap" />
+          <view wx:if="{{activeFilterId === 'published' && item.auditStatus}}" class="audit-badge audit-badge--{{item.auditStatus === '审核通过' ? 'pass' : item.auditStatus === '审核拒绝' ? 'fail' : 'pending'}}">
+            <text>{{item.auditStatus}}</text>
+          </view>
         </view>
       </block>
     </view>
