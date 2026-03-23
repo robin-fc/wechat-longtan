@@ -40,11 +40,11 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
     // 检查登录状态
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
+      // 清除可能残留的登录标记，防止登录页因 isLoggedIn=true 立即弹回
+      wx.setStorageSync('isLoggedIn', false)
+      wx.setStorageSync('profileCompleted', false)
       this.setData({ profile: null })
-      wx.showToast({ title: '请先登录', icon: 'none' })
-      setTimeout(() => {
-        smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent('/pages/mine/index')}`)
-      }, 50)
+      smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent('/pages/mine/index')}`)
       return
     }
 
@@ -133,6 +133,15 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
   onWalletTap() {
     smartNavigateTo('/pages/mine/assets')
   },
+  onNomadApplyTap() {
+    smartNavigateTo('/pages/digital-nomad/apply/index')
+  },
+  onNewVillagerApplyTap() {
+    smartNavigateTo('/pages/new-villager/apply/index')
+  },
+  onOldVillagerApplyTap() {
+    smartNavigateTo('/pages/old-villager/apply/index')
+  },
   onMyActivitiesTap() {
     smartNavigateTo('/pages/mine/activities')
   },
@@ -144,6 +153,12 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
   },
   onPrivacyTap() {
     smartNavigateTo('/pages/agreement/privacy')
+  },
+  onCheckInTap() {
+    smartNavigateTo('/pages/user/checkin/index')
+  },
+  onDanmuTap() {
+    smartNavigateTo('/pages/user/barrage/index')
   },
   onLogoutTap() {
     wx.clearStorageSync()

@@ -1,6 +1,5 @@
 import type { CommonResult } from '../model/common'
 import type { AppWeixinMiniAppLoginRespVO } from '../model/auth'
-import { smartNavigateTo } from './navigation'
 
 const BASE_URL: string =
   (wx.getStorageSync('apiBaseUrl') as string) || 'https://daolongtan.cn' //"http://127.0.0.1"
@@ -8,6 +7,48 @@ const BASE_URL: string =
 const REFRESH_THRESHOLD_SEC = 300
 const MAX_RETRY = 2
 let refreshingPromise: Promise<boolean> | null = null
+let isRedirecting = false
+/**
+ * Token 失效时跳转登录页，自动将当前页面路径作为 returnUrl
+ * 同时清除登录标记，防止登录页因 isLoggedIn=true 立即弹回造成死循环
+ */
+function redirectToLogin(): void {
+  if (isRedirecting) return
+  isRedirecting = true
+  
+  // 3秒后释放锁，给重写加载页面留出足够时间
+  setTimeout(() => {
+    isRedirecting = false
+  }, 3000)
+
+  // 清除本地 Token 和状态，防止死循环
+  wx.removeStorageSync('accessToken')
+  wx.removeStorageSync('refreshToken')
+  wx.setStorageSync('isLoggedIn', false)
+  wx.setStorageSync('profileCompleted', false)
+  
+  const pages = getCurrentPages()
+  const cur = pages[pages.length - 1]
+  const route = cur ? `/${cur.route}` : ''
+  const query = cur && cur.options
+    ? Object.entries(cur.options as Record<string, string>)
+        .filter(([, v]) => v !== undefined && v !== '')
+        .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
+        .join('&')
+    : ''
+  const returnUrl = route + (query ? `?${query}` : '')
+  
+  console.log('Token失效，强制重定向到登录页:', returnUrl)
+  
+  // 使用 reLaunch 彻底关闭当前页面栈，切断所有的并发请求和页面逻辑循环
+  wx.reLaunch({
+    url: `/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`,
+    fail: (err) => {
+      console.error('reLaunch to login failed', err)
+      isRedirecting = false
+    }
+  })
+}
 
 function nowMs(): number {
   return Date.now()
@@ -154,10 +195,7 @@ export function request<T>(options: RequestOptions): Promise<CommonResult<T>> {
             }
 
             // Token invalid and refresh failed/exhausted
-            wx.showToast({ title: '请先登录', icon: 'none' })
-            setTimeout(() => {
-              smartNavigateTo('/pages/login/index')
-            }, 1500)
+            redirectToLogin()
             reject(new Error('Unauthorized'))
             return
           }
@@ -343,10 +381,7 @@ export function uploadFile<T>(
               }
             }
             // Token invalid and refresh failed/exhausted
-            wx.showToast({ title: '请先登录', icon: 'none' })
-            setTimeout(() => {
-              smartNavigateTo('/pages/login/index')
-            }, 1500)
+            redirectToLogin()
             reject(new Error('Unauthorized'))
             return
           }

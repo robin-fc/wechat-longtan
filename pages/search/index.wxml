@@ -52,7 +52,7 @@
     </view>
 <!-- Activity Collections -->
 <view wx:if="{{collections.length > 0}}" class="section">
-      <view class="section-title">活动合集</view>
+      <view class="section-title">系列活动</view>
       <block wx:for="{{collections}}" wx:key="id">
         <view class="item-wrapper">
           <collection-card

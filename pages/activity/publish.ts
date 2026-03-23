@@ -141,7 +141,10 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
   async checkDigitalNomadStatus(this: WechatMiniprogram.Page.TrivialInstance) {
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
-      this.setData({ showPermissionPopup: true })
+      wx.setStorageSync('isLoggedIn', false)
+      wx.setStorageSync('profileCompleted', false)
+      const returnUrl = '/pages/activity/publish'
+      smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`)
       return
     }
 

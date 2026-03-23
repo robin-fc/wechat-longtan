@@ -1,0 +1,147 @@
+.container {
+  padding: 40rpx 32rpx;
+  background-color: #ffffff;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.header {
+  margin-bottom: 60rpx;
+  text-align: center;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #999;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 24rpx 0;
+  margin-bottom: 40rpx;
+}
+
+.avatar-wrapper {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: auto;
+  flex-shrink: 0;
+  position: relative;
+  &::after {
+    border: none;
+  }
+}
+
+.avatar {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  border: 4rpx solid #fff;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.12);
+  display: block;
+}
+
+.avatar-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 40rpx;
+  height: 40rpx;
+  background-color: #6DBC29;
+  color: #fff;
+  font-size: 20rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3rpx solid #fff;
+}
+
+.user-info {
+  margin-left: 28rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.user-name {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 8rpx;
+}
+
+.nickname-input {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 8rpx;
+  height: 52rpx;
+  line-height: 52rpx;
+  border-bottom: 2rpx solid #e8e8e8;
+  padding-bottom: 4rpx;
+  width: 100%;
+  background: transparent;
+}
+
+.user-tip {
+  font-size: 24rpx;
+  color: #aaa;
+}
+
+.form-group {
+  margin-bottom: 40rpx;
+}
+
+.label {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24rpx;
+  margin-top: 40rpx;
+}
+
+.textarea {
+  width: 100%;
+  height: 240rpx;
+  box-sizing: border-box;
+  border: 1px solid #E0E0E0;
+  border-radius: 8rpx;
+  padding: 24rpx;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.footer {
+  margin-top: 80rpx;
+  padding-bottom: 60rpx;
+}
+
+.submit-btn {
+  background: #000;
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 500;
+  height: 96rpx;
+  line-height: 96rpx;
+  border-radius: 8rpx;
+  margin-top: 40rpx;
+  &::after {
+    border: none;
+  }
+  &:active {
+    opacity: 0.9;
+  }
+}

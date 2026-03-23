@@ -93,14 +93,11 @@ Page<ConfirmOrderState, WechatMiniprogram.IAnyObject>({
   async checkUserStatus() {
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
-      wx.showToast({ title: '请先登录', icon: 'none' })
-      setTimeout(() => {
-        const pages = getCurrentPages()
-        const currentPage = pages[pages.length - 1]
-        const options = currentPage.options
-        const returnUrl = `/${currentPage.route}?activityId=${options.activityId}`
-        smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`)
-      }, 1000)
+      const pages = getCurrentPages()
+      const currentPage = pages[pages.length - 1]
+      const options = currentPage.options
+      const returnUrl = `/${currentPage.route}?activityId=${options.activityId}`
+      smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`)
       return
     }
 

@@ -1,0 +1,9 @@
+{
+    "navigationBarTitleText": "申请表",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom",
+    "usingComponents": {
+        "phone-auth": "/components/phone-auth/index"
+    }
+}

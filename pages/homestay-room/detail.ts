@@ -244,9 +244,9 @@ Page<RoomDetailState, WechatMiniprogram.IAnyObject>({
       const state = this.data as RoomDetailState
       if (state.room) {
         const returnUrl = `/pages/homestay-room/detail?id=${state.room.id}&homestayId=${state.room.homestayId}&startDate=${state.checkInDate}&duration=${state.packageType}&checkOutDate=${state.checkOutDate}`
-        wx.navigateTo({
-          url: `/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`,
-        })
+        wx.setStorageSync('isLoggedIn', false)
+        wx.setStorageSync('profileCompleted', false)
+        smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`)
       }
       return false
     }

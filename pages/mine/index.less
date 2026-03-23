@@ -199,8 +199,9 @@
   }
 
   .stats-row {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 60rpx;
     padding: 32rpx 0 60rpx 0;
     border-bottom: 1rpx rgba(0, 0, 0, 0.2) solid;
 
@@ -217,6 +218,24 @@
       }
 
       .stat-label {
+        font-size: 24rpx;
+        color: #717171;
+      }
+    }
+
+    .cert-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+
+      .cert-icon {
+        width: 48rpx;
+        height: 48rpx;
+        margin-bottom: 16rpx;
+      }
+
+      .cert-label {
         font-size: 24rpx;
         color: #717171;
       }

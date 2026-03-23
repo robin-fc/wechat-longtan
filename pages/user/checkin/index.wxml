@@ -1,0 +1,59 @@
+<view class="container">
+  <view class="header">
+    <text class="title">欢迎 Checkin</text>
+    <text class="subtitle">留下你的信息，认识更多有趣的朋友</text>
+  </view>
+
+  <!-- 登录用户信息卡片 -->
+  <view class="user-card">
+    <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+      <image class="avatar" src="{{formData.avatarUrl || '/assets/images/default-avatar.png'}}" mode="aspectFill"></image>
+      <view class="avatar-badge">换</view>
+    </button>
+    <view class="user-info">
+      <input class="nickname-input" type="nickname" value="{{formData.nickname}}" placeholder="请输入昵称" bindinput="onInputNickname" />
+      <text class="user-tip">点击头像可更换</text>
+    </view>
+  </view>
+
+  <view class="form-group">
+    <view class="label">职业(单选)</view>
+    <view class="tags-container">
+      <view class="tag {{item.selected ? 'active' : ''}}" wx:for="{{skillsList}}" wx:key="name" data-index="{{index}}" bindtap="onToggleSkill">
+        {{item.name}}
+      </view>
+    </view>
+  </view>
+
+
+  <view class="form-group">
+    <view class="label-row">
+      <text class="label">来源地</text>
+      <view class="checkbox-item" bindtap="onToggleOverseas">
+        <view class="checkbox-box {{isOverseas ? 'checked' : ''}}">
+          <text wx:if="{{isOverseas}}" class="checkbox-tick">✓</text>
+        </view>
+        <text class="checkbox-label">海外</text>
+      </view>
+    </view>
+    <picker wx:if="{{!isOverseas}}" mode="region" level="city" bindchange="onRegionChange" value="{{formData.region}}">
+      <view class="picker {{formData.region.length ? '' : 'placeholder'}}">
+        {{formData.region.length ? formData.region[0] + ' ' + formData.region[1] : '请选择来源地'}}
+      </view>
+    </picker>
+    <view wx:else class="picker overseas-display">🌏 海外</view>
+  </view>
+
+  <view class="form-group">
+    <view class="label">年龄段</view>
+    <picker mode="selector" range="{{ageGroups}}" bindchange="onAgeChange" value="{{ageIndex}}">
+      <view class="picker {{ageIndex !== -1 ? '' : 'placeholder'}}">
+        {{ageIndex !== -1 ? ageGroups[ageIndex] : '请选择年龄段'}}
+      </view>
+    </picker>
+  </view>
+
+  <view class="footer">
+    <button class="submit-btn" bindtap="onSubmit" loading="{{submitting}}">提交</button>
+  </view>
+</view>

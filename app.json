@@ -1,40 +1,121 @@
 {
   "pages": [
     "pages/home/index",
-    "pages/login/index",
-    "pages/user/other-profile/index",
-    "pages/user/list/index",
-    "pages/agreement/service",
-    "pages/agreement/privacy",
-    "pages/search/index",
-    "pages/activity-collection/list",
-    "pages/activity-collection/publish",
-    "pages/activity-collection/detail",
     "pages/activity/list",
     "pages/activity/detail",
     "pages/activity/publish",
     "pages/activity/companions",
-    "pages/space/detail",
-    "pages/activity-order/confirm",
-    "pages/activity-order/success",
     "pages/homestay/list",
     "pages/homestay/detail",
     "pages/homestay/companions",
-    "pages/homestay-room/detail",
-    "pages/homestay-apply/form",
-    "pages/homestay-apply/status",
     "pages/mine/index",
     "pages/mine/profile-edit/index",
     "pages/mine/assets",
     "pages/mine/activities",
     "pages/mine/stays",
-    "pages/order/detail",
-    "pages/digital-nomad/apply/index",
-    "pages/volunteer/apply/index",
-    "pages/co-creator/apply/index",
-    "pages/about/identity/index",
-    "pages/about/story/index",
-    "pages/about/travel-guide/index"
+    "pages/login/index"
+  ],
+  "subpackages": [
+    {
+      "root": "pages/user",
+      "pages": [
+        "other-profile/index",
+        "list/index",
+        "checkin/index",
+        "barrage/index"
+      ]
+    },
+    {
+      "root": "pages/agreement",
+      "pages": [
+        "service",
+        "privacy"
+      ]
+    },
+    {
+      "root": "pages/search",
+      "pages": [
+        "index"
+      ]
+    },
+    {
+      "root": "pages/activity-collection",
+      "pages": [
+        "list",
+        "publish",
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/space",
+      "pages": [
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/activity-order",
+      "pages": [
+        "confirm",
+        "success"
+      ]
+    },
+    {
+      "root": "pages/homestay-room",
+      "pages": [
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/homestay-apply",
+      "pages": [
+        "form",
+        "status"
+      ]
+    },
+    {
+      "root": "pages/order",
+      "pages": [
+        "detail"
+      ]
+    },
+    {
+      "root": "pages/digital-nomad",
+      "pages": [
+        "apply/index"
+      ]
+    },
+    {
+      "root": "pages/new-villager",
+      "pages": [
+        "apply/index"
+      ]
+    },
+    {
+      "root": "pages/old-villager",
+      "pages": [
+        "apply/index"
+      ]
+    },
+    {
+      "root": "pages/volunteer",
+      "pages": [
+        "apply/index"
+      ]
+    },
+    {
+      "root": "pages/co-creator",
+      "pages": [
+        "apply/index"
+      ]
+    },
+    {
+      "root": "pages/about",
+      "pages": [
+        "identity/index",
+        "story/index",
+        "travel-guide/index"
+      ]
+    }
   ],
   "window": {
     "navigationBarTitleText": "登录",

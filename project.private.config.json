@@ -23,11 +23,39 @@
     "miniprogram": {
       "list": [
         {
-          "name": "首页进入",
-          "pathName": "pages/home/index",
+          "name": "弹幕页",
+          "pathName": "pages/user/barrage/index",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "签到页",
+          "pathName": "pages/user/checkin/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "老村民申请表",
+          "pathName": "pages/old-villager/apply/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "新村民申请页",
+          "pathName": "pages/new-villager/apply/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "首页进入",
+          "pathName": "pages/home/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "分享进入活动",

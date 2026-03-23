@@ -1,0 +1,129 @@
+<view class="page">
+  <!-- Navigation Header (Custom) -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px; height: {{navBarHeight}}px;">
+    <view class="nav-left" bindtap="onBack">
+      <block wx:if="{{showHomeButton}}">
+        <image class="home-icon" src="/assets/icons/home.svg" mode="aspectFit" />
+      </block>
+      <block wx:else>
+        <image class="back-icon" src="/assets/icons/arrow-left-white.png" />
+      </block>
+    </view>
+    <view class="nav-title">申请表</view>
+  </view>
+
+  <!-- Header Image -->
+  <image class="header-bg" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/20260126/header-bg_1769440220202.png" mode="aspectFill" />
+
+  <view class="content">
+    <view class="intro-section">
+      <view class="intro-title">{{formTitle || 'DAO龙潭新村民认证申请'}}</view>
+      <view class="intro-text {{isIntroExpanded ? 'expanded' : ''}}" wx:if="{{formDesc}}">
+        {{formDesc}}
+      </view>
+      <view class="intro-expand" bindtap="toggleIntro" wx:if="{{!isIntroExpanded && formDesc}}">
+        查看更多 <image class="intro-expand-icon" src="/assets/icons/arrow-down-green.png" mode="widthFix" />
+      </view>
+    </view>
+
+    <form bindsubmit="onSubmit">
+      <block wx:for="{{questionList}}" wx:key="id">
+        <view class="form-item" wx:if="{{item.valueType !== 'info_text'}}">
+          <view class="label">{{item.label}}</view>
+
+          <input
+            wx:if="{{item.valueType === 'text' || item.valueType === 'number' || item.valueType === 'tel'}}"
+            class="input"
+            type="{{item.valueType === 'number' || item.valueType === 'tel' ? 'number' : 'text'}}"
+            placeholder="{{item.des || '请输入'}}"
+            value="{{formData[item.id]}}"
+            bindinput="onInput"
+            data-field="{{item.id}}"
+          />
+
+          <radio-group
+            wx:if="{{item.valueType === 'radio'}}"
+            class="radio-group"
+            bindchange="onRadioChange"
+            data-field="{{item.id}}"
+          >
+            <label class="radio-item" wx:for="{{item.options}}" wx:key="value">
+              <radio value="{{item.value}}" checked="{{item.value == formData[item.id]}}" color="#6DBC29" />
+              <text>{{item.label}}</text>
+            </label>
+          </radio-group>
+
+          <view wx:if="{{item.valueType === 'checkbox_group'}}" class="tags-group">
+            <view
+              wx:for="{{item.options}}"
+              wx:key="value"
+              wx:for-item="option"
+              class="tag-item {{utils.includes(formData[item.id], option.value) ? 'selected' : ''}}"
+              bindtap="onCheckboxToggle"
+              data-field="{{item.id}}"
+              data-value="{{option.value}}"
+            >
+              {{option.label}}
+            </view>
+          </view>
+
+          <view wx:if="{{item.valueType === 'textarea'}}">
+            <view class="desc" wx:if="{{item.des}}">{{item.des}}</view>
+            <textarea
+              class="textarea"
+              placeholder="{{item.des || '请输入'}}"
+              value="{{formData[item.id]}}"
+              bindinput="onInput"
+              data-field="{{item.id}}"
+              maxlength="500"
+            />
+          </view>
+        </view>
+
+        <view class="notice-section" wx:if="{{item.valueType === 'info_text'}}">
+          <view class="notice-title">{{item.label}}</view>
+          <view class="notice-desc" wx:if="{{item.des || item.value}}">{{item.des || item.value}}</view>
+        </view>
+      </block>
+
+      <button class="submit-btn" bindtap="onSubmit">提交</button>
+      <view class="safe-area-bottom"></view>
+    </form>
+  </view>
+</view>
+
+<view class="login-modal" wx:if="{{showPhoneAuthModal}}">
+  <view class="modal-mask" bindtap="closePhoneAuthModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">请绑定手机号</text>
+      <view class="close-btn" bindtap="closePhoneAuthModal">✕</view>
+    </view>
+    <view class="modal-body">
+      <view class="modal-tip">申请新村民认证需要绑定手机号</view>
+      <phone-auth 
+        checked="{{true}}"
+        className="phone-auth-btn"
+        bindsuccess="onPhoneAuthSuccess"
+        binddenied="closePhoneAuthModal"
+      >
+        立即绑定
+      </phone-auth>
+    </view>
+  </view>
+</view>
+
+<wxs module="utils">
+module.exports.includes = function(arr, item) {
+  if (!arr || typeof arr.length !== 'number') {
+    return false;
+  }
+  var strItem = item + "";
+  for (var i = 0; i < arr.length; i++) {
+    if ((arr[i] + "") === strItem) {
+      return true;
+    }
+  }
+  return false;
+}
+</wxs>

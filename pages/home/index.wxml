@@ -86,7 +86,7 @@
     </scroll-view>
     <view class="section">
       <view class="section-header">
-        <image class="section-title-icon" src="/assets/images/collections.png" mode="heightFix" />
+        <image class="section-title-icon" src="/assets/images/collections.svg" mode="heightFix" />
         <view class="section-more" bindtap="onMoreCollectionsTap">
           <text>更多</text>
           <image class="more-icon" src="/api/more.svg" mode="aspectFit" />

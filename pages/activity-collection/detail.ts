@@ -38,7 +38,7 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
     const collList = ((collRes as any)?.list as any[]) || []
     const base = collList.find((c) => String(c.id) === String(id))
     if (!base) {
-      wx.showToast({ title: '活动合集不存在', icon: 'none' })
+      wx.showToast({ title: '系列活动不存在', icon: 'none' })
       return
     }
     const res = await getActivityList({
@@ -139,12 +139,12 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
     const collection = this.data.collection
     if (!collection) {
       return {
-        title: 'DAO龙潭 - 活动合集',
+        title: 'DAO龙潭 - 系列活动',
         path: '/pages/activity-collection/list',
       }
     }
     return {
-      title: collection.name || '活动合集',
+      title: collection.name || '系列活动',
       path: `/pages/activity-collection/detail?id=${collection.id}`,
       imageUrl: collection.logo || '',
     }
@@ -153,11 +153,11 @@ Page<CollectionDetailState, WechatMiniprogram.IAnyObject>({
     const collection = this.data.collection
     if (!collection) {
       return {
-        title: 'DAO龙潭 - 活动合集',
+        title: 'DAO龙潭 - 系列活动',
       }
     }
     return {
-      title: collection.name || '活动合集',
+      title: collection.name || '系列活动',
       query: `id=${collection.id}`,
       imageUrl: collection.logo || '',
     }

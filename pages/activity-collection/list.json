@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "活动合集",
+  "navigationBarTitleText": "系列活动",
   "usingComponents": {
     "collection-card": "/components/collection-card/index"
   }

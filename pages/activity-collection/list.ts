@@ -32,13 +32,13 @@ Page<CollectionListState, WechatMiniprogram.IAnyObject>({
   },
   onShareAppMessage() {
     return {
-      title: 'DAO龙潭 - 精选活动合集',
+      title: 'DAO龙潭 - 精选系列活动',
       path: '/pages/activity-collection/list',
     }
   },
   onShareTimeline() {
     return {
-      title: 'DAO龙潭 - 精选活动合集',
+      title: 'DAO龙潭 - 精选系列活动',
     }
   },
 })

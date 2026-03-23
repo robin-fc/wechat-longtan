@@ -24,9 +24,10 @@
               <text class="tag level-tag {{item.className}}" wx:for="{{profile.levelTags}}" wx:for-item="item" wx:key="label"
                     bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
             </view>
+           
             <view class="name-right">
-              <text class="tag role-tag {{item.className}}" wx:for="{{profile.noMadTags}}" wx:for-item="item" wx:key="label"
-                    bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
+              <!-- <text class="tag role-tag {{item.className}}" wx:for="{{profile.noMadTags}}" wx:for-item="item" wx:key="label"
+                    bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text> -->
             </view>
           </view>
           <view class="id-row">
@@ -56,6 +57,26 @@
         <view class="stat-item" bindtap="onWalletTap">
           <text class="stat-num">{{profile.assets || 0}}</text>
           <text class="stat-label">活动收益</text>
+        </view>
+        <view class="cert-item" bindtap="onNomadApplyTap">
+          <image class="cert-icon" src="/assets/icons/apply_icon.svg" mode="aspectFit" />
+          <text class="cert-label">数字游民认证</text>
+        </view>
+        <view class="cert-item" bindtap="onNewVillagerApplyTap">
+          <image class="cert-icon" src="/assets/icons/apply_icon.svg" mode="aspectFit" />
+          <text class="cert-label">新村民认证</text>
+        </view>
+        <view class="cert-item" bindtap="onOldVillagerApplyTap">
+          <image class="cert-icon" src="/assets/icons/apply_icon.svg" mode="aspectFit" />
+          <text class="cert-label">老村民认证</text>
+        </view>
+        <view class="cert-item" bindtap="onCheckInTap">
+          <image class="cert-icon" src="/assets/icons/apply_icon.svg" mode="aspectFit" />
+          <text class="cert-label">共创签到</text>
+        </view>
+        <view class="cert-item" bindtap="onDanmuTap">
+          <image class="cert-icon" src="/assets/icons/apply_icon.svg" mode="aspectFit" />
+          <text class="cert-label">大屏发弹幕</text>
         </view>
       </view>
     </view>
