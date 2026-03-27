@@ -1,0 +1,141 @@
+.calendar-page {
+  min-height: 100vh;
+  background-color: #FAFAFA;
+  padding-bottom: 80rpx;
+}
+
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  color: #fff;
+}
+
+.nav-left {
+  position: absolute;
+  left: 24rpx;
+  bottom: 0;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.back-icon,
+.home-icon {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.nav-title {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  font-size: 34rpx;
+  font-weight: 500;
+}
+
+.header-bg {
+  width: 100%;
+  display: block;
+}
+
+.content {
+  margin-top: -40rpx;
+  position: relative;
+  background: #FFFFFF;
+  overflow: hidden;
+  padding-bottom: 80rpx;
+  min-height: calc(100vh - 200rpx);
+}
+
+.month-header {
+  font-size: 40rpx;
+  font-weight: 500;
+  color: #191919;
+  padding: 40rpx 32rpx 24rpx;
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  padding: 0 32rpx;
+}
+
+.grid-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8rpx;
+  overflow: hidden;
+}
+
+.card-date {
+  background-color: #DDF6CF;
+  color: #000;
+  font-size: 24rpx;
+  text-align: center;
+  padding: 12rpx 4rpx;
+  border-radius: 4rpx;
+}
+
+.card-content {
+  background-color: #f2f2f2;
+  flex: 1;
+  margin-top: 2rpx;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 48rpx 12rpx 24rpx;
+}
+
+.card-tag {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #71BF00;
+  color: #FFFFFF;
+  font-size: 20rpx;
+  padding: 4rpx 8rpx;
+  border-bottom-left-radius: 8rpx;
+}
+
+.card-title {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #191919;
+  line-height: 36rpx;
+  text-align: center;
+  margin-bottom: 24rpx;
+  word-break: break-all;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-weight: 500;
+
+}
+
+.card-organizer {
+  font-size: 24rpx;
+  color: #171717;
+  text-align: center;
+  margin-top: auto;
+  font-weight: 400;
+}
+
+.empty-state {
+  padding: 100rpx 0;
+  text-align: center;
+  color: #999999;
+  font-size: 28rpx;
+}

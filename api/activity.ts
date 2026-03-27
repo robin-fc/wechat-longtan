@@ -176,3 +176,23 @@ export async function getActivityTypeLabelDynamic(
   const item = dict.find((x) => x.value === key)
   return item?.label || key
 }
+
+export interface AppActivityCalendarActivityRespVO {
+  activityId: number
+  category: string
+  title: string
+  organizerName: string
+}
+
+export interface AppActivityCalendarDayRespVO {
+  date: string
+  activities: AppActivityCalendarActivityRespVO[]
+}
+
+export function getActivityCalendar(
+  month: string
+): Promise<AppActivityCalendarDayRespVO[]> {
+  return getData<AppActivityCalendarDayRespVO[]>(`${baseUrl}/calendar`, {
+    month,
+  })
+}

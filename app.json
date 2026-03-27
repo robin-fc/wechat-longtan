@@ -5,6 +5,7 @@
     "pages/activity/detail",
     "pages/activity/publish",
     "pages/activity/companions",
+    "pages/activity/calendar",
     "pages/homestay/list",
     "pages/homestay/detail",
     "pages/homestay/companions",

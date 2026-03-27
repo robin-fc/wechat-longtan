@@ -1,0 +1,40 @@
+<view class="calendar-page">
+  <!-- Navigation Header (Custom) -->
+  <view class="nav-bar" style="padding-top: {{statusBarHeight}}px; height: {{navBarHeight}}px; background-color: rgba(255, 255, 255, {{navOpacity}}); color: {{navTitleColor}};">
+    <view class="nav-left" bindtap="onBack">
+      <block wx:if="{{showHomeButton}}">
+        <image class="home-icon" src="/assets/icons/home.svg" mode="aspectFit" style="filter: {{iconFilter}};" />
+      </block>
+      <block wx:else>
+        <image class="back-icon" src="/assets/icons/arrow-left-white.png" style="filter: {{iconFilter}};" />
+      </block>
+    </view>
+    <view class="nav-title">活动日历</view>
+  </view>
+
+  <!-- Header Image -->
+  <image class="header-bg" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/20260126/header-bg_1769440220202.png" mode="aspectFill" />
+
+  <view class="content">
+    <!-- Month Title -->
+    <view class="month-header">{{currentMonthText}}</view>
+
+    <view class="activity-grid" wx:if="{{flatList.length > 0}}">
+      <block wx:for="{{flatList}}" wx:key="activityId">
+        <view class="grid-card" bindtap="goToDetail" data-id="{{item.activityId}}">
+          <view class="card-date">{{item.formattedDate}}</view>
+          <view class="card-content">
+            <view class="card-tag">{{item.category}}</view>
+            <view class="card-title">{{item.title}}</view>
+            <view class="card-organizer">by {{item.organizerName}}</view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- Empty State -->
+    <view class="empty-state" wx:if="{{flatList.length === 0 && !loading}}">
+      <text>本月暂无活动</text>
+    </view>
+  </view>
+</view>

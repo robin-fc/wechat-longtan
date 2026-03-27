@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "弹幕页",
-          "pathName": "pages/user/barrage/index",
+          "name": "活动日历",
+          "pathName": "pages/activity/calendar",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "弹幕页",
+          "pathName": "pages/user/barrage/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "签到页",
