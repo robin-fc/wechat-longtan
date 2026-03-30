@@ -133,6 +133,10 @@ Page({
   },
   closeProfileModal(this: WechatMiniprogram.Page.TrivialInstance) {
     this.setData({ showProfileModal: false })
+    wx.showToast({ title: '已取消授权', icon: 'none' })
+    setTimeout(() => {
+      this.cancelLoginAndReturn()
+    }, 1000)
   },
   async onChooseAvatarProfile(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -228,6 +232,18 @@ Page({
   onModalDeny(this: WechatMiniprogram.Page.TrivialInstance) {
     this.setData({ showModal: false })
     wx.setStorageSync('isLoggedIn', false)
+    wx.showToast({ title: '已取消登录', icon: 'none' })
+    setTimeout(() => {
+      this.cancelLoginAndReturn()
+    }, 1000)
+  },
+  cancelLoginAndReturn(this: WechatMiniprogram.Page.TrivialInstance) {
+    // 优先尝试 navigateBack (如果是有栈进入)，否则重定向到首页
+    wx.navigateBack({
+      fail: () => {
+        wx.switchTab({ url: '/pages/home/index' })
+      }
+    })
   },
   goService(this: WechatMiniprogram.Page.TrivialInstance) {
     wx.navigateTo({ url: '/pages/agreement/service' })

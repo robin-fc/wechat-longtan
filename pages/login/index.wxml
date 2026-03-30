@@ -16,6 +16,8 @@
   </phone-auth> -->
   <button wx:elif="{{checked && isLoggedIn && !profileCompleted}}" class="login-btn" bindtap="onAuthorizeTap">授权头像昵称</button>
 
+  <view class="cancel-login-btn" bindtap="cancelLoginAndReturn">暂不登录</view>
+
   <view class="agree-row">
     <checkbox-group bindchange="onCheckChange">
       <checkbox checked="{{checked}}" value="1" />

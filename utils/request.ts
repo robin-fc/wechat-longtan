@@ -27,8 +27,14 @@ function redirectToLogin(): void {
   wx.setStorageSync('isLoggedIn', false)
   wx.setStorageSync('profileCompleted', false)
   
+  // 防止已经在登录页还在不断跳转
   const pages = getCurrentPages()
   const cur = pages[pages.length - 1]
+  if (cur && cur.route === 'pages/login/index') {
+    isRedirecting = false
+    return
+  }
+
   const route = cur ? `/${cur.route}` : ''
   const query = cur && cur.options
     ? Object.entries(cur.options as Record<string, string>)
@@ -40,11 +46,15 @@ function redirectToLogin(): void {
   
   console.log('Token失效，强制重定向到登录页:', returnUrl)
   
-  // 使用 reLaunch 彻底关闭当前页面栈，切断所有的并发请求和页面逻辑循环
-  wx.reLaunch({
+  // 使用 navigateTo 保留页面栈，使用户可以点击原生返回按钮取消登录
+  wx.navigateTo({
     url: `/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`,
     fail: (err) => {
-      console.error('reLaunch to login failed', err)
+      console.error('navigateTo to login failed', err)
+      // 如果超过页面栈限制(10层)，降级使用 reLaunch
+      wx.reLaunch({
+        url: `/pages/login/index?returnUrl=${encodeURIComponent(returnUrl)}`
+      })
       isRedirecting = false
     }
   })
