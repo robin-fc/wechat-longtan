@@ -6,6 +6,7 @@ import {
   shareActivity,
   createReview,
   getReviewList,
+  publishActivity,
   AppReviewRespVO
 } from '../../api/activity'
 import { AppUserFollow, AppUserUnfollow } from '../../api/user-follow'
@@ -31,8 +32,9 @@ interface ActivityDetailState {
   favoriteCompanionsData: CompanionsData
   reviewContent: string
   reviews: AppReviewRespVO[]
-  showHomeButton: boolean,
-  shareImgUrl?:String
+  showHomeButton: boolean
+  shareImgUrl?: String
+  isPreview?: boolean
 }
 
 Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
@@ -55,7 +57,8 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     },
     reviewContent: '',
     reviews: [],
-    showHomeButton: false
+    showHomeButton: false,
+    isPreview: false
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -65,6 +68,44 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     const pages = getCurrentPages()
     const showHomeButton = pages.length === 1
     this.setData({ showHomeButton })
+
+    const isPreview = options.isPreview === 'true'
+    this.setData({ isPreview })
+
+    const menuRect = wx.getMenuButtonBoundingClientRect()
+
+    if (isPreview) {
+      const previewData = wx.getStorageSync('ACTIVITY_PREVIEW_DATA') as ActivityDetail
+      if (previewData) {
+        wx.setNavigationBarTitle({ title: '活动预览' })
+        const favoriteCount = previewData.favoriteCount || 0
+        const favoriteCountText = `${favoriteCount} 人收藏`
+
+        // 与正式详情页保持一致：格式化日期
+        const formattedActivity: ActivityDetail = {
+          ...previewData,
+          startTime: formatYMDHM(previewData.startTime),
+          endTime: formatYMDHM(previewData.endTime),
+          formattedTimeRange: formatSmartTimeRange(previewData.startTime, previewData.endTime),
+        }
+
+        this.setData({
+          activity: formattedActivity,
+          favoriteCountText,
+          registrationLimit: previewData.isLimitParticipants
+            ? previewData.maxParticipants
+            : '无限制',
+          menuTop: menuRect ? menuRect.top : 0,
+          menuHeight: menuRect ? menuRect.height : 44,
+          isSelf: false,
+          favoriteCompanionsData: { companions: [], totalCount: 0 },
+          registeredUsers: [],
+          registrationCount: 0,
+          companionsData: { companions: [], totalCount: 0 },
+        })
+      }
+      return
+    }
 
     const idRaw = options.id as string
     if (!idRaw) {
@@ -104,7 +145,6 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
 
     this.fetchReviews(id)
 
-    const menuRect = wx.getMenuButtonBoundingClientRect()
     const userId = wx.getStorageSync('userId')
     const isSelf =
       activity.organizer && String(activity.organizer.userId) === String(userId)
@@ -148,6 +188,7 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     })
   },
   async onShow() {
+    if (this.data.isPreview) return
     const id = this.data.activity?.id
     if (id) {
       this.refreshRegistrationStatus(Number(id))
@@ -354,6 +395,58 @@ Page<ActivityDetailState, WechatMiniprogram.IAnyObject>({
     if (!detail) return
 
     smartNavigateTo(`/pages/activity/publish?id=${detail.id}`)
+  },
+
+  async onSubmitFromPreviewTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const draft = wx.getStorageSync('ACTIVITY_PUBLISH_DRAFT')
+    if (!draft || !draft.form) {
+      wx.showToast({ title: '草稿已失效，请返回重新填写', icon: 'none' })
+      return
+    }
+    const { form } = draft
+
+    // 草稿里存的是 ISO 字符串，兼容空格分隔格式
+    const startTime = form.startTime ? form.startTime.replace(' ', 'T') + (form.startTime.includes('Z') ? '' : 'Z') : ''
+    const endTime   = form.endTime   ? form.endTime.replace(' ', 'T')   + (form.endTime.includes('Z') ? '' : 'Z') : ''
+
+    const payload = {
+      title: (form.title || '').trim(),
+      logo: form.logo || undefined,
+      collectionId: form.collectionId ? Number(form.collectionId) : undefined,
+      fee: form.free ? 0 : Number(form.price) || 0,
+      isFree: form.free,
+      activityType: form.activityTypeValue || form.type || undefined,
+      startTime,
+      endTime,
+      spaceId: form.spaceId,
+      detail: (form.description || '').trim() || undefined,
+      maxParticipants: Number(form.limit) || undefined,
+      isLimitParticipants: !!Number(form.limit),
+    }
+
+    try {
+      wx.showLoading({ title: '提交中...', mask: true })
+      const activityId = await publishActivity(payload as any)
+      wx.hideLoading()
+      if (activityId) {
+        wx.removeStorageSync('ACTIVITY_PUBLISH_DRAFT')
+        wx.showToast({ title: '已提交，待审核', icon: 'success' })
+        setTimeout(() => {
+          // 返回到发布页的上一层（列表页）
+          const pages = getCurrentPages()
+          if (pages.length >= 3) {
+            wx.navigateBack({ delta: 2 })
+          } else {
+            wx.navigateBack()
+          }
+        }, 800)
+      } else {
+        wx.showToast({ title: '提交失败', icon: 'none' })
+      }
+    } catch (e: any) {
+      wx.hideLoading()
+      wx.showToast({ title: e.message || '网络错误', icon: 'none' })
+    }
   },
 
   onShareTap(this: WechatMiniprogram.Page.TrivialInstance) {

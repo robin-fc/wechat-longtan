@@ -1,5 +1,15 @@
 <view class="publish-page">
-  <scroll-view scroll-y="true" class="form-scroll">
+  <!-- 导航栏（与项目其他页面一致） -->
+  <view class="header-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+    <view class="header-left" bindtap="onBackTap">
+      <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
+    </view>
+    <text class="header-title">{{isEdit ? '编辑活动' : '发布活动'}}</text>
+    <view class="header-right"></view>
+  </view>
+
+  <scroll-view scroll-y="true" class="form-scroll" style="padding-top: {{menuTop + menuHeight + 10}}px;">
+
     <view class="form-section">
       <text class="label">活动标题*</text>
       <input class="input" placeholder="请输入活动标题" value="{{form.title}}" bindinput="onTitleChange" />
@@ -65,14 +75,15 @@
     </view>
 
     <view class="form-section">
-      <text class="label">活动海报*</text>
+      <text class="label">活动海报</text>
       <view class="poster-row">
         <view wx:if="{{form.logo}}" class="poster-preview">
           <image class="poster-image" src="{{form.logo}}" mode="aspectFill" />
         </view>
         <view class="poster-upload" bindtap="onChoosePosterTap">
-          <text>上传图片</text>
+          <text>上传图片</text> 
         </view>
+        <text wx:if="{{!form.logo}}" class="label">如不上传图片,可使用系统生成的默认海报</text>
       </view>
     </view>
 
@@ -83,8 +94,11 @@
   </scroll-view>
 
   <view class="bottom-bar">
-    <view class="submit-button" bindtap="onSubmitTap">
-      <text>{{isEdit ? '保存修改' : '提交审核'}}</text>
+    <view class="preview-button {{isEdit ? '' : 'full-width'}}" bindtap="onPreviewTap">
+      <text>预览</text>
+    </view>
+    <view wx:if="{{isEdit}}" class="submit-button" bindtap="onSubmitTap">
+      <text>保存修改</text>
     </view>
   </view>
 
@@ -93,4 +107,21 @@
     message="完成数字游民认证申请就可以发布活动了哦！"
     bind:apply="onPermissionApply"
     bind:skip="onPermissionSkip" />
+
+  <!-- 退出确认弹窗 -->
+  <view wx:if="{{showExitConfirm}}" class="exit-mask" catchtap="onCancelExit">
+    <view class="exit-dialog" catchtap="">
+      <text class="exit-dialog-title">确认退出？</text>
+      <text class="exit-dialog-desc">当前活动未发布，退出将删除当前编辑活动</text>
+      <view class="exit-dialog-actions">
+        <view class="exit-btn exit-btn-cancel" bindtap="onCancelExit">
+          <text>返回编辑</text>
+        </view>
+        <view class="exit-btn exit-btn-confirm" bindtap="onConfirmExit">
+          <text>继续退出</text>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>
+

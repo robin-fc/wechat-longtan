@@ -14,7 +14,8 @@
     "pages/mine/assets",
     "pages/mine/activities",
     "pages/mine/stays",
-    "pages/login/index"
+    "pages/login/index",
+    "pages/webview/index"
   ],
   "subpackages": [
     {

@@ -17,7 +17,7 @@
           <view class="hero-card {{heroCurrent === idx ? 'selected' : ''}}" bindtap="onBannerTap" data-idx="{{idx}}">
             <view class="hero-poster-wrapper">
               <image class="hero-poster" src="{{item.logo}}" mode="widthFix" />
-              <view class="hero-type">{{item.bannerType}}</view>
+              <view class="hero-type" style="background-color: {{item.typeColor}};">{{item.bannerType}}</view>
               
             </view>
           </view>
@@ -56,6 +56,9 @@
         </view>
       </view>
     </view>
+
+   
+
     <view class="section">
       <view class="entry-grid">
         <block wx:for="{{pageData.entries}}" wx:key="value" wx:for-index="idx">
@@ -101,7 +104,7 @@
         </view>
       </scroll-view>
     </view>
-    <view class="section">
+    <!-- <view class="section">
       <view class="section-header">
         <image class="section-title-icon" src="/assets/images/homestay.png" mode="heightFix" />
         <view class="section-more" bindtap="onMoreHomestaysTap">
@@ -116,6 +119,24 @@
             <homestay-card homestay="{{item}}" layout="horizontal" show-companions="{{false}}"
               bindtap="onHomestayCardTap" />
           </view>
+        </block>
+      </view>
+    </view> -->
+    <view class="section article-section" wx:if="{{articles.length > 0}}">
+      <view class="section-header">
+        <image class="section-title-icon" src="/assets/images/suggestion.png" mode="heightFix" />
+      </view>
+      <view class="section-divider-line" />
+      <view class="article-list">
+        <block wx:for="{{articles}}" wx:key="articleUrl" wx:for-index="idx">
+          <view class="article-item" data-item="{{item}}" bindtap="onArticleTap">
+            <image class="article-cover" src="{{item.coverUrl}}" mode="aspectFill" />
+            <view class="article-info">
+              <text class="article-title">{{item.title}}</text>
+              <text wx:if="{{item.summary}}" class="article-digest">{{item.summary}}</text>
+            </view>
+          </view>
+          <view wx:if="{{idx < articles.length - 1}}" class="article-divider" />
         </block>
       </view>
     </view>

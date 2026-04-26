@@ -237,13 +237,25 @@ Page({
       this.cancelLoginAndReturn()
     }, 1000)
   },
+
+  onUnload(this: WechatMiniprogram.Page.TrivialInstance) {
+    if (!wx.getStorageSync('isLoggedIn')) {
+      wx.setStorageSync('loginCanceled', Date.now())
+    }
+  },
+
   cancelLoginAndReturn(this: WechatMiniprogram.Page.TrivialInstance) {
-    // 优先尝试 navigateBack (如果是有栈进入)，否则重定向到首页
-    wx.navigateBack({
-      fail: () => {
-        wx.switchTab({ url: '/pages/home/index' })
-      }
-    })
+    wx.setStorageSync('loginCanceled', Date.now())
+    const pages = getCurrentPages()
+    if (pages.length > 1) {
+      wx.navigateBack({
+        fail: () => {
+          wx.switchTab({ url: '/pages/home/index' })
+        }
+      })
+    } else {
+      wx.switchTab({ url: '/pages/home/index' })
+    }
   },
   goService(this: WechatMiniprogram.Page.TrivialInstance) {
     wx.navigateTo({ url: '/pages/agreement/service' })

@@ -4,6 +4,19 @@ import { updateUserInfo } from '../../api/user'
 import { smartNavigateTo } from '../../utils/navigation'
 import { AppActivityTypeRespVO, HomePageData } from '../../model/home'
 import { Banner } from '../../model/banner'
+import { getArticleRecommendPage, AppMpArticleRecommendRespVO } from '../../api/article'
+
+/** bannerType 文字 → 背景色映射表 */
+const BANNER_TYPE_COLOR_MAP: Record<string, string> = {
+  '在地民俣': '#EC4714',
+  '艺术创作': '#9480EA',
+  '数字技能': '#0194BF',
+  '自然体验': '#73A3C4',
+  '手工制作': '#E27F32',
+  '生活美食': '#AB7D14',
+  '身心成长': '#FAC209',
+  '兴趣爱好': '#1D96FF',
+}
 
 interface HomeState {
   loading: boolean
@@ -15,6 +28,7 @@ interface HomeState {
   showDigitalNomadPopup: boolean
   canCreateActivity: boolean
   showPhoneAuthModal: boolean
+  articles: AppMpArticleRecommendRespVO[]
 }
 
 Page<HomeState, WechatMiniprogram.IAnyObject>({
@@ -28,6 +42,7 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     showDigitalNomadPopup: false,
     canCreateActivity: false,
     showPhoneAuthModal: false,
+    articles: [],
   },
   async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -115,19 +130,44 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
       const data = await fetchHomeData()
       const idx = this.data.heroCurrent
       const hero = data.carousel[idx]
+      // 给每个 carousel 项计算对应 typeColor
+      const carousel = (data.carousel || []).map((item: any) => ({
+        ...item,
+        typeColor: BANNER_TYPE_COLOR_MAP[item.bannerType] || '#428C35',
+      }))
       this.setData({
-        pageData: data,
+        pageData: { ...data, carousel },
         loading: false,
-        hero: hero,
+        hero,
       })
     } catch (_err) {
       this.setData({
         loading: false,
       })
     }
+    this.loadArticles()
+  },
+  async loadArticles() {
+    try {
+      const res = await getArticleRecommendPage(1, 3)
+      this.setData({
+        articles: res?.list || [],
+      })
+    } catch (e) {
+      console.error('Fetch articles failed:', e)
+    }
   },
   onSearchTap() {
     smartNavigateTo('/pages/search/index?from=home')
+  },
+
+  onArticleTap(e: WechatMiniprogram.BaseEvent) {
+    const item = e.currentTarget.dataset.item as AppMpArticleRecommendRespVO
+    if (item && item.articleUrl) {
+      wx.navigateTo({
+        url: `/pages/webview/index?url=${encodeURIComponent(item.articleUrl)}`
+      })
+    }
   },
   onEntryTap(e: WechatMiniprogram.BaseEvent) {
     const item = e.currentTarget.dataset.item as AppActivityTypeRespVO
@@ -149,7 +189,14 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
     })
   },
   onAboutItemTap(e: WechatMiniprogram.BaseEvent) {
-    const item = e.currentTarget.dataset.item as { path?: string }
+    const item = e.currentTarget.dataset.item as { path?: string; title?: string }
+    if (item && item.title === '龙潭故事') {
+      const storyUrl = 'https://mobilesingle.dmctv.cn:8085/villages/6350000000039/index.html'
+      wx.navigateTo({
+        url: `/pages/webview/index?url=${encodeURIComponent(storyUrl)}`
+      })
+      return
+    }
     if (item && item.path) {
       smartNavigateTo(item.path)
     }

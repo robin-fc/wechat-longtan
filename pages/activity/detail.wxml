@@ -8,13 +8,13 @@
         <image class="back-icon" src="/assets/icons/arrow-down.png" mode="aspectFit" />
       </block>
     </view>
-    <text class="header-title">活动详情</text>
+    <text class="header-title">{{isPreview ? '活动预览' : '活动详情'}}</text>
     <view class="header-right"></view>
   </view>
   <view wx:if="{{activity}}" class="body" style="padding-top: {{menuTop + menuHeight + 10}}px;">
     <view class="moment-card">
       <view class="moment-image-wrapper">
-        <image class="moment-image" src="{{activity.logo}}" mode="aspectFill" />
+        <image class="moment-image" src="{{activity.logo}}" mode="widthFix" />
       </view>
       <view class="moment-content">
         <view class="price-row">
@@ -37,8 +37,8 @@
             </view>
             <text class="space-address">{{activity.space.address}}</text>
           </view>
-          <view class="space-right" bindtap="onOpenMapTap">
-            <image class="mini-map" src="{{activity.space.mapImages[0]}}" mode="aspectFill" />
+          <view class="space-right" bindtap="onOpenMapTap" wx:if="{{activity.space.mapImages && activity.space.mapImages.length > 0}}">
+            <image class="mini-map" src="{{activity.space.mapImages}}" mode="aspectFill" />
             <text class="map-hint">点击查看</text>
           </view>
         </view>
@@ -78,7 +78,7 @@
       <text class="favorite-text">{{favoriteCountText}}</text>
       <text class="favorite-arrow">›</text>
     </view>
-    <view class="section">
+    <view class="section" wx:if="{{!isPreview}}">
       <text class="section-title">活动评价</text>
       <block wx:if="{{reviews && reviews.length > 0}}">
         <view class="review-list">
@@ -110,7 +110,17 @@
     </view>
   </view>
   <view wx:if="{{activity}}" class="bottom-bar">
-    <block wx:if="{{isSelf}}">
+    <block wx:if="{{isPreview}}">
+      <view class="preview-bottom-wrap">
+        <view class="preview-btn-modify" bindtap="onBackTap">
+          <text class="preview-btn-text-dark">修改</text>
+        </view>
+        <view class="preview-btn-publish" bindtap="onSubmitFromPreviewTap">
+          <text class="preview-btn-text-light">发布</text>
+        </view>
+      </view>
+    </block>
+    <block wx:elif="{{isSelf}}">
    
       <view class="bottom-item heart-btn-wrap" bindtap="onToggleCollect">
         <image class="heart-icon-solid" src="{{activity.isFavorited ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}" mode="aspectFit" />

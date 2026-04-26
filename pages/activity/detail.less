@@ -67,15 +67,14 @@
 
 .moment-image-wrapper {
   position: relative;
+  width: 100%;
 }
 
 .moment-image {
-  position: static;
   width: 100%;
-  height: calc(100vw * 16 / 9);
+  display: block;
   border-radius: 0;
   box-shadow: none;
-  display: block;
 }
 
 .moment-content {
@@ -529,6 +528,7 @@
   right: 0;
   bottom: 0;
   min-height: 145rpx;
+  width: 100vw;
   display: flex;
   align-items: center;
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
@@ -635,9 +635,67 @@
     opacity: 0.6;
   }
 
-  .review-input {
-    flex: 1;
+  .bottom-label {
     font-size: 28rpx;
-    color: #333333;
+    color: #000000;
+    font-weight: 500;
   }
+
+  .bottom-label-white {
+    font-size: 28rpx;
+    color: #ffffff;
+    font-weight: 500;
+  }
+
+  .bottom-primary-label {
+    font-size: 28rpx;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  /* 预览模式：两个按钮等宽占满整行 */
+  .btn-white,
+  .btn-black {
+    flex: 1;
+  }
+}
+
+/* 预览底部双按钮 */
+.preview-bottom-wrap {
+  display: flex;
+  width: 100%;
+  height: 80rpx;
+}
+
+.preview-btn-modify {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius:2rpx;
+  border: 1rpx solid #000000;
+  margin:0 10rpx
+}
+
+.preview-btn-publish {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius:2rpx;
+  background-color: #000000;
+  margin:0 10rpx
+}
+
+.preview-btn-text-dark {
+  font-size: 28rpx;
+  color: #000000;
+  font-weight: 500;
+}
+
+.preview-btn-text-light {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 500;
 }

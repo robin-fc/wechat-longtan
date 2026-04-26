@@ -1,8 +1,10 @@
 {
+  "navigationStyle": "custom",
   "navigationBarTitleText": "发布活动",
   "usingComponents": {
     "datetime-picker": "/components/custom-datetime-picker/index",
     "permission-popup": "/components/permission-popup/index"
   }
 }
+
 

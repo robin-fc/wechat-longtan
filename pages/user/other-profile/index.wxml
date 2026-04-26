@@ -8,7 +8,12 @@
     </view>
     <view class="nav-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
       <view class="back-btn" bindtap="onBackTap">
-        <image class="back-icon" src="/assets/icons/arrow-left-white.png" mode="aspectFit" />
+        <block wx:if="{{showHomeButton}}">
+          <image class="back-icon" src="/assets/icons/home-white.svg" mode="aspectFit" />
+        </block>
+        <block wx:else>
+          <image class="back-icon" src="/assets/icons/arrow-left-white.png" mode="aspectFit" />
+        </block>
       </view>
     </view>
   </view>

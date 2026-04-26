@@ -1,4 +1,4 @@
-import { createActivity, updateActivity, getActivityDetail, getActivityTypeList } from '../../api/activity'
+import { createActivity, updateActivity, getActivityDetail, getActivityTypeList, previewActivity } from '../../api/activity'
 import { getActivityCollections } from '../../api/activity-collection'
 import { uploadImage } from '../../api/common'
 import { fetchMyProfile } from '../../api/mine'
@@ -35,8 +35,11 @@ interface PublishPageState {
   spaceOptions: { id: number; name: string }[]
   spaceIndex: number
   showPermissionPopup: boolean
+  showExitConfirm: boolean
   isEdit: boolean
   editId: number
+  menuTop: number
+  menuHeight: number
 }
 
 function validatePublishForm(
@@ -79,13 +82,6 @@ function validatePublishForm(
     })
     return null
   }
-  if (!form.logo) {
-    wx.showToast({
-      title: '请上传活动海报',
-      icon: 'none',
-    })
-    return null
-  }
   if (!form.description.trim()) {
     wx.showToast({
       title: '请填写活动介绍',
@@ -123,13 +119,24 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     spaceOptions: [],
     spaceIndex: 0,
     showPermissionPopup: false,
+    showExitConfirm: false,
     isEdit: false,
     editId: 0,
+    menuTop: 0,
+    menuHeight: 44,
   },
   async onLoad(
     this: WechatMiniprogram.Page.TrivialInstance,
     options: WechatMiniprogram.Page.InstanceProperties['options']
   ) {
+    // 实例标记：合法离开（提交/预览跳转）时置 true，onUnload 据此决定是否清草稿
+    ;(this as any)._allowLeave = false
+    // 获取菜单按钒位置，与项目其他页面一致
+    const menuRect = wx.getMenuButtonBoundingClientRect()
+    this.setData({
+      menuTop: menuRect ? menuRect.top : 0,
+      menuHeight: menuRect ? menuRect.height : 44,
+    })
     if (options.id) {
       this.setData({
         isEdit: true,
@@ -137,6 +144,19 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       })
     }
     await this.checkDigitalNomadStatus()
+  },
+  onUnload(this: WechatMiniprogram.Page.TrivialInstance) {
+    // 新建模式下，若非合法离开（提交/预览），清除草稿
+    if (!(this.data as PublishPageState).isEdit && !(this as any)._allowLeave) {
+      try {
+        const draft = wx.getStorageSync('ACTIVITY_PUBLISH_DRAFT')
+        if (draft && draft.form) {
+          wx.removeStorageSync('ACTIVITY_PUBLISH_DRAFT')
+        }
+      } catch (e) {
+        console.warn('Remove draft on unload failed', e)
+      }
+    }
   },
   async checkDigitalNomadStatus(this: WechatMiniprogram.Page.TrivialInstance) {
     const accessToken = wx.getStorageSync('accessToken')
@@ -219,6 +239,29 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
 
     if (this.data.isEdit && this.data.editId) {
       await this.loadActivityDetail(this.data.editId)
+    } else {
+      // 新建模式：尝试从草稿恢复上次填写的内容
+      try {
+        const draft = wx.getStorageSync('ACTIVITY_PUBLISH_DRAFT')
+        if (draft && draft.form) {
+          const state = this.data as PublishPageState
+          // 校验选择索引合法性，防止数组越界
+          const collectionIndex = (draft.collectionIndex >= 0 && draft.collectionIndex < state.collectionOptions.length)
+            ? draft.collectionIndex : 0
+          const typeIndex = (draft.typeIndex >= 0 && draft.typeIndex < state.types.length)
+            ? draft.typeIndex : 0
+          const spaceIndex = (draft.spaceIndex >= 0 && draft.spaceIndex < state.spaceOptions.length)
+            ? draft.spaceIndex : 0
+          this.setData({
+            form: draft.form,
+            collectionIndex,
+            typeIndex,
+            spaceIndex,
+          })
+        }
+      } catch (e) {
+        console.warn('Restore draft failed', e)
+      }
     }
   },
 
@@ -293,8 +336,36 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
     }
   },
 
-  onBackTap() {
+  onBackTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    // 仅新建模式下检测草稿（此方法供 WXML 自定义返回按钮使用）
+    if (!(this.data as PublishPageState).isEdit) {
+      try {
+        const draft = wx.getStorageSync('ACTIVITY_PUBLISH_DRAFT')
+        if (draft && draft.form) {
+          this.setData({ showExitConfirm: true })
+          return
+        }
+      } catch (e) {
+        console.warn('Check draft failed', e)
+      }
+    }
     goBack()
+  },
+  // 确认退出：清除草稿并返回
+  onConfirmExit(this: WechatMiniprogram.Page.TrivialInstance) {
+    try {
+      wx.removeStorageSync('ACTIVITY_PUBLISH_DRAFT')
+    } catch (e) {
+      console.warn('Remove draft failed', e)
+    }
+    // 标记合法离开，onUnload 不再重复清除
+    ;(this as any)._allowLeave = true
+    this.setData({ showExitConfirm: false })
+    goBack()
+  },
+  // 取消退出：关闭弹窗，返回编辑
+  onCancelExit(this: WechatMiniprogram.Page.TrivialInstance) {
+    this.setData({ showExitConfirm: false })
   },
   onTitleChange(
     this: WechatMiniprogram.Page.TrivialInstance,
@@ -500,6 +571,115 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
       },
     })
   },
+  async onPreviewTap(this: WechatMiniprogram.Page.TrivialInstance) {
+    const state = this.data as PublishPageState
+    const form = state.form
+    const result = validatePublishForm(form)
+    if (!result) {
+      return
+    }
+
+    wx.showLoading({ title: '准备预览...' })
+
+    // 并发：调用预览接口 + 拉取用户信息
+    const typeValue = (state.types[state.typeIndex]?.label) || ''
+    const typeValueRaw = (state.types[state.typeIndex]?.value) || ''
+    const selectedSpace = state.spaceOptions[state.spaceIndex]
+
+    const previewPayload = {
+      title: form.title.trim(),
+      logo: form.logo || undefined,
+      collectionId: form.collectionId ? Number(form.collectionId) : undefined,
+      fee: form.free ? 0 : Number(form.price) || 0,
+      isFree: form.free,
+      activityType: typeValueRaw || undefined,
+      startTime: result.startISO,
+      endTime: result.endISO,
+      spaceId: selectedSpace ? selectedSpace.id : (Number(form.spaceId) || form.spaceId),
+      detail: form.description.trim() || undefined,
+      maxParticipants: Number(form.limit) || undefined,
+      isLimitParticipants: !!Number(form.limit),
+    }
+
+    let finalLogo = form.logo
+    let finalMapImages: string[] = []
+    let finalAddress = '预览地址（暂无）'
+    let userProfile = null
+
+    try {
+      const [previewResp, profile] = await Promise.all([
+        previewActivity(previewPayload),
+        fetchMyProfile().catch((e) => { console.warn('fetch profile failed', e); return null }),
+      ])
+      // 使用服务端返回的 logo（可能是系统默认海报）
+      if (previewResp && previewResp.logo) {
+        finalLogo = previewResp.logo
+      }
+      if (previewResp && previewResp.mapImages) {
+        finalMapImages = previewResp.mapImages
+      }
+      if (previewResp && previewResp.address) {
+        finalAddress = previewResp.address
+      }
+      userProfile = profile
+    } catch (e: any) {
+      wx.hideLoading()
+      wx.showToast({ title: e.message || '预览失败，请重试', icon: 'none' })
+      return
+    }
+
+    const mockDetail: any = {
+      id: 999999,
+      title: form.title.trim(),
+      logo: finalLogo,
+      startTime: result.startISO,
+      endTime: result.endISO,
+      fee: form.free ? 0 : Number(form.price) || 0,
+      isFree: form.free,
+      detail: form.description.trim(),
+      favoriteCount: 0,
+      favoriteUsers: [],
+      isFavorited: false,
+      maxParticipants: Number(form.limit),
+      registeredCount: 0,
+      isLimitParticipants: !!Number(form.limit),
+      activityStatus: '报名中',
+      activityType: typeValue,
+      auditStatus: '审核通过',
+      isRegistered: false,
+      space: {
+        id: selectedSpace ? selectedSpace.id : Number(form.spaceId),
+        name: selectedSpace ? selectedSpace.name : form.space,
+        address: finalAddress,
+        mapImages: finalMapImages
+      },
+      organizer: {
+        userId: userProfile ? userProfile.id : 0,
+        wxName: userProfile ? userProfile.wxName : '暂无',
+        memberName: userProfile ? userProfile.memberName : '暂无',
+        logo: userProfile ? userProfile.logo : '',
+        introduction: userProfile ? userProfile.introduction : '',
+        memberLevel: userProfile ? userProfile.memberLevel : '',
+        memberTags: [],
+        follow: false,
+        followed: false
+      }
+    }
+
+    // 持久化表单草稿（含服务端返回的 logo），供预览返回后恢复
+    wx.setStorageSync('ACTIVITY_PUBLISH_DRAFT', {
+      form: { ...form, logo: finalLogo, activityTypeValue: typeValueRaw },
+      collectionIndex: state.collectionIndex,
+      typeIndex: state.typeIndex,
+      spaceIndex: state.spaceIndex,
+    })
+
+    wx.setStorageSync('ACTIVITY_PREVIEW_DATA', mockDetail)
+    wx.hideLoading()
+    // 标记为合法离开（导航到预览页，不清草稿）
+    ;(this as any)._allowLeave = true
+    smartNavigateTo('/pages/activity/detail?isPreview=true')
+  },
   onDescriptionChange(
     this: WechatMiniprogram.Page.TrivialInstance,
     e: WechatMiniprogram.TextareaInput
@@ -550,6 +730,10 @@ Page<PublishPageState, WechatMiniprogram.IAnyObject>({
 
       wx.hideLoading()
       if (ok) {
+        // 标记合法离开，onUnload 不再重复清除
+        ;(this as any)._allowLeave = true
+        // 清空表单草稿
+        wx.removeStorageSync('ACTIVITY_PUBLISH_DRAFT')
         // 清空表单
         this.setData({
           form: {

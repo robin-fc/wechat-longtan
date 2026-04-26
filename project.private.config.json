@@ -2,7 +2,7 @@
   "libVersion": "3.12.0",
   "projectname": "DAO%E9%BE%99%E6%BD%AD",
   "setting": {
-    "urlCheck": false,
+    "urlCheck": true,
     "coverView": false,
     "lazyloadPlaceholderEnable": false,
     "skylineRenderEnable": false,
@@ -23,11 +23,25 @@
     "miniprogram": {
       "list": [
         {
+          "name": "个人页",
+          "pathName": "pages/user/other-profile/index",
+          "query": "userId=25&isFollowed=true",
+          "scene": null,
+          "launchMode": "default"
+        },
+        {
+          "name": "首页分享",
+          "pathName": "pages/mine/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "活动日历",
           "pathName": "pages/activity/calendar",
           "query": "",
-          "scene": null,
-          "launchMode": "default"
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "弹幕页",

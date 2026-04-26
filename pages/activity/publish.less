@@ -1,7 +1,9 @@
 .publish-page {
   min-height: 100vh;
   background-color: #f5f5f5;
-  padding: 0 24rpx calc(144rpx + env(safe-area-inset-bottom));
+  padding-bottom: calc(144rpx + env(safe-area-inset-bottom));
+  position: relative;
+  box-sizing: border-box;
 }
 
 .top-bar {
@@ -32,7 +34,46 @@
 }
 
 .form-scroll {
-  height: 100%
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 24rpx;
+}
+
+/* 导航栏 —— 与项目其他页面一致（activity-collection/detail 等） */
+.header-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #ffffff;
+  z-index: 100;
+  padding-left: 12rpx;
+  padding-right: 12rpx;
+}
+
+.header-left,
+.header-right {
+  width: 88rpx;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-icon {
+  width: 40rpx;
+  height: 40rpx;
+  display: block;
+  filter: brightness(0);
+}
+
+.header-title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #333333;
+  text-align: center;
 }
 
 .form-section {
@@ -180,3 +221,107 @@
   color: #ffffff;
   font-weight: 700;
 }
+
+.preview-button {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 2rpx;
+  display: flex;
+  background: #fff;
+  align-items: center;
+  justify-content: center;
+  border:1rpx solid #000;
+}
+
+.preview-button text {
+  font-size: 28rpx;
+  color: #000;
+  font-weight: 500;
+}
+
+.preview-button.full-width {
+  margin-right: 0;
+}
+
+/* 退出确认弹窗 */
+.exit-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exit-dialog {
+  width: 560rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 48rpx 40rpx 36rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.exit-dialog-icon {
+  font-size: 64rpx;
+  margin-bottom: 20rpx;
+}
+
+.exit-dialog-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16rpx;
+}
+
+.exit-dialog-desc {
+  font-size: 26rpx;
+  color: #666666;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 40rpx;
+}
+
+.exit-dialog-actions {
+  width: 100%;
+  display: flex;
+  gap: 20rpx;
+}
+
+.exit-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.exit-btn text {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.exit-btn-cancel {
+  background: #f5f5f5;
+  border: 1rpx solid #e0e0e0;
+}
+
+.exit-btn-cancel text {
+  color: #333333;
+}
+
+.exit-btn-confirm {
+  background: #1a1a1a;
+}
+
+.exit-btn-confirm text {
+  color: #ffffff;
+}
+
+

@@ -54,6 +54,7 @@ interface OtherProfileState {
   pageSize?: number
   typeDict?: Record<string, string>
   loading: boolean
+  showHomeButton?: boolean
 }
 
 Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
@@ -66,7 +67,8 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
     userId: '',
     pageNo: 1,
     pageSize: 20,
-    loading: false
+    loading: false,
+    showHomeButton: false
   },
 
   async onLoad(
@@ -75,7 +77,10 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
   ) {
     const { userId, isFollowed } = options as any
     const menuButtonInfo = wx.getMenuButtonBoundingClientRect()
+    const pages = getCurrentPages()
+    const showHomeButton = pages.length === 1
     this.setData({
+      showHomeButton,
       menuTop: menuButtonInfo.top,
       menuHeight: menuButtonInfo.height,
       userId: String(userId || ''),
@@ -212,7 +217,11 @@ Page<OtherProfileState, WechatMiniprogram.IAnyObject>({
   },
 
   onBackTap() {
-    wx.navigateBack()
+    if (this.data.showHomeButton) {
+      wx.switchTab({ url: '/pages/home/index' })
+    } else {
+      wx.navigateBack()
+    }
   },
 
   onFollowStateChange(this: WechatMiniprogram.Page.TrivialInstance, e: any) {

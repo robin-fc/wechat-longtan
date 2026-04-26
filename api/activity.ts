@@ -73,10 +73,44 @@ export function getUserActivityList(
   return getData(`${baseUrl}/user-list`, params)
 }
 
+export interface AppActivityPreviewReqVO {
+  title: string
+  logo?: string
+  collectionId?: number
+  fee: number
+  isFree: boolean
+  activityType?: string
+  startTime: string
+  endTime: string
+  spaceId: number | string
+  detail?: string
+  maxParticipants?: number
+  isLimitParticipants?: boolean
+}
+
+export interface AppActivityPreviewRespVO {
+  logo: string
+  mapImages?: string[]
+  address?: string
+}
+
+export function previewActivity(
+  payload: AppActivityPreviewReqVO
+): Promise<AppActivityPreviewRespVO> {
+  return postData<AppActivityPreviewRespVO>(`${baseUrl}/preview`, payload)
+}
+
 export function createActivity(
   payload: CreateActivityPayload
 ): Promise<boolean> {
   return postData<boolean>(`${baseUrl}/create`, payload)
+}
+
+/** 发布活动：传了 logo 直接使用，未传则按活动类型模板生成海报后发布，返回活动 ID */
+export function publishActivity(
+  payload: CreateActivityPayload
+): Promise<number> {
+  return postData<number>(`${baseUrl}/publish`, payload)
 }
 
 export function updateActivity(
@@ -84,6 +118,7 @@ export function updateActivity(
 ): Promise<boolean> {
   return postData<boolean>(`${baseUrl}/update`, payload)
 }
+
 
 export function getActivityRegistrations(
   activityId: number

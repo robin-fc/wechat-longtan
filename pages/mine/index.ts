@@ -44,6 +44,15 @@ Page<MineState, WechatMiniprogram.IAnyObject>({
       wx.setStorageSync('isLoggedIn', false)
       wx.setStorageSync('profileCompleted', false)
       this.setData({ profile: null })
+
+      const loginCanceledTime = wx.getStorageSync('loginCanceled')
+      if (loginCanceledTime && Date.now() - Number(loginCanceledTime) < 2000) {
+        // 如果刚从登录页取消登录返回，直接跳回首页，防止死循环
+        wx.removeStorageSync('loginCanceled')
+        wx.switchTab({ url: '/pages/home/index' })
+        return
+      }
+
       smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent('/pages/mine/index')}`)
       return
     }

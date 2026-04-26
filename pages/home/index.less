@@ -196,8 +196,21 @@
 }
 
 .section-title {
+  font-size: 34rpx;
   color: #191919;
   font-weight: 700;
+  letter-spacing: 2rpx;
+}
+
+/* 推荐阅读模块的 section-title 加虚线框装饰 */
+.article-section .section-title {
+  display: inline-block;
+  border: 2rpx dashed #333333;
+  padding: 8rpx 16rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #191919;
+  letter-spacing: 2rpx;
 }
 
 .section-title-icon {
@@ -396,3 +409,123 @@
   padding: 0 !important;
   font-weight: 500 !important;
 }
+
+.external-article-section {
+  padding: 0 0rpx;
+  margin-bottom: 40rpx;
+}
+
+.external-article-card {
+  background: #f7f8fa;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.external-article-img {
+  width: 100%;
+  height: 240rpx;
+  background-color: #e0e0e0;
+}
+
+.external-article-info {
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.external-article-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.external-article-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.official-account-section {
+  display: flex;
+  justify-content: center;
+  padding: 16rpx 0;
+  margin-bottom: 40rpx;
+}
+
+.official-account-widget {
+  width: 100%;
+}
+
+.article-section {
+  padding-bottom: 0;
+}
+
+.article-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8rpx;
+}
+
+.article-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 32rpx 0;
+  background: transparent;
+}
+
+.article-cover {
+  width: 276rpx;
+  height: 208rpx;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.article-info {
+  flex: 1;
+  padding-left: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap:16rpx;
+  justify-content: flex-start;
+}
+
+.article-title {
+  font-size: 32rpx;
+  color: #191919;
+  font-weight: 700;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.article-digest {
+  font-size: 24rpx;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* 条目间的分隔线 —— 设计图中为极淡灰线 */
+.article-divider {
+  width: 100%;
+  height: 1rpx;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.load-more-status {
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 24rpx;
+  color: #999999;
+}
+
