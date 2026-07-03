@@ -1,251 +1,304 @@
-import { fetchMyProfile, fetchUserSummary, fetchTransferWaitConfirmList } from '../../api/mine'
+/**
+ * 我的 - 自己视角（v2 API）
+ *
+ * 数据源：
+ *   fetchProfileHeader     → 用户基本信息、等级、标签
+ *   fetchDashboardSummary  → 仪表盘统计（社区生活 / 项目 / 活动 / 入住）
+ *   fetchTransferWaitConfirmList → 待收款
+ */
+
+import { fetchTransferWaitConfirmList } from '../../api/mine'
+import { fetchProfileHeader, fetchDashboardSummary } from '../../api/mine-v2'
 import { updateUserInfo } from '../../api/user'
 import { smartNavigateTo } from '../../utils/navigation'
-import type { UserProfile } from '../../model/user'
 import { formatYMD } from '../../utils/date'
-import { buildUserTagsView } from '../../utils/user-tags'
+import type {
+  AppUserProfileHeaderRespVO,
+  AppUserProfileDashboardSummaryRespVO,
+  AppUserProfileCommunityLifeSummaryVO,
+  AppUserProfileProjectSummaryVO,
+  AppUserProfileActivitySummaryVO,
+  AppUserProfileStaySummaryVO,
+  AppUserProfileFriendGroupVO,
+} from '../../model/mine-v2'
+
+// ====== 页面状态 ======
 
 interface MineState {
-  profile:
-  | (UserProfile & {
-    joinTime?: string
-    followingCount?: number
-    followerCount?: number
-    assets?: number
-    gender?: number
-    levelTags?: { label: string; className: string; action?: string }[]
-    roleTags?: { label: string; className: string; action?: string }[]
-    nomadApplyStatus?: string
-  })
-  | null
+  profile: ProfileView | null
+  communityLife: AppUserProfileCommunityLifeSummaryVO
+  project: AppUserProfileProjectSummaryVO
+  activity: AppUserProfileActivitySummaryVO
+  stay: AppUserProfileStaySummaryVO
+  /** 我感兴趣的 */
+  interested: AppUserProfileFriendGroupVO
+  /** 对我感兴趣的 */
+  interestedInMe: AppUserProfileFriendGroupVO
   showPhoneAuthModal: boolean
   showTransferPopup: boolean
   transferList: { packageInfo: string; index: number }[]
 }
 
+interface ProfileView {
+  id: number
+  memberName: string
+  wxName: string
+  logo: string
+  memberNumber: string
+  joinTimeText: string
+  gender: number
+  desc: string
+  levelTags: { label: string; className: string }[]
+  roleTags: { label: string; className: string }[]
+  /** 关联的基地/民宿 */
+  homestayId: number
+  homestayName: string
+}
+
+// ====== 工具函数 ======
+
+function levelToClass(level: string): string {
+  const map: Record<string, string> = {
+    老村民: 'tag-normal', 新村民: 'tag-new',
+    数字游民: 'tag-nomad-green', 游客: 'tag-nomad-green',
+  }
+  return map[level] || 'tag-normal'
+}
+
+/** memberTag 按位置映射设计稿色板 */
+function tagToClass(tag: string, index: number): string {
+  const classes = ['tag-host', 'tag-role', 'tag-dev', 'tag-other']
+  return classes[index] || 'tag-other'
+}
+
+function buildProfileView(header: AppUserProfileHeaderRespVO): ProfileView {
+  const levelStr = header.memberLevel || ''
+  const tags = header.memberTags || []
+  return {
+    id: header.id,
+    memberName: header.memberName || '',
+    wxName: header.wxName || '',
+    logo: header.logo || '/assets/images/default-avatar.png',
+    memberNumber: header.memberNumber || '000000',
+    joinTimeText: formatYMD(header.joinTime) || '',
+    gender: header.sex || 2,
+    desc: header.desc || '这个人很懒，什么都没写~',
+    levelTags: levelStr ? [{ label: levelStr, className: levelToClass(levelStr) }] : [],
+    roleTags: tags.map((t, i) => ({ label: t, className: tagToClass(t, i) })),
+    homestayId: header.homestays?.[0]?.id || 0,
+    homestayName: header.homestays?.[0]?.name || '',
+  }
+}
+
+function emptyInterest(): AppUserProfileFriendGroupVO {
+  return { count: 0, users: [] }
+}
+
+function safeDashboard(d: AppUserProfileDashboardSummaryRespVO | null) {
+  return {
+    communityLife: d?.communityLife || { articleCount: 0, videoCount: 0 },
+    project: d?.project || { participatedCount: 0, publishedCount: 0 },
+    activity: d?.activity || {
+      participatedCount: 0, publishedCount: 0, collectedCount: 0,
+      pendingReviewCount: 0, reviewedCount: 0, earnings: 0,
+    },
+    stay: d?.stay || { pendingPaymentCount: 0, pendingAuditCount: 0, pendingCheckInCount: 0 },
+    interested: d?.friends?.interested || emptyInterest(),
+    interestedInMe: d?.friends?.interestedInMe || emptyInterest(),
+  }
+}
+
+// ====== Page ======
+
 Page<MineState, WechatMiniprogram.IAnyObject>({
   data: {
     profile: null,
+    communityLife: { articleCount: 0, videoCount: 0 },
+    project: { participatedCount: 0, publishedCount: 0 },
+    activity: { participatedCount: 0, publishedCount: 0, collectedCount: 0, pendingReviewCount: 0, reviewedCount: 0, earnings: 0 },
+    stay: { pendingPaymentCount: 0, pendingAuditCount: 0, pendingCheckInCount: 0 },
+    interested: { count: 0, users: [] },
+    interestedInMe: { count: 0, users: [] },
     showPhoneAuthModal: false,
     showTransferPopup: false,
     transferList: [],
   },
+
   async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({
-        selected: 3,
-      })
+      this.getTabBar().setData({ selected: 4 })
     }
 
-    // 检查登录状态
     const accessToken = wx.getStorageSync('accessToken')
     if (!accessToken) {
-      // 清除可能残留的登录标记，防止登录页因 isLoggedIn=true 立即弹回
       wx.setStorageSync('isLoggedIn', false)
       wx.setStorageSync('profileCompleted', false)
       this.setData({ profile: null })
-
       const loginCanceledTime = wx.getStorageSync('loginCanceled')
       if (loginCanceledTime && Date.now() - Number(loginCanceledTime) < 2000) {
-        // 如果刚从登录页取消登录返回，直接跳回首页，防止死循环
         wx.removeStorageSync('loginCanceled')
         wx.switchTab({ url: '/pages/home/index' })
         return
       }
-
       smartNavigateTo(`/pages/login/index?returnUrl=${encodeURIComponent('/pages/mine/index')}`)
       return
     }
 
-    // 每次显示时尝试获取最新用户信息
     try {
-      const [profile, summary] = await Promise.all([
-        fetchMyProfile(),
-        fetchUserSummary().catch(() => ({
-          followingCount: 0,
-          followerCount: 0,
-          asset: 0,
-        })),
+      const [header, dashboard] = await Promise.all([
+        fetchProfileHeader(),
+        fetchDashboardSummary(),
       ])
-      if (profile) {
-        if (!profile.memberPhone) {
-          setTimeout(() => {
-            this.setData({ showPhoneAuthModal: true })
-          }, 1000)
+
+      if (header) {
+        if (!header.memberPhone) {
+          setTimeout(() => this.setData({ showPhoneAuthModal: true }), 1000)
         }
 
-        if (profile.logo) {
-          profile.logo = profile.logo.trim()
-        }
-
-        const tags = buildUserTagsView(profile.memberLevel, profile.memberTags, profile.nomadApplyStatus)
-
-        // 模拟/处理扩展数据
-        const extendedProfile = {
-          ...profile,
-          memberNumber: profile.memberNumber || '000000',
-          joinTime: formatYMD(profile.joinTime) || '2025年04月22日',
-          followingCount: Number(summary.followingCount || 0),
-          followerCount: Number(summary.followerCount || 0),
-          assets: Number((summary as any).asset || 0),
-          gender: profile.sex || 2, // 默认为女
-          levelTags: tags.levelTags,
-          roleTags: tags.roleTags,
-          noMadTags: tags.noMadTags,
-          nomadApplyStatus: profile.nomadApplyStatus,
-        }
+        const sd = safeDashboard(dashboard)
 
         this.setData({
-          profile: extendedProfile,
+          profile: buildProfileView(header),
+          communityLife: sd.communityLife,
+          project: sd.project,
+          activity: sd.activity,
+          stay: sd.stay,
+          interested: sd.interested,
+          interestedInMe: sd.interestedInMe,
         })
-
-        // Check for merchant transfer confirmation
-        if (profile) {
-          fetchTransferWaitConfirmList().then(res => {
-            // API response: { code: 0, data: [{packageInfo: '...'}] }
-            const list: { packageInfo: string }[] = Array.isArray(res)
-              ? res
-              : (res as any).data || []
-            if (list.length > 0) {
-              this.setData({
-                transferList: list.map((item, index) => ({ ...item, index: index + 1 })),
-                showTransferPopup: true,
-              })
-            }
-          }).catch(err => {
-            console.error('Fetch transfer wait confirm list failed', err)
-          })
-        }
       }
     } catch (e) {
       console.error('Fetch profile failed', e)
     }
+
+    this.checkTransferList()
   },
-  onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
-    // onLoad 不再负责数据加载，由 onShow 接管
-  },
-  onEditProfileTap() {
-    smartNavigateTo('/pages/mine/profile-edit/index')
-  },
-  onFollowersTap() {
-    const userId = this.data.profile?.id
-    if (userId) {
-      smartNavigateTo(`/pages/user/list/index?title=粉丝&type=2&id=${userId}`)
+
+  async checkTransferList() {
+    try {
+      const res = await fetchTransferWaitConfirmList()
+      const list: { packageInfo: string }[] = Array.isArray(res) ? res : (res as any).data || []
+      if (list.length > 0) {
+        this.setData({
+          transferList: list.map((item, index) => ({ ...item, index: index + 1 })),
+          showTransferPopup: true,
+        })
+      }
+    } catch (err) {
+      console.error('Fetch transfer wait confirm list failed', err)
     }
   },
-  onFollowingTap() {
-    const userId = this.data.profile?.id
-    if (userId) {
-      smartNavigateTo(`/pages/user/list/index?title=关注&type=1&id=${userId}`)
+
+  // ====== 导航 ======
+  onEditProfileTap() { smartNavigateTo('/pages/mine/profile-edit/index') },
+  onHomestayTap() {
+    const id = this.data.profile?.homestayId
+    if (id) smartNavigateTo(`/pages/homestay/detail?id=${id}`)
+  },
+  onNomadApplyTap() { smartNavigateTo('/pages/digital-nomad/apply/index') },
+  onNewVillagerApplyTap() { smartNavigateTo('/pages/new-villager/apply/index') },
+  onOldVillagerApplyTap() { smartNavigateTo('/pages/old-villager/apply/index') },
+  onStatTap(e: WechatMiniprogram.BaseEvent) {
+    const type = e.currentTarget.dataset.type as string
+    if (!type) return
+
+    // 活动相关
+    if (type.startsWith('activity-')) {
+      const tabMap: Record<string, string> = {
+        'activity-joined': 'joined',
+        'activity-published': 'published',
+        'activity-collected': 'collected',
+        'activity-pendingReview': 'to-comment',
+        'activity-reviewed': 'commented',
+        'activity-earnings': 'joined',
+      }
+      smartNavigateTo(`/pages/mine/activities?filter=${tabMap[type] || ''}`)
+      return
+    }
+
+    // 入住相关
+    if (type.startsWith('stay-')) {
+      const tabMap: Record<string, string> = {
+        'stay-pendingPayment': 'unpaid',
+        'stay-pendingAudit': 'pending',
+        'stay-pendingCheckIn': 'upcoming',
+      }
+      smartNavigateTo(`/pages/mine/stays?filter=${tabMap[type] || ''}`)
+      return
+    }
+
+    // 项目相关
+    if (type.startsWith('project-')) {
+      const filter = type === 'project-published' ? 'published' : 'joined'
+      smartNavigateTo(`/pages/mine/projects?filter=${filter}`)
+      return
+    }
+
+    // 社区生活
+    if (type === 'article' || type === 'video') {
+      const filter = type === 'video' ? '2' : '1'
+      smartNavigateTo(`/pages/mine/community?filter=${filter}`)
+      return
     }
   },
-  onWalletTap() {
-    smartNavigateTo('/pages/mine/assets')
+  onProjectTap() { smartNavigateTo('/pages/mine/projects') },
+  onMyActivitiesTap() { smartNavigateTo('/pages/mine/activities') },
+  onMyStaysTap() { smartNavigateTo('/pages/mine/stays') },
+  onServiceTap() { smartNavigateTo('/pages/agreement/service') },
+  onPrivacyTap() { smartNavigateTo('/pages/agreement/privacy') },
+  onCheckInTap() { smartNavigateTo('/pages/user/checkin/index') },
+  onDanmuTap() { smartNavigateTo('/pages/user/barrage/index') },
+  onInterestInMeTap() {
+    const app = getApp<IAppOption>()
+    app.globalData.interestUsers = this.data.interestedInMe.users
+    smartNavigateTo(`/pages/user/list/index?title=对我感兴趣的&type=interest`)
   },
-  onNomadApplyTap() {
-    smartNavigateTo('/pages/digital-nomad/apply/index')
+  onMyInterestsTap() {
+    const app = getApp<IAppOption>()
+    app.globalData.interestUsers = this.data.interested.users
+    smartNavigateTo(`/pages/user/list/index?title=我感兴趣的&type=interest`)
   },
-  onNewVillagerApplyTap() {
-    smartNavigateTo('/pages/new-villager/apply/index')
-  },
-  onOldVillagerApplyTap() {
-    smartNavigateTo('/pages/old-villager/apply/index')
-  },
-  onMyActivitiesTap() {
-    smartNavigateTo('/pages/mine/activities')
-  },
-  onMyStaysTap() {
-    smartNavigateTo('/pages/mine/stays')
-  },
-  onServiceTap() {
-    smartNavigateTo('/pages/agreement/service')
-  },
-  onPrivacyTap() {
-    smartNavigateTo('/pages/agreement/privacy')
-  },
-  onCheckInTap() {
-    smartNavigateTo('/pages/user/checkin/index')
-  },
-  onDanmuTap() {
-    smartNavigateTo('/pages/user/barrage/index')
-  },
-  onLogoutTap() {
-    wx.clearStorageSync()
-    smartNavigateTo('/pages/login/index')
-  },
-  onTagTap(e: WechatMiniprogram.BaseEvent) {
-    const action = e.currentTarget.dataset.action
-    if (action === 'goApply') {
-      smartNavigateTo('/pages/digital-nomad/apply/index')
-    }
-  },
+  onLogoutTap() { wx.clearStorageSync(); smartNavigateTo('/pages/login/index') },
+
   onShareAppMessage() {
     const profile = this.data.profile
-    if (!profile || !profile.id) {
-      return {
-        title: 'DAO龙潭 - 用户主页',
-        path: '/pages/home/index',
-      }
-    }
+    if (!profile || !profile.id) return { title: 'DAO龙潭 - 用户主页', path: '/pages/home/index' }
     return {
       title: `${profile.memberName || profile.wxName || '用户'}的主页`,
       path: `/pages/user/other-profile/index?userId=${profile.id}`,
     }
   },
-  closePhoneAuthModal() {
-    this.setData({ showPhoneAuthModal: false })
-  },
-  closeTransferPopup() {
-    this.setData({ showTransferPopup: false })
-  },
-  onTransferItemTap(this: WechatMiniprogram.Page.TrivialInstance, e: WechatMiniprogram.BaseEvent) {
-    const packageInfo = e.currentTarget.dataset.package as string
-    if (!(wx as any).canIUse('requestMerchantTransfer')) {
-      wx.showModal({
-        content: '你的微信版本过低，请更新至最新版本。',
-        showCancel: false,
-      })
-      return
-    }
-    ;(wx as any).requestMerchantTransfer({
-      mchId: '1104693914',
-      appId: 'wxf60fc5c32017bf2f',
-      package: packageInfo,
-      success: (res: any) => {
-        console.log('requestMerchantTransfer success:', res)
-        // Remove the successfully collected item from list
-        const list = (this.data as MineState).transferList.filter(
-          (item) => item.packageInfo !== packageInfo
-        )
-        this.setData({
-          transferList: list,
-          showTransferPopup: list.length > 0,
-        })
-      },
-      fail: (res: any) => {
-        console.error('requestMerchantTransfer fail:', res)
-      },
-    })
-  },
+
+  closePhoneAuthModal() { this.setData({ showPhoneAuthModal: false }) },
+  closeTransferPopup() { this.setData({ showTransferPopup: false }) },
+
   async onPhoneAuthSuccess(e: any) {
     const { phone } = e.detail
     this.setData({ showPhoneAuthModal: false })
-
-    // Update user info with phone number
-    if (phone && phone.phoneNumber) {
+    if (phone?.phoneNumber) {
       try {
-        await updateUserInfo({
-          memberPhone: phone.phoneNumber
-        })
+        await updateUserInfo({ memberPhone: phone.phoneNumber })
         wx.showToast({ title: '绑定成功', icon: 'success' })
-        // Refresh profile to update UI if needed
         this.onShow()
-      } catch (error) {
-        console.error('Failed to update phone number', error)
-        wx.showToast({ title: '更新手机号失败', icon: 'none' })
-      }
+      } catch { wx.showToast({ title: '更新手机号失败', icon: 'none' }) }
     } else {
       wx.showToast({ title: '绑定成功', icon: 'success' })
     }
+  },
+
+  onTransferItemTap(e: WechatMiniprogram.BaseEvent) {
+    const packageInfo = e.currentTarget.dataset.package as string
+    if (!(wx as any).canIUse('requestMerchantTransfer')) {
+      wx.showModal({ content: '你的微信版本过低，请更新至最新版本。', showCancel: false })
+      return
+    }
+    ;(wx as any).requestMerchantTransfer({
+      mchId: '1104693914', appId: 'wxf60fc5c32017bf2f', package: packageInfo,
+      success: (res: any) => {
+        const list = (this.data as MineState).transferList.filter(i => i.packageInfo !== packageInfo)
+        this.setData({ transferList: list, showTransferPopup: list.length > 0 })
+      },
+      fail: (res: any) => console.error('requestMerchantTransfer fail:', res),
+    })
   },
 })

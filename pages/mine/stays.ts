@@ -67,8 +67,11 @@ Page<MyStaysState, WechatMiniprogram.IAnyObject>({
     if (!biz) return
     smartNavigateTo(`/pages/order/detail?bizOrderNo=${encodeURIComponent(biz)}`)
   },
-  async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
-    // onShow will handle loading
+  async onLoad(this: WechatMiniprogram.Page.TrivialInstance, options: Record<string, string | undefined>) {
+    const filter = options.filter as StayFilter | undefined
+    if (filter && this.data.filters.some(f => f.value === filter)) {
+      this.setData({ activeFilter: filter })
+    }
   },
   async onShow(this: WechatMiniprogram.Page.TrivialInstance) {
     await this.loadStays()

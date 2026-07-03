@@ -1,0 +1,25 @@
+<view class="my-projects-page">
+  <view class="filter-bar">
+    <view class="filter-row">
+      <view class="filter-item {{activeFilter === 'joined' ? 'active' : ''}}" bindtap="onFilterTap" data-filter="joined">
+        <text>我参与的</text>
+      </view>
+      <view class="filter-item {{activeFilter === 'published' ? 'active' : ''}}" bindtap="onFilterTap" data-filter="published">
+        <text>我发布的</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y="true" class="list-scroll">
+    <view wx:if="{{items.length > 0}}" class="project-list">
+      <view class="project-item" wx:for="{{items}}" wx:key="id" bindtap="onItemTap" data-id="{{item.id}}">
+        <image class="project-cover" src="{{item.image || '/assets/images/hotactivity.png'}}" mode="aspectFill" />
+        <view class="project-info">
+          <text class="project-title">{{item.title || '未命名'}}</text>
+          <text class="project-status">{{item.projectStatusLabel || ''}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>暂无项目</view>
+  </scroll-view>
+</view>

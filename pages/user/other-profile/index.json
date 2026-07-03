@@ -1,8 +1,5 @@
 {
   "navigationBarTitleText": "用户主页",
   "navigationStyle": "custom",
-  "usingComponents": {
-    "activity-horizontal-card": "/components/activity-horizontal-card/index",
-    "follow-button": "/components/follow-button/index"
-  }
+  "usingComponents": {}
 }

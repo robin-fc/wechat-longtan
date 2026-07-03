@@ -23,11 +23,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "个人页",
-          "pathName": "pages/user/other-profile/index",
-          "query": "userId=25&isFollowed=true",
+          "name": "找人页面",
+          "pathName": "pages/recruit/index",
+          "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "个人页",
+          "pathName": "pages/user/other-profile/index",
+          "query": "userId=47",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "首页分享",

@@ -7,6 +7,9 @@ Component({
       pagePath: "/pages/home/index",
       text: "首页"
     }, {
+      pagePath: "/pages/project/index",
+      text: "项目"
+    }, {
       pagePath: "/pages/activity/list",
       text: "活动"
     }, {

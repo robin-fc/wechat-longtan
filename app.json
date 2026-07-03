@@ -14,7 +14,12 @@
     "pages/mine/assets",
     "pages/mine/activities",
     "pages/mine/stays",
+    "pages/mine/projects",
+    "pages/mine/community",
     "pages/login/index",
+    "pages/project/index",
+    "pages/project/detail",
+    "pages/recruit/index",
     "pages/webview/index"
   ],
   "subpackages": [
@@ -135,6 +140,10 @@
       {
         "pagePath": "pages/home/index",
         "text": "首页"
+      },
+      {
+        "pagePath": "pages/project/index",
+        "text": "项目"
       },
       {
         "pagePath": "pages/activity/list",

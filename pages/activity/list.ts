@@ -42,7 +42,7 @@ Page<ActivityListState, WechatMiniprogram.IAnyObject>({
   async onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({
-        selected: 1,
+        selected: 2,
       })
     }
     // Only auto-load if not loaded or if coming from other page with filter? 

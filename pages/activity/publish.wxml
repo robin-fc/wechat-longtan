@@ -89,7 +89,7 @@
 
     <view class="form-section">
       <text class="label">活动介绍*</text>
-      <textarea class="textarea" placeholder="请填写活动介绍、流程和须知" value="{{form.description}}" bindinput="onDescriptionChange" />
+      <textarea class="textarea" maxlength="-1" placeholder="请填写活动介绍、流程和须知" value="{{form.description}}" bindinput="onDescriptionChange" />
     </view>
   </scroll-view>
 

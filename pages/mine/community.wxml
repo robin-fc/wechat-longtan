@@ -1,0 +1,25 @@
+<view class="my-community-page">
+  <view class="filter-bar">
+    <view class="filter-row">
+      <view class="filter-item {{activeFilter === 1 ? 'active' : ''}}" bindtap="onFilterTap" data-filter="{{1}}">
+        <text>我的文章</text>
+      </view>
+      <view class="filter-item {{activeFilter === 2 ? 'active' : ''}}" bindtap="onFilterTap" data-filter="{{2}}">
+        <text>我的视频</text>
+      </view>
+    </view>
+  </view>
+
+  <scroll-view scroll-y="true" class="list-scroll">
+    <view wx:if="{{items.length > 0}}" class="community-list">
+      <view class="community-item" wx:for="{{items}}" wx:key="id" bindtap="onItemTap" data-id="{{item.id}}" data-url="{{item.articleUrl}}">
+        <image class="community-cover" src="{{item.image || '/assets/images/hotactivity.png'}}" mode="aspectFill" />
+        <view class="community-info">
+          <text class="community-title">{{item.title || '未命名'}}</text>
+          <text class="community-status">{{item.projectStatusLabel || ''}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="empty-state" wx:else>暂无内容</view>
+  </scroll-view>
+</view>

@@ -25,14 +25,16 @@ Page<MyActivitiesState, WechatMiniprogram.IAnyObject>({
     activities: [],
     collections: [],
   },
-  async onLoad(this: WechatMiniprogram.Page.TrivialInstance) {
+  async onLoad(this: WechatMiniprogram.Page.TrivialInstance, options: Record<string, string | undefined>) {
+    const filterParam = options.filter || ''
     const filters = fetchMyActivityFilters()
-    const first = filters[0]
-    const activities = first && first.type ? await fetchMyActivities(first.type) : []
+    // 根据 URL 参数匹配初始 filter，未匹配则取第一项
+    const target = filters.find(f => f.id === filterParam) || filters[0]
+    const activities = target && target.type ? await fetchMyActivities(target.type) : []
     const collections = await fetchMyCollections()
     this.setData({
       filters,
-      activeFilterId: filters.length > 0 ? filters[0].id : '',
+      activeFilterId: target?.id || '',
       activities,
       collections,
     })

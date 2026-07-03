@@ -1,0 +1,38 @@
+<!-- 找人页（严格按设计稿） -->
+<view class="recruit-page">
+  <view class="search-bar">
+    <image class="search-icon" src="/assets/icons/search.svg" mode="aspectFit" />
+    <input class="search-input" placeholder="根据昵称、ID找人" value="{{keyword}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" confirm-type="search" />
+  </view>
+
+  <view class="level-tabs">
+    <view class="level-tab {{level === '2' ? 'active' : ''}}" bindtap="onLevelChange" data-level="2">数字游民</view>
+    <view class="level-tab {{level === '1' ? 'active' : ''}}" bindtap="onLevelChange" data-level="1">新村民</view>
+    <view class="level-tab {{level === '0' ? 'active' : ''}}" bindtap="onLevelChange" data-level="0">老村民</view>
+  </view>
+
+  <view class="find-list">
+    <block wx:if="{{list.length > 0}}">
+      <view class="find-card" wx:for="{{list}}" wx:key="userId" bindtap="onUserTap" data-id="{{item.userId}}">
+        <view class="find-avatar-row">
+          <view class="find-avatar-wrap">
+            <image class="find-avatar" src="{{item.logo}}" mode="aspectFill" />
+          </view>
+          <view class="find-name-area">
+            <text class="find-nickname">{{item.nickname}}</text>
+            <text class="find-user-id">ID DLT00{{item.userId}} </text>
+          </view>
+          <text class="find-level-tag tag {{item.levelClass}}" wx:if="{{item.levelLabel}}">{{item.levelLabel}}</text>
+        </view>
+   
+        <text class="find-bio" wx:if="{{item.introduction}}">{{item.introduction}}</text>
+        <view class="find-homestay" wx:for="{{item.homestays}}" wx:for-item="hs" wx:key="id" catchtap="onHomestayTap" data-id="{{hs.id}}">
+          <image class="find-hs-icon" src="/assets/icons/home/space.svg" mode="aspectFit" />
+          <text class="find-hs-name">{{hs.name}}</text>
+          <image class="find-hs-arrow" src="/assets/icons/arrow-right.svg" mode="aspectFit" />
+        </view>
+      </view>
+    </block>
+    <view class="empty-state" wx:else>暂无用户</view>
+  </view>
+</view>

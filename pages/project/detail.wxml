@@ -1,0 +1,123 @@
+<view class="project-detail-page" wx:if="{{project}}">
+  <!-- 头图 -->
+  <view class="hero-section">
+    <image class="hero-image" src="{{project.image}}" mode="aspectFill" />
+    <view class="nav-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+      <view class="nav-back" bindtap="onBackTap">
+        <image
+          wx:if="{{showHomeButton}}"
+          class="nav-icon"
+          src="/assets/icons/home-white.svg"
+          mode="aspectFit"
+        />
+        <image
+          wx:else
+          class="nav-icon nav-icon-back"
+          src="/assets/icons/arrow-r.svg"
+          mode="aspectFit"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 标题卡片 -->
+  <view class="title-card">
+    <text class="project-title">{{project.title}}</text>
+    <view class="author-row" wx:if="{{project.initiator}}" bindtap="onInitiatorTap">
+      <image class="author-avatar" src="{{project.initiator.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+      <text class="author-name">{{project.initiator.memberName || project.initiator.wxName}}</text>
+      <view class="tag-list" wx:if="{{displayTags.length > 0}}">
+        <block wx:for="{{displayTags}}" wx:key="*this">
+          <text class="project-tag tag-{{index % 3}}">{{item}}</text>
+        </block>
+      </view>
+    </view>
+  </view>
+
+  <!-- 看好进度 -->
+  <!-- <view class="progress-card">
+    <view class="progress-header">
+      <text class="progress-label">已看好 {{project.interestCount}}/{{interestTarget}}</text>
+      <view class="interest-avatars" wx:if="{{interestCompanions.companions.length > 0}}">
+        <block wx:for="{{interestCompanions.companions}}" wx:key="id">
+          <image class="interest-avatar" src="{{item.avatar.url}}" mode="aspectFill" />
+        </block>
+        <view class="interest-count-badge">
+          <text>{{interestCompanions.totalCount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{progressPercent}}%;">
+        <view class="progress-knob" wx:if="{{progressPercent > 0 && progressPercent < 100}}"></view>
+      </view>
+    </view>
+
+    <view class="progress-footer">
+      <view class="deadline-row" wx:if="{{formattedDeadline}}">
+        <image class="deadline-icon" src="/assets/icons/time.svg" mode="aspectFit" />
+        <text class="deadline-text">截止{{formattedDeadline}}</text>
+      </view>
+      <text class="status-text">{{remainingLabel}}</text>
+    </view>
+  </view> -->
+
+  <!-- Tab 导航 -->
+  <view class="tab-nav">
+    <block wx:for="{{tabs}}" wx:for-index="tabIndex" wx:key="key">
+      <view
+        class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+        data-key="{{item.key}}"
+        bindtap="onTabTap"
+      >
+        <text>{{item.name}}</text>
+      </view>
+      <view class="tab-divider" wx:if="{{tabIndex < tabs.length - 1}}"></view>
+    </block>
+  </view>
+
+  <!-- Tab 内容 -->
+  <view class="tab-content">
+    <view class="content-panel" wx:if="{{activeTab === 'detail'}}">
+      <rich-text wx:if="{{introductionHtml}}" class="content-rich" nodes="{{introductionHtml}}" />
+      <text class="content-empty" wx:else>暂无项目详情</text>
+    </view>
+
+    <view class="content-panel group-panel" wx:elif="{{activeTab === 'group'}}">
+      <view class="group-qrcode-wrap" wx:if="{{groupImages.length > 0}}">
+        <image
+          class="group-qrcode"
+          src="{{groupImages[0]}}"
+          mode="aspectFit"
+          show-menu-by-longpress
+        />
+        <text class="group-qrcode-tip">扫码加入项目群</text>
+      </view>
+      <text class="content-empty" wx:else>暂无项目群信息</text>
+    </view>
+
+    <view class="content-panel" wx:elif="{{activeTab === 'review'}}">
+      <rich-text wx:if="{{summaryHtml}}" class="content-rich" nodes="{{summaryHtml}}" />
+      <text class="content-empty" wx:else>暂无活动回顾</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="favorite-btn" bindtap="onFavoriteTap">
+      <image
+        class="favorite-icon"
+        src="{{project.favorited ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}"
+        mode="aspectFit"
+      />
+    </view>
+    <button class="share-btn {{isCompleted ? 'share-btn-wide' : ''}}" open-type="share">分享项目</button>
+    <view class="interest-btn" wx:if="{{!isCompleted}}" bindtap="onInterestTap">
+      <text>看好这个创意</text>
+    </view>
+  </view>
+</view>
+<view class="project-detail-page" wx:else>
+  <view class="empty-state">加载中...</view>
+</view>

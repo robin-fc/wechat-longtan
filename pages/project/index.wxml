@@ -1,0 +1,58 @@
+<view class="project-list-page">
+  <view class="page-header">
+    <view class="search-row">
+      <view class="search-input-wrapper">
+        <image class="search-icon" src="/assets/icons/search.svg" mode="aspectFit" />
+        <input
+          class="search-input"
+          placeholder="请输入项目名称"
+          placeholder-class="search-placeholder"
+          confirm-type="search"
+          value="{{keyword}}"
+          bindinput="onKeywordInput"
+          bindconfirm="onSearchConfirm"
+        />
+      </view>
+    </view>
+
+    <view class="status-tab-bar">
+      <block wx:for="{{statusList}}" wx:key="value">
+        <view
+          class="status-tab-item {{item.value === currentStatus ? 'active' : ''}}"
+          data-value="{{item.value}}"
+          bindtap="onStatusTap"
+        >
+          <text>{{item.name}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="list-wrapper">
+    <view class="loading-state" wx:if="{{isLoading && pageNo === 1}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <view class="empty-state" wx:elif="{{!isLoading && projects.length === 0}}">
+      <text class="empty-text">{{keyword ? '未找到相关项目' : '暂无项目'}}</text>
+    </view>
+
+    <block wx:else>
+      <block wx:for="{{projects}}" wx:key="id">
+        <view class="project-item">
+          <project-card
+            project="{{item}}"
+            is-completed="{{currentStatus === '2'}}"
+            bindcardtap="onProjectTap"
+            bindinteresttap="onInterestTap"
+            bindinitiatortap="onInitiatorTap"
+          />
+        </view>
+      </block>
+
+      <view class="loading-more" wx:if="{{isLoading && pageNo > 1}}">
+        <text class="loading-text">加载更多中...</text>
+      </view>
+    </block>
+  </view>
+</view>

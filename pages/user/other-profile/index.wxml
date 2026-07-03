@@ -1,129 +1,150 @@
-<view class="profile-container">
-  <!-- 顶部背景图 -->
-  <!-- 顶部背景图 -->
+<!-- 他人主页（4 Tab：社区生活 / 项目 / 活动 / 朋友） -->
+<view class="other-page" wx:if="{{profile}}">
   <view class="header-bg">
     <image class="bg-image" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/tool/20260203/longtan_1770118540923_1_1770118540965.png" mode="aspectFill" />
-    <view class="blur-area">
-      <image class="bg-image blurred" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/tool/20260203/longtan_1770118540923_1_1770118540965.png" mode="aspectFill" />
-    </view>
-    <view class="nav-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
-      <view class="back-btn" bindtap="onBackTap">
-        <block wx:if="{{showHomeButton}}">
-          <image class="back-icon" src="/assets/icons/home-white.svg" mode="aspectFit" />
-        </block>
-        <block wx:else>
-          <image class="back-icon" src="/assets/icons/arrow-left-white.png" mode="aspectFit" />
-        </block>
-      </view>
+  </view>
+
+  <view class="nav-bar" style="top: {{menuTop}}px; height: {{menuHeight}}px;">
+    <view class="back-btn" bindtap="onBackTap">
+      <image class="back-icon" src="{{showHomeButton ? '/assets/icons/home-white.svg' : '/assets/icons/arrow-left-white.png'}}" mode="aspectFit" />
     </view>
   </view>
- <view class="content-wrapper">
-  <!-- 用户信息区域 -->
-  <view class="user-info-card">
+
+  <!-- 个人信息卡片 -->
+  <view class="profile-card">
     <view class="avatar-row">
       <view class="avatar-wrap">
-        <image class="avatar" src="{{userInfo.avatar}}" mode="aspectFill" />
-        <image wx:if="{{userInfo.gender === 1 || userInfo.gender === 2}}" class="gender-icon" src="{{userInfo.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
+        <image class="avatar" src="{{profile.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+        <image class="gender-badge" src="{{profile.gender === 1 ? '/assets/icons/male.svg' : '/assets/icons/female.svg'}}" mode="aspectFit" />
       </view>
-      <view class="info-content">
-        <view class="name-row">
-          <view class="name-left">
-            <text class="nickname">{{userInfo.nickname}}</text>
-            
-          </view>
-          <view class="name-right">
-            <text class="tag level-tag tag-nomad-green" wx:for="{{userInfo.levelTags}}" wx:for-item="item" wx:key="label"
-                    bindtap="onTagTap" data-action="{{item.action}}">{{item.label}}</text>
-          </view>
+      <view class="name-area">
+        <view class="name-line">
+          <text class="nickname">{{profile.memberName || profile.wxName}}</text>
+          <text class="tag level-tag {{item.className}}" wx:for="{{profile.levelTags}}" wx:for-item="item" wx:key="label">{{item.label}}</text>
+          <image class="follow-heart" src="{{profile.isFollowed ? '/assets/icons/heart.svg' : '/assets/icons/heart-n.svg'}}" mode="aspectFit" bindtap="onFollowToggle" />
         </view>
-
-        <view class="id-row">
-          <text class="user-id">ID {{userInfo.userNumber}}</text>
-        </view>
-        <view class="join-row">
-          <text class="join-time">{{userInfo.joinTime}}加入</text>
-        </view>
+        <text class="member-id">ID {{profile.memberNumber}}</text>
+        <text class="join-date">{{profile.joinTimeText}}加入</text>
       </view>
     </view>
-    
-    <view class="identity-tags-row" wx:if="{{userInfo.roleTags}}" >
-    
-         <text class="tag {{item.className}}" wx:for="{{userInfo.roleTags}}" wx:for-item="item" wx:key="label" 
-          >{{item.label}}</text>
-      </view>
-    <view class="bio-row">
-      <text class="bio">{{userInfo.bio || '这个人很懒，什么都没写~'}}</text>
+    <view class="identity-tags" wx:if="{{profile.roleTags.length > 0}}">
+      <text class="identity-tag {{item.className}}" wx:for="{{profile.roleTags}}" wx:for-item="item" wx:key="label">{{item.label}}</text>
     </view>
-
-    <view class="stats-row">
-      <view class="stat-item" bindtap="onFollowingTap">
-        <text class="stat-num">{{userInfo.followingCount}}</text>
-        <text class="stat-label">关注</text>
-      </view>
-      <view class="stat-item" bindtap="onFollowersTap">
-        <text class="stat-num">{{userInfo.followerCount}}</text>
-        <text class="stat-label">粉丝</text>
-      </view>
-      <view class="stat-item">
-      <follow-button 
-        userId="{{userInfo.userId}}" 
-        isFollowed="{{userInfo.isFollowed}}" 
-        bind:change="onFollowStateChange"
-      />
-       </view>
+    <text class="bio">{{profile.desc || '这个人很懒，什么都没写~'}}</text>
+    <view class="homestay-bar" wx:if="{{profile.homestayName}}" bindtap="onHomestayTap">
+      <image class="homestay-icon" src="/assets/icons/home/space.svg" mode="aspectFit" />
+      <text class="homestay-name">{{profile.homestayName}}</text>
+      <image class="homestay-arrow" src="/assets/icons/arrow-right.svg" mode="aspectFit" />
     </view>
   </view>
-
-  <!-- Tab 切换 -->
-  <view class="tabs-container">
-    <view class="tabs">
-      <view 
-        class="tab-item {{currentTab === 0 ? 'active' : ''}}" 
-        data-index="{{0}}" 
-        bindtap="onTabChange"
-      >
-        参与的活动
-        <view class="tab-line" wx:if="{{currentTab === 0}}"></view>
-      </view>
-      <view 
-        class="tab-item {{currentTab === 1 ? 'active' : ''}}" 
-        data-index="{{1}}" 
-        bindtap="onTabChange"
-      >
-        发布的活动
-        <view class="tab-line" wx:if="{{currentTab === 1}}"></view>
-      </view>
-      <view 
-        class="tab-item {{currentTab === 2 ? 'active' : ''}}" 
-        data-index="{{2}}" 
-        bindtap="onTabChange"
-      >
-        收藏的活动
-        <view class="tab-line" wx:if="{{currentTab === 2}}"></view>
-      </view>
-    </view>
+<view class="info-area">
+  <!-- ====== 主 Tab ====== -->
+  <view class="main-tabs">
+    <view class="main-tab {{currentTab === 0 ? 'active' : ''}}" bindtap="onTabChange" data-index="{{0}}">社区生活</view>
+    <view class="main-tab {{currentTab === 1 ? 'active' : ''}}" bindtap="onTabChange" data-index="{{1}}">项目</view>
+    <view class="main-tab {{currentTab === 2 ? 'active' : ''}}" bindtap="onTabChange" data-index="{{2}}">活动</view>
+   <view class="main-tab {{currentTab === 3 ? 'active' : ''}}" bindtap="onTabChange" data-index="{{3}}">朋友</view>
   </view>
 
-  <!-- 活动列表 -->
-  <view class="activity-list">
-    <block wx:if="{{loading}}">
-      <view class="loading-state">
-        <text>加载中...</text>
+  <!-- ====== Tab 0: 社区生活 ====== -->
+  <view wx:if="{{currentTab === 0}}">
+    <view class="section-card">
+      <view class="sub-tabs">
+        <view class="sub-tab {{communitySubTab === 0 ? 'active' : ''}}" bindtap="onCommunitySubTab" data-index="{{0}}">文章</view>
+        <view class="sub-tab {{communitySubTab === 1 ? 'active' : ''}}" bindtap="onCommunitySubTab" data-index="{{1}}">视频</view>
       </view>
-    </block>
-    <block wx:else>
-      <block wx:if="{{currentList.length > 0}}">
-        <block wx:for="{{currentList}}" wx:key="id">
-          <activity-horizontal-card activity="{{item}}" bind:cardtap="onActivityTap" />
+      <!-- 文章列表 -->
+      <view wx:if="{{communitySubTab === 0}}" class="card-list">
+        <block wx:if="{{communityItems.length > 0}}">
+          <view class="article-item" wx:for="{{communityItems}}" wx:key="id" bindtap="onArticleTap" data-id="{{item.id}}" data-url="{{item.articleUrl}}">
+            <image class="article-cover" src="{{item.coverUrl || '/assets/images/hotactivity.png'}}" mode="aspectFill" />
+            <view class="article-info">
+              <text class="article-title">{{item.title || '未命名'}}</text>
+              <text class="article-summary">{{item.projectStatusLabel || ''}}</text>
+            </view>
+          </view>
         </block>
-      </block>
-      <block wx:else>
-        <view class="empty-state">
-          <text>暂无活动数据</text>
-        </view>
-      </block>
-    </block>
+        <view class="empty-state" wx:else>暂无文章</view>
+      </view>
+      <!-- 视频列表（占位） -->
+      <view wx:if="{{communitySubTab === 1}}">
+        <view class="empty-state">暂无视频</view>
+      </view>
+    </view>
   </view>
-</view>
-</view>
 
+  <!-- ====== Tab 1: 项目 ====== -->
+  <view wx:if="{{currentTab === 1}}">
+    <view class="section-card">
+      <view class="sub-tabs">
+        <view class="sub-tab {{projectSubTab === 0 ? 'active' : ''}}" bindtap="onProjectSubTab" data-index="{{0}}">参与的</view>
+        <view class="sub-tab {{projectSubTab === 1 ? 'active' : ''}}" bindtap="onProjectSubTab" data-index="{{1}}">发布的</view>
+      </view>
+      <view class="card-list" wx:if="{{projectItems.length > 0}}">
+        <view class="card-item" wx:for="{{projectItems}}" wx:key="id" bindtap="onProjectTap" data-id="{{item.id}}">
+          <image class="card-banner" src="{{item.image || '/assets/images/hotactivity.png'}}" mode="aspectFill" />
+          <view class="card-info">
+            <text class="card-title-text">{{item.title || '未命名'}}</text>
+            <view class="card-bottom"><text class="card-status">{{item.projectStatusLabel || ''}}</text></view>
+          </view>
+        </view>
+      </view>
+      <view class="empty-state" wx:else>暂无项目</view>
+    </view>
+  </view>
+
+  <!-- ====== Tab 2: 活动 ====== -->
+  <view wx:if="{{currentTab === 2}}">
+    <view class="section-card">
+      <view class="sub-tabs">
+        <view class="sub-tab {{activitySubTab === 0 ? 'active' : ''}}" bindtap="onActivitySubTab" data-index="{{0}}">发布的</view>
+        <view class="sub-tab {{activitySubTab === 1 ? 'active' : ''}}" bindtap="onActivitySubTab" data-index="{{1}}">参与的</view>
+        <view class="sub-tab {{activitySubTab === 2 ? 'active' : ''}}" bindtap="onActivitySubTab" data-index="{{2}}">收藏的</view>
+      </view>
+      <view class="card-list" wx:if="{{activityItems.length > 0}}">
+        <view class="card-item" wx:for="{{activityItems}}" wx:key="id" bindtap="onCardTap" data-id="{{item.id}}">
+          <image class="card-banner" src="{{item.logo || '/assets/images/hotactivity.png'}}" mode="aspectFill" />
+          <view class="card-info">
+            <text class="card-title-text">{{item.title || '未命名活动'}}</text>
+            <view class="card-bottom">
+              <view class="card-users" wx:if="{{item.registeredUsers && item.registeredUsers.length > 0}}">
+                <image class="card-avatar" wx:for="{{item.registeredUsers}}" wx:for-item="u" wx:key="userId" wx:if="{{index < 3}}" src="{{u.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+                <text class="card-count">{{item.registeredUsers.length}}人</text>
+              </view>
+              <text class="card-status">{{item.activityStatus || ''}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="empty-state" wx:else>暂无活动</view>
+    </view>
+  </view>
+
+   <!-- ====== Tab 3: 朋友 ====== -->
+   <view wx:if="{{currentTab === 3}}">
+     <view class="section-card">
+       <view class="sub-tabs">
+         <view class="sub-tab {{friendSubTab === 0 ? 'active' : ''}}" bindtap="onFriendSubTab" data-index="{{0}}">对他感兴趣的</view>
+         <view class="sub-tab {{friendSubTab === 1 ? 'active' : ''}}" bindtap="onFriendSubTab" data-index="{{1}}">他感兴趣的</view>
+       </view>
+       <view class="card-list" wx:if="{{friendItems.length > 0}}">
+         <view class="friend-item" wx:for="{{friendItems}}" wx:for-item="u" wx:key="userId" bindtap="onUserTap" data-id="{{u.userId}}">
+           <image class="friend-avatar" src="{{u.logo || '/assets/images/default-avatar.png'}}" mode="aspectFill" />
+           <view class="friend-name-wrap">
+             <text class="friend-name">{{u.memberName || u.wxName || '用户'}}</text>
+             <text class="friend-intro" wx:if="{{u.introduction}}">{{u.introduction}}</text>
+           </view>
+         </view>
+       </view>
+       <view class="empty-state" wx:else>暂无数据</view>
+     </view>
+   </view>
+
+</view>
+</view>
+<view class="other-page" wx:else>
+  <view class="header-bg">
+    <image class="bg-image" src="https://dao-longtan.oss-cn-heyuan.aliyuncs.com/tool/20260203/longtan_1770118540923_1_1770118540965.png" mode="aspectFill" />
+  </view>
+  <view class="empty-state-text">加载中...</view>
+</view>

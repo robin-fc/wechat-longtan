@@ -1,0 +1,50 @@
+<view class="project-card" bindtap="onCardTap">
+  <view class="card-main">
+    <image class="poster" src="{{project.image}}" mode="aspectFill" />
+    <view class="content">
+      <text class="title">{{project.title}}</text>
+
+      <view class="initiator-row" catchtap="onInitiatorTap">
+        <image class="initiator-avatar" src="{{project.initiator.logo}}" mode="aspectFill" />
+        <text class="initiator-name">{{project.initiator.memberName || project.initiator.wxName}}</text>
+        <text class="member-tag" wx:if="{{memberTag}}">{{memberTag}}</text>
+      </view>
+
+      <!-- <view class="meta-row" wx:if="{{formattedDeadline}}">
+        <image class="meta-icon" src="/assets/icons/time.svg" mode="aspectFit" />
+        <text class="meta-text">截止 {{formattedDeadline}}</text>
+      </view>
+
+      <view class="meta-row" wx:if="{{remainingLabel}}">
+        <image class="meta-icon" src="/assets/icons/time.svg" mode="aspectFit" />
+        <text class="meta-text">{{remainingLabel}}</text>
+      </view> -->
+
+      <!-- <view class="meta-row" wx:if="{{project.maxEnrollment > 0 || project.enrolledCount > 0}}">
+        <image class="meta-icon" src="/assets/icons/person.svg" mode="aspectFit" />
+        <text class="meta-text">{{project.enrolledCount}}/{{project.maxEnrollment}}人</text>
+      </view> -->
+    </view>
+  </view>
+
+  <view class="card-footer">
+    <view class="interest-section">
+      <!-- <view class="avatars" wx:if="{{interestCompanions.companions.length > 0}}">
+        <block wx:for="{{interestCompanions.companions}}" wx:key="id">
+          <image class="avatar" src="{{item.avatar.url}}" mode="aspectFill" />
+        </block>
+      </view> -->
+      <!-- <text class="interest-text" wx:if="{{interestCompanions.totalCount > 0}}">{{interestCompanions.totalCount}} 人已看好</text>
+      <text class="interest-empty" wx:else>暂无看好</text> -->
+    </view>
+
+    <view
+      class="action-btn {{isCompleted ? 'disabled' : ''}} {{project.interested ? 'interested' : ''}}"
+      catchtap="onInterestTap"
+    >
+      <text wx:if="{{isCompleted}}">项目已完结</text>
+      <text wx:elif="{{project.interested}}">已看好</text>
+      <text wx:else>看好这个创意</text>
+    </view>
+  </view>
+</view>

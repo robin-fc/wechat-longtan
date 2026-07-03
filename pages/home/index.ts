@@ -286,13 +286,13 @@ Page<HomeState, WechatMiniprogram.IAnyObject>({
   },
   onShareAppMessage() {
     return {
-      title: 'DAO龙潭 - 发现精彩活动与民宿',
+      title: 'DAO龙潭 - 探索数字乡建',
       path: '/pages/home/index',
     }
   },
   onShareTimeline() {
     return {
-      title: 'DAO龙潭 - 发现精彩活动与民宿',
+      title: 'DAO龙潭 - 探索数字乡建',
     }
   },
   closePhoneAuthModal() {

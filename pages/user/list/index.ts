@@ -39,7 +39,8 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
         '3': '活动收藏人员',
         '4': 'TA的关注',
         '5': 'TA的粉丝',
-        '6': '入住过的人'
+        '6': '入住过的人',
+        'interest': '感兴趣的用户',
       }
       const autoTitle = typeTitleMap[type] || '用户列表'
       wx.setNavigationBarTitle({ title: autoTitle })
@@ -61,6 +62,24 @@ Page<UserListState, WechatMiniprogram.IAnyObject>({
     this.setData({ loading: true })
     try {
       const { type, relatedId } = this.data
+
+      // type=interest: 从 globalData 读取已加载的兴趣用户列表
+      if (type === 'interest') {
+        const app = getApp<IAppOption>()
+        const users = (app.globalData.interestUsers || []) as any[]
+        const list = users.map((u: any) => ({
+          userId: String(u.userId || ''),
+          nickname: (u.memberName || u.wxName || '').trim() || `User ${u.userId}`,
+          avatar: u.logo || '/assets/images/default-avatar.png',
+          tags: [u.memberLevel || ''].filter(Boolean),
+          memberLevel: u.memberLevel || '',
+          bio: u.introduction ? String(u.introduction) : '',
+          isFollowed: u.followed,
+        }))
+        this.setData({ userList: list, loading: false })
+        return
+      }
+
       const params: any = {
         type,
         pageNo: 1,
